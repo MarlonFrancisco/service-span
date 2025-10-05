@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
-import { User, Check, AlertTriangle, Info } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { SelectedService, Professional } from "./BookingSidebar";
+import { User, Check, Info } from "lucide-react";
+import { Card } from "@repo/ui";
+import { SelectedService, Professional } from "../booking-sidebar/booking-sidebar";
 
 interface ProfessionalSelectionStepProps {
   selectedServices: SelectedService[];
@@ -25,7 +24,7 @@ export function ProfessionalSelectionStep({
       id: '1',
       name: 'Carlos Silva',
       specialties: ['Cortes Masculinos', 'Barba'],
-      availableServices: ['1', '2', '3']
+      availableServices: ['1', '2', '3'] // IDs dos serviços que pode realizar
     },
     {
       id: '2',
@@ -48,139 +47,245 @@ export function ProfessionalSelectionStep({
   ];
 
   const [compatibilityStatus, setCompatibilityStatus] = useState<{
-    [professionalId: string]: {
-      isCompatible: boolean;
-      incompatibleServices: string[];
-    };
-  }>({});
+    canUseAny: boolean;
+    availableProfessionals: Professional[];
+    hasIncompatibleCombination: boolean;
+  }>({
+    canUseAny: true,
+    availableProfessionals: mockProfessionals,
+    hasIncompatibleCombination: false
+  });
 
   useEffect(() => {
-    // Verificar compatibilidade de profissionais com serviços selecionados
-    const status: { [key: string]: { isCompatible: boolean; incompatibleServices: string[] } } = {};
-
-    mockProfessionals.forEach(professional => {
-      const incompatibleServices: string[] = [];
-
-      selectedServices.forEach(service => {
-        if (!professional.availableServices.includes(service.id)) {
-          incompatibleServices.push(service.name);
-        }
-      });
-
-      status[professional.id] = {
-        isCompatible: incompatibleServices.length === 0,
-        incompatibleServices
-      };
-    });
-
-    setCompatibilityStatus(status);
+    analyzeCompatibility();
   }, [selectedServices]);
 
-  const handleProfessionalSelect = (professional: Professional) => {
-    const status = compatibilityStatus[professional.id];
-
-    if (status?.isCompatible) {
-      onProfessionalChange(professional, false);
+  const analyzeCompatibility = () => {
+    if (selectedServices.length === 0) {
+      setCompatibilityStatus({
+        canUseAny: true,
+        availableProfessionals: mockProfessionals,
+        hasIncompatibleCombination: false
+      });
       onValidationError(null);
+      return;
+    }
+
+    const selectedServiceIds = selectedServices.map(s => s.id);
+
+    // Verificar quais profissionais podem realizar TODOS os serviços selecionados
+    const professionalsWhoCanDoAll = mockProfessionals.filter(professional =>
+      selectedServiceIds.every(serviceId =>
+        professional.availableServices.includes(serviceId)
+      )
+    );
+
+    // Verificar quais profissionais podem realizar PELO MENOS UM dos serviços
+    const professionalsWhoCanDoSome = mockProfessionals.filter(professional =>
+      selectedServiceIds.some(serviceId =>
+        professional.availableServices.includes(serviceId)
+      )
+    );
+
+    const canUseAny = professionalsWhoCanDoAll.length > 0;
+    const hasIncompatibleCombination = professionalsWhoCanDoSome.length === 0;
+
+    setCompatibilityStatus({
+      canUseAny,
+      availableProfessionals: professionalsWhoCanDoSome,
+      hasIncompatibleCombination
+    });
+
+    // Configurar mensagens de validação
+    if (hasIncompatibleCombination) {
+      onValidationError("Esta combinação de serviços não pode ser realizada por nenhum profissional desta unidade. Por favor, volte ao Passo 1 e remova um serviço para prosseguir.");
+    } else if (!canUseAny && professionalsWhoCanDoSome.length > 0) {
+      onValidationError(null); // Erro será mostrado como info, não como bloqueio
     } else {
-      onValidationError(`Este profissional não pode realizar: ${status?.incompatibleServices.join(', ')}`);
+      onValidationError(null);
+    }
+
+    // Reset da seleção se não for mais válida
+    if (isAnyProfessional && !canUseAny) {
+      onProfessionalChange(null, false);
+    } else if (selectedProfessional && !professionalsWhoCanDoSome.find(p => p.id === selectedProfessional.id)) {
+      onProfessionalChange(null, false);
     }
   };
 
   const handleAnyProfessionalSelect = () => {
-    onProfessionalChange(null, true);
-    onValidationError(null);
+    if (compatibilityStatus.canUseAny) {
+      onProfessionalChange(null, true);
+    }
+  };
+
+  const handleProfessionalSelect = (professional: Professional) => {
+    onProfessionalChange(professional, false);
+  };
+
+  const canProfessionalDoAllServices = (professional: Professional) => {
+    const selectedServiceIds = selectedServices.map(s => s.id);
+    return selectedServiceIds.every(serviceId =>
+      professional.availableServices.includes(serviceId)
+    );
+  };
+
+  const getServicesForProfessional = (professional: Professional) => {
+    return selectedServices.filter(service =>
+      professional.availableServices.includes(service.id)
+    );
   };
 
   return (
     <div className="space-y-6">
       <div>
         <h2 className="text-xl text-[#1a2b4c] mb-2">Escolha o profissional</h2>
-        <p className="text-gray-600">Selecione um profissional ou deixe que o estabelecimento escolha por você</p>
+        <p className="text-gray-600">Selecione um profissional ou deixe o sistema escolher automaticamente</p>
       </div>
 
-      {/* Any Professional Option */}
+      {/* Informações de compatibilidade */}
+      {!compatibilityStatus.canUseAny && !compatibilityStatus.hasIncompatibleCombination && (
+        <Card className="p-4 border-blue-200 bg-blue-50">
+          <div className="flex items-start gap-3 text-blue-800">
+            <Info className="h-5 w-5 text-blue-600 mt-0.5" />
+            <div>
+              <p className="text-sm mb-1">
+                <strong>Atenção:</strong> A combinação de serviços selecionados exige profissionais específicos.
+              </p>
+              <p className="text-xs text-blue-700">
+                Escolha um dos profissionais listados abaixo para continuar.
+              </p>
+            </div>
+          </div>
+        </Card>
+      )}
+
+      {/* Opção "Qualquer Profissional" */}
       <Card
-        className={`p-4 cursor-pointer transition-all ${
-          isAnyProfessional
+        className={`p-4 cursor-pointer transition-all ${compatibilityStatus.canUseAny
+          ? isAnyProfessional
             ? 'border-[#20b2aa] bg-[#20b2aa]/5'
             : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
-        }`}
-        onClick={handleAnyProfessionalSelect}
+          : 'border-gray-200 bg-gray-100 cursor-not-allowed opacity-50'
+          }`}
+        onClick={compatibilityStatus.canUseAny ? handleAnyProfessionalSelect : undefined}
       >
-        <div className="flex items-center gap-4">
-          <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
-            isAnyProfessional
-              ? 'border-[#20b2aa] bg-[#20b2aa]'
-              : 'border-gray-300'
-          }`}>
-            {isAnyProfessional && <Check className="h-3 w-3 text-white" />}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${compatibilityStatus.canUseAny
+              ? 'bg-[#20b2aa]/20'
+              : 'bg-gray-200'
+              }`}>
+              <User className={`h-5 w-5 ${compatibilityStatus.canUseAny ? 'text-[#20b2aa]' : 'text-gray-400'
+                }`} />
+            </div>
+
+            <div>
+              <h4 className={`${compatibilityStatus.canUseAny ? 'text-[#1a2b4c]' : 'text-gray-400'
+                }`}>
+                Qualquer Profissional
+              </h4>
+              <p className={`text-sm ${compatibilityStatus.canUseAny ? 'text-gray-600' : 'text-gray-400'
+                }`}>
+                {compatibilityStatus.canUseAny
+                  ? 'O sistema escolherá o melhor profissional disponível'
+                  : 'Não disponível para esta combinação de serviços'
+                }
+              </p>
+            </div>
           </div>
-          <div className="flex-1">
-            <h3 className="text-[#1a2b4c]">Qualquer profissional disponível</h3>
-            <p className="text-sm text-gray-600">O estabelecimento escolherá o melhor profissional para você</p>
-          </div>
+
+          {isAnyProfessional && compatibilityStatus.canUseAny && (
+            <div className="w-6 h-6 bg-[#20b2aa] rounded-full flex items-center justify-center">
+              <Check className="h-4 w-4 text-white" />
+            </div>
+          )}
         </div>
       </Card>
 
-      {/* Professional Selection */}
-      <div className="space-y-4">
-        <h3 className="text-lg text-[#1a2b4c]">Profissionais disponíveis:</h3>
+      {/* Lista de Profissionais */}
+      <div className="space-y-3">
+        <h3 className="text-sm text-gray-700">Ou escolha um profissional específico:</h3>
 
-        {mockProfessionals.map(professional => {
-          const status = compatibilityStatus[professional.id];
+        {compatibilityStatus.availableProfessionals.map(professional => {
+          const canDoAll = canProfessionalDoAllServices(professional);
+          const availableServices = getServicesForProfessional(professional);
           const isSelected = selectedProfessional?.id === professional.id;
 
           return (
             <Card
               key={professional.id}
-              className={`p-4 cursor-pointer transition-all ${
-                isSelected
-                  ? 'border-[#20b2aa] bg-[#20b2aa]/5'
-                  : status?.isCompatible
-                    ? 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
-                    : 'border-red-200 bg-red-50'
-              }`}
+              className={`p-4 cursor-pointer transition-all ${isSelected
+                ? 'border-[#20b2aa] bg-[#20b2aa]/5'
+                : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                }`}
               onClick={() => handleProfessionalSelect(professional)}
             >
-              <div className="flex items-center gap-4">
-                <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
-                  isSelected
-                    ? 'border-[#20b2aa] bg-[#20b2aa]'
-                    : 'border-gray-300'
-                }`}>
-                  {isSelected && <Check className="h-3 w-3 text-white" />}
-                </div>
-
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-1">
-                    <h4 className="text-[#1a2b4c]">{professional.name}</h4>
-                    {!status?.isCompatible && (
-                      <div className="flex items-center gap-1 text-red-600">
-                        <AlertTriangle className="h-3 w-3" />
-                        <span className="text-xs">Incompatível</span>
-                      </div>
-                    )}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-[#1a2b4c]/10 rounded-full flex items-center justify-center">
+                    <User className="h-5 w-5 text-[#1a2b4c]" />
                   </div>
 
-                  <p className="text-sm text-gray-600 mb-2">
-                    {professional.specialties.join(' • ')}
-                  </p>
-
-                  {!status?.isCompatible && status?.incompatibleServices.length > 0 && (
-                    <div className="flex items-center gap-1 text-red-600">
-                      <Info className="h-3 w-3" />
-                      <span className="text-xs">
-                        Não pode realizar: {status.incompatibleServices.join(', ')}
-                      </span>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h4 className="text-[#1a2b4c]">{professional.name}</h4>
+                      {!canDoAll && (
+                        <span className="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">
+                          Parcial
+                        </span>
+                      )}
                     </div>
-                  )}
+
+                    <p className="text-sm text-gray-600 mb-2">
+                      {professional.specialties.join(' • ')}
+                    </p>
+
+                    {!canDoAll && (
+                      <p className="text-xs text-gray-500">
+                        Pode realizar: {availableServices.map(s => s.name).join(', ')}
+                      </p>
+                    )}
+                  </div>
                 </div>
+
+                {isSelected && (
+                  <div className="w-6 h-6 bg-[#20b2aa] rounded-full flex items-center justify-center">
+                    <Check className="h-4 w-4 text-white" />
+                  </div>
+                )}
               </div>
             </Card>
           );
         })}
       </div>
+
+      {/* Resumo da seleção */}
+      {(selectedProfessional || isAnyProfessional) && (
+        <Card className="p-4 bg-[#20b2aa]/10 border-[#20b2aa]/20">
+          <h4 className="text-[#1a2b4c] mb-2">Seleção confirmada:</h4>
+          {isAnyProfessional ? (
+            <p className="text-sm text-gray-700">
+              Qualquer profissional disponível realizará todos os serviços selecionados.
+            </p>
+          ) : selectedProfessional && (
+            <div className="space-y-1">
+              <p className="text-sm text-gray-700">
+                <strong>{selectedProfessional.name}</strong> realizará{' '}
+                {canProfessionalDoAllServices(selectedProfessional)
+                  ? 'todos os serviços selecionados'
+                  : 'os serviços compatíveis'
+                }.
+              </p>
+              {!canProfessionalDoAllServices(selectedProfessional) && (
+                <p className="text-xs text-yellow-700 bg-yellow-100 p-2 rounded">
+                  Alguns serviços podem precisar ser reagendados com outro profissional.
+                </p>
+              )}
+            </div>
+          )}
+        </Card>
+      )}
     </div>
   );
 }

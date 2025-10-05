@@ -1,14 +1,18 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Facebook, Instagram, Twitter, Linkedin } from 'lucide-react'
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+import Image from "next/image"
 
-export const Footer = ({ ...props }) => {
+export const Footer = () => {
   const router = useRouter()
+
+  const navigate = (path: string) => {
+    router.push(path, { scroll: true })
+  }
+
   return (
-    <footer className="bg-white border-t border-gray-200" {...props}>
+    <footer>
       <div className="max-w-7xl mx-auto px-6 py-16">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Left Side - Links */}
@@ -34,7 +38,7 @@ export const Footer = ({ ...props }) => {
                 </li>
                 <li>
                   <button
-                    onClick={() => router.push('/contact')}
+                    onClick={() => navigate('contact')}
                     className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
                   >
                     Contato
@@ -49,7 +53,7 @@ export const Footer = ({ ...props }) => {
               <ul className="space-y-4">
                 <li>
                   <button
-                    onClick={() => router.push('/help')}
+                    onClick={() => navigate('help')}
                     className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
                   >
                     Central de ajuda
@@ -62,7 +66,7 @@ export const Footer = ({ ...props }) => {
                 </li>
                 <li>
                   <button
-                    onClick={() => router.push('/privacy')}
+                    onClick={() => navigate('privacy')}
                     className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
                   >
                     Privacidade
@@ -70,7 +74,7 @@ export const Footer = ({ ...props }) => {
                 </li>
                 <li>
                   <button
-                    onClick={() => router.push('/terms')}
+                    onClick={() => navigate('terms')}
                     className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
                   >
                     Termos
@@ -114,14 +118,14 @@ export const Footer = ({ ...props }) => {
               Receba as últimas novidades sobre design, artigos, recursos e inspiração.
             </p>
             <div className="flex gap-3">
-              <Input
+              <input
                 type="email"
                 placeholder="Digite seu e-mail"
-                className="flex-1"
+                className="flex-1 px-4 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
               />
-              <Button className="px-4 py-2 bg-black text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors">
+              <button className="px-4 py-2 bg-black text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors">
                 →
-              </Button>
+              </button>
             </div>
           </div>
         </div>
@@ -129,16 +133,15 @@ export const Footer = ({ ...props }) => {
         {/* Bottom Section */}
         <div className="mt-16 pt-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center gap-4">
           {/* Logo */}
-          <div className="flex items-center">
-            <div className="w-6 h-6 bg-black rounded flex items-center justify-center mr-2">
-              <div className="w-2 h-2 bg-white rounded-full"></div>
-            </div>
-            <span className="text-lg font-semibold text-gray-900">ServiceSnap</span>
-          </div>
+          <Link
+            href="/"
+          >
+            <Image src="/logo.png" alt="ServiceSnap" width={200} height={62} />
+          </Link>
 
           {/* Copyright */}
           <p className="text-sm text-gray-600">
-            © ServiceSnap Agency Inc. 2025
+            © ServiceSnap Inc. 2025
           </p>
         </div>
       </div>

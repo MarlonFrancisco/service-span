@@ -100,9 +100,9 @@ export function CheckoutStep({
       </div>
 
       {/* Resumo do Agendamento */}
-      <Card className="p-6 border-[#20b2aa]/20 bg-[#20b2aa]/5">
+      <Card className="p-6 border-[black]/20 bg-[black]/5">
         <h3 className="text-lg text-[#1a2b4c] mb-4 flex items-center gap-2">
-          <Check className="h-5 w-5 text-[#20b2aa]" />
+          <Check className="h-5 w-5 text-[black]" />
           Resumo do Agendamento
         </h3>
 
@@ -155,7 +155,7 @@ export function CheckoutStep({
                     <div className="flex items-center gap-2">
                       <span className="text-gray-900">{service.name}</span>
                       {service.quantity > 1 && (
-                        <span className="bg-[#20b2aa] text-white px-2 py-0.5 rounded-full text-xs">
+                        <span className="bg-[black] text-white px-2 py-0.5 rounded-full text-xs">
                           {service.quantity}x
                         </span>
                       )}
@@ -228,7 +228,7 @@ export function CheckoutStep({
                 placeholder="Digite seu nome completo"
                 value={formData.name}
                 onChange={(e) => handleInputChange('name', e.target.value)}
-                className="border-gray-300 focus:border-[#20b2aa] focus:ring-[#20b2aa]/20"
+                className="border-gray-300 focus:border-[black] focus:ring-[black]/20"
               />
             </div>
 
@@ -239,7 +239,7 @@ export function CheckoutStep({
                 placeholder="seu@email.com"
                 value={formData.email}
                 onChange={(e) => handleInputChange('email', e.target.value)}
-                className="border-gray-300 focus:border-[#20b2aa] focus:ring-[#20b2aa]/20"
+                className="border-gray-300 focus:border-[black] focus:ring-[black]/20"
               />
             </div>
 
@@ -250,7 +250,7 @@ export function CheckoutStep({
                 placeholder="(11) 99999-9999"
                 value={formData.phone}
                 onChange={(e) => handleInputChange('phone', e.target.value)}
-                className="border-gray-300 focus:border-[#20b2aa] focus:ring-[#20b2aa]/20"
+                className="border-gray-300 focus:border-[black] focus:ring-[black]/20"
               />
             </div>
 
@@ -282,7 +282,7 @@ export function CheckoutStep({
         <Button
           onClick={handleSubmit}
           disabled={!isFormValid || isSubmitting}
-          className="w-full bg-[#20b2aa] hover:bg-[#20b2aa]/90 text-white py-4 text-lg"
+          className="w-full bg-[black] hover:bg-[black]/90 text-white py-4 text-lg"
         >
           {isSubmitting ? (
             <div className="flex items-center gap-2">

@@ -127,7 +127,7 @@ export function DateTimeSelectionStep({
       <Card className="p-4 bg-gray-50 border-gray-200">
         <div className="flex items-center gap-4 text-sm">
           <div className="flex items-center gap-2">
-            <Clock className="h-4 w-4 text-[#20b2aa]" />
+            <Clock className="h-4 w-4 text-[black]" />
             <span>Duração total: <strong>{formatDuration(totalDuration)}</strong></span>
           </div>
 
@@ -145,7 +145,7 @@ export function DateTimeSelectionStep({
         {/* Calendário */}
         <Card className="p-4">
           <div className="flex items-center gap-2 mb-4">
-            <Calendar className="h-5 w-5 text-[#20b2aa]" />
+            <Calendar className="h-5 w-5 text-[black]" />
             <h3 className="text-lg text-[#1a2b4c]">Selecione a data</h3>
           </div>
 
@@ -161,7 +161,7 @@ export function DateTimeSelectionStep({
         {/* Horários */}
         <Card className="p-4">
           <div className="flex items-center gap-2 mb-4">
-            <Clock className="h-5 w-5 text-[#20b2aa]" />
+            <Clock className="h-5 w-5 text-[black]" />
             <h3 className="text-lg text-[#1a2b4c]">Selecione o horário</h3>
           </div>
 
@@ -174,7 +174,7 @@ export function DateTimeSelectionStep({
 
           {selectedDate && isLoadingSlots && (
             <div className="text-center py-8 text-gray-500">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#20b2aa] mx-auto mb-3"></div>
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[black] mx-auto mb-3"></div>
               <p>Carregando horários...</p>
             </div>
           )}
@@ -199,7 +199,7 @@ export function DateTimeSelectionStep({
                       onClick={() => handleTimeSelect(slot.time)}
                       className={`p-3 h-auto flex flex-col ${
                         selectedTime === slot.time
-                          ? "bg-[#20b2aa] hover:bg-[#20b2aa]/90 text-white"
+                          ? "bg-[black] hover:bg-[black]/90 text-white"
                           : slot.available
                           ? "border-gray-300 text-gray-700 hover:bg-gray-50"
                           : "border-gray-200 text-gray-400 cursor-not-allowed"
@@ -222,7 +222,7 @@ export function DateTimeSelectionStep({
 
       {/* Confirmação da seleção */}
       {selectedDate && selectedTime && (
-        <Card className="p-4 bg-[#20b2aa]/10 border-[#20b2aa]/20">
+        <Card className="p-4 bg-[black]/10 border-[black]/20">
           <h4 className="text-[#1a2b4c] mb-2">Agendamento selecionado:</h4>
           <div className="space-y-1 text-sm">
             <p><strong>Data:</strong> {formatDate(selectedDate)}</p>

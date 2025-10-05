@@ -1,9 +1,11 @@
 import { Check, AlertTriangle } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
+import { Button, Card } from '@repo/ui'
 import { ServiceSelectionStep, ProfessionalSelectionStep, DateTimeSelectionStep, CheckoutStep, BookingSidebar, BusinessShowcase } from './components'
 import { useBookingFlow } from './booking-flow.hook'
-import type { TBookingFlowConfig } from './types'
+import type { TBookingFlowConfig } from "./booking.types"
+import Image from 'next/image'
+import { Footer } from '@/components/layout'
+import Link from 'next/link'
 
 export const BookingFlow = ({
   businessName,
@@ -95,39 +97,33 @@ export const BookingFlow = ({
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
-              <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center shadow-sm">
-                <div className="w-4 h-4 bg-white rounded-sm flex items-center justify-center">
-                  <div className="w-2 h-2 bg-black rounded-full" />
-                </div>
-              </div>
-              <span className="ml-2 text-xl font-bold text-gray-900">
-                ServiceSnap
-              </span>
+              <Link
+                href="/"
+              >
+                <Image src="/logo.png" alt="ServiceSnap" width={200} height={200} />
+              </Link>
             </div>
 
             {/* Progress Steps */}
             <div className="flex items-center gap-2">
               {steps.map((step, index) => (
                 <div key={step.id} className="flex items-center">
-                  <div className={`flex items-center gap-2 ${
-                    step.id === currentStep ? 'text-black' :
+                  <div className={`flex items-center gap-2 ${step.id === currentStep ? 'text-black' :
                     index < currentStepIndex ? 'text-green-600' :
-                    'text-gray-400'
-                  }`}>
-                    <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-sm transition-colors ${
-                      step.id === currentStep ? 'border-black bg-black text-white' :
-                      index < currentStepIndex ? 'border-green-600 bg-green-600 text-white' :
-                      'border-gray-300 text-gray-400'
+                      'text-gray-400'
                     }`}>
+                    <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-sm transition-colors ${step.id === currentStep ? 'border-black bg-black text-white' :
+                      index < currentStepIndex ? 'border-green-600 bg-green-600 text-white' :
+                        'border-gray-300 text-gray-400'
+                      }`}>
                       {index < currentStepIndex ? <Check className="h-4 w-4" /> : step.number}
                     </div>
                     <span className="text-sm hidden md:block">{step.title}</span>
                   </div>
 
                   {index < steps.length - 1 && (
-                    <div className={`w-8 h-px mx-3 ${
-                      index < currentStepIndex ? 'bg-green-600' : 'bg-gray-300'
-                    }`} />
+                    <div className={`w-8 h-px mx-3 ${index < currentStepIndex ? 'bg-[#20b2aa]-600' : 'bg-gray-300'
+                      }`} />
                   )}
                 </div>
               ))}
@@ -150,7 +146,7 @@ export const BookingFlow = ({
       />
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-6 py-2">
+      <div className="max-w-7xl mx-auto px-6 py-2 mb-24">
         <div className="grid grid-cols-12 gap-6">
           {/* Main Content Column */}
           <div className="col-span-12 lg:col-span-8">
@@ -186,7 +182,7 @@ export const BookingFlow = ({
                     <Button
                       onClick={handleNextStep}
                       disabled={!canProceedToNext() || !!validationError}
-                      className="bg-[#20b2aa] hover:bg-[#20b2aa]/90 text-white px-8"
+                      className="bg-[black] hover:bg-[black]/90 text-white px-8"
                     >
                       Continuar
                     </Button>
@@ -197,7 +193,7 @@ export const BookingFlow = ({
           </div>
 
           {/* Sidebar */}
-          <div className="col-span-12 lg:col-span-4">
+          <div className="col-span-12 lg:col-span-4 sticky">
             <BookingSidebar
               businessName={businessName}
               businessAddress={businessAddress}
@@ -214,6 +210,8 @@ export const BookingFlow = ({
           </div>
         </div>
       </div>
+
+      <Footer />
     </div>
   )
 }

@@ -158,7 +158,7 @@ export function ServiceSelectionStep({ selectedServices, onServicesChange }: Ser
             size="sm"
             onClick={() => setSelectedCategory(null)}
             className={selectedCategory === null
-              ? "bg-[#20b2aa] hover:bg-[#20b2aa]/90 text-white"
+              ? "bg-[black] hover:bg-[black]/90 text-white"
               : "border-gray-300 text-gray-700 hover:bg-gray-50"
             }
           >
@@ -171,7 +171,7 @@ export function ServiceSelectionStep({ selectedServices, onServicesChange }: Ser
               size="sm"
               onClick={() => setSelectedCategory(category)}
               className={selectedCategory === category
-                ? "bg-[#20b2aa] hover:bg-[#20b2aa]/90 text-white"
+                ? "bg-[black] hover:bg-[black]/90 text-white"
                 : "border-gray-300 text-gray-700 hover:bg-gray-50"
               }
             >
@@ -241,7 +241,7 @@ export function ServiceSelectionStep({ selectedServices, onServicesChange }: Ser
                     <Button
                       size="sm"
                       variant="outline"
-                      className="w-8 h-8 p-0 border-[#20b2aa] text-[#20b2aa] hover:bg-[#20b2aa]/10"
+                      className="w-8 h-8 p-0 border-[black] text-[black] hover:bg-[black]/10"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleQuantityChange(service, getServiceQuantity(service.id) + 1);
@@ -271,7 +271,7 @@ export function ServiceSelectionStep({ selectedServices, onServicesChange }: Ser
       </div>
 
       {selectedServices.length > 0 && (
-        <div className="bg-[#20b2aa]/10 border border-[#20b2aa]/20 rounded-lg p-4">
+        <div className="bg-[black]/10 border border-[black]/20 rounded-lg p-4">
           <h4 className="text-[#1a2b4c] mb-2">Serviços selecionados:</h4>
           <div className="space-y-2">
             {selectedServices.map(service => (
@@ -279,7 +279,7 @@ export function ServiceSelectionStep({ selectedServices, onServicesChange }: Ser
                 <div className="flex items-center gap-2">
                   <span>{service.name}</span>
                   {service.quantity > 1 && (
-                    <span className="bg-[#20b2aa] text-white px-2 py-0.5 rounded-full text-xs">
+                    <span className="bg-[black] text-white px-2 py-0.5 rounded-full text-xs">
                       {service.quantity}x
                     </span>
                   )}
@@ -291,7 +291,7 @@ export function ServiceSelectionStep({ selectedServices, onServicesChange }: Ser
             ))}
 
             {selectedServices.length > 1 && (
-              <div className="border-t border-[#20b2aa]/20 pt-2 flex justify-between items-center font-medium">
+              <div className="border-t border-[black]/20 pt-2 flex justify-between items-center font-medium">
                 <span>Total:</span>
                 <span className="text-[#1a2b4c]">
                   {formatPrice(selectedServices.reduce((total, service) => total + (service.price * service.quantity), 0))}

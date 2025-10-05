@@ -1,1 +1,11 @@
 @import "@repo/tailwind-config";
+
+@layer base {
+  :root {
+    --font-mona-sans: 'Mona Sans', system-ui, sans-serif;
+  }
+
+  body {
+    font-family: var(--font-mona-sans);
+  }
+}

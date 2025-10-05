@@ -1,27 +1,13 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { AirbnbHeader, ResultsList, ServicePreview, AuthModal, Footer } from "./components";
-import type { SearchResultsProps, Service, UserType } from "./types/search.types";
+import { ResultsList, ServicePreview } from "./components";
+import type { Service } from "./types/search.types";
+import { Header } from "@/components/layout/header/header";
+import { Footer } from "@/components/layout";
 
-export function SearchResults({
-  onGoToDashboard,
-  onGoToProfile,
-  onNavigate,
-}: SearchResultsProps) {
+export function SearchResults() {
   const [selectedService, setSelectedService] = useState<Service | null>(null);
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const router = useRouter();
-
-  const handleLoginSuccess = (selectedUserType: UserType) => {
-    if (selectedUserType === "provider" && onGoToDashboard) {
-      onGoToDashboard();
-    }
-  };
-
-  const handleSearch = (filters: { location: string; service: string; date: string }) => {
-    console.log("Search triggered with filters:", filters);
-    // Aqui você pode usar os filtros para realizar a busca
-  };
 
   const handleStartBooking = (service: Service) => {
     // Navegar para a página de booking com o ID do serviço
@@ -29,21 +15,12 @@ export function SearchResults({
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Modern Header */}
-      <AirbnbHeader
-        onGoToDashboard={onGoToDashboard || (() => {})}
-        onGoToProfile={onGoToProfile || (() => {})}
-        onSearch={handleSearch}
-        showSearchBar={true}
-        showFilters={true}
-        hasActiveFilters={false}
-        onClearFilters={() => {}}
-      />
+    <div className="min-h-screen bg-black">
+      <Header />
 
       {/* Modern Layout */}
-      <div className="max-w-8xl mx-auto px-6 sm:px-8 lg:px-12 py-8">
-        <div className="grid grid-cols-12 gap-12 min-h-[calc(100vh-180px)]">
+      <div className="max-w-8xl mx-auto px-6 sm:px-8 lg:px-12 pt-8 rounded-tl-[40px] rounded-tr-[40px] bg-background">
+        <div className="grid grid-cols-12 gap-12 min-h-[calc(100vh-180px)] my-32">
           {/* Results Column */}
           <div className="col-span-12 lg:col-span-7">
             <div className="fade-in">
@@ -66,15 +43,9 @@ export function SearchResults({
             </div>
           </div>
         </div>
+
+        <Footer />
       </div>
-
-      <AuthModal
-        isOpen={isAuthModalOpen}
-        onClose={() => setIsAuthModalOpen(false)}
-        onLoginSuccess={handleLoginSuccess}
-      />
-
-      <Footer onNavigate={onNavigate} />
     </div>
   );
 }

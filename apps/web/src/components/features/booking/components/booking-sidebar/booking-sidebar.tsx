@@ -110,7 +110,7 @@ export function BookingSidebar({
                         <div className="flex items-center gap-2 mb-1">
                           <p className="text-sm text-gray-900">{service.name}</p>
                           {service.quantity > 1 && (
-                            <span className="bg-[#20b2aa] text-white px-1.5 py-0.5 rounded-full text-xs">
+                            <span className="bg-[black] text-white px-1.5 py-0.5 rounded-full text-xs">
                               {service.quantity}x
                             </span>
                           )}
