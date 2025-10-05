@@ -1,13 +1,13 @@
-import { useState } from "react";
-import { NewHomepage } from "./components/NewHomepage";
-import { SearchResultsNew } from "./components/SearchResultsNew";
-import { NewBookingFlow } from "./components/NewBookingFlow";
-import { AdminDashboard } from "./components/AdminDashboard";
-import { ClientProfile } from "./components/ClientProfile";
-import { TermsPage } from "./components/pages/TermsPage";
-import { PrivacyPage } from "./components/pages/PrivacyPage";
-import { HelpPage } from "./components/pages/HelpPage";
-import { ContactPage } from "./components/pages/ContactPage";
+import { useState } from 'react';
+import { NewHomepage } from './components/NewHomepage';
+import { SearchResultsNew } from './components/SearchResultsNew';
+import { NewBookingFlow } from './components/NewBookingFlow';
+import { AdminDashboard } from './components/AdminDashboard';
+import { ClientProfile } from './components/ClientProfile';
+import { TermsPage } from './components/pages/TermsPage';
+import { PrivacyPage } from './components/pages/PrivacyPage';
+import { HelpPage } from './components/pages/HelpPage';
+import { ContactPage } from './components/pages/ContactPage';
 
 interface Service {
   id: string;
@@ -26,76 +26,75 @@ interface Service {
 
 export default function App() {
   const [currentView, setCurrentView] = useState<
-    | "home"
-    | "results"
-    | "booking"
-    | "dashboard"
-    | "profile"
-    | "terms"
-    | "privacy"
-    | "help"
-    | "contact"
-  >("home");
-  const [selectedService, setSelectedService] =
-    useState<Service | null>(null);
+    | 'home'
+    | 'results'
+    | 'booking'
+    | 'dashboard'
+    | 'profile'
+    | 'terms'
+    | 'privacy'
+    | 'help'
+    | 'contact'
+  >('home');
+  const [selectedService, setSelectedService] = useState<Service | null>(null);
 
   const handleSearch = () => {
-    setCurrentView("results");
+    setCurrentView('results');
   };
 
   const handleBackToHome = () => {
-    setCurrentView("home");
+    setCurrentView('home');
     setSelectedService(null);
   };
 
   const handleStartBooking = (service: Service) => {
     setSelectedService(service);
-    setCurrentView("booking");
+    setCurrentView('booking');
   };
 
   const handleBackToResults = () => {
-    setCurrentView("results");
+    setCurrentView('results');
   };
 
   const handleGoToDashboard = () => {
-    setCurrentView("dashboard");
+    setCurrentView('dashboard');
   };
 
   const handleGoToProfile = () => {
-    setCurrentView("profile");
+    setCurrentView('profile');
   };
 
   const handleNavigateToPage = (
-    page: "terms" | "privacy" | "help" | "contact",
+    page: 'terms' | 'privacy' | 'help' | 'contact',
   ) => {
     setCurrentView(page);
   };
 
-  if (currentView === "dashboard") {
+  if (currentView === 'dashboard') {
     return <AdminDashboard onBack={handleBackToHome} />;
   }
 
-  if (currentView === "profile") {
+  if (currentView === 'profile') {
     return <ClientProfile onBack={handleBackToHome} />;
   }
 
-  if (currentView === "terms") {
+  if (currentView === 'terms') {
     return <TermsPage onBack={handleBackToHome} />;
   }
 
-  if (currentView === "privacy") {
+  if (currentView === 'privacy') {
     return <PrivacyPage onBack={handleBackToHome} />;
   }
 
-  if (currentView === "help") {
+  if (currentView === 'help') {
     return <HelpPage onBack={handleBackToHome} />;
   }
 
-  if (currentView === "contact") {
+  if (currentView === 'contact') {
     return <ContactPage onBack={handleBackToHome} />;
   }
 
-  if (currentView === "booking" && selectedService) {
+  if (currentView === 'booking' && selectedService) {
     return (
       <NewBookingFlow
         businessName={selectedService.name}
@@ -112,7 +111,7 @@ export default function App() {
     );
   }
 
-  if (currentView === "results") {
+  if (currentView === 'results') {
     return (
       <SearchResultsNew
         onBackToHome={handleBackToHome}

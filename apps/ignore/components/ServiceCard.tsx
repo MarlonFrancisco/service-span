@@ -1,7 +1,7 @@
-import { Star, MapPin } from "lucide-react";
-import { Card } from "./ui/card";
-import { Badge } from "./ui/badge";
-import { ImageCarousel } from "./ImageCarousel";
+import { Star, MapPin } from 'lucide-react';
+import { Card } from './ui/card';
+import { Badge } from './ui/badge';
+import { ImageCarousel } from './ImageCarousel';
 
 interface ServiceCardProps {
   id: string;
@@ -17,22 +17,22 @@ interface ServiceCardProps {
   onClick: () => void;
 }
 
-export function ServiceCard({ 
-  name, 
-  category, 
-  rating, 
-  reviewCount, 
-  location, 
-  price, 
-  imageUrl, 
+export function ServiceCard({
+  name,
+  category,
+  rating,
+  reviewCount,
+  location,
+  price,
+  imageUrl,
   images,
-  isSelected, 
-  onClick 
+  isSelected,
+  onClick,
 }: ServiceCardProps) {
   // Use images array if available, otherwise fallback to single imageUrl
   const allImages = images && images.length > 0 ? images : [imageUrl];
   return (
-    <Card 
+    <Card
       className={`group overflow-hidden cursor-pointer transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border-0 shadow-lg bg-white ${
         isSelected ? 'ring-2 ring-black shadow-2xl scale-[1.02]' : ''
       }`}
@@ -53,7 +53,7 @@ export function ServiceCard({
             />
           </div>
         </div>
-        
+
         {/* Content */}
         <div className="flex-1 p-6">
           <div className="flex justify-between items-start mb-4">
@@ -78,19 +78,13 @@ export function ServiceCard({
               </div>
             </div>
             <div className="text-right ml-4">
-              <div className="text-lg font-semibold text-gray-900">
-                {price}
-              </div>
-              <div className="text-sm text-gray-500">
-                por serviço
-              </div>
+              <div className="text-lg font-semibold text-gray-900">{price}</div>
+              <div className="text-sm text-gray-500">por serviço</div>
             </div>
           </div>
-          
+
           <div className="flex justify-between items-center pt-4 border-t border-gray-100">
-            <div className="text-sm text-gray-600">
-              Disponível hoje
-            </div>
+            <div className="text-sm text-gray-600">Disponível hoje</div>
             <button className="text-sm font-medium text-black hover:underline">
               Ver detalhes
             </button>

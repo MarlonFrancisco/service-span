@@ -1,13 +1,13 @@
-import { useState } from "react";
-import { Check, AlertTriangle } from "lucide-react";
-import { Button } from "./ui/button";
-import { Card } from "./ui/card";
-import { ServiceSelectionStep } from "./booking/ServiceSelectionStep";
-import { ProfessionalSelectionStep } from "./booking/ProfessionalSelectionStep";
-import { DateTimeSelectionStep } from "./booking/DateTimeSelectionStep";
-import { CheckoutStep } from "./booking/CheckoutStep";
-import { BookingSidebar } from "./booking/BookingSidebar";
-import { BusinessShowcase } from "./BusinessShowcase";
+import { useState } from 'react';
+import { Check, AlertTriangle } from 'lucide-react';
+import { Button } from './ui/button';
+import { Card } from './ui/card';
+import { ServiceSelectionStep } from './booking/ServiceSelectionStep';
+import { ProfessionalSelectionStep } from './booking/ProfessionalSelectionStep';
+import { DateTimeSelectionStep } from './booking/DateTimeSelectionStep';
+import { CheckoutStep } from './booking/CheckoutStep';
+import { BookingSidebar } from './booking/BookingSidebar';
+import { BusinessShowcase } from './BusinessShowcase';
 
 export type BookingStep = 'services' | 'professional' | 'datetime' | 'checkout';
 
@@ -46,9 +46,9 @@ interface NewBookingFlowProps {
   onBack: () => void;
 }
 
-export function NewBookingFlow({ 
-  businessName, 
-  businessAddress, 
+export function NewBookingFlow({
+  businessName,
+  businessAddress,
   businessPhone,
   businessImages,
   businessImageUrl,
@@ -56,11 +56,14 @@ export function NewBookingFlow({
   businessReviewCount,
   businessCategory,
   businessDescription,
-  onBack 
+  onBack,
 }: NewBookingFlowProps) {
   const [currentStep, setCurrentStep] = useState<BookingStep>('services');
-  const [selectedServices, setSelectedServices] = useState<SelectedService[]>([]);
-  const [selectedProfessional, setSelectedProfessional] = useState<Professional | null>(null);
+  const [selectedServices, setSelectedServices] = useState<SelectedService[]>(
+    [],
+  );
+  const [selectedProfessional, setSelectedProfessional] =
+    useState<Professional | null>(null);
   const [isAnyProfessional, setIsAnyProfessional] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
@@ -70,10 +73,10 @@ export function NewBookingFlow({
     { id: 'services', title: 'Serviços', number: 1 },
     { id: 'professional', title: 'Profissional', number: 2 },
     { id: 'datetime', title: 'Data & Hora', number: 3 },
-    { id: 'checkout', title: 'Confirmação', number: 4 }
+    { id: 'checkout', title: 'Confirmação', number: 4 },
   ];
 
-  const currentStepIndex = steps.findIndex(step => step.id === currentStep);
+  const currentStepIndex = steps.findIndex((step) => step.id === currentStep);
 
   const handleServicesChange = (services: SelectedService[]) => {
     setSelectedServices(services);
@@ -83,13 +86,19 @@ export function NewBookingFlow({
     setIsAnyProfessional(false);
   };
 
-  const handleProfessionalChange = (professional: Professional | null, isAny: boolean) => {
+  const handleProfessionalChange = (
+    professional: Professional | null,
+    isAny: boolean,
+  ) => {
     setSelectedProfessional(professional);
     setIsAnyProfessional(isAny);
     setValidationError(null);
   };
 
-  const handleDateTimeChange = (date: Date | undefined, time: string | null) => {
+  const handleDateTimeChange = (
+    date: Date | undefined,
+    time: string | null,
+  ) => {
     setSelectedDate(date);
     setSelectedTime(time);
   };
@@ -112,14 +121,14 @@ export function NewBookingFlow({
   const handleNextStep = () => {
     if (!canProceedToNext()) return;
 
-    const stepIndex = steps.findIndex(step => step.id === currentStep);
+    const stepIndex = steps.findIndex((step) => step.id === currentStep);
     if (stepIndex < steps.length - 1) {
       setCurrentStep(steps[stepIndex + 1].id as BookingStep);
     }
   };
 
   const handlePrevStep = () => {
-    const stepIndex = steps.findIndex(step => step.id === currentStep);
+    const stepIndex = steps.findIndex((step) => step.id === currentStep);
     if (stepIndex > 0) {
       setCurrentStep(steps[stepIndex - 1].id as BookingStep);
     }
@@ -131,8 +140,14 @@ export function NewBookingFlow({
     onBack();
   };
 
-  const totalPrice = selectedServices.reduce((total, service) => total + (service.price * service.quantity), 0);
-  const totalDuration = selectedServices.reduce((total, service) => total + (service.duration * service.quantity), 0);
+  const totalPrice = selectedServices.reduce(
+    (total, service) => total + service.price * service.quantity,
+    0,
+  );
+  const totalDuration = selectedServices.reduce(
+    (total, service) => total + service.duration * service.quantity,
+    0,
+  );
 
   const renderStepContent = () => {
     switch (currentStep) {
@@ -204,25 +219,43 @@ export function NewBookingFlow({
             <div className="flex items-center gap-2">
               {steps.map((step, index) => (
                 <div key={step.id} className="flex items-center">
-                  <div className={`flex items-center gap-2 ${
-                    step.id === currentStep ? 'text-black' :
-                    index < currentStepIndex ? 'text-green-600' :
-                    'text-gray-400'
-                  }`}>
-                    <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-sm transition-colors ${
-                      step.id === currentStep ? 'border-black bg-black text-white' :
-                      index < currentStepIndex ? 'border-green-600 bg-green-600 text-white' :
-                      'border-gray-300 text-gray-400'
-                    }`}>
-                      {index < currentStepIndex ? <Check className="h-4 w-4" /> : step.number}
+                  <div
+                    className={`flex items-center gap-2 ${
+                      step.id === currentStep
+                        ? 'text-black'
+                        : index < currentStepIndex
+                          ? 'text-green-600'
+                          : 'text-gray-400'
+                    }`}
+                  >
+                    <div
+                      className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-sm transition-colors ${
+                        step.id === currentStep
+                          ? 'border-black bg-black text-white'
+                          : index < currentStepIndex
+                            ? 'border-green-600 bg-green-600 text-white'
+                            : 'border-gray-300 text-gray-400'
+                      }`}
+                    >
+                      {index < currentStepIndex ? (
+                        <Check className="h-4 w-4" />
+                      ) : (
+                        step.number
+                      )}
                     </div>
-                    <span className="text-sm hidden md:block">{step.title}</span>
+                    <span className="text-sm hidden md:block">
+                      {step.title}
+                    </span>
                   </div>
-                  
+
                   {index < steps.length - 1 && (
-                    <div className={`w-8 h-px mx-3 ${
-                      index < currentStepIndex ? 'bg-green-600' : 'bg-gray-300'
-                    }`} />
+                    <div
+                      className={`w-8 h-px mx-3 ${
+                        index < currentStepIndex
+                          ? 'bg-green-600'
+                          : 'bg-gray-300'
+                      }`}
+                    />
                   )}
                 </div>
               ))}
@@ -261,7 +294,7 @@ export function NewBookingFlow({
 
             <Card className="p-6">
               {renderStepContent()}
-              
+
               {/* Navigation Buttons */}
               <div className="mt-8 pt-6 border-t border-gray-200 flex justify-between items-center">
                 <div>
@@ -275,7 +308,7 @@ export function NewBookingFlow({
                     </Button>
                   )}
                 </div>
-                
+
                 <div>
                   {currentStep !== 'checkout' && (
                     <Button

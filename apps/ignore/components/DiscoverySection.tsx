@@ -1,8 +1,8 @@
-import { useState } from "react";
-import { Heart, Star } from "lucide-react";
-import { Button } from "./ui/button";
-import { Card } from "./ui/card";
-import { Badge } from "./ui/badge";
+import { useState } from 'react';
+import { Heart, Star } from 'lucide-react';
+import { Button } from './ui/button';
+import { Card } from './ui/card';
+import { Badge } from './ui/badge';
 
 interface DiscoveryItem {
   id: string;
@@ -21,15 +21,17 @@ interface DiscoverySectionProps {
   onItemClick?: (item: DiscoveryItem) => void;
 }
 
-export function DiscoverySection({ title, items, onItemClick }: DiscoverySectionProps) {
+export function DiscoverySection({
+  title,
+  items,
+  onItemClick,
+}: DiscoverySectionProps) {
   const [favorites, setFavorites] = useState<string[]>([]);
 
   const toggleFavorite = (id: string, event: React.MouseEvent) => {
     event.stopPropagation();
-    setFavorites(prev => 
-      prev.includes(id) 
-        ? prev.filter(fav => fav !== id)
-        : [...prev, id]
+    setFavorites((prev) =>
+      prev.includes(id) ? prev.filter((fav) => fav !== id) : [...prev, id],
     );
   };
 
@@ -42,10 +44,10 @@ export function DiscoverySection({ title, items, onItemClick }: DiscoverySection
   return (
     <div className="space-y-6">
       <h2 className="text-2xl font-semibold text-gray-900">{title}</h2>
-      
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {items.map((item) => (
-          <Card 
+          <Card
             key={item.id}
             className="group cursor-pointer border-0 shadow-none hover:shadow-lg transition-all duration-200"
             onClick={() => handleItemClick(item)}
@@ -66,28 +68,36 @@ export function DiscoverySection({ title, items, onItemClick }: DiscoverySection
                 }`}
                 onClick={(e) => toggleFavorite(item.id, e)}
               >
-                <Heart 
+                <Heart
                   className={`w-4 h-4 ${
-                    favorites.includes(item.id) || item.isFavorite ? 'fill-current' : ''
-                  }`} 
+                    favorites.includes(item.id) || item.isFavorite
+                      ? 'fill-current'
+                      : ''
+                  }`}
                 />
               </Button>
             </div>
-            
+
             <div className="pt-3 space-y-1">
               <div className="flex items-center justify-between">
-                <h3 className="font-medium text-gray-900 truncate">{item.name}</h3>
+                <h3 className="font-medium text-gray-900 truncate">
+                  {item.name}
+                </h3>
                 <div className="flex items-center gap-1 flex-shrink-0">
                   <Star className="w-4 h-4 fill-current text-yellow-400" />
                   <span className="text-sm font-medium">{item.rating}</span>
                 </div>
               </div>
-              
+
               <p className="text-sm text-gray-600">{item.category}</p>
-              <p className="text-sm text-gray-500">{item.reviewCount} avaliações</p>
-              
+              <p className="text-sm text-gray-500">
+                {item.reviewCount} avaliações
+              </p>
+
               <div className="pt-1">
-                <span className="font-semibold text-gray-900">{item.price}</span>
+                <span className="font-semibold text-gray-900">
+                  {item.price}
+                </span>
                 <span className="text-gray-600 text-sm"> por sessão</span>
               </div>
             </div>

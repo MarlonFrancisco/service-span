@@ -1,7 +1,7 @@
-import { Star, MapPin } from "lucide-react";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { ImageCarousel } from "../image-carousel";
+import { Star, MapPin } from 'lucide-react';
+import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { ImageCarousel } from '../image-carousel';
 
 interface ServiceCardProps {
   id: string;
@@ -27,7 +27,7 @@ export function ServiceCard({
   imageUrl,
   images,
   isSelected,
-  onClick
+  onClick,
 }: ServiceCardProps) {
   // Use images array if available, otherwise fallback to single imageUrl
   const allImages = images && images.length > 0 ? images : [imageUrl];
@@ -78,19 +78,13 @@ export function ServiceCard({
               </div>
             </div>
             <div className="text-right ml-4">
-              <div className="text-lg font-semibold text-gray-900">
-                {price}
-              </div>
-              <div className="text-sm text-gray-500">
-                por serviço
-              </div>
+              <div className="text-lg font-semibold text-gray-900">{price}</div>
+              <div className="text-sm text-gray-500">por serviço</div>
             </div>
           </div>
 
           <div className="flex justify-between items-center pt-4 border-t border-gray-100">
-            <div className="text-sm text-gray-600">
-              Disponível hoje
-            </div>
+            <div className="text-sm text-gray-600">Disponível hoje</div>
             <button className="text-sm font-medium text-black hover:underline">
               Ver detalhes
             </button>

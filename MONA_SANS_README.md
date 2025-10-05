@@ -9,6 +9,7 @@ A **Mona Sans** está configurada como a **fonte padrão** de todo o projeto web
 A fonte Mona Sans foi configurada com todas as variações disponíveis na pasta `static/`:
 
 ### Pesos (Weights)
+
 - **200** - ExtraLight
 - **300** - Light
 - **400** - Regular (padrão)
@@ -19,10 +20,12 @@ A fonte Mona Sans foi configurada com todas as variações disponíveis na pasta
 - **900** - Black
 
 ### Estilos (Styles)
+
 - **normal** - Estilo normal
 - **italic** - Estilo itálico
 
 ### Larguras (Widths)
+
 - **normal** - Largura padrão
 - **condensed** - Largura condensada
 - **expanded** - Largura expandida
@@ -30,12 +33,14 @@ A fonte Mona Sans foi configurada com todas as variações disponíveis na pasta
 ## 🎨 Classes CSS Disponíveis
 
 ### Classes Básicas
+
 ```css
 .font-mona-sans          /* Família Mona Sans */
 .font-mona-italic        /* Estilo itálico */
 ```
 
 ### Classes de Peso
+
 ```css
 .font-mona-200           /* ExtraLight */
 .font-mona-300           /* Light */
@@ -48,6 +53,7 @@ A fonte Mona Sans foi configurada com todas as variações disponíveis na pasta
 ```
 
 ### Classes de Largura
+
 ```css
 .font-mona-condensed     /* Condensada */
 .font-mona-condensed-400 /* Condensada Regular */
@@ -60,12 +66,14 @@ A fonte Mona Sans foi configurada com todas as variações disponíveis na pasta
 ## 🚀 Como Usar
 
 ### Uso Básico (Fonte Padrão)
+
 ```tsx
 <h1>Título com Mona Sans (automático)</h1>
 <p>Texto padrão com Mona Sans</p>
 ```
 
 ### Com Peso Específico
+
 ```tsx
 <h1 className="font-mona-600">Título SemiBold</h1>
 <p className="font-mona-400">Texto Regular</p>
@@ -73,18 +81,21 @@ A fonte Mona Sans foi configurada com todas as variações disponíveis na pasta
 ```
 
 ### Com Estilo Itálico
+
 ```tsx
 <p className="font-mona-italic">Texto em itálico</p>
 <em className="font-mona-500 font-mona-italic">Ênfase</em>
 ```
 
 ### Com Largura Condensada/Expandida
+
 ```tsx
 <h2 className="font-mona-condensed-700">Título Condensado</h2>
 <h2 className="font-mona-expanded-400">Título Expandido</h2>
 ```
 
 ### Combinação de Classes
+
 ```tsx
 <h1 className="font-mona-sans font-mona-800 font-mona-italic">
   Título Especial

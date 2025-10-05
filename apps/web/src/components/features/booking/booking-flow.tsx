@@ -1,11 +1,18 @@
-import { Check, AlertTriangle } from 'lucide-react'
-import { Button, Card } from '@repo/ui'
-import { ServiceSelectionStep, ProfessionalSelectionStep, DateTimeSelectionStep, CheckoutStep, BookingSidebar, BusinessShowcase } from './components'
-import { useBookingFlow } from './booking-flow.hook'
-import type { TBookingFlowConfig } from "./booking.types"
-import Image from 'next/image'
-import { Footer } from '@/components/layout'
-import Link from 'next/link'
+import { Check, AlertTriangle } from 'lucide-react';
+import { Button, Card } from '@repo/ui';
+import {
+  ServiceSelectionStep,
+  ProfessionalSelectionStep,
+  DateTimeSelectionStep,
+  CheckoutStep,
+  BookingSidebar,
+  BusinessShowcase,
+} from './components';
+import { useBookingFlow } from './booking-flow.hook';
+import type { TBookingFlowConfig } from './booking.types';
+import Image from 'next/image';
+import { Footer } from '@/components/layout';
+import Link from 'next/link';
 
 export const BookingFlow = ({
   businessName,
@@ -17,7 +24,7 @@ export const BookingFlow = ({
   businessReviewCount,
   businessCategory,
   businessDescription,
-  onBack
+  onBack,
 }: TBookingFlowConfig) => {
   const {
     currentStep,
@@ -38,8 +45,8 @@ export const BookingFlow = ({
     handleNextStep,
     handlePrevStep,
     handleFinishBooking,
-    setValidationError
-  } = useBookingFlow({ onBack })
+    setValidationError,
+  } = useBookingFlow({ onBack });
 
   const renderStepContent = () => {
     switch (currentStep) {
@@ -49,7 +56,7 @@ export const BookingFlow = ({
             selectedServices={selectedServices}
             onServicesChange={handleServicesChange}
           />
-        )
+        );
       case 'professional':
         return (
           <ProfessionalSelectionStep
@@ -59,7 +66,7 @@ export const BookingFlow = ({
             onProfessionalChange={handleProfessionalChange}
             onValidationError={setValidationError}
           />
-        )
+        );
       case 'datetime':
         return (
           <DateTimeSelectionStep
@@ -71,7 +78,7 @@ export const BookingFlow = ({
             onDateTimeChange={handleDateTimeChange}
             totalDuration={totalDuration}
           />
-        )
+        );
       case 'checkout':
         return (
           <CheckoutStep
@@ -84,11 +91,11 @@ export const BookingFlow = ({
             businessPhone={businessPhone}
             onFinishBooking={handleFinishBooking}
           />
-        )
+        );
       default:
-        return null
+        return null;
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -97,10 +104,13 @@ export const BookingFlow = ({
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
-              <Link
-                href="/"
-              >
-                <Image src="/logo.png" alt="ServiceSnap" width={200} height={200} />
+              <Link href="/">
+                <Image
+                  src="/logo.png"
+                  alt="ServiceSnap"
+                  width={200}
+                  height={200}
+                />
               </Link>
             </div>
 
@@ -108,22 +118,43 @@ export const BookingFlow = ({
             <div className="flex items-center gap-2">
               {steps.map((step, index) => (
                 <div key={step.id} className="flex items-center">
-                  <div className={`flex items-center gap-2 ${step.id === currentStep ? 'text-black' :
-                    index < currentStepIndex ? 'text-green-600' :
-                      'text-gray-400'
-                    }`}>
-                    <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-sm transition-colors ${step.id === currentStep ? 'border-black bg-black text-white' :
-                      index < currentStepIndex ? 'border-green-600 bg-green-600 text-white' :
-                        'border-gray-300 text-gray-400'
-                      }`}>
-                      {index < currentStepIndex ? <Check className="h-4 w-4" /> : step.number}
+                  <div
+                    className={`flex items-center gap-2 ${
+                      step.id === currentStep
+                        ? 'text-black'
+                        : index < currentStepIndex
+                          ? 'text-green-600'
+                          : 'text-gray-400'
+                    }`}
+                  >
+                    <div
+                      className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-sm transition-colors ${
+                        step.id === currentStep
+                          ? 'border-black bg-black text-white'
+                          : index < currentStepIndex
+                            ? 'border-green-600 bg-green-600 text-white'
+                            : 'border-gray-300 text-gray-400'
+                      }`}
+                    >
+                      {index < currentStepIndex ? (
+                        <Check className="h-4 w-4" />
+                      ) : (
+                        step.number
+                      )}
                     </div>
-                    <span className="text-sm hidden md:block">{step.title}</span>
+                    <span className="text-sm hidden md:block">
+                      {step.title}
+                    </span>
                   </div>
 
                   {index < steps.length - 1 && (
-                    <div className={`w-8 h-px mx-3 ${index < currentStepIndex ? 'bg-[#20b2aa]-600' : 'bg-gray-300'
-                      }`} />
+                    <div
+                      className={`w-8 h-px mx-3 ${
+                        index < currentStepIndex
+                          ? 'bg-[#20b2aa]-600'
+                          : 'bg-gray-300'
+                      }`}
+                    />
                   )}
                 </div>
               ))}
@@ -213,5 +244,5 @@ export const BookingFlow = ({
 
       <Footer />
     </div>
-  )
-}
+  );
+};

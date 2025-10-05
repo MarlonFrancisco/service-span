@@ -1,10 +1,16 @@
-import { MapPin, DollarSign, Star, Filter } from "lucide-react";
-import { Card } from "./ui/card";
-import { Label } from "./ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
-import { Slider } from "./ui/slider";
-import { Checkbox } from "./ui/checkbox";
-import { Button } from "./ui/button";
+import { MapPin, DollarSign, Star, Filter } from 'lucide-react';
+import { Card } from './ui/card';
+import { Label } from './ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from './ui/select';
+import { Slider } from './ui/slider';
+import { Checkbox } from './ui/checkbox';
+import { Button } from './ui/button';
 
 export function FiltersPanel() {
   return (
@@ -59,14 +65,16 @@ export function FiltersPanel() {
         <div className="space-y-4">
           <Label>Categoria</Label>
           <div className="space-y-3">
-            {["Beleza", "Saúde", "Fitness", "Educação", "Serviços Gerais"].map((category) => (
-              <div key={category} className="flex items-center space-x-2">
-                <Checkbox id={category} />
-                <Label htmlFor={category} className="text-sm cursor-pointer">
-                  {category}
-                </Label>
-              </div>
-            ))}
+            {['Beleza', 'Saúde', 'Fitness', 'Educação', 'Serviços Gerais'].map(
+              (category) => (
+                <div key={category} className="flex items-center space-x-2">
+                  <Checkbox id={category} />
+                  <Label htmlFor={category} className="text-sm cursor-pointer">
+                    {category}
+                  </Label>
+                </div>
+              ),
+            )}
           </div>
         </div>
       </Card>
@@ -81,9 +89,15 @@ export function FiltersPanel() {
             {[5, 4, 3].map((rating) => (
               <div key={rating} className="flex items-center space-x-2">
                 <Checkbox id={`rating-${rating}`} />
-                <Label htmlFor={`rating-${rating}`} className="flex items-center gap-1 text-sm cursor-pointer">
+                <Label
+                  htmlFor={`rating-${rating}`}
+                  className="flex items-center gap-1 text-sm cursor-pointer"
+                >
                   {Array.from({ length: rating }).map((_, i) => (
-                    <Star key={i} className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                    <Star
+                      key={i}
+                      className="h-3 w-3 fill-yellow-400 text-yellow-400"
+                    />
                   ))}
                   <span>& acima</span>
                 </Label>
@@ -93,8 +107,8 @@ export function FiltersPanel() {
         </div>
       </Card>
 
-      <Button 
-        variant="outline" 
+      <Button
+        variant="outline"
         className="w-full border-gray-300 text-gray-700 hover:bg-gray-50"
       >
         Limpar Filtros

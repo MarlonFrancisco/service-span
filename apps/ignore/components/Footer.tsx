@@ -1,4 +1,4 @@
-import { Facebook, Instagram, Twitter, Linkedin } from "lucide-react";
+import { Facebook, Instagram, Twitter, Linkedin } from 'lucide-react';
 
 interface FooterProps {
   onNavigate: (page: 'terms' | 'privacy' | 'help' | 'contact') => void;
@@ -13,25 +13,36 @@ export function Footer({ onNavigate }: FooterProps) {
           <div className="grid grid-cols-3 gap-8">
             {/* Empresa */}
             <div>
-              <h3 className="text-sm font-medium text-gray-900 mb-6">Empresa</h3>
+              <h3 className="text-sm font-medium text-gray-900 mb-6">
+                Empresa
+              </h3>
               <ul className="space-y-4">
                 <li>
-                  <a href="#" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
+                  <a
+                    href="#"
+                    className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
+                  >
                     Sobre nós
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
+                  <a
+                    href="#"
+                    className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
+                  >
                     Carreiras
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
+                  <a
+                    href="#"
+                    className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
+                  >
                     Blog
                   </a>
                 </li>
                 <li>
-                  <button 
+                  <button
                     onClick={() => onNavigate('contact')}
                     className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
                   >
@@ -43,10 +54,12 @@ export function Footer({ onNavigate }: FooterProps) {
 
             {/* Suporte */}
             <div>
-              <h3 className="text-sm font-medium text-gray-900 mb-6">Suporte</h3>
+              <h3 className="text-sm font-medium text-gray-900 mb-6">
+                Suporte
+              </h3>
               <ul className="space-y-4">
                 <li>
-                  <button 
+                  <button
                     onClick={() => onNavigate('help')}
                     className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
                   >
@@ -54,12 +67,15 @@ export function Footer({ onNavigate }: FooterProps) {
                   </button>
                 </li>
                 <li>
-                  <a href="#" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
+                  <a
+                    href="#"
+                    className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
+                  >
                     Como funciona
                   </a>
                 </li>
                 <li>
-                  <button 
+                  <button
                     onClick={() => onNavigate('privacy')}
                     className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
                   >
@@ -67,7 +83,7 @@ export function Footer({ onNavigate }: FooterProps) {
                   </button>
                 </li>
                 <li>
-                  <button 
+                  <button
                     onClick={() => onNavigate('terms')}
                     className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
                   >
@@ -79,25 +95,39 @@ export function Footer({ onNavigate }: FooterProps) {
 
             {/* Conecte-se */}
             <div>
-              <h3 className="text-sm font-medium text-gray-900 mb-6">Conecte-se</h3>
+              <h3 className="text-sm font-medium text-gray-900 mb-6">
+                Conecte-se
+              </h3>
               <ul className="space-y-4">
                 <li>
-                  <a href="#" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
+                  <a
+                    href="#"
+                    className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
+                  >
                     Facebook
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
+                  <a
+                    href="#"
+                    className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
+                  >
                     Instagram
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
+                  <a
+                    href="#"
+                    className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
+                  >
                     LinkedIn
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
+                  <a
+                    href="#"
+                    className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
+                  >
                     Twitter
                   </a>
                 </li>
@@ -107,9 +137,12 @@ export function Footer({ onNavigate }: FooterProps) {
 
           {/* Right Side - Newsletter */}
           <div>
-            <h3 className="text-sm font-medium text-gray-900 mb-2">Inscreva-se na nossa newsletter</h3>
+            <h3 className="text-sm font-medium text-gray-900 mb-2">
+              Inscreva-se na nossa newsletter
+            </h3>
             <p className="text-sm text-gray-600 mb-6">
-              Receba as últimas novidades sobre design, artigos, recursos e inspiração.
+              Receba as últimas novidades sobre design, artigos, recursos e
+              inspiração.
             </p>
             <div className="flex gap-3">
               <input
@@ -131,7 +164,9 @@ export function Footer({ onNavigate }: FooterProps) {
             <div className="w-6 h-6 bg-black rounded flex items-center justify-center mr-2">
               <div className="w-2 h-2 bg-white rounded-full"></div>
             </div>
-            <span className="text-lg font-semibold text-gray-900">ServiceSnap</span>
+            <span className="text-lg font-semibold text-gray-900">
+              ServiceSnap
+            </span>
           </div>
 
           {/* Copyright */}

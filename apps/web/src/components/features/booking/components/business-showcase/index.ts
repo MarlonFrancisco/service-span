@@ -1,2 +1,1 @@
-export { BusinessShowcase } from './business-showcase'
-
+export { BusinessShowcase } from './business-showcase';

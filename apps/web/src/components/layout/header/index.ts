@@ -1,2 +1,2 @@
-export { Header } from './header'
-export type { THeaderConfig } from './header.types'
+export { Header } from './header';
+export type { THeaderConfig } from './header.types';

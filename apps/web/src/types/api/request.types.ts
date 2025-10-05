@@ -1,1 +1,1 @@
-export type FetchingStatus = "idle" | "loading" | "success" | "error";
+export type FetchingStatus = 'idle' | 'loading' | 'success' | 'error';

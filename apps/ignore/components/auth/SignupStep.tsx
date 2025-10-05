@@ -1,9 +1,9 @@
-import { useState } from "react";
-import { ArrowLeft, User, Phone, Mail } from "lucide-react";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
-import { Checkbox } from "../ui/checkbox";
-import { AuthStep } from "../AuthModal";
+import { useState } from 'react';
+import { ArrowLeft, User, Phone, Mail } from 'lucide-react';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
+import { Checkbox } from '../ui/checkbox';
+import { AuthStep } from '../AuthModal';
 
 interface SignupStepProps {
   userData: {
@@ -23,22 +23,26 @@ export function SignupStep({ userData, onNext, onBack }: SignupStepProps) {
   const [isLoading, setIsLoading] = useState(false);
 
   const hasEmail = Boolean(userData.email);
-  const secondaryContactType = hasEmail ? 'Telefone (opcional)' : 'E-mail (opcional)';
-  const secondaryContactPlaceholder = hasEmail ? '(11) 99999-9999' : 'exemplo@email.com';
+  const secondaryContactType = hasEmail
+    ? 'Telefone (opcional)'
+    : 'E-mail (opcional)';
+  const secondaryContactPlaceholder = hasEmail
+    ? '(11) 99999-9999'
+    : 'exemplo@email.com';
 
   const handleComplete = async () => {
     if (!name.trim() || !acceptedTerms) return;
-    
+
     setIsLoading(true);
-    
+
     // Simular criação da conta
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
     setIsLoading(false);
-    
+
     onNext('profile-selection', {
       name: name.trim(),
-      [hasEmail ? 'phone' : 'email']: secondaryContact
+      [hasEmail ? 'phone' : 'email']: secondaryContact,
     });
   };
 
@@ -46,9 +50,9 @@ export function SignupStep({ userData, onNext, onBack }: SignupStepProps) {
     <div className="bg-white rounded-2xl overflow-hidden">
       {/* Header */}
       <div className="flex items-center gap-4 p-6 border-b border-gray-100">
-        <Button 
-          variant="ghost" 
-          size="sm" 
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={onBack}
           className="h-8 w-8 p-0 hover:bg-gray-100"
         >
@@ -85,7 +89,9 @@ export function SignupStep({ userData, onNext, onBack }: SignupStepProps) {
 
           {/* Contato secundário */}
           <div className="space-y-2">
-            <label className="text-sm text-gray-700">{secondaryContactType}</label>
+            <label className="text-sm text-gray-700">
+              {secondaryContactType}
+            </label>
             <div className="relative">
               <Input
                 type="text"
@@ -107,27 +113,32 @@ export function SignupStep({ userData, onNext, onBack }: SignupStepProps) {
           {/* Termos e Condições */}
           <div className="space-y-4">
             <div className="flex items-start space-x-3">
-              <Checkbox 
+              <Checkbox
                 id="terms"
                 checked={acceptedTerms}
-                onCheckedChange={(checked) => setAcceptedTerms(checked as boolean)}
+                onCheckedChange={(checked) =>
+                  setAcceptedTerms(checked as boolean)
+                }
                 className="mt-1"
               />
-              <label htmlFor="terms" className="text-sm text-gray-700 leading-relaxed cursor-pointer">
+              <label
+                htmlFor="terms"
+                className="text-sm text-gray-700 leading-relaxed cursor-pointer"
+              >
                 Eu aceito os{' '}
                 <button className="text-[#20b2aa] hover:underline font-medium">
                   Termos de Serviço
-                </button>
-                {' '}e a{' '}
+                </button>{' '}
+                e a{' '}
                 <button className="text-[#20b2aa] hover:underline font-medium">
                   Política de Privacidade
-                </button>
-                {' '}do ServiceSnap
+                </button>{' '}
+                do ServiceSnap
               </label>
             </div>
           </div>
 
-          <Button 
+          <Button
             onClick={handleComplete}
             disabled={!name.trim() || !acceptedTerms || isLoading}
             className="w-full bg-[#20b2aa] hover:bg-[#20b2aa]/90 text-white py-3 rounded-xl"
@@ -138,7 +149,9 @@ export function SignupStep({ userData, onNext, onBack }: SignupStepProps) {
 
         {/* Informações já verificadas */}
         <div className="bg-gray-50 rounded-xl p-4">
-          <p className="text-sm text-gray-600 mb-2">Informações já verificadas:</p>
+          <p className="text-sm text-gray-600 mb-2">
+            Informações já verificadas:
+          </p>
           <div className="space-y-1">
             {userData.email && (
               <div className="flex items-center gap-2 text-sm">

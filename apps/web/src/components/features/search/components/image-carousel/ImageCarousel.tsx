@@ -1,9 +1,9 @@
-import { useState } from "react";
-import { ChevronLeft, ChevronRight, Maximize2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { ImageWithFallback } from "../image-with-fallback";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { useState } from 'react';
+import { ChevronLeft, ChevronRight, Maximize2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { ImageWithFallback } from '../image-with-fallback';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
 
 interface ImageCarouselProps {
   images: string[];
@@ -11,25 +11,27 @@ interface ImageCarouselProps {
   className?: string;
   showCounter?: boolean;
   showFullscreenButton?: boolean;
-  aspectRatio?: "square" | "video" | "auto";
+  aspectRatio?: 'square' | 'video' | 'auto';
   rounded?: boolean;
 }
 
 export function ImageCarousel({
   images,
   alt,
-  className = "",
+  className = '',
   showCounter = true,
   showFullscreenButton = false,
-  aspectRatio = "auto",
-  rounded = true
+  aspectRatio = 'auto',
+  rounded = true,
 }: ImageCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFullscreenOpen, setIsFullscreenOpen] = useState(false);
 
   if (!images || images.length === 0) {
     return (
-      <div className={`bg-gray-200 flex items-center justify-center ${className}`}>
+      <div
+        className={`bg-gray-200 flex items-center justify-center ${className}`}
+      >
         <span className="text-gray-500 text-sm">Sem imagens</span>
       </div>
     );
@@ -49,18 +51,20 @@ export function ImageCarousel({
 
   const getAspectRatioClass = () => {
     switch (aspectRatio) {
-      case "square":
-        return "aspect-square";
-      case "video":
-        return "aspect-video";
+      case 'square':
+        return 'aspect-square';
+      case 'video':
+        return 'aspect-video';
       default:
-        return "aspect-[4/3]";
+        return 'aspect-[4/3]';
     }
   };
 
   return (
     <>
-      <div className={`relative overflow-hidden ${rounded ? 'rounded-xl' : ''} ${className}`}>
+      <div
+        className={`relative overflow-hidden ${rounded ? 'rounded-xl' : ''} ${className}`}
+      >
         {/* Main Image */}
         <div className={`relative bg-gray-200 ${getAspectRatioClass()}`}>
           <ImageWithFallback
@@ -94,7 +98,10 @@ export function ImageCarousel({
           {/* Counter Badge */}
           {showCounter && images.length > 1 && (
             <div className="absolute top-2 right-2">
-              <Badge variant="secondary" className="bg-black/60 text-white text-xs">
+              <Badge
+                variant="secondary"
+                className="bg-black/60 text-white text-xs"
+              >
                 {currentIndex + 1} / {images.length}
               </Badge>
             </div>
@@ -133,26 +140,28 @@ export function ImageCarousel({
         {/* Image Strip (for many images) */}
         {images.length > 10 && (
           <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1 max-w-[90%] overflow-hidden">
-            {images.slice(Math.max(0, currentIndex - 2), currentIndex + 3).map((image, index) => {
-              const actualIndex = Math.max(0, currentIndex - 2) + index;
-              return (
-                <button
-                  key={actualIndex}
-                  onClick={() => goToImage(actualIndex)}
-                  className={`w-8 h-8 rounded overflow-hidden flex-shrink-0 border-2 transition-all ${
-                    actualIndex === currentIndex
-                      ? 'border-white'
-                      : 'border-white/50 hover:border-white/70'
-                  }`}
-                >
-                  <ImageWithFallback
-                    src={image}
-                    alt={`Thumbnail ${actualIndex + 1}`}
-                    className="w-full h-full object-cover"
-                  />
-                </button>
-              );
-            })}
+            {images
+              .slice(Math.max(0, currentIndex - 2), currentIndex + 3)
+              .map((image, index) => {
+                const actualIndex = Math.max(0, currentIndex - 2) + index;
+                return (
+                  <button
+                    key={actualIndex}
+                    onClick={() => goToImage(actualIndex)}
+                    className={`w-8 h-8 rounded overflow-hidden flex-shrink-0 border-2 transition-all ${
+                      actualIndex === currentIndex
+                        ? 'border-white'
+                        : 'border-white/50 hover:border-white/70'
+                    }`}
+                  >
+                    <ImageWithFallback
+                      src={image}
+                      alt={`Thumbnail ${actualIndex + 1}`}
+                      className="w-full h-full object-cover"
+                    />
+                  </button>
+                );
+              })}
           </div>
         )}
       </div>

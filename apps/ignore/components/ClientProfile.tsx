@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState } from 'react';
 import {
   User,
   Star,
@@ -13,148 +13,130 @@ import {
   Clock,
   Briefcase,
   MessageCircle,
-} from "lucide-react";
-import { Button } from "./ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "./ui/card";
-import { Badge } from "./ui/badge";
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "./ui/avatar";
+} from 'lucide-react';
+import { Button } from './ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import { Badge } from './ui/badge';
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "./ui/select";
-import { Header } from "./Header";
+} from './ui/select';
+import { Header } from './Header';
 
 interface ClientProfileProps {
   onBack: () => void;
 }
 
-type ActiveSection =
-  | "about"
-  | "favorites"
-  | "bookings"
-  | "settings";
+type ActiveSection = 'about' | 'favorites' | 'bookings' | 'settings';
 
 export function ClientProfile({ onBack }: ClientProfileProps) {
-  const [activeSection, setActiveSection] =
-    useState<ActiveSection>("about");
+  const [activeSection, setActiveSection] = useState<ActiveSection>('about');
 
   const menuItems = [
     {
-      id: "about" as ActiveSection,
+      id: 'about' as ActiveSection,
       icon: User,
-      label: "Sobre Mim",
+      label: 'Sobre Mim',
     },
     {
-      id: "favorites" as ActiveSection,
+      id: 'favorites' as ActiveSection,
       icon: Star,
-      label: "Favoritos",
+      label: 'Favoritos',
     },
     {
-      id: "bookings" as ActiveSection,
+      id: 'bookings' as ActiveSection,
       icon: Calendar,
-      label: "Reservas",
+      label: 'Reservas',
     },
     {
-      id: "settings" as ActiveSection,
+      id: 'settings' as ActiveSection,
       icon: Settings,
-      label: "Configurações da Conta",
+      label: 'Configurações da Conta',
     },
   ];
 
   const mockFavorites = [
     {
-      id: "1",
-      name: "Salão Elegante",
+      id: '1',
+      name: 'Salão Elegante',
       rating: 4.9,
       reviewCount: 127,
-      address: "Rua das Flores, 123 - Centro",
+      address: 'Rua das Flores, 123 - Centro',
       imageUrl:
-        "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=300&h=200&fit=crop",
-      category: "Beleza",
+        'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=300&h=200&fit=crop',
+      category: 'Beleza',
     },
     {
-      id: "2",
-      name: "Studio Fitness Pro",
+      id: '2',
+      name: 'Studio Fitness Pro',
       rating: 4.8,
       reviewCount: 89,
-      address: "Av. Principal, 456 - Zona Sul",
+      address: 'Av. Principal, 456 - Zona Sul',
       imageUrl:
-        "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=300&h=200&fit=crop",
-      category: "Fitness",
+        'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=300&h=200&fit=crop',
+      category: 'Fitness',
     },
     {
-      id: "3",
-      name: "Clínica Dental Premium",
+      id: '3',
+      name: 'Clínica Dental Premium',
       rating: 5.0,
       reviewCount: 45,
-      address: "Rua da Saúde, 789 - Bairro Nobre",
+      address: 'Rua da Saúde, 789 - Bairro Nobre',
       imageUrl:
-        "https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=300&h=200&fit=crop",
-      category: "Saúde",
+        'https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=300&h=200&fit=crop',
+      category: 'Saúde',
     },
   ];
 
   const mockBookings = [
     {
-      id: "1",
-      businessName: "Salão Elegante",
-      service: "Corte + Escova",
-      date: "2024-10-15",
-      time: "14:30",
+      id: '1',
+      businessName: 'Salão Elegante',
+      service: 'Corte + Escova',
+      date: '2024-10-15',
+      time: '14:30',
       price: 85,
-      status: "confirmed",
+      status: 'confirmed',
       isPast: false,
     },
     {
-      id: "2",
-      businessName: "Studio Fitness Pro",
-      service: "Personal Training",
-      date: "2024-10-20",
-      time: "08:00",
+      id: '2',
+      businessName: 'Studio Fitness Pro',
+      service: 'Personal Training',
+      date: '2024-10-20',
+      time: '08:00',
       price: 120,
-      status: "confirmed",
+      status: 'confirmed',
       isPast: false,
     },
     {
-      id: "3",
-      businessName: "Spa Relax",
-      service: "Massagem Relaxante",
-      date: "2024-09-28",
-      time: "16:00",
+      id: '3',
+      businessName: 'Spa Relax',
+      service: 'Massagem Relaxante',
+      date: '2024-09-28',
+      time: '16:00',
       price: 150,
-      status: "completed",
+      status: 'completed',
       isPast: true,
     },
     {
-      id: "4",
-      businessName: "Clínica Dental Premium",
-      service: "Limpeza + Consulta",
-      date: "2024-09-15",
-      time: "10:30",
+      id: '4',
+      businessName: 'Clínica Dental Premium',
+      service: 'Limpeza + Consulta',
+      date: '2024-09-15',
+      time: '10:30',
       price: 200,
-      status: "completed",
+      status: 'completed',
       isPast: true,
     },
   ];
 
-  const futureBookings = mockBookings.filter(
-    (booking) => !booking.isPast,
-  );
-  const pastBookings = mockBookings.filter(
-    (booking) => booking.isPast,
-  );
+  const futureBookings = mockBookings.filter((booking) => !booking.isPast);
+  const pastBookings = mockBookings.filter((booking) => booking.isPast);
 
   const renderAboutSection = () => (
     <div className="space-y-12">
@@ -181,22 +163,16 @@ export function ClientProfile({ onBack }: ClientProfileProps) {
           <div className="text-2xl">4.9</div>
           <div className="flex items-center justify-center gap-1">
             <Star className="w-4 h-4 fill-current text-yellow-400" />
-            <span className="text-sm text-gray-600">
-              Avaliação
-            </span>
+            <span className="text-sm text-gray-600">Avaliação</span>
           </div>
         </div>
         <div className="space-y-2">
           <div className="text-2xl">42</div>
-          <div className="text-sm text-gray-600">
-            Agendamentos
-          </div>
+          <div className="text-sm text-gray-600">Agendamentos</div>
         </div>
         <div className="space-y-2">
           <div className="text-2xl">11</div>
-          <div className="text-sm text-gray-600">
-            Meses na plataforma
-          </div>
+          <div className="text-sm text-gray-600">Meses na plataforma</div>
         </div>
       </div>
 
@@ -231,36 +207,28 @@ export function ClientProfile({ onBack }: ClientProfileProps) {
             <div className="space-y-2">
               <div className="flex items-center gap-2">
                 <MapPin className="w-4 h-4 text-gray-400" />
-                <span className="text-sm text-gray-600">
-                  Mora em
-                </span>
+                <span className="text-sm text-gray-600">Mora em</span>
               </div>
               <p>São Paulo, SP</p>
             </div>
             <div className="space-y-2">
               <div className="flex items-center gap-2">
                 <Briefcase className="w-4 h-4 text-gray-400" />
-                <span className="text-sm text-gray-600">
-                  Meu trabalho
-                </span>
+                <span className="text-sm text-gray-600">Meu trabalho</span>
               </div>
               <p>Designer Gráfico</p>
             </div>
             <div className="space-y-2">
               <div className="flex items-center gap-2">
                 <MessageCircle className="w-4 h-4 text-gray-400" />
-                <span className="text-sm text-gray-600">
-                  Fala
-                </span>
+                <span className="text-sm text-gray-600">Fala</span>
               </div>
               <p>Português, Inglês, Espanhol</p>
             </div>
             <div className="space-y-2">
               <div className="flex items-center gap-2">
                 <Calendar className="w-4 h-4 text-gray-400" />
-                <span className="text-sm text-gray-600">
-                  Membro desde
-                </span>
+                <span className="text-sm text-gray-600">Membro desde</span>
               </div>
               <p>Janeiro de 2024</p>
             </div>
@@ -275,9 +243,7 @@ export function ClientProfile({ onBack }: ClientProfileProps) {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl mb-2">Listas de desejos</h1>
-          <p className="text-gray-600">
-            Empresas e serviços salvos por você
-          </p>
+          <p className="text-gray-600">Empresas e serviços salvos por você</p>
         </div>
         <Select defaultValue="recent">
           <SelectTrigger className="w-48">
@@ -285,15 +251,9 @@ export function ClientProfile({ onBack }: ClientProfileProps) {
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="recent">
-              Mais Recentes
-            </SelectItem>
-            <SelectItem value="nearest">
-              Mais Próximos
-            </SelectItem>
-            <SelectItem value="rating">
-              Melhor Avaliação
-            </SelectItem>
+            <SelectItem value="recent">Mais Recentes</SelectItem>
+            <SelectItem value="nearest">Mais Próximos</SelectItem>
+            <SelectItem value="rating">Melhor Avaliação</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -324,24 +284,15 @@ export function ClientProfile({ onBack }: ClientProfileProps) {
                   <div className="flex items-center gap-2 mb-2">
                     <div className="flex items-center gap-1 text-sm">
                       <Star className="w-4 h-4 fill-current text-yellow-400" />
-                      <span className="font-medium">
-                        {favorite.rating}
-                      </span>
+                      <span className="font-medium">{favorite.rating}</span>
                       <span className="text-gray-500">
                         ({favorite.reviewCount})
                       </span>
                     </div>
                   </div>
-                  <h3 className="font-medium text-gray-900">
-                    {favorite.name}
-                  </h3>
-                  <p className="text-sm text-gray-600">
-                    {favorite.address}
-                  </p>
-                  <Badge
-                    variant="secondary"
-                    className="text-xs mt-2"
-                  >
+                  <h3 className="font-medium text-gray-900">{favorite.name}</h3>
+                  <p className="text-sm text-gray-600">{favorite.address}</p>
+                  <Badge variant="secondary" className="text-xs mt-2">
                     {favorite.category}
                   </Badge>
                 </div>
@@ -352,11 +303,7 @@ export function ClientProfile({ onBack }: ClientProfileProps) {
                   >
                     Ver Agenda
                   </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="flex-1"
-                  >
+                  <Button size="sm" variant="outline" className="flex-1">
                     Agendar
                   </Button>
                 </div>
@@ -398,18 +345,14 @@ export function ClientProfile({ onBack }: ClientProfileProps) {
                       <h3 className="font-medium text-lg">
                         {booking.businessName}
                       </h3>
-                      <p className="text-gray-600">
-                        {booking.service}
-                      </p>
+                      <p className="text-gray-600">{booking.service}</p>
                       <p className="text-sm text-gray-500 mt-1">
-                        {new Date(
-                          booking.date,
-                        ).toLocaleDateString("pt-BR", {
-                          weekday: "long",
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                        })}{" "}
+                        {new Date(booking.date).toLocaleDateString('pt-BR', {
+                          weekday: 'long',
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                        })}{' '}
                         às {booking.time}
                       </p>
                     </div>
@@ -417,9 +360,7 @@ export function ClientProfile({ onBack }: ClientProfileProps) {
                       <Badge className="bg-[#20b2aa]/10 text-[#20b2aa] border-[#20b2aa]/20">
                         Confirmado
                       </Badge>
-                      <p className="font-medium">
-                        R$ {booking.price}
-                      </p>
+                      <p className="font-medium">R$ {booking.price}</p>
                     </div>
                     <div className="flex gap-2 pt-2">
                       <Button
@@ -429,11 +370,7 @@ export function ClientProfile({ onBack }: ClientProfileProps) {
                       >
                         Cancelar
                       </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="flex-1"
-                      >
+                      <Button size="sm" variant="outline" className="flex-1">
                         Reagendar
                       </Button>
                     </div>
@@ -447,9 +384,7 @@ export function ClientProfile({ onBack }: ClientProfileProps) {
 
       {/* Past Bookings */}
       <div className="space-y-6">
-        <h2 className="text-xl">
-          Onde você já esteve ({pastBookings.length})
-        </h2>
+        <h2 className="text-xl">Onde você já esteve ({pastBookings.length})</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {pastBookings.map((booking) => (
             <Card
@@ -462,31 +397,20 @@ export function ClientProfile({ onBack }: ClientProfileProps) {
                 </div>
                 <div className="p-4 space-y-3">
                   <div>
-                    <h3 className="font-medium">
-                      {booking.businessName}
-                    </h3>
-                    <p className="text-sm text-gray-600">
-                      {booking.service}
-                    </p>
+                    <h3 className="font-medium">{booking.businessName}</h3>
+                    <p className="text-sm text-gray-600">{booking.service}</p>
                     <p className="text-xs text-gray-500 mt-1">
-                      {new Date(
-                        booking.date,
-                      ).toLocaleDateString("pt-BR", {
-                        month: "short",
-                        year: "numeric",
+                      {new Date(booking.date).toLocaleDateString('pt-BR', {
+                        month: 'short',
+                        year: 'numeric',
                       })}
                     </p>
                   </div>
                   <div className="flex items-center justify-between">
-                    <Badge
-                      variant="secondary"
-                      className="text-xs"
-                    >
+                    <Badge variant="secondary" className="text-xs">
                       Concluído
                     </Badge>
-                    <p className="text-sm font-medium">
-                      R$ {booking.price}
-                    </p>
+                    <p className="text-sm font-medium">R$ {booking.price}</p>
                   </div>
                   <div className="flex gap-2 pt-2">
                     <Button
@@ -515,9 +439,7 @@ export function ClientProfile({ onBack }: ClientProfileProps) {
   const renderSettingsSection = () => (
     <div className="space-y-12">
       <div>
-        <h1 className="text-3xl mb-2">
-          Configurações da conta
-        </h1>
+        <h1 className="text-3xl mb-2">Configurações da conta</h1>
         <p className="text-gray-600">
           Gerencie suas preferências e configurações
         </p>
@@ -531,12 +453,9 @@ export function ClientProfile({ onBack }: ClientProfileProps) {
             <div className="border-b border-gray-200 pb-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-base">
-                    Lembretes de agendamento
-                  </h3>
+                  <h3 className="text-base">Lembretes de agendamento</h3>
                   <p className="text-sm text-gray-600">
-                    Receba notificações antes dos seus
-                    agendamentos
+                    Receba notificações antes dos seus agendamentos
                   </p>
                 </div>
                 <Button variant="outline" size="sm">
@@ -547,9 +466,7 @@ export function ClientProfile({ onBack }: ClientProfileProps) {
             <div className="border-b border-gray-200 pb-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-base">
-                    Promoções e ofertas
-                  </h3>
+                  <h3 className="text-base">Promoções e ofertas</h3>
                   <p className="text-sm text-gray-600">
                     Receba e-mails sobre promoções especiais
                   </p>
@@ -591,13 +508,13 @@ export function ClientProfile({ onBack }: ClientProfileProps) {
 
   const renderContent = () => {
     switch (activeSection) {
-      case "about":
+      case 'about':
         return renderAboutSection();
-      case "favorites":
+      case 'favorites':
         return renderFavoritesSection();
-      case "bookings":
+      case 'bookings':
         return renderBookingsSection();
-      case "settings":
+      case 'settings':
         return renderSettingsSection();
       default:
         return renderAboutSection();
@@ -624,14 +541,12 @@ export function ClientProfile({ onBack }: ClientProfileProps) {
                       onClick={() => setActiveSection(item.id)}
                       className={`w-full flex items-center gap-3 px-3 py-3 rounded-lg text-left transition-colors ${
                         isActive
-                          ? "bg-gray-100 text-gray-900"
-                          : "hover:bg-gray-50 text-gray-600"
+                          ? 'bg-gray-100 text-gray-900'
+                          : 'hover:bg-gray-50 text-gray-600'
                       }`}
                     >
                       <Icon className="w-4 h-4" />
-                      <span className="font-medium text-sm">
-                        {item.label}
-                      </span>
+                      <span className="font-medium text-sm">{item.label}</span>
                     </button>
                   );
                 })}

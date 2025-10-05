@@ -1,11 +1,23 @@
-import { MapPin, DollarSign, Star, Filter, X } from "lucide-react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
-import { Button } from "./ui/button";
-import { Label } from "./ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
-import { Slider } from "./ui/slider";
-import { Checkbox } from "./ui/checkbox";
-import { Separator } from "./ui/separator";
+import { MapPin, DollarSign, Star, Filter, X } from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from './ui/dialog';
+import { Button } from './ui/button';
+import { Label } from './ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from './ui/select';
+import { Slider } from './ui/slider';
+import { Checkbox } from './ui/checkbox';
+import { Separator } from './ui/separator';
 
 interface FiltersModalProps {
   children: React.ReactNode;
@@ -14,9 +26,7 @@ interface FiltersModalProps {
 export function FiltersModal({ children }: FiltersModalProps) {
   return (
     <Dialog>
-      <DialogTrigger asChild>
-        {children}
-      </DialogTrigger>
+      <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="max-w-md max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-[#1a2b4c]">
@@ -24,7 +34,7 @@ export function FiltersModal({ children }: FiltersModalProps) {
             Filtros
           </DialogTitle>
         </DialogHeader>
-        
+
         <div className="space-y-6 py-4">
           {/* Localização */}
           <div className="space-y-3">
@@ -39,7 +49,9 @@ export function FiltersModal({ children }: FiltersModalProps) {
               <SelectContent>
                 <SelectItem value="sao-paulo">São Paulo, SP</SelectItem>
                 <SelectItem value="rio-janeiro">Rio de Janeiro, RJ</SelectItem>
-                <SelectItem value="belo-horizonte">Belo Horizonte, MG</SelectItem>
+                <SelectItem value="belo-horizonte">
+                  Belo Horizonte, MG
+                </SelectItem>
                 <SelectItem value="brasilia">Brasília, DF</SelectItem>
               </SelectContent>
             </Select>
@@ -73,7 +85,13 @@ export function FiltersModal({ children }: FiltersModalProps) {
           <div className="space-y-3">
             <Label>Categoria</Label>
             <div className="space-y-3">
-              {["Beleza", "Saúde", "Fitness", "Educação", "Serviços Gerais"].map((category) => (
+              {[
+                'Beleza',
+                'Saúde',
+                'Fitness',
+                'Educação',
+                'Serviços Gerais',
+              ].map((category) => (
                 <div key={category} className="flex items-center space-x-2">
                   <Checkbox id={category} />
                   <Label htmlFor={category} className="text-sm cursor-pointer">
@@ -96,9 +114,15 @@ export function FiltersModal({ children }: FiltersModalProps) {
               {[5, 4, 3].map((rating) => (
                 <div key={rating} className="flex items-center space-x-2">
                   <Checkbox id={`rating-${rating}`} />
-                  <Label htmlFor={`rating-${rating}`} className="flex items-center gap-1 text-sm cursor-pointer">
+                  <Label
+                    htmlFor={`rating-${rating}`}
+                    className="flex items-center gap-1 text-sm cursor-pointer"
+                  >
                     {Array.from({ length: rating }).map((_, i) => (
-                      <Star key={i} className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                      <Star
+                        key={i}
+                        className="h-3 w-3 fill-yellow-400 text-yellow-400"
+                      />
                     ))}
                     <span>& acima</span>
                   </Label>
@@ -111,15 +135,13 @@ export function FiltersModal({ children }: FiltersModalProps) {
 
           {/* Botões */}
           <div className="flex gap-3 pt-4">
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               className="flex-1 border-[#20b2aa] text-[#20b2aa] hover:bg-[#20b2aa] hover:text-white"
             >
               Limpar Filtros
             </Button>
-            <Button 
-              className="flex-1 bg-[#1a2b4c] hover:bg-[#1a2b4c]/90 text-white"
-            >
+            <Button className="flex-1 bg-[#1a2b4c] hover:bg-[#1a2b4c]/90 text-white">
               Aplicar Filtros
             </Button>
           </div>

@@ -8,22 +8,21 @@ interface SmsReminderTemplateProps {
 }
 
 export function SmsReminderTemplate({
-  businessName = "Barbearia Silva",
-  unitName = "Centro",
-  serviceName = "Corte de Cabelo",
-  dateTime = "amanha as 14:30",
-  timing = "24h",
-  customMessage = ""
+  businessName = 'Barbearia Silva',
+  unitName = 'Centro',
+  serviceName = 'Corte de Cabelo',
+  dateTime = 'amanha as 14:30',
+  timing = '24h',
+  customMessage = '',
 }: SmsReminderTemplateProps) {
-  
   // Construir a mensagem base
   const baseMessage = `Lembrete: Seu ${serviceName} com ${businessName} (${unitName}) é ${dateTime}. Detalhes no email.`;
-  
+
   // Link curto para cancelar/reagendar
-  const linkMessage = " Link: agenda.x/c/abc123";
-  
+  const linkMessage = ' Link: agenda.x/c/abc123';
+
   // Mensagem completa
-  const fullMessage = customMessage 
+  const fullMessage = customMessage
     ? `${baseMessage} ${customMessage}${linkMessage}`
     : `${baseMessage}${linkMessage}`;
 
@@ -42,13 +41,15 @@ export function SmsReminderTemplate({
             <span>SMS • ServiceSnap</span>
             <div className="ml-auto text-xs">Agora</div>
           </div>
-          
+
           {/* Message Bubble */}
           <div className="space-y-2">
             <div className="bg-[#20b2aa] text-white p-3 rounded-2xl rounded-bl-md inline-block max-w-[85%] shadow-sm">
-              <p className="text-sm leading-relaxed whitespace-pre-wrap">{fullMessage}</p>
+              <p className="text-sm leading-relaxed whitespace-pre-wrap">
+                {fullMessage}
+              </p>
             </div>
-            
+
             {/* Message Status */}
             <div className="flex items-center gap-1 text-xs text-gray-400">
               <span>Entregue</span>
@@ -56,7 +57,7 @@ export function SmsReminderTemplate({
               <span>{timing} antes</span>
             </div>
           </div>
-          
+
           {/* Character Counter */}
           <div className="absolute bottom-2 right-2 text-xs text-gray-400">
             {fullMessage.length}/160
@@ -75,7 +76,8 @@ export function SmsReminderTemplate({
                 <span>Mensagem longa ({fullMessage.length} caracteres)</span>
               </p>
               <p className="text-red-500 text-xs">
-                Será enviada em {parts} partes. Custo: R$ {(parts * 0.10).toFixed(2)}
+                Será enviada em {parts} partes. Custo: R${' '}
+                {(parts * 0.1).toFixed(2)}
               </p>
             </div>
           ) : (
@@ -84,9 +86,7 @@ export function SmsReminderTemplate({
                 <span>✅</span>
                 <span>Dentro do limite ({fullMessage.length}/160)</span>
               </p>
-              <p className="text-green-500 text-xs">
-                1 SMS • Custo: R$ 0,10
-              </p>
+              <p className="text-green-500 text-xs">1 SMS • Custo: R$ 0,10</p>
             </div>
           )}
         </div>
@@ -97,19 +97,21 @@ export function SmsReminderTemplate({
             <span className="text-gray-600">Mensagem base:</span>
             <span className="text-gray-800">{baseMessage.length} chars</span>
           </div>
-          
+
           {customMessage && (
             <div className="flex justify-between">
               <span className="text-gray-600">Mensagem personalizada:</span>
-              <span className="text-gray-800">{customMessage.length} chars</span>
+              <span className="text-gray-800">
+                {customMessage.length} chars
+              </span>
             </div>
           )}
-          
+
           <div className="flex justify-between">
             <span className="text-gray-600">Link:</span>
             <span className="text-gray-800">{linkMessage.length} chars</span>
           </div>
-          
+
           <div className="border-t pt-2 flex justify-between font-medium">
             <span className="text-gray-700">Total:</span>
             <span className="text-gray-900">{fullMessage.length} chars</span>
@@ -118,18 +120,26 @@ export function SmsReminderTemplate({
 
         {/* Tips */}
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-          <p className="text-blue-800 text-xs mb-2">💡 <strong>Dicas para SMS eficaz:</strong></p>
+          <p className="text-blue-800 text-xs mb-2">
+            💡 <strong>Dicas para SMS eficaz:</strong>
+          </p>
           <ul className="text-blue-700 text-xs space-y-1 ml-4">
             <li>• Use abreviações quando possível</li>
             <li>• Mantenha a mensagem clara e direta</li>
             <li>• Inclua sempre um link para detalhes</li>
-            {isLongMessage && <li>• <strong>Considere encurtar a mensagem personalizada</strong></li>}
+            {isLongMessage && (
+              <li>
+                • <strong>Considere encurtar a mensagem personalizada</strong>
+              </li>
+            )}
           </ul>
         </div>
 
         {/* Preview Different Timings */}
         <div className="space-y-2">
-          <p className="text-xs text-gray-600 text-center">Como ficaria em outros horários:</p>
+          <p className="text-xs text-gray-600 text-center">
+            Como ficaria em outros horários:
+          </p>
           <div className="grid grid-cols-2 gap-2 text-xs">
             <div className="bg-gray-100 p-2 rounded text-center">
               <div className="text-gray-600">2h antes</div>

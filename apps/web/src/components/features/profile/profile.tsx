@@ -1,30 +1,39 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { User, Edit, Calendar, Heart, Settings, ArrowLeft, Camera } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Header } from '@/components/layout'
+import { useState } from 'react';
+import {
+  User,
+  Edit,
+  Calendar,
+  Heart,
+  Settings,
+  ArrowLeft,
+  Camera,
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Header } from '@/components/layout';
 
 export const Profile = () => {
-  const [isEditing, setIsEditing] = useState(false)
+  const [isEditing, setIsEditing] = useState(false);
 
   const handleBackToHome = () => {
-    window.history.back()
-  }
+    window.history.back();
+  };
 
   const mockUser = {
     name: 'Ana Silva',
     email: 'ana.silva@email.com',
     phone: '(11) 99999-9999',
-    avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=150&h=150&fit=crop&crop=face',
+    avatar:
+      'https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=150&h=150&fit=crop&crop=face',
     memberSince: 'Janeiro 2024',
     favoriteServices: ['Corte de cabelo', 'Manicure', 'Massagem'],
     upcomingAppointments: 3,
-    totalSpent: 'R$ 450,00'
-  }
+    totalSpent: 'R$ 450,00',
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -44,12 +53,16 @@ export const Profile = () => {
                 Voltar
               </Button>
               <div>
-                <h1 className="text-3xl font-semibold text-gray-900">Meu Perfil</h1>
-                <p className="text-gray-600">Gerencie suas informações pessoais</p>
+                <h1 className="text-3xl font-semibold text-gray-900">
+                  Meu Perfil
+                </h1>
+                <p className="text-gray-600">
+                  Gerencie suas informações pessoais
+                </p>
               </div>
             </div>
             <Button
-              variant={isEditing ? "default" : "outline"}
+              variant={isEditing ? 'default' : 'outline'}
               onClick={() => setIsEditing(!isEditing)}
               className="flex items-center gap-2"
             >
@@ -90,8 +103,12 @@ export const Profile = () => {
                   )}
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold text-gray-900">{mockUser.name}</h3>
-                  <p className="text-gray-600">Membro desde {mockUser.memberSince}</p>
+                  <h3 className="text-xl font-semibold text-gray-900">
+                    {mockUser.name}
+                  </h3>
+                  <p className="text-gray-600">
+                    Membro desde {mockUser.memberSince}
+                  </p>
                 </div>
               </div>
 
@@ -142,11 +159,15 @@ export const Profile = () => {
               <CardContent className="space-y-4">
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600">Agendamentos futuros</span>
-                  <Badge variant="secondary">{mockUser.upcomingAppointments}</Badge>
+                  <Badge variant="secondary">
+                    {mockUser.upcomingAppointments}
+                  </Badge>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600">Total gasto</span>
-                  <span className="font-semibold text-gray-900">{mockUser.totalSpent}</span>
+                  <span className="font-semibold text-gray-900">
+                    {mockUser.totalSpent}
+                  </span>
                 </div>
               </CardContent>
             </Card>
@@ -162,7 +183,10 @@ export const Profile = () => {
               <CardContent>
                 <div className="space-y-2">
                   {mockUser.favoriteServices.map((service, index) => (
-                    <div key={index} className="flex items-center gap-2 p-2 bg-gray-50 rounded-lg">
+                    <div
+                      key={index}
+                      className="flex items-center gap-2 p-2 bg-gray-50 rounded-lg"
+                    >
                       <Heart className="w-4 h-4 text-red-500 fill-current" />
                       <span className="text-sm text-gray-700">{service}</span>
                     </div>
@@ -188,7 +212,10 @@ export const Profile = () => {
                   <Settings className="w-4 h-4 mr-2" />
                   Preferências
                 </Button>
-                <Button variant="outline" className="w-full justify-start text-red-600 hover:text-red-700">
+                <Button
+                  variant="outline"
+                  className="w-full justify-start text-red-600 hover:text-red-700"
+                >
                   Sair da conta
                 </Button>
               </CardContent>
@@ -197,5 +224,5 @@ export const Profile = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};

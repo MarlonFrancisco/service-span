@@ -1,5 +1,12 @@
-import { Calendar, Clock, TrendingUp, Users, Star, DollarSign } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import {
+  Calendar,
+  Clock,
+  TrendingUp,
+  Users,
+  Star,
+  DollarSign,
+} from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 
 interface Store {
   id: string;
@@ -19,7 +26,7 @@ export function DashboardOverview({ activeStore }: DashboardOverviewProps) {
     monthlyTotal: 147,
     averageRating: 4.7,
     pendingBookings: 3,
-    completedToday: 5
+    completedToday: 5,
   };
 
   const recentActivity = [
@@ -28,22 +35,22 @@ export function DashboardOverview({ activeStore }: DashboardOverviewProps) {
       type: 'booking',
       message: 'Novo agendamento - Maria Silva',
       time: '2 min atrás',
-      status: 'new'
+      status: 'new',
     },
     {
       id: 2,
       type: 'completion',
       message: 'Serviço concluído - João Santos',
       time: '15 min atrás',
-      status: 'completed'
+      status: 'completed',
     },
     {
       id: 3,
       type: 'cancellation',
       message: 'Cancelamento - Ana Costa',
       time: '1h atrás',
-      status: 'cancelled'
-    }
+      status: 'cancelled',
+    },
   ];
 
   return (
@@ -56,11 +63,17 @@ export function DashboardOverview({ activeStore }: DashboardOverviewProps) {
             <Calendar className="h-4 w-4 text-[#20b2aa]" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl text-[#1a2b4c]">{storeMetrics.todayAppointments}</div>
+            <div className="text-2xl text-[#1a2b4c]">
+              {storeMetrics.todayAppointments}
+            </div>
             <div className="text-xs text-gray-600 flex items-center gap-1 mt-1">
-              <span className="text-[#20b2aa]">{storeMetrics.completedToday} concluídos</span>
+              <span className="text-[#20b2aa]">
+                {storeMetrics.completedToday} concluídos
+              </span>
               <span>•</span>
-              <span className="text-orange-500">{storeMetrics.pendingBookings} pendentes</span>
+              <span className="text-orange-500">
+                {storeMetrics.pendingBookings} pendentes
+              </span>
             </div>
           </CardContent>
         </Card>
@@ -71,7 +84,9 @@ export function DashboardOverview({ activeStore }: DashboardOverviewProps) {
             <DollarSign className="h-4 w-4 text-green-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl text-[#1a2b4c]">R$ {storeMetrics.weeklyRevenue.toLocaleString()}</div>
+            <div className="text-2xl text-[#1a2b4c]">
+              R$ {storeMetrics.weeklyRevenue.toLocaleString()}
+            </div>
             <p className="text-xs text-green-600 flex items-center">
               <TrendingUp className="h-3 w-3 mr-1" />
               +18% vs semana anterior
@@ -85,7 +100,9 @@ export function DashboardOverview({ activeStore }: DashboardOverviewProps) {
             <Star className="h-4 w-4 text-yellow-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl text-[#1a2b4c]">{storeMetrics.averageRating}</div>
+            <div className="text-2xl text-[#1a2b4c]">
+              {storeMetrics.averageRating}
+            </div>
             <p className="text-xs text-gray-600">23 avaliações esta semana</p>
           </CardContent>
         </Card>
@@ -100,11 +117,19 @@ export function DashboardOverview({ activeStore }: DashboardOverviewProps) {
           <CardContent>
             <div className="space-y-4">
               {recentActivity.map((activity) => (
-                <div key={activity.id} className="flex items-start gap-3 p-3 rounded-lg bg-gray-50">
-                  <div className={`w-2 h-2 rounded-full mt-2 ${
-                    activity.status === 'new' ? 'bg-[#20b2aa]' :
-                    activity.status === 'completed' ? 'bg-green-500' : 'bg-red-500'
-                  }`}></div>
+                <div
+                  key={activity.id}
+                  className="flex items-start gap-3 p-3 rounded-lg bg-gray-50"
+                >
+                  <div
+                    className={`w-2 h-2 rounded-full mt-2 ${
+                      activity.status === 'new'
+                        ? 'bg-[#20b2aa]'
+                        : activity.status === 'completed'
+                          ? 'bg-green-500'
+                          : 'bg-red-500'
+                    }`}
+                  ></div>
                   <div className="flex-1">
                     <p className="text-sm text-gray-900">{activity.message}</p>
                     <p className="text-xs text-gray-500">{activity.time}</p>
@@ -117,7 +142,9 @@ export function DashboardOverview({ activeStore }: DashboardOverviewProps) {
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-[#1a2b4c]">Próximos Agendamentos</CardTitle>
+            <CardTitle className="text-[#1a2b4c]">
+              Próximos Agendamentos
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
@@ -133,7 +160,7 @@ export function DashboardOverview({ activeStore }: DashboardOverviewProps) {
                   Em 30min
                 </span>
               </div>
-              
+
               <div className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
                 <div className="flex items-center gap-3">
                   <Clock className="h-4 w-4 text-[#20b2aa]" />
@@ -154,14 +181,18 @@ export function DashboardOverview({ activeStore }: DashboardOverviewProps) {
       {/* Performance Chart Placeholder */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-[#1a2b4c]">Desempenho - Últimos 7 dias</CardTitle>
+          <CardTitle className="text-[#1a2b4c]">
+            Desempenho - Últimos 7 dias
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="h-64 flex items-center justify-center bg-gray-50 rounded-lg">
             <div className="text-center text-gray-500">
               <TrendingUp className="h-8 w-8 mx-auto mb-2" />
               <p className="text-sm">Gráfico de desempenho</p>
-              <p className="text-xs">Agendamentos e receita dos últimos 7 dias</p>
+              <p className="text-xs">
+                Agendamentos e receita dos últimos 7 dias
+              </p>
             </div>
           </div>
         </CardContent>

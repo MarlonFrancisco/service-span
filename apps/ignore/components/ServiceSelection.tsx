@@ -1,7 +1,7 @@
-import { Plus, Minus, Clock, DollarSign } from "lucide-react";
-import { Card } from "./ui/card";
-import { Button } from "./ui/button";
-import { Badge } from "./ui/badge";
+import { Plus, Minus, Clock, DollarSign } from 'lucide-react';
+import { Card } from './ui/card';
+import { Button } from './ui/button';
+import { Badge } from './ui/badge';
 
 interface Service {
   id: string;
@@ -19,36 +19,39 @@ interface ServiceSelectionProps {
 
 const mockServices: Service[] = [
   {
-    id: "1",
-    name: "Corte Masculino",
-    description: "Corte moderno com acabamento",
+    id: '1',
+    name: 'Corte Masculino',
+    description: 'Corte moderno com acabamento',
     duration: 45,
-    price: 80
+    price: 80,
   },
   {
-    id: "2", 
-    name: "Barba",
-    description: "Aparar e modelar barba",
+    id: '2',
+    name: 'Barba',
+    description: 'Aparar e modelar barba',
     duration: 30,
-    price: 50
+    price: 50,
   },
   {
-    id: "3",
-    name: "Lavagem + Corte",
-    description: "Lavagem completa com corte",
+    id: '3',
+    name: 'Lavagem + Corte',
+    description: 'Lavagem completa com corte',
     duration: 60,
-    price: 120
+    price: 120,
   },
   {
-    id: "4",
-    name: "Tratamento Capilar",
-    description: "Hidratação e nutrição dos fios",
+    id: '4',
+    name: 'Tratamento Capilar',
+    description: 'Hidratação e nutrição dos fios',
     duration: 90,
-    price: 180
-  }
+    price: 180,
+  },
 ];
 
-export function ServiceSelection({ selectedServices, onServiceChange }: ServiceSelectionProps) {
+export function ServiceSelection({
+  selectedServices,
+  onServiceChange,
+}: ServiceSelectionProps) {
   const handleQuantityChange = (serviceId: string, change: number) => {
     const currentQuantity = selectedServices[serviceId] || 0;
     const newQuantity = Math.max(0, currentQuantity + change);
@@ -58,8 +61,12 @@ export function ServiceSelection({ selectedServices, onServiceChange }: ServiceS
   return (
     <div className="space-y-4">
       <div className="mb-6">
-        <h3 className="text-xl font-semibold text-gray-900 mb-2">Selecione os Serviços</h3>
-        <p className="text-gray-600">Escolha um ou mais serviços para sua reserva</p>
+        <h3 className="text-xl font-semibold text-gray-900 mb-2">
+          Selecione os Serviços
+        </h3>
+        <p className="text-gray-600">
+          Escolha um ou mais serviços para sua reserva
+        </p>
       </div>
 
       <div className="space-y-3">
@@ -68,8 +75,8 @@ export function ServiceSelection({ selectedServices, onServiceChange }: ServiceS
           const isSelected = quantity > 0;
 
           return (
-            <Card 
-              key={service.id} 
+            <Card
+              key={service.id}
               className={`p-4 transition-all ${
                 isSelected ? 'border-black bg-black/5' : 'border-gray-200'
               }`}
@@ -77,14 +84,18 @@ export function ServiceSelection({ selectedServices, onServiceChange }: ServiceS
               <div className="flex justify-between items-start">
                 <div className="flex-1">
                   <div className="flex items-start justify-between mb-2">
-                    <h4 className="font-semibold text-gray-900">{service.name}</h4>
+                    <h4 className="font-semibold text-gray-900">
+                      {service.name}
+                    </h4>
                     <Badge className="bg-black text-white ml-2">
                       R$ {service.price}
                     </Badge>
                   </div>
-                  
-                  <p className="text-gray-600 text-sm mb-3">{service.description}</p>
-                  
+
+                  <p className="text-gray-600 text-sm mb-3">
+                    {service.description}
+                  </p>
+
                   <div className="flex items-center gap-4 text-sm text-gray-500">
                     <div className="flex items-center gap-1">
                       <Clock className="h-3 w-3" />
@@ -96,7 +107,7 @@ export function ServiceSelection({ selectedServices, onServiceChange }: ServiceS
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center gap-2 ml-4">
                   <Button
                     variant="outline"
@@ -107,9 +118,9 @@ export function ServiceSelection({ selectedServices, onServiceChange }: ServiceS
                   >
                     <Minus className="h-3 w-3" />
                   </Button>
-                  
+
                   <span className="w-8 text-center text-sm">{quantity}</span>
-                  
+
                   <Button
                     variant="outline"
                     size="sm"

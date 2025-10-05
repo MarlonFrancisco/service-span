@@ -1,3 +1,3 @@
-import type { ButtonHTMLAttributes } from 'react'
+import type { ButtonHTMLAttributes } from 'react';
 
-export type THeaderConfig = ButtonHTMLAttributes<HTMLElement>
+export type THeaderConfig = ButtonHTMLAttributes<HTMLElement>;

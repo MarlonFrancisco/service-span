@@ -1,10 +1,10 @@
-import { useState } from "react";
-import { AirbnbHeader } from "./AirbnbHeader";
-import { FiltersModal } from "./FiltersModal";
-import { ResultsList } from "./ResultsList";
-import { ServicePreview } from "./ServicePreview";
-import { AuthModal, UserType } from "./AuthModal";
-import { Footer } from "./Footer";
+import { useState } from 'react';
+import { AirbnbHeader } from './AirbnbHeader';
+import { FiltersModal } from './FiltersModal';
+import { ResultsList } from './ResultsList';
+import { ServicePreview } from './ServicePreview';
+import { AuthModal, UserType } from './AuthModal';
+import { Footer } from './Footer';
 
 interface Service {
   id: string;
@@ -45,7 +45,7 @@ export function SearchResultsNew({
     setUserType(selectedUserType);
     setIsLoggedIn(true);
 
-    if (selectedUserType === "provider" && onGoToDashboard) {
+    if (selectedUserType === 'provider' && onGoToDashboard) {
       onGoToDashboard();
     }
   };
@@ -57,7 +57,7 @@ export function SearchResultsNew({
 
   const handleSearch = () => {
     // Lógica de busca pode ser implementada aqui
-    console.log("Search triggered");
+    console.log('Search triggered');
   };
 
   return (
@@ -103,7 +103,7 @@ export function SearchResultsNew({
         onClose={() => setIsAuthModalOpen(false)}
         onLoginSuccess={handleLoginSuccess}
       />
-      
+
       <Footer onNavigate={onNavigate} />
     </div>
   );

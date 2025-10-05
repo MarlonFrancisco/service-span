@@ -1,2 +1,1 @@
-export { CheckoutStep } from './checkout-step'
-
+export { CheckoutStep } from './checkout-step';

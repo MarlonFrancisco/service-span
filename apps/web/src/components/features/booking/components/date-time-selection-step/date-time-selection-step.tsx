@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
-import { Calendar, Clock } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Calendar as CalendarComponent } from "@repo/ui";
-import { SelectedService, Professional } from "./BookingSidebar";
+import { useState, useEffect } from 'react';
+import { Calendar, Clock } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Calendar as CalendarComponent } from '@repo/ui';
+import { SelectedService, Professional } from './BookingSidebar';
 
 export interface TimeSlot {
   time: string;
@@ -28,7 +28,7 @@ export function DateTimeSelectionStep({
   selectedDate,
   selectedTime,
   onDateTimeChange,
-  totalDuration
+  totalDuration,
 }: DateTimeSelectionStepProps) {
   const [availableSlots, setAvailableSlots] = useState<TimeSlot[]>([]);
   const [isLoadingSlots, setIsLoadingSlots] = useState(false);
@@ -39,19 +39,31 @@ export function DateTimeSelectionStep({
     const dayOfWeek = date.getDay(); // 0 = domingo, 6 = sábado
 
     // Horários básicos da semana
-    const weekdayHours = ['09:00', '10:00', '11:00', '14:00', '15:00', '16:00', '17:00'];
+    const weekdayHours = [
+      '09:00',
+      '10:00',
+      '11:00',
+      '14:00',
+      '15:00',
+      '16:00',
+      '17:00',
+    ];
     const weekendHours = ['09:00', '10:00', '11:00', '12:00', '14:00', '15:00'];
 
-    const hours = dayOfWeek === 0 || dayOfWeek === 6 ? weekendHours : weekdayHours;
+    const hours =
+      dayOfWeek === 0 || dayOfWeek === 6 ? weekendHours : weekdayHours;
 
-    hours.forEach(time => {
+    hours.forEach((time) => {
       // Simular disponibilidade aleatória
       const isAvailable = Math.random() > 0.3; // 70% de chance de estar disponível
 
       slots.push({
         time,
         available: isAvailable,
-        price: selectedServices.reduce((total, service) => total + service.price, 0)
+        price: selectedServices.reduce(
+          (total, service) => total + service.price,
+          0,
+        ),
       });
     });
 
@@ -87,7 +99,9 @@ export function DateTimeSelectionStep({
     }
     const hours = Math.floor(minutes / 60);
     const remainingMinutes = minutes % 60;
-    return remainingMinutes > 0 ? `${hours}h ${remainingMinutes}min` : `${hours}h`;
+    return remainingMinutes > 0
+      ? `${hours}h ${remainingMinutes}min`
+      : `${hours}h`;
   };
 
   const formatDate = (date: Date) => {
@@ -95,14 +109,14 @@ export function DateTimeSelectionStep({
       weekday: 'long',
       year: 'numeric',
       month: 'long',
-      day: 'numeric'
+      day: 'numeric',
     }).format(date);
   };
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
-      currency: 'BRL'
+      currency: 'BRL',
     }).format(price);
   };
 
@@ -119,7 +133,8 @@ export function DateTimeSelectionStep({
       <div>
         <h2 className="text-xl text-[#1a2b4c] mb-2">Escolha data e horário</h2>
         <p className="text-gray-600">
-          Selecione quando deseja realizar {selectedServices.length > 1 ? 'os serviços' : 'o serviço'}
+          Selecione quando deseja realizar{' '}
+          {selectedServices.length > 1 ? 'os serviços' : 'o serviço'}
         </p>
       </div>
 
@@ -128,14 +143,21 @@ export function DateTimeSelectionStep({
         <div className="flex items-center gap-4 text-sm">
           <div className="flex items-center gap-2">
             <Clock className="h-4 w-4 text-[black]" />
-            <span>Duração total: <strong>{formatDuration(totalDuration)}</strong></span>
+            <span>
+              Duração total: <strong>{formatDuration(totalDuration)}</strong>
+            </span>
           </div>
 
           {(selectedProfessional || isAnyProfessional) && (
             <div className="flex items-center gap-2">
-              <span>Com: <strong>
-                {isAnyProfessional ? 'Qualquer profissional' : selectedProfessional?.name}
-              </strong></span>
+              <span>
+                Com:{' '}
+                <strong>
+                  {isAnyProfessional
+                    ? 'Qualquer profissional'
+                    : selectedProfessional?.name}
+                </strong>
+              </span>
             </div>
           )}
         </div>
@@ -191,18 +213,20 @@ export function DateTimeSelectionStep({
                 </div>
               ) : (
                 <div className="grid grid-cols-2 gap-2">
-                  {availableSlots.map(slot => (
+                  {availableSlots.map((slot) => (
                     <Button
                       key={slot.time}
-                      variant={selectedTime === slot.time ? "default" : "outline"}
+                      variant={
+                        selectedTime === slot.time ? 'default' : 'outline'
+                      }
                       disabled={!slot.available}
                       onClick={() => handleTimeSelect(slot.time)}
                       className={`p-3 h-auto flex flex-col ${
                         selectedTime === slot.time
-                          ? "bg-[black] hover:bg-[black]/90 text-white"
+                          ? 'bg-[black] hover:bg-[black]/90 text-white'
                           : slot.available
-                          ? "border-gray-300 text-gray-700 hover:bg-gray-50"
-                          : "border-gray-200 text-gray-400 cursor-not-allowed"
+                            ? 'border-gray-300 text-gray-700 hover:bg-gray-50'
+                            : 'border-gray-200 text-gray-400 cursor-not-allowed'
                       }`}
                     >
                       <span className="font-medium">{slot.time}</span>
@@ -225,11 +249,24 @@ export function DateTimeSelectionStep({
         <Card className="p-4 bg-[black]/10 border-[black]/20">
           <h4 className="text-[#1a2b4c] mb-2">Agendamento selecionado:</h4>
           <div className="space-y-1 text-sm">
-            <p><strong>Data:</strong> {formatDate(selectedDate)}</p>
-            <p><strong>Horário:</strong> {selectedTime}</p>
-            <p><strong>Duração:</strong> {formatDuration(totalDuration)}</p>
-            {availableSlots.find(slot => slot.time === selectedTime)?.price && (
-              <p><strong>Valor total:</strong> {formatPrice(availableSlots.find(slot => slot.time === selectedTime)!.price!)}</p>
+            <p>
+              <strong>Data:</strong> {formatDate(selectedDate)}
+            </p>
+            <p>
+              <strong>Horário:</strong> {selectedTime}
+            </p>
+            <p>
+              <strong>Duração:</strong> {formatDuration(totalDuration)}
+            </p>
+            {availableSlots.find((slot) => slot.time === selectedTime)
+              ?.price && (
+              <p>
+                <strong>Valor total:</strong>{' '}
+                {formatPrice(
+                  availableSlots.find((slot) => slot.time === selectedTime)!
+                    .price!,
+                )}
+              </p>
             )}
           </div>
         </Card>

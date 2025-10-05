@@ -1,2 +1,1 @@
-export { ServiceCard } from './ServiceCard'
-
+export { ServiceCard } from './ServiceCard';

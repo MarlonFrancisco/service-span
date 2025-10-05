@@ -12,12 +12,12 @@ O ranqueamento é um processo de duas fases: **Filtro de Elegibilidade** e **Pon
 
 Antes de serem ranqueadas, as empresas devem atender a critérios obrigatórios. Empresas que não atenderem a qualquer um destes filtros **não serão exibidas** no resultado da busca do cliente, independentemente do seu Plano de Assinatura.
 
-| Filtro | Requisito de Elegibilidade |
-| :--- | :--- |
+| Filtro              | Requisito de Elegibilidade                                                                          |
+| :------------------ | :-------------------------------------------------------------------------------------------------- |
 | **Status do Plano** | A empresa deve ter um plano de assinatura (**Standard, Premium ou Business**) com status **Ativo**. |
-| **Disponibilidade** | A empresa/profissional deve ter **horários disponíveis** na data e hora solicitadas pelo cliente. |
-| **Localização** | A **Unidade (Loja)** da empresa deve estar dentro do raio de busca do cliente. |
-| **Serviços** | A empresa deve oferecer pelo menos **um dos serviços** ou pertencer à **categoria** buscada. |
+| **Disponibilidade** | A empresa/profissional deve ter **horários disponíveis** na data e hora solicitadas pelo cliente.   |
+| **Localização**     | A **Unidade (Loja)** da empresa deve estar dentro do raio de busca do cliente.                      |
+| **Serviços**        | A empresa deve oferecer pelo menos **um dos serviços** ou pertencer à **categoria** buscada.        |
 
 ---
 
@@ -29,22 +29,22 @@ As empresas que passarem pelos filtros primários serão ordenadas com base em u
 
 O nível de assinatura é o fator de maior peso, garantindo que o investimento nos planos superiores se traduza em maior visibilidade. A busca sempre agrupará e exibirá primeiro as empresas com planos mais altos.
 
-| Plano | Prioridade de Exibição (Tier) | Benefício de Ranqueamento |
-| :--- | :--- | :--- |
-| **Business** | **Tier 1 (Máxima)** | Empresas Business **sempre** aparecerão no topo da lista, acima de todos os outros planos. |
-| **Premium** | **Tier 2 (Alta)** | Empresas Premium aparecerão logo abaixo das Business, e acima de todas as Standard. |
-| **Standard** | **Tier 3 (Padrão)** | Empresas Standard aparecerão na parte inferior dos resultados, ordenadas apenas pelos fatores de qualidade abaixo. |
+| Plano        | Prioridade de Exibição (Tier) | Benefício de Ranqueamento                                                                                          |
+| :----------- | :---------------------------- | :----------------------------------------------------------------------------------------------------------------- |
+| **Business** | **Tier 1 (Máxima)**           | Empresas Business **sempre** aparecerão no topo da lista, acima de todos os outros planos.                         |
+| **Premium**  | **Tier 2 (Alta)**             | Empresas Premium aparecerão logo abaixo das Business, e acima de todas as Standard.                                |
+| **Standard** | **Tier 3 (Padrão)**           | Empresas Standard aparecerão na parte inferior dos resultados, ordenadas apenas pelos fatores de qualidade abaixo. |
 
 #### B. Fatores de Qualidade (Critérios de Desempate Interno)
 
 Dentro de um mesmo Tier de plano (ex: todas as empresas Business), o desempate e a ordenação interna serão determinados por estes fatores, na ordem de peso:
 
-| Fator de Qualidade | Detalhe e Peso no Ranqueamento |
-| :--- | :--- |
-| **1. Avaliação Média (Estrelas)** | **Maior Peso:** A média de estrelas dada pelos clientes (Ex: 4.8 ranqueia antes de 4.5). O volume total de avaliações também é considerado. |
-| **2. Proximidade (Distância)** | A **proximidade física** da unidade (loja) em relação ao ponto de busca do cliente. Empresas mais próximas são priorizadas. |
-| **3. Taxa de Confiabilidade (Baixo *No-Show*)** | Prioriza empresas com um histórico baixo de **cancelamentos próprios** e de não comparecimento (*no-show*) dos clientes. |
-| **4. Detalhamento do Perfil** | **Menor Peso:** Critério de desempate. Pontua empresas que têm o perfil 100% completo (fotos, descrição, horários definidos). |
+| Fator de Qualidade                              | Detalhe e Peso no Ranqueamento                                                                                                              |
+| :---------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------ |
+| **1. Avaliação Média (Estrelas)**               | **Maior Peso:** A média de estrelas dada pelos clientes (Ex: 4.8 ranqueia antes de 4.5). O volume total de avaliações também é considerado. |
+| **2. Proximidade (Distância)**                  | A **proximidade física** da unidade (loja) em relação ao ponto de busca do cliente. Empresas mais próximas são priorizadas.                 |
+| **3. Taxa de Confiabilidade (Baixo _No-Show_)** | Prioriza empresas com um histórico baixo de **cancelamentos próprios** e de não comparecimento (_no-show_) dos clientes.                    |
+| **4. Detalhamento do Perfil**                   | **Menor Peso:** Critério de desempate. Pontua empresas que têm o perfil 100% completo (fotos, descrição, horários definidos).               |
 
 **Regra Final de Ordenação:**
 

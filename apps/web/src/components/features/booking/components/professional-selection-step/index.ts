@@ -1,2 +1,1 @@
-export { ProfessionalSelectionStep } from './professional-selection-step'
-
+export { ProfessionalSelectionStep } from './professional-selection-step';

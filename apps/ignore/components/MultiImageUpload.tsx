@@ -1,9 +1,9 @@
-import { useState, useRef } from "react";
-import { Card } from "./ui/card";
-import { Button } from "./ui/button";
-import { Badge } from "./ui/badge";
-import { ImageWithFallback } from "./figma/ImageWithFallback";
-import { Upload, X, Camera, ImageIcon } from "lucide-react";
+import { useState, useRef } from 'react';
+import { Card } from './ui/card';
+import { Button } from './ui/button';
+import { Badge } from './ui/badge';
+import { ImageWithFallback } from './figma/ImageWithFallback';
+import { Upload, X, Camera, ImageIcon } from 'lucide-react';
 
 interface UploadedImage {
   id: string;
@@ -19,11 +19,11 @@ interface MultiImageUploadProps {
   className?: string;
 }
 
-export function MultiImageUpload({ 
-  images, 
-  onChange, 
-  maxImages = 5, 
-  className = "" 
+export function MultiImageUpload({
+  images,
+  onChange,
+  maxImages = 5,
+  className = '',
 }: MultiImageUploadProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [dragActive, setDragActive] = useState(false);
@@ -43,7 +43,7 @@ export function MultiImageUpload({
           id: `${Date.now()}-${i}`,
           url,
           file,
-          isMain: images.length === 0 && i === 0 // First image is main if no images exist
+          isMain: images.length === 0 && i === 0, // First image is main if no images exist
         });
       }
     }
@@ -68,20 +68,20 @@ export function MultiImageUpload({
   };
 
   const removeImage = (imageId: string) => {
-    const updatedImages = images.filter(img => img.id !== imageId);
-    
+    const updatedImages = images.filter((img) => img.id !== imageId);
+
     // If removed image was main, make first remaining image main
-    if (updatedImages.length > 0 && !updatedImages.some(img => img.isMain)) {
+    if (updatedImages.length > 0 && !updatedImages.some((img) => img.isMain)) {
       updatedImages[0].isMain = true;
     }
-    
+
     onChange(updatedImages);
   };
 
   const setMainImage = (imageId: string) => {
-    const updatedImages = images.map(img => ({
+    const updatedImages = images.map((img) => ({
       ...img,
-      isMain: img.id === imageId
+      isMain: img.id === imageId,
     }));
     onChange(updatedImages);
   };
@@ -97,9 +97,10 @@ export function MultiImageUpload({
         <div
           className={`
             border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors
-            ${dragActive 
-              ? 'border-[#20b2aa] bg-[#20b2aa]/5' 
-              : 'border-gray-300 hover:border-[#20b2aa] hover:bg-gray-50'
+            ${
+              dragActive
+                ? 'border-[#20b2aa] bg-[#20b2aa]/5'
+                : 'border-gray-300 hover:border-[#20b2aa] hover:bg-gray-50'
             }
           `}
           onDrop={handleDrop}
@@ -115,19 +116,22 @@ export function MultiImageUpload({
                 <Camera className="w-6 h-6 text-[#20b2aa]" />
               )}
             </div>
-            
+
             <div>
               <p className="text-sm text-[#1a2b4c] mb-1">
-                {dragActive ? 'Solte as imagens aqui' : 'Adicionar fotos da loja'}
+                {dragActive
+                  ? 'Solte as imagens aqui'
+                  : 'Adicionar fotos da loja'}
               </p>
               <p className="text-xs text-gray-500">
-                Arraste e solte ou clique para selecionar ({images.length}/{maxImages})
+                Arraste e solte ou clique para selecionar ({images.length}/
+                {maxImages})
               </p>
             </div>
-            
-            <Button 
-              variant="outline" 
-              size="sm" 
+
+            <Button
+              variant="outline"
+              size="sm"
               className="border-[#20b2aa] text-[#20b2aa] hover:bg-[#20b2aa]/10"
               onClick={(e) => {
                 e.stopPropagation();
@@ -152,7 +156,7 @@ export function MultiImageUpload({
                   alt={`Foto da loja ${index + 1}`}
                   className="w-full h-full object-cover"
                 />
-                
+
                 {/* Overlay with actions */}
                 <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                   <Button

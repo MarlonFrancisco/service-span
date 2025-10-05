@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from 'react';
 import {
   Search,
   MapPin,
@@ -6,16 +6,12 @@ import {
   Users,
   ChevronDown,
   Filter,
-} from "lucide-react";
-import { Button } from "./ui/button";
-import { UserMenu } from "./UserMenu";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "./ui/popover";
-import { Calendar } from "./ui/calendar";
-import { FiltersModal } from "./FiltersModal";
+} from 'lucide-react';
+import { Button } from './ui/button';
+import { UserMenu } from './UserMenu';
+import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
+import { Calendar } from './ui/calendar';
+import { FiltersModal } from './FiltersModal';
 
 interface AirbnbHeaderProps {
   onGoToDashboard: () => void;
@@ -38,40 +34,37 @@ export function AirbnbHeader({
   showSearchBar = true,
   showFilters = false,
 }: AirbnbHeaderProps) {
-  const [searchFilters, setSearchFilters] =
-    useState<SearchFilters>({
-      location: "",
-      service: "",
-      date: "",
-    });
+  const [searchFilters, setSearchFilters] = useState<SearchFilters>({
+    location: '',
+    service: '',
+    date: '',
+  });
 
-  const [showLocationSuggestions, setShowLocationSuggestions] =
-    useState(false);
-  const [showServiceSuggestions, setShowServiceSuggestions] =
-    useState(false);
+  const [showLocationSuggestions, setShowLocationSuggestions] = useState(false);
+  const [showServiceSuggestions, setShowServiceSuggestions] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date>();
 
   const locationRef = useRef<HTMLInputElement>(null);
   const serviceRef = useRef<HTMLInputElement>(null);
 
   const locationSuggestions = [
-    "São Paulo, SP",
-    "Rio de Janeiro, RJ",
-    "Belo Horizonte, MG",
-    "Porto Alegre, RS",
-    "Curitiba, PR",
-    "Salvador, BA",
+    'São Paulo, SP',
+    'Rio de Janeiro, RJ',
+    'Belo Horizonte, MG',
+    'Porto Alegre, RS',
+    'Curitiba, PR',
+    'Salvador, BA',
   ];
 
   const serviceSuggestions = [
-    "Corte de cabelo",
-    "Manicure",
-    "Massagem relaxante",
-    "Limpeza de pele",
-    "Sobrancelha",
-    "Barboterapia",
-    "Depilação",
-    "Tratamento facial",
+    'Corte de cabelo',
+    'Manicure',
+    'Massagem relaxante',
+    'Limpeza de pele',
+    'Sobrancelha',
+    'Barboterapia',
+    'Depilação',
+    'Tratamento facial',
   ];
 
   const handleSearch = () => {
@@ -95,7 +88,7 @@ export function AirbnbHeader({
     if (date) {
       setSearchFilters({
         ...searchFilters,
-        date: date.toLocaleDateString("pt-BR"),
+        date: date.toLocaleDateString('pt-BR'),
       });
     }
   };
@@ -116,12 +109,8 @@ export function AirbnbHeader({
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () =>
-      document.removeEventListener(
-        "mousedown",
-        handleClickOutside,
-      );
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   return (
@@ -148,10 +137,7 @@ export function AirbnbHeader({
               <div className="w-full bg-white border border-gray-200 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300">
                 <div className="flex items-center">
                   {/* Where */}
-                  <div
-                    className="flex-1 px-5 py-3 relative"
-                    ref={locationRef}
-                  >
+                  <div className="flex-1 px-5 py-3 relative" ref={locationRef}>
                     <div className="text-xs font-semibold text-gray-900 mb-1">
                       Onde
                     </div>
@@ -166,9 +152,7 @@ export function AirbnbHeader({
                         });
                         setShowLocationSuggestions(true);
                       }}
-                      onFocus={() =>
-                        setShowLocationSuggestions(true)
-                      }
+                      onFocus={() => setShowLocationSuggestions(true)}
                       className="w-full text-sm text-gray-700 placeholder-gray-400 border-none outline-none bg-transparent"
                     />
 
@@ -179,16 +163,12 @@ export function AirbnbHeader({
                           .filter((location) =>
                             location
                               .toLowerCase()
-                              .includes(
-                                searchFilters.location.toLowerCase(),
-                              ),
+                              .includes(searchFilters.location.toLowerCase()),
                           )
                           .map((location, index) => (
                             <button
                               key={index}
-                              onClick={() =>
-                                handleLocationSelect(location)
-                              }
+                              onClick={() => handleLocationSelect(location)}
                               className="w-full px-4 py-3 text-left text-sm hover:bg-gray-50 first:rounded-t-xl last:rounded-b-xl flex items-center gap-3"
                             >
                               <MapPin className="w-4 h-4 text-gray-400" />
@@ -203,10 +183,7 @@ export function AirbnbHeader({
                   <div className="w-px h-6 bg-gray-200"></div>
 
                   {/* What */}
-                  <div
-                    className="flex-1 px-5 py-3 relative"
-                    ref={serviceRef}
-                  >
+                  <div className="flex-1 px-5 py-3 relative" ref={serviceRef}>
                     <div className="text-xs font-semibold text-gray-900 mb-1">
                       O que
                     </div>
@@ -221,9 +198,7 @@ export function AirbnbHeader({
                         });
                         setShowServiceSuggestions(true);
                       }}
-                      onFocus={() =>
-                        setShowServiceSuggestions(true)
-                      }
+                      onFocus={() => setShowServiceSuggestions(true)}
                       className="w-full text-sm text-gray-700 placeholder-gray-400 border-none outline-none bg-transparent"
                     />
 
@@ -234,16 +209,12 @@ export function AirbnbHeader({
                           .filter((service) =>
                             service
                               .toLowerCase()
-                              .includes(
-                                searchFilters.service.toLowerCase(),
-                              ),
+                              .includes(searchFilters.service.toLowerCase()),
                           )
                           .map((service, index) => (
                             <button
                               key={index}
-                              onClick={() =>
-                                handleServiceSelect(service)
-                              }
+                              onClick={() => handleServiceSelect(service)}
                               className="w-full px-4 py-3 text-left text-sm hover:bg-gray-50 first:rounded-t-xl last:rounded-b-xl"
                             >
                               {service}
@@ -265,16 +236,11 @@ export function AirbnbHeader({
                       <PopoverTrigger asChild>
                         <button className="w-full text-left text-sm text-gray-700 hover:text-gray-900 transition-colors">
                           {selectedDate
-                            ? selectedDate.toLocaleDateString(
-                                "pt-BR",
-                              )
-                            : "Adicionar datas"}
+                            ? selectedDate.toLocaleDateString('pt-BR')
+                            : 'Adicionar datas'}
                         </button>
                       </PopoverTrigger>
-                      <PopoverContent
-                        className="w-auto p-0"
-                        align="start"
-                      >
+                      <PopoverContent className="w-auto p-0" align="start">
                         <Calendar
                           mode="single"
                           selected={selectedDate}
@@ -297,7 +263,7 @@ export function AirbnbHeader({
                   </div>
                 </div>
               </div>
-              
+
               {/* Filters Button */}
               {showFilters && (
                 <div className="ml-6">
@@ -326,8 +292,7 @@ export function AirbnbHeader({
                       Para onde?
                     </div>
                     <div className="text-xs text-gray-500">
-                      Qualquer lugar • Qualquer serviço •
-                      Qualquer data
+                      Qualquer lugar • Qualquer serviço • Qualquer data
                     </div>
                   </div>
                 </div>

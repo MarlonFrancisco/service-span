@@ -1,31 +1,33 @@
-'use client'
+'use client';
 
-import { useRouter } from 'next/navigation'
-import { SearchResults } from '@/components/features/search'
+import { useRouter } from 'next/navigation';
+import { SearchResults } from '@/components/features/search';
 
 export default function SearchPage() {
-  const router = useRouter()
+  const router = useRouter();
 
   const handleBackToHome = () => {
-    router.push('/')
-  }
+    router.push('/');
+  };
 
   const handleStartBooking = (service: any) => {
     // Navegar para o fluxo de agendamento com dados do serviço
-    router.push(`/booking/${service.id}?serviceName=${encodeURIComponent(service.name)}&businessName=${encodeURIComponent(service.name)}`)
-  }
+    router.push(
+      `/booking/${service.id}?serviceName=${encodeURIComponent(service.name)}&businessName=${encodeURIComponent(service.name)}`,
+    );
+  };
 
   const handleGoToDashboard = () => {
-    router.push('/dashboard')
-  }
+    router.push('/dashboard');
+  };
 
   const handleGoToProfile = () => {
-    router.push('/profile')
-  }
+    router.push('/profile');
+  };
 
   const handleNavigate = (page: 'terms' | 'privacy' | 'help' | 'contact') => {
-    router.push(`/${page}`)
-  }
+    router.push(`/${page}`);
+  };
 
   return (
     <SearchResults
@@ -35,5 +37,5 @@ export default function SearchPage() {
       onGoToProfile={handleGoToProfile}
       onNavigate={handleNavigate}
     />
-  )
+  );
 }

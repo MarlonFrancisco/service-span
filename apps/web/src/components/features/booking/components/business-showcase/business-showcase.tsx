@@ -1,10 +1,10 @@
-import { Star, Share, Heart, Images } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useState } from "react";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { ImageCarousel } from "../../../search/components/image-carousel";
-import { BUSINESS_SHOWCASE_MOCK } from "./business-showcase.mock";
-import Image from "next/image";
+import { Star, Share, Heart, Images } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { useState } from 'react';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { ImageCarousel } from '../../../search/components/image-carousel';
+import { BUSINESS_SHOWCASE_MOCK } from './business-showcase.mock';
+import Image from 'next/image';
 
 interface BusinessShowcaseProps {
   businessName: string;
@@ -24,10 +24,10 @@ export function BusinessShowcase({
   businessPhone,
   rating = 4.8,
   reviewCount = 124,
-  category = "Salão de Beleza",
-  description = "Especialistas em cortes modernos, coloração e tratamentos capilares. Atendimento personalizado em ambiente aconchegante.",
+  category = 'Salão de Beleza',
+  description = 'Especialistas em cortes modernos, coloração e tratamentos capilares. Atendimento personalizado em ambiente aconchegante.',
   images,
-  imageUrl
+  imageUrl,
 }: BusinessShowcaseProps) {
   const [showAllPhotos, setShowAllPhotos] = useState(false);
 
@@ -147,7 +147,9 @@ export function BusinessShowcase({
           <div className="lg:col-span-1">
             <div className="text-right">
               <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                <p className="text-sm text-gray-600 mb-2">Os preços incluem todas as taxas</p>
+                <p className="text-sm text-gray-600 mb-2">
+                  Os preços incluem todas as taxas
+                </p>
               </div>
             </div>
           </div>

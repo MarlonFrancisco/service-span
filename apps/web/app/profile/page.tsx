@@ -1,7 +1,7 @@
-'use client'
+'use client';
 
-import { Profile } from '@/components/features/profile'
+import { Profile } from '@/components/features/profile';
 
 export default function ProfilePage() {
-  return <Profile />
+  return <Profile />;
 }

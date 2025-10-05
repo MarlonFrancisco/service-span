@@ -1,10 +1,18 @@
-import { useState } from "react";
-import { User, Mail, Phone, Check, Calendar, Clock, MapPin } from "lucide-react";
-import { Button } from "../ui/button";
-import { Card } from "../ui/card";
-import { Input } from "../ui/input";
-import { Checkbox } from "../ui/checkbox";
-import { SelectedService, Professional } from "../NewBookingFlow";
+import { useState } from 'react';
+import {
+  User,
+  Mail,
+  Phone,
+  Check,
+  Calendar,
+  Clock,
+  MapPin,
+} from 'lucide-react';
+import { Button } from '../ui/button';
+import { Card } from '../ui/card';
+import { Input } from '../ui/input';
+import { Checkbox } from '../ui/checkbox';
+import { SelectedService, Professional } from '../NewBookingFlow';
 
 interface CheckoutStepProps {
   selectedServices: SelectedService[];
@@ -25,39 +33,39 @@ export function CheckoutStep({
   selectedTime,
   businessName,
   businessPhone,
-  onFinishBooking
+  onFinishBooking,
 }: CheckoutStepProps) {
   // Simulando estado de login - em produção, isso viria do contexto de autenticação
   const [isLoggedIn] = useState(false); // Altere para true para testar estado logado
   const [isCreatingAccount, setIsCreatingAccount] = useState(false);
   const [wantsToLogin, setWantsToLogin] = useState(false);
-  
+
   // Dados do formulário
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    phone: ''
+    phone: '',
   });
 
   // Dados do usuário logado (mock)
   const loggedUserData = {
     name: 'João Silva',
     email: 'joao.silva@email.com',
-    phone: '(11) 99999-9999'
+    phone: '(11) 99999-9999',
   };
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
-    
+
     // Simular processamento
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
     setIsSubmitting(false);
     onFinishBooking();
   };
@@ -67,7 +75,7 @@ export function CheckoutStep({
       weekday: 'long',
       year: 'numeric',
       month: 'long',
-      day: 'numeric'
+      day: 'numeric',
     }).format(date);
   };
 
@@ -77,26 +85,40 @@ export function CheckoutStep({
     }
     const hours = Math.floor(minutes / 60);
     const remainingMinutes = minutes % 60;
-    return remainingMinutes > 0 ? `${hours}h ${remainingMinutes}min` : `${hours}h`;
+    return remainingMinutes > 0
+      ? `${hours}h ${remainingMinutes}min`
+      : `${hours}h`;
   };
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
-      currency: 'BRL'
+      currency: 'BRL',
     }).format(price);
   };
 
-  const totalPrice = selectedServices.reduce((total, service) => total + (service.price * service.quantity), 0);
-  const totalDuration = selectedServices.reduce((total, service) => total + (service.duration * service.quantity), 0);
+  const totalPrice = selectedServices.reduce(
+    (total, service) => total + service.price * service.quantity,
+    0,
+  );
+  const totalDuration = selectedServices.reduce(
+    (total, service) => total + service.duration * service.quantity,
+    0,
+  );
 
-  const isFormValid = isLoggedIn || (formData.name.trim() && formData.email.trim() && formData.phone.trim());
+  const isFormValid =
+    isLoggedIn ||
+    (formData.name.trim() && formData.email.trim() && formData.phone.trim());
 
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-xl text-[#1a2b4c] mb-2">Confirme seu agendamento</h2>
-        <p className="text-gray-600">Revise os detalhes e finalize sua reserva</p>
+        <h2 className="text-xl text-[#1a2b4c] mb-2">
+          Confirme seu agendamento
+        </h2>
+        <p className="text-gray-600">
+          Revise os detalhes e finalize sua reserva
+        </p>
       </div>
 
       {/* Resumo do Agendamento */}
@@ -105,7 +127,7 @@ export function CheckoutStep({
           <Check className="h-5 w-5 text-[#20b2aa]" />
           Resumo do Agendamento
         </h3>
-        
+
         <div className="space-y-4">
           {/* Local */}
           <div className="flex items-start gap-3">
@@ -135,7 +157,9 @@ export function CheckoutStep({
             <User className="h-5 w-5 text-gray-500 mt-0.5" />
             <div>
               <p className="text-[#1a2b4c]">
-                {isAnyProfessional ? 'Qualquer profissional' : selectedProfessional?.name}
+                {isAnyProfessional
+                  ? 'Qualquer profissional'
+                  : selectedProfessional?.name}
               </p>
               {selectedProfessional && (
                 <p className="text-sm text-gray-600">
@@ -149,8 +173,11 @@ export function CheckoutStep({
           <div className="border-t border-gray-200 pt-4">
             <h4 className="text-[#1a2b4c] mb-2">Serviços selecionados:</h4>
             <div className="space-y-2">
-              {selectedServices.map(service => (
-                <div key={service.id} className="flex justify-between items-center">
+              {selectedServices.map((service) => (
+                <div
+                  key={service.id}
+                  className="flex justify-between items-center"
+                >
                   <div>
                     <div className="flex items-center gap-2">
                       <span className="text-gray-900">{service.name}</span>
@@ -164,14 +191,18 @@ export function CheckoutStep({
                       ({formatDuration(service.duration * service.quantity)})
                     </span>
                   </div>
-                  <span className="text-[#1a2b4c]">{formatPrice(service.price * service.quantity)}</span>
+                  <span className="text-[#1a2b4c]">
+                    {formatPrice(service.price * service.quantity)}
+                  </span>
                 </div>
               ))}
             </div>
-            
+
             <div className="border-t border-gray-200 mt-3 pt-3 flex justify-between items-center">
               <span className="text-lg text-[#1a2b4c]">Total:</span>
-              <span className="text-xl text-[#1a2b4c]">{formatPrice(totalPrice)}</span>
+              <span className="text-xl text-[#1a2b4c]">
+                {formatPrice(totalPrice)}
+              </span>
             </div>
           </div>
         </div>
@@ -201,7 +232,7 @@ export function CheckoutStep({
         /* Estado Não Logado */
         <Card className="p-6">
           <h3 className="text-lg text-[#1a2b4c] mb-4">Seus dados de contato</h3>
-          
+
           {/* Opção de Login */}
           {!wantsToLogin && (
             <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
@@ -222,7 +253,9 @@ export function CheckoutStep({
           {/* Formulário */}
           <div className="space-y-4">
             <div>
-              <label className="text-sm text-gray-700 mb-2 block">Nome completo</label>
+              <label className="text-sm text-gray-700 mb-2 block">
+                Nome completo
+              </label>
               <Input
                 type="text"
                 placeholder="Digite seu nome completo"
@@ -244,7 +277,9 @@ export function CheckoutStep({
             </div>
 
             <div>
-              <label className="text-sm text-gray-700 mb-2 block">Telefone</label>
+              <label className="text-sm text-gray-700 mb-2 block">
+                Telefone
+              </label>
               <Input
                 type="tel"
                 placeholder="(11) 99999-9999"
@@ -259,7 +294,9 @@ export function CheckoutStep({
               <Checkbox
                 id="create-account"
                 checked={isCreatingAccount}
-                onCheckedChange={(checked) => setIsCreatingAccount(checked as boolean)}
+                onCheckedChange={(checked) =>
+                  setIsCreatingAccount(checked as boolean)
+                }
               />
               <div>
                 <label
@@ -269,7 +306,8 @@ export function CheckoutStep({
                   Criar uma conta para facilitar futuros agendamentos
                 </label>
                 <p className="text-xs text-gray-500 mt-1">
-                  Você receberá um e-mail para confirmar sua conta após o agendamento
+                  Você receberá um e-mail para confirmar sua conta após o
+                  agendamento
                 </p>
               </div>
             </div>
@@ -291,14 +329,19 @@ export function CheckoutStep({
             </div>
           ) : (
             <>
-              {isCreatingAccount && !isLoggedIn ? 'Finalizar e Criar Conta' : 'Finalizar Agendamento'}
-              <span className="ml-2 opacity-80">• {formatPrice(totalPrice)}</span>
+              {isCreatingAccount && !isLoggedIn
+                ? 'Finalizar e Criar Conta'
+                : 'Finalizar Agendamento'}
+              <span className="ml-2 opacity-80">
+                • {formatPrice(totalPrice)}
+              </span>
             </>
           )}
         </Button>
-        
+
         <p className="text-xs text-center text-gray-500 mt-3">
-          Ao finalizar, você concorda com nossos termos de serviço e política de cancelamento
+          Ao finalizar, você concorda com nossos termos de serviço e política de
+          cancelamento
         </p>
       </div>
     </div>

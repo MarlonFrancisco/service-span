@@ -1,9 +1,9 @@
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { ResultsList, ServicePreview } from "./components";
-import type { Service } from "./types/search.types";
-import { Header } from "@/components/layout/header/header";
-import { Footer } from "@/components/layout";
+import { Footer } from '@/components/layout';
+import { Header } from '@/components/layout/header/header';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { ResultsList, ServicePreview } from './components';
+import type { Service } from './types/search.types';
 
 export function SearchResults() {
   const [selectedService, setSelectedService] = useState<Service | null>(null);

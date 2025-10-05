@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { UserMenuSimple } from "./UserMenuSimple";
-import { AuthModal, UserType } from "./AuthModal";
+import { useState } from 'react';
+import { UserMenuSimple } from './UserMenuSimple';
+import { AuthModal, UserType } from './AuthModal';
 
 interface HeaderProps {
   onGoToDashboard?: () => void;
@@ -15,7 +15,7 @@ export function Header({ onGoToDashboard, onGoToProfile }: HeaderProps) {
   const handleLoginSuccess = (selectedUserType: UserType) => {
     setUserType(selectedUserType);
     setIsLoggedIn(true);
-    
+
     // Se for prestador, redirecionar para dashboard
     if (selectedUserType === 'provider' && onGoToDashboard) {
       onGoToDashboard();
@@ -33,9 +33,9 @@ export function Header({ onGoToDashboard, onGoToProfile }: HeaderProps) {
         <div className="flex items-center">
           <h1 className="text-gray-900 tracking-wide">ServiceSnap</h1>
         </div>
-        
+
         <div className="flex items-center gap-3">
-          <UserMenuSimple 
+          <UserMenuSimple
             isLoggedIn={isLoggedIn}
             userType={userType}
             onLogin={() => setIsAuthModalOpen(true)}

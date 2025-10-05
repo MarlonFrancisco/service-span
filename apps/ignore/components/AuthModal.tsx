@@ -1,11 +1,15 @@
-import { useState } from "react";
-import { Dialog, DialogContent } from "./ui/dialog";
-import { LoginStep } from "./auth/LoginStep";
-import { VerificationStep } from "./auth/VerificationStep";
-import { SignupStep } from "./auth/SignupStep";
-import { ProfileSelectionStep } from "./auth/ProfileSelectionStep";
+import { useState } from 'react';
+import { Dialog, DialogContent } from './ui/dialog';
+import { LoginStep } from './auth/LoginStep';
+import { VerificationStep } from './auth/VerificationStep';
+import { SignupStep } from './auth/SignupStep';
+import { ProfileSelectionStep } from './auth/ProfileSelectionStep';
 
-export type AuthStep = 'login' | 'verification' | 'signup' | 'profile-selection';
+export type AuthStep =
+  | 'login'
+  | 'verification'
+  | 'signup'
+  | 'profile-selection';
 export type UserType = 'client' | 'provider';
 
 interface AuthModalProps {
@@ -20,12 +24,12 @@ export function AuthModal({ isOpen, onClose, onLoginSuccess }: AuthModalProps) {
     email: '',
     phone: '',
     name: '',
-    isNewUser: false
+    isNewUser: false,
   });
 
   const handleStepChange = (step: AuthStep, data?: any) => {
     if (data) {
-      setUserData(prev => ({ ...prev, ...data }));
+      setUserData((prev) => ({ ...prev, ...data }));
     }
     setCurrentStep(step);
   };
@@ -44,15 +48,10 @@ export function AuthModal({ isOpen, onClose, onLoginSuccess }: AuthModalProps) {
   const renderStep = () => {
     switch (currentStep) {
       case 'login':
-        return (
-          <LoginStep 
-            onNext={handleStepChange}
-            onClose={handleClose}
-          />
-        );
+        return <LoginStep onNext={handleStepChange} onClose={handleClose} />;
       case 'verification':
         return (
-          <VerificationStep 
+          <VerificationStep
             contact={userData.email || userData.phone}
             onNext={handleStepChange}
             onBack={() => setCurrentStep('login')}
@@ -60,18 +59,14 @@ export function AuthModal({ isOpen, onClose, onLoginSuccess }: AuthModalProps) {
         );
       case 'signup':
         return (
-          <SignupStep 
+          <SignupStep
             userData={userData}
             onNext={handleStepChange}
             onBack={() => setCurrentStep('verification')}
           />
         );
       case 'profile-selection':
-        return (
-          <ProfileSelectionStep 
-            onSelect={handleAuthComplete}
-          />
-        );
+        return <ProfileSelectionStep onSelect={handleAuthComplete} />;
       default:
         return null;
     }

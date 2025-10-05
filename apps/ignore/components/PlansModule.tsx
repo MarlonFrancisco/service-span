@@ -1,22 +1,32 @@
-import { useState } from "react";
-import { Check, Crown, Shield, Star, CreditCard, Lock, AlertTriangle } from "lucide-react";
-import { Button } from "./ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
-import { Badge } from "./ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
-import { Input } from "./ui/input";
-import { Label } from "./ui/label";
-import { Alert, AlertDescription } from "./ui/alert";
+import { useState } from 'react';
+import {
+  Check,
+  Crown,
+  Shield,
+  Star,
+  CreditCard,
+  Lock,
+  AlertTriangle,
+} from 'lucide-react';
+import { Button } from './ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import { Badge } from './ui/badge';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
+import { Input } from './ui/input';
+import { Label } from './ui/label';
+import { Alert, AlertDescription } from './ui/alert';
 
 export function PlansModule() {
-  const [selectedPlan, setSelectedPlan] = useState<'standard' | 'premium' | 'business' | null>(null);
+  const [selectedPlan, setSelectedPlan] = useState<
+    'standard' | 'premium' | 'business' | null
+  >(null);
   const [showCheckout, setShowCheckout] = useState(false);
 
   const currentPlan = {
     name: 'Standard',
     expiresAt: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000), // 15 dias
     storesCount: 1,
-    maxStores: 3
+    maxStores: 3,
   };
 
   const plans = [
@@ -32,9 +42,9 @@ export function PlansModule() {
         'Relatórios simples',
         'Suporte por email',
         'Aparece nas buscas',
-        'Gestão de profissionais'
+        'Gestão de profissionais',
       ],
-      highlight: false
+      highlight: false,
     },
     {
       id: 'premium',
@@ -50,9 +60,9 @@ export function PlansModule() {
         'Melhor ranqueamento',
         'Analytics avançado',
         'Integração WhatsApp',
-        'Lembretes automáticos'
+        'Lembretes automáticos',
       ],
-      highlight: true
+      highlight: true,
     },
     {
       id: 'business',
@@ -69,10 +79,10 @@ export function PlansModule() {
         'Dashboard executivo',
         'Automação completa',
         'Gerente de conta dedicado',
-        'Relatórios personalizados'
+        'Relatórios personalizados',
       ],
-      highlight: false
-    }
+      highlight: false,
+    },
   ];
 
   const handleSelectPlan = (planId: 'standard' | 'premium' | 'business') => {
@@ -80,22 +90,25 @@ export function PlansModule() {
     setShowCheckout(true);
   };
 
-  const selectedPlanData = plans.find(p => p.id === selectedPlan);
+  const selectedPlanData = plans.find((p) => p.id === selectedPlan);
 
   return (
     <div className="space-y-6">
       {/* Header */}
       <div>
         <h2 className="text-[#1a2b4c]">Planos e Assinatura</h2>
-        <p className="text-gray-600 text-sm">Escolha o plano ideal para o seu negócio</p>
+        <p className="text-gray-600 text-sm">
+          Escolha o plano ideal para o seu negócio
+        </p>
       </div>
 
       {/* Current Plan Status */}
       <Alert className="border-blue-200 bg-blue-50">
         <Shield className="h-4 w-4 text-blue-600" />
         <AlertDescription className="text-blue-800">
-          <strong>Plano Atual:</strong> {currentPlan.name} - Expira em {currentPlan.expiresAt?.toLocaleDateString('pt-BR')}. 
-          Renove ou faça upgrade para manter sua visibilidade nos resultados de busca.
+          <strong>Plano Atual:</strong> {currentPlan.name} - Expira em{' '}
+          {currentPlan.expiresAt?.toLocaleDateString('pt-BR')}. Renove ou faça
+          upgrade para manter sua visibilidade nos resultados de busca.
         </AlertDescription>
       </Alert>
 
@@ -113,12 +126,14 @@ export function PlansModule() {
               <div className="text-2xl text-[#1a2b4c]">{currentPlan.name}</div>
               <div className="text-sm text-gray-600">Plano Atual</div>
             </div>
-            
+
             <div className="text-center p-4 bg-gray-50 rounded-lg">
-              <div className="text-2xl text-[#1a2b4c]">{currentPlan.storesCount}/{currentPlan.maxStores}</div>
+              <div className="text-2xl text-[#1a2b4c]">
+                {currentPlan.storesCount}/{currentPlan.maxStores}
+              </div>
               <div className="text-sm text-gray-600">Lojas Utilizadas</div>
             </div>
-            
+
             <div className="text-center p-4 bg-green-50 rounded-lg">
               <div className="text-2xl text-green-600">Ativo</div>
               <div className="text-sm text-gray-600">Status</div>
@@ -130,8 +145,8 @@ export function PlansModule() {
       {/* Plans Comparison */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {plans.map((plan) => (
-          <Card 
-            key={plan.id} 
+          <Card
+            key={plan.id}
             className={`relative ${plan.highlight ? 'border-[#20b2aa] ring-2 ring-[#20b2aa]/20' : ''}`}
           >
             {plan.highlight && (
@@ -142,9 +157,11 @@ export function PlansModule() {
                 </Badge>
               </div>
             )}
-            
+
             <CardHeader className="text-center pb-4">
-              <CardTitle className="text-[#1a2b4c] text-xl">{plan.name}</CardTitle>
+              <CardTitle className="text-[#1a2b4c] text-xl">
+                {plan.name}
+              </CardTitle>
               <div className="mt-2">
                 <span className="text-3xl text-[#1a2b4c]">R$ {plan.price}</span>
                 <span className="text-gray-600">/{plan.period}</span>
@@ -153,7 +170,7 @@ export function PlansModule() {
                 Ideal para negócios com até {plan.maxStores} lojas
               </p>
             </CardHeader>
-            
+
             <CardContent className="space-y-4">
               <div className="space-y-3">
                 {plan.features.map((feature, index) => (
@@ -163,12 +180,12 @@ export function PlansModule() {
                   </div>
                 ))}
               </div>
-              
+
               <div className="pt-4">
-                <Button 
+                <Button
                   className={`w-full ${
-                    plan.highlight 
-                      ? 'bg-[#20b2aa] hover:bg-[#20b2aa]/90 text-white' 
+                    plan.highlight
+                      ? 'bg-[#20b2aa] hover:bg-[#20b2aa]/90 text-white'
                       : 'bg-[#1a2b4c] hover:bg-[#1a2b4c]/90 text-white'
                   }`}
                   onClick={() => handleSelectPlan(plan.id as any)}
@@ -194,32 +211,33 @@ export function PlansModule() {
             <div className="space-y-3">
               <h4 className="text-[#1a2b4c]">Visibilidade Garantida</h4>
               <p className="text-sm text-gray-600">
-                Suas lojas aparecem nos resultados de busca e podem receber novos agendamentos. 
-                Sem plano ativo, suas lojas ficam invisíveis.
+                Suas lojas aparecem nos resultados de busca e podem receber
+                novos agendamentos. Sem plano ativo, suas lojas ficam
+                invisíveis.
               </p>
             </div>
-            
+
             <div className="space-y-3">
               <h4 className="text-[#1a2b4c]">Melhor Ranqueamento</h4>
               <p className="text-sm text-gray-600">
-                Planos pagos têm prioridade nos resultados de busca, aumentando suas chances 
-                de serem encontrados pelos clientes.
+                Planos pagos têm prioridade nos resultados de busca, aumentando
+                suas chances de serem encontrados pelos clientes.
               </p>
             </div>
-            
+
             <div className="space-y-3">
               <h4 className="text-[#1a2b4c]">Ferramentas Profissionais</h4>
               <p className="text-sm text-gray-600">
-                Acesso a relatórios, analytics e ferramentas que ajudam a gerenciar 
-                melhor seu negócio e aumentar a receita.
+                Acesso a relatórios, analytics e ferramentas que ajudam a
+                gerenciar melhor seu negócio e aumentar a receita.
               </p>
             </div>
-            
+
             <div className="space-y-3">
               <h4 className="text-[#1a2b4c]">Suporte Dedicado</h4>
               <p className="text-sm text-gray-600">
-                Conte com nosso suporte especializado para resolver dúvidas e otimizar 
-                o uso da plataforma.
+                Conte com nosso suporte especializado para resolver dúvidas e
+                otimizar o uso da plataforma.
               </p>
             </div>
           </div>
@@ -235,7 +253,7 @@ export function PlansModule() {
               Finalizar Assinatura
             </DialogTitle>
           </DialogHeader>
-          
+
           {selectedPlanData && (
             <div className="space-y-6">
               {/* Plan Summary */}
@@ -243,7 +261,9 @@ export function PlansModule() {
                 <h4 className="text-[#1a2b4c] mb-2">Resumo do Plano</h4>
                 <div className="flex justify-between items-center">
                   <span className="text-sm">Plano {selectedPlanData.name}</span>
-                  <span className="text-[#1a2b4c]">R$ {selectedPlanData.price}/mês</span>
+                  <span className="text-[#1a2b4c]">
+                    R$ {selectedPlanData.price}/mês
+                  </span>
                 </div>
                 <p className="text-xs text-gray-600 mt-2">
                   Cobrança recorrente mensal. Cancele quando quiser.
@@ -261,7 +281,7 @@ export function PlansModule() {
                   <Label>Número do Cartão</Label>
                   <Input placeholder="**** **** **** ****" />
                 </div>
-                
+
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label>Validade</Label>
@@ -272,7 +292,7 @@ export function PlansModule() {
                     <Input placeholder="123" />
                   </div>
                 </div>
-                
+
                 <div>
                   <Label>Nome no Cartão</Label>
                   <Input placeholder="Nome completo" />
@@ -280,7 +300,10 @@ export function PlansModule() {
               </div>
 
               <div className="flex gap-2">
-                <Button variant="outline" onClick={() => setShowCheckout(false)}>
+                <Button
+                  variant="outline"
+                  onClick={() => setShowCheckout(false)}
+                >
                   Cancelar
                 </Button>
                 <Button className="flex-1 bg-[#20b2aa] hover:bg-[#20b2aa]/90 text-white">

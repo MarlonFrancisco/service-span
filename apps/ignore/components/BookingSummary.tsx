@@ -1,8 +1,8 @@
-import { Calendar, Clock, MapPin, User, CreditCard } from "lucide-react";
-import { Card } from "./ui/card";
-import { Button } from "./ui/button";
-import { Separator } from "./ui/separator";
-import { Badge } from "./ui/badge";
+import { Calendar, Clock, MapPin, User, CreditCard } from 'lucide-react';
+import { Card } from './ui/card';
+import { Button } from './ui/button';
+import { Separator } from './ui/separator';
+import { Badge } from './ui/badge';
 
 interface Service {
   id: string;
@@ -23,33 +23,33 @@ interface BookingSummaryProps {
 
 const mockServices: Service[] = [
   {
-    id: "1",
-    name: "Corte Masculino",
-    description: "Corte moderno com acabamento",
+    id: '1',
+    name: 'Corte Masculino',
+    description: 'Corte moderno com acabamento',
     duration: 45,
-    price: 80
+    price: 80,
   },
   {
-    id: "2", 
-    name: "Barba",
-    description: "Aparar e modelar barba",
+    id: '2',
+    name: 'Barba',
+    description: 'Aparar e modelar barba',
     duration: 30,
-    price: 50
+    price: 50,
   },
   {
-    id: "3",
-    name: "Lavagem + Corte",
-    description: "Lavagem completa com corte",
+    id: '3',
+    name: 'Lavagem + Corte',
+    description: 'Lavagem completa com corte',
     duration: 60,
-    price: 120
+    price: 120,
   },
   {
-    id: "4",
-    name: "Tratamento Capilar",
-    description: "Hidratação e nutrição dos fios",
+    id: '4',
+    name: 'Tratamento Capilar',
+    description: 'Hidratação e nutrição dos fios',
     duration: 90,
-    price: 180
-  }
+    price: 180,
+  },
 ];
 
 export function BookingSummary({
@@ -58,24 +58,26 @@ export function BookingSummary({
   selectedTime,
   businessName,
   businessAddress,
-  onFinishBooking
+  onFinishBooking,
 }: BookingSummaryProps) {
   const getSelectedServicesList = () => {
     return Object.entries(selectedServices)
       .filter(([_, quantity]) => quantity > 0)
       .map(([serviceId, quantity]) => {
-        const service = mockServices.find(s => s.id === serviceId);
+        const service = mockServices.find((s) => s.id === serviceId);
         return service ? { ...service, quantity } : null;
       })
       .filter(Boolean);
   };
 
   const selectedServicesList = getSelectedServicesList();
-  const totalDuration = selectedServicesList.reduce((total, service) => 
-    total + (service!.duration * service!.quantity), 0
+  const totalDuration = selectedServicesList.reduce(
+    (total, service) => total + service!.duration * service!.quantity,
+    0,
   );
-  const totalPrice = selectedServicesList.reduce((total, service) => 
-    total + (service!.price * service!.quantity), 0
+  const totalPrice = selectedServicesList.reduce(
+    (total, service) => total + service!.price * service!.quantity,
+    0,
   );
 
   const formatDuration = (minutes: number) => {
@@ -87,14 +89,17 @@ export function BookingSummary({
     return `${mins}min`;
   };
 
-  const canFinishBooking = selectedServicesList.length > 0 && selectedDate && selectedTime;
+  const canFinishBooking =
+    selectedServicesList.length > 0 && selectedDate && selectedTime;
 
   return (
     <Card className="p-6 h-fit sticky top-6">
       <div className="space-y-6">
         <div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Resumo da Reserva</h3>
-          
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+            Resumo da Reserva
+          </h3>
+
           {/* Empresa */}
           <div className="space-y-2 mb-4">
             <div className="flex items-center gap-2">
@@ -118,7 +123,10 @@ export function BookingSummary({
           ) : (
             <div className="space-y-3">
               {selectedServicesList.map((service) => (
-                <div key={service!.id} className="flex justify-between items-start">
+                <div
+                  key={service!.id}
+                  className="flex justify-between items-start"
+                >
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
                       <span className="text-sm">{service!.name}</span>
@@ -130,10 +138,14 @@ export function BookingSummary({
                     </div>
                     <div className="flex items-center gap-2 text-xs text-gray-500 mt-1">
                       <Clock className="h-3 w-3" />
-                      <span>{formatDuration(service!.duration * service!.quantity)}</span>
+                      <span>
+                        {formatDuration(service!.duration * service!.quantity)}
+                      </span>
                     </div>
                   </div>
-                  <span className="text-sm">R$ {service!.price * service!.quantity}</span>
+                  <span className="text-sm">
+                    R$ {service!.price * service!.quantity}
+                  </span>
                 </div>
               ))}
             </div>
@@ -143,7 +155,7 @@ export function BookingSummary({
         {selectedServicesList.length > 0 && (
           <>
             <Separator />
-            
+
             {/* Data e Hora */}
             <div>
               <h4 className="font-semibold text-gray-900 mb-3">Agendamento</h4>
@@ -152,10 +164,10 @@ export function BookingSummary({
                   <div className="flex items-center gap-2 text-sm">
                     <Calendar className="h-4 w-4 text-gray-500" />
                     <span>
-                      {selectedDate.toLocaleDateString('pt-BR', { 
-                        day: 'numeric', 
+                      {selectedDate.toLocaleDateString('pt-BR', {
+                        day: 'numeric',
                         month: 'long',
-                        year: 'numeric'
+                        year: 'numeric',
                       })}
                     </span>
                   </div>
@@ -165,7 +177,9 @@ export function BookingSummary({
                   </div>
                 </div>
               ) : (
-                <p className="text-gray-500 text-sm">Data e horário não selecionados</p>
+                <p className="text-gray-500 text-sm">
+                  Data e horário não selecionados
+                </p>
               )}
             </div>
 
@@ -180,7 +194,9 @@ export function BookingSummary({
                 </div>
                 <div className="flex justify-between">
                   <span className="font-semibold text-gray-900">Total:</span>
-                  <span className="font-semibold text-gray-900">R$ {totalPrice}</span>
+                  <span className="font-semibold text-gray-900">
+                    R$ {totalPrice}
+                  </span>
                 </div>
               </div>
             </div>
@@ -193,14 +209,14 @@ export function BookingSummary({
         <Button
           className={`w-full py-3 ${
             canFinishBooking
-              ? "bg-black hover:bg-gray-800 text-white"
-              : "bg-gray-300 text-gray-500 cursor-not-allowed"
+              ? 'bg-black hover:bg-gray-800 text-white'
+              : 'bg-gray-300 text-gray-500 cursor-not-allowed'
           }`}
           disabled={!canFinishBooking}
           onClick={onFinishBooking}
         >
           <CreditCard className="h-4 w-4 mr-2" />
-          {canFinishBooking ? "Finalizar Reserva" : "Complete os dados"}
+          {canFinishBooking ? 'Finalizar Reserva' : 'Complete os dados'}
         </Button>
 
         {canFinishBooking && (

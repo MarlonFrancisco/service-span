@@ -1,2 +1,1 @@
-export { BookingSidebar } from './booking-sidebar'
-
+export { BookingSidebar } from './booking-sidebar';

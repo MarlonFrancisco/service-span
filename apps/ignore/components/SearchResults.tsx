@@ -1,17 +1,12 @@
-import { useState } from "react";
-import {
-  ArrowLeft,
-  Search,
-  Filter,
-  SlidersHorizontal,
-} from "lucide-react";
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
-import { FiltersModal } from "./FiltersModal";
-import { ResultsList } from "./ResultsList";
-import { ServicePreview } from "./ServicePreview";
-import { UserMenuSimple } from "./UserMenuSimple";
-import { AuthModal, UserType } from "./AuthModal";
+import { useState } from 'react';
+import { ArrowLeft, Search, Filter, SlidersHorizontal } from 'lucide-react';
+import { Button } from './ui/button';
+import { Input } from './ui/input';
+import { FiltersModal } from './FiltersModal';
+import { ResultsList } from './ResultsList';
+import { ServicePreview } from './ServicePreview';
+import { UserMenuSimple } from './UserMenuSimple';
+import { AuthModal, UserType } from './AuthModal';
 
 interface Service {
   id: string;
@@ -48,7 +43,7 @@ export function SearchResults({
   const handleLoginSuccess = (selectedUserType: UserType) => {
     setUserType(selectedUserType);
     setIsLoggedIn(true);
-    
+
     if (selectedUserType === 'provider' && onGoToDashboard) {
       onGoToDashboard();
     }
@@ -99,7 +94,7 @@ export function SearchResults({
             </div>
 
             <div className="flex items-center gap-2">
-              <UserMenuSimple 
+              <UserMenuSimple
                 isLoggedIn={isLoggedIn}
                 userType={userType}
                 onLogin={() => setIsAuthModalOpen(true)}

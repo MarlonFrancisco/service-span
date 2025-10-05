@@ -1,5 +1,6 @@
-import { ISearchStore } from "./search.types";
+import { ISearchStore } from './search.types';
 
-export const fetchSearchResultAction = (set: (state: Partial<ISearchStore>) => void) => () => {
+export const fetchSearchResultAction =
+  (set: (state: Partial<ISearchStore>) => void) => () => {
     set({ searchResults: [] });
-};
+  };

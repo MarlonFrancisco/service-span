@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { ChevronDown, MapPin } from "lucide-react";
-import { Button } from "./ui/button";
+import { useState } from 'react';
+import { ChevronDown, MapPin } from 'lucide-react';
+import { Button } from './ui/button';
 
 interface Store {
   id: string;
@@ -14,13 +14,17 @@ interface StoreSelectorProps {
   onStoreChange: (store: Store) => void;
 }
 
-export function StoreSelector({ stores, activeStore, onStoreChange }: StoreSelectorProps) {
+export function StoreSelector({
+  stores,
+  activeStore,
+  onStoreChange,
+}: StoreSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
     <div className="relative">
-      <Button 
-        variant="outline" 
+      <Button
+        variant="outline"
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-2 min-w-[200px] justify-between border-[#1a2b4c]/20 hover:border-[#20b2aa]"
       >
@@ -35,16 +39,18 @@ export function StoreSelector({ stores, activeStore, onStoreChange }: StoreSelec
         </div>
         <ChevronDown className="h-4 w-4 text-gray-400" />
       </Button>
-      
+
       {isOpen && (
         <>
-          <div 
-            className="fixed inset-0 z-10" 
+          <div
+            className="fixed inset-0 z-10"
             onClick={() => setIsOpen(false)}
           ></div>
           <div className="absolute right-0 top-full mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-lg z-20">
             <div className="p-2">
-              <div className="text-xs text-gray-500 mb-2 px-2">Selecionar Unidade Ativa</div>
+              <div className="text-xs text-gray-500 mb-2 px-2">
+                Selecionar Unidade Ativa
+              </div>
               {stores.map((store) => (
                 <div
                   key={store.id}
@@ -61,7 +67,9 @@ export function StoreSelector({ stores, activeStore, onStoreChange }: StoreSelec
                     <MapPin className="h-4 w-4 text-[#20b2aa]" />
                     <div className="flex-1">
                       <div className="text-sm">{store.name}</div>
-                      <div className="text-xs text-gray-500">{store.address}</div>
+                      <div className="text-xs text-gray-500">
+                        {store.address}
+                      </div>
                     </div>
                     {activeStore.id === store.id && (
                       <div className="w-2 h-2 bg-[#20b2aa] rounded-full"></div>

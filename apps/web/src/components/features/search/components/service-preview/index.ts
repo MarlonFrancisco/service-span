@@ -1,2 +1,1 @@
-export { ServicePreview } from './service-preview'
-
+export { ServicePreview } from './service-preview';

@@ -1,87 +1,124 @@
-import { useState } from "react";
-import { Search, MapPin, Clock, Star, Sparkles, TrendingUp, Shield, Users, ArrowRight, Calendar, Heart } from "lucide-react";
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
-import { Card, CardContent } from "./ui/card";
-import { Badge } from "./ui/badge";
-import { Footer } from "./Footer";
-import { Header } from "./Header";
+import { useState } from 'react';
+import {
+  Search,
+  MapPin,
+  Clock,
+  Star,
+  Sparkles,
+  TrendingUp,
+  Shield,
+  Users,
+  ArrowRight,
+  Calendar,
+  Heart,
+} from 'lucide-react';
+import { Button } from './ui/button';
+import { Input } from './ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from './ui/select';
+import { Card, CardContent } from './ui/card';
+import { Badge } from './ui/badge';
+import { Footer } from './Footer';
+import { Header } from './Header';
 
 // Mock data for popular services
 const popularServices = [
   {
-    id: "1",
-    name: "Salão Elegance",
-    category: "Salão de Beleza",
+    id: '1',
+    name: 'Salão Elegance',
+    category: 'Salão de Beleza',
     rating: 4.8,
     reviewCount: 127,
-    price: "R$ 80",
-    imageUrl: "https://images.unsplash.com/photo-1750263160581-d332256293bb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxiZWF1dHklMjBzYWxvbiUyMG1vZGVybnxlbnwxfHx8fDE3NTk0MDUxMzJ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+    price: 'R$ 80',
+    imageUrl:
+      'https://images.unsplash.com/photo-1750263160581-d332256293bb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxiZWF1dHklMjBzYWxvbiUyMG1vZGVybnxlbnwxfHx8fDE3NTk0MDUxMzJ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
     isFavorite: false,
-    nextSlot: "Hoje 14:30"
+    nextSlot: 'Hoje 14:30',
   },
   {
-    id: "2",
-    name: "Barbearia Classic",
-    category: "Barbearia",
+    id: '2',
+    name: 'Barbearia Classic',
+    category: 'Barbearia',
     rating: 4.6,
     reviewCount: 89,
-    price: "R$ 45",
-    imageUrl: "https://images.unsplash.com/photo-1667539916609-c706d5b7ed65?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxiYXJiZXJzaG9wJTIwaW50ZXJpb3J8ZW58MXx8fHwxNzU5MzQ0MTYzfDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+    price: 'R$ 45',
+    imageUrl:
+      'https://images.unsplash.com/photo-1667539916609-c706d5b7ed65?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxiYXJiZXJzaG9wJTIwaW50ZXJpb3J8ZW58MXx8fHwxNzU5MzQ0MTYzfDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
     isFavorite: true,
-    nextSlot: "Amanhã 09:00"
+    nextSlot: 'Amanhã 09:00',
   },
   {
-    id: "3",
-    name: "Spa Wellness",
-    category: "Spa",
+    id: '3',
+    name: 'Spa Wellness',
+    category: 'Spa',
     rating: 4.9,
     reviewCount: 156,
-    price: "R$ 120",
-    imageUrl: "https://images.unsplash.com/photo-1737352777897-e22953991a32?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzcGElMjBtYXNzYWdlJTIwdGhlcmFweXxlbnwxfHx8fDE3NTkzMjkxMTN8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+    price: 'R$ 120',
+    imageUrl:
+      'https://images.unsplash.com/photo-1737352777897-e22953991a32?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzcGElMjBtYXNzYWdlJTIwdGhlcmFweXxlbnwxfHx8fDE3NTkzMjkxMTN8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
     isFavorite: false,
-    nextSlot: "Seg 10:00"
+    nextSlot: 'Seg 10:00',
   },
   {
-    id: "4",
-    name: "Nail Studio",
-    category: "Manicure",
+    id: '4',
+    name: 'Nail Studio',
+    category: 'Manicure',
     rating: 4.7,
     reviewCount: 94,
-    price: "R$ 35",
-    imageUrl: "https://images.unsplash.com/photo-1613457492120-4fcfbb7c3a5b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxuYWlsJTIwc2Fsb24lMjBtYW5pY3VyZXxlbnwxfHx8fDE3NTkzMzUyNTN8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+    price: 'R$ 35',
+    imageUrl:
+      'https://images.unsplash.com/photo-1613457492120-4fcfbb7c3a5b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxuYWlsJTIwc2Fsb24lMjBtYW5pY3VyZXxlbnwxfHx8fDE3NTkzMzUyNTN8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
     isFavorite: false,
-    nextSlot: "Hoje 16:45"
-  }
+    nextSlot: 'Hoje 16:45',
+  },
 ];
 
 const featuredCategories = [
-  { name: "Salão de Beleza", count: "1.2K+", icon: "💄" },
-  { name: "Barbearia", count: "890", icon: "✂️" },
-  { name: "Spa & Massagem", count: "450", icon: "🧘‍♀️" },
-  { name: "Odontologia", count: "320", icon: "🦷" },
-  { name: "Personal Trainer", count: "760", icon: "💪" },
-  { name: "Estética", count: "540", icon: "✨" }
+  { name: 'Salão de Beleza', count: '1.2K+', icon: '💄' },
+  { name: 'Barbearia', count: '890', icon: '✂️' },
+  { name: 'Spa & Massagem', count: '450', icon: '🧘‍♀️' },
+  { name: 'Odontologia', count: '320', icon: '🦷' },
+  { name: 'Personal Trainer', count: '760', icon: '💪' },
+  { name: 'Estética', count: '540', icon: '✨' },
 ];
 
 const stats = [
-  { label: "Agendamentos hoje", value: "2.4K", icon: Calendar, color: "text-blue-600" },
-  { label: "Profissionais ativos", value: "3.2K", icon: Users, color: "text-green-600" },
-  { label: "Cidades", value: "150+", icon: MapPin, color: "text-purple-600" },
-  { label: "Avaliação", value: "4.9", icon: Star, color: "text-yellow-600" },
+  {
+    label: 'Agendamentos hoje',
+    value: '2.4K',
+    icon: Calendar,
+    color: 'text-blue-600',
+  },
+  {
+    label: 'Profissionais ativos',
+    value: '3.2K',
+    icon: Users,
+    color: 'text-green-600',
+  },
+  { label: 'Cidades', value: '150+', icon: MapPin, color: 'text-purple-600' },
+  { label: 'Avaliação', value: '4.9', icon: Star, color: 'text-yellow-600' },
 ];
 
 interface NewHomepageProps {
   onGoToDashboard: () => void;
   onGoToProfile: () => void;
   onSearch: () => void;
-  onNavigate: (page: "terms" | "privacy" | "help" | "contact") => void;
+  onNavigate: (page: 'terms' | 'privacy' | 'help' | 'contact') => void;
 }
 
-export function NewHomepage({ onGoToDashboard, onGoToProfile, onSearch, onNavigate }: NewHomepageProps) {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedLocation, setSelectedLocation] = useState("");
+export function NewHomepage({
+  onGoToDashboard,
+  onGoToProfile,
+  onSearch,
+  onNavigate,
+}: NewHomepageProps) {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedLocation, setSelectedLocation] = useState('');
 
   const handleSearch = () => {
     onSearch();
@@ -89,7 +126,7 @@ export function NewHomepage({ onGoToDashboard, onGoToProfile, onSearch, onNaviga
 
   return (
     <div className="min-h-screen bg-background">
-      <Header 
+      <Header
         onGoToDashboard={onGoToDashboard}
         onGoToProfile={onGoToProfile}
         showSearchToggle={false}
@@ -112,7 +149,7 @@ export function NewHomepage({ onGoToDashboard, onGoToProfile, onSearch, onNaviga
               </span>
             </h1>
             <p className="text-xl text-gray-600 mb-12 max-w-2xl mx-auto text-balance">
-              Encontre e agende com os melhores profissionais perto de você. 
+              Encontre e agende com os melhores profissionais perto de você.
               Simples, rápido e confiável.
             </p>
 
@@ -132,7 +169,10 @@ export function NewHomepage({ onGoToDashboard, onGoToProfile, onSearch, onNaviga
                     </div>
                   </div>
                   <div className="md:col-span-4">
-                    <Select value={selectedLocation} onValueChange={setSelectedLocation}>
+                    <Select
+                      value={selectedLocation}
+                      onValueChange={setSelectedLocation}
+                    >
                       <SelectTrigger className="border-0 bg-gray-50 h-14 rounded-xl focus:bg-white transition-colors">
                         <MapPin className="h-4 w-4 mr-2 text-gray-400" />
                         <SelectValue placeholder="Onde você está?" />
@@ -146,7 +186,7 @@ export function NewHomepage({ onGoToDashboard, onGoToProfile, onSearch, onNaviga
                     </Select>
                   </div>
                   <div className="md:col-span-2">
-                    <Button 
+                    <Button
                       onClick={handleSearch}
                       className="w-full h-14 bg-black hover:bg-gray-800 text-white rounded-xl font-medium transition-all hover:scale-105"
                     >
@@ -161,10 +201,17 @@ export function NewHomepage({ onGoToDashboard, onGoToProfile, onSearch, onNaviga
             {/* Categories */}
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 animate-in">
               {featuredCategories.map((category, index) => (
-                <button key={index} className="group p-4 bg-white rounded-xl border border-gray-200 hover:border-gray-300 hover:shadow-lg transition-all duration-200">
+                <button
+                  key={index}
+                  className="group p-4 bg-white rounded-xl border border-gray-200 hover:border-gray-300 hover:shadow-lg transition-all duration-200"
+                >
                   <div className="text-2xl mb-2">{category.icon}</div>
-                  <div className="text-sm font-medium text-gray-900 mb-1">{category.name}</div>
-                  <div className="text-xs text-gray-500">{category.count} opções</div>
+                  <div className="text-sm font-medium text-gray-900 mb-1">
+                    {category.name}
+                  </div>
+                  <div className="text-xs text-gray-500">
+                    {category.count} opções
+                  </div>
                 </button>
               ))}
             </div>
@@ -183,7 +230,9 @@ export function NewHomepage({ onGoToDashboard, onGoToProfile, onSearch, onNaviga
                     <stat.icon className={`h-6 w-6 ${stat.color}`} />
                   </div>
                 </div>
-                <div className="text-3xl font-semibold text-gray-900 mb-2">{stat.value}</div>
+                <div className="text-3xl font-semibold text-gray-900 mb-2">
+                  {stat.value}
+                </div>
                 <div className="text-sm text-gray-600">{stat.label}</div>
               </div>
             ))}
@@ -196,17 +245,27 @@ export function NewHomepage({ onGoToDashboard, onGoToProfile, onSearch, onNaviga
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center justify-between mb-12">
             <div>
-              <h2 className="text-4xl font-semibold text-gray-900 mb-4">Populares hoje</h2>
-              <p className="text-xl text-gray-600">Os serviços mais agendados nas últimas 24h</p>
+              <h2 className="text-4xl font-semibold text-gray-900 mb-4">
+                Populares hoje
+              </h2>
+              <p className="text-xl text-gray-600">
+                Os serviços mais agendados nas últimas 24h
+              </p>
             </div>
-            <Button variant="outline" className="hidden md:flex items-center gap-2 border-gray-300 hover:bg-gray-50">
+            <Button
+              variant="outline"
+              className="hidden md:flex items-center gap-2 border-gray-300 hover:bg-gray-50"
+            >
               Ver todos <ArrowRight className="h-4 w-4" />
             </Button>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {popularServices.map((service, index) => (
-              <Card key={service.id} className="group cursor-pointer hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border-0 shadow-lg bg-white overflow-hidden">
+              <Card
+                key={service.id}
+                className="group cursor-pointer hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border-0 shadow-lg bg-white overflow-hidden"
+              >
                 <CardContent className="p-0">
                   <div className="relative overflow-hidden">
                     <img
@@ -220,12 +279,16 @@ export function NewHomepage({ onGoToDashboard, onGoToProfile, onSearch, onNaviga
                       </Badge>
                     </div>
                     <button className="absolute top-4 right-4 p-2 bg-white/95 rounded-full hover:bg-white transition-colors">
-                      <Heart className={`h-4 w-4 ${service.isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-600'}`} />
+                      <Heart
+                        className={`h-4 w-4 ${service.isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-600'}`}
+                      />
                     </button>
                     <div className="absolute bottom-4 left-4">
                       <div className="flex items-center gap-1 bg-white/95 px-2 py-1 rounded-lg">
                         <Calendar className="h-3 w-3 text-green-600" />
-                        <span className="text-xs font-medium text-green-600">{service.nextSlot}</span>
+                        <span className="text-xs font-medium text-green-600">
+                          {service.nextSlot}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -233,14 +296,25 @@ export function NewHomepage({ onGoToDashboard, onGoToProfile, onSearch, onNaviga
                     <div className="flex items-center gap-2 mb-3">
                       <div className="flex items-center gap-1">
                         <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                        <span className="text-sm font-medium">{service.rating}</span>
+                        <span className="text-sm font-medium">
+                          {service.rating}
+                        </span>
                       </div>
-                      <span className="text-sm text-gray-500">({service.reviewCount})</span>
+                      <span className="text-sm text-gray-500">
+                        ({service.reviewCount})
+                      </span>
                     </div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">{service.name}</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                      {service.name}
+                    </h3>
                     <div className="flex items-center justify-between">
-                      <span className="text-lg font-semibold text-gray-900">A partir de {service.price}</span>
-                      <Button size="sm" className="bg-black hover:bg-gray-800 text-white">
+                      <span className="text-lg font-semibold text-gray-900">
+                        A partir de {service.price}
+                      </span>
+                      <Button
+                        size="sm"
+                        className="bg-black hover:bg-gray-800 text-white"
+                      >
                         Agendar
                       </Button>
                     </div>
@@ -256,9 +330,12 @@ export function NewHomepage({ onGoToDashboard, onGoToProfile, onSearch, onNaviga
       <section className="py-24 px-6 bg-white">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-semibold text-gray-900 mb-6">Por que usar o ServiceSnap?</h2>
+            <h2 className="text-4xl font-semibold text-gray-900 mb-6">
+              Por que usar o ServiceSnap?
+            </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              A plataforma que conecta você aos melhores profissionais com total segurança e praticidade
+              A plataforma que conecta você aos melhores profissionais com total
+              segurança e praticidade
             </p>
           </div>
 
@@ -269,9 +346,12 @@ export function NewHomepage({ onGoToDashboard, onGoToProfile, onSearch, onNaviga
                   <Clock className="h-8 w-8 text-blue-600" />
                 </div>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">Agendamento instantâneo</h3>
+              <h3 className="text-xl font-semibold text-gray-900 mb-4">
+                Agendamento instantâneo
+              </h3>
               <p className="text-gray-600 leading-relaxed">
-                Reserve seus horários em segundos, com confirmação automática e lembretes inteligentes.
+                Reserve seus horários em segundos, com confirmação automática e
+                lembretes inteligentes.
               </p>
             </div>
 
@@ -281,9 +361,12 @@ export function NewHomepage({ onGoToDashboard, onGoToProfile, onSearch, onNaviga
                   <Shield className="h-8 w-8 text-purple-600" />
                 </div>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">Profissionais verificados</h3>
+              <h3 className="text-xl font-semibold text-gray-900 mb-4">
+                Profissionais verificados
+              </h3>
               <p className="text-gray-600 leading-relaxed">
-                Todos os prestadores passam por verificação rigorosa de documentos e qualificações.
+                Todos os prestadores passam por verificação rigorosa de
+                documentos e qualificações.
               </p>
             </div>
 
@@ -293,9 +376,12 @@ export function NewHomepage({ onGoToDashboard, onGoToProfile, onSearch, onNaviga
                   <Star className="h-8 w-8 text-green-600" />
                 </div>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">Qualidade garantida</h3>
+              <h3 className="text-xl font-semibold text-gray-900 mb-4">
+                Qualidade garantida
+              </h3>
               <p className="text-gray-600 leading-relaxed">
-                Sistema de avaliações transparente com feedback real de milhares de clientes satisfeitos.
+                Sistema de avaliações transparente com feedback real de milhares
+                de clientes satisfeitos.
               </p>
             </div>
           </div>
@@ -310,28 +396,30 @@ export function NewHomepage({ onGoToDashboard, onGoToProfile, onSearch, onNaviga
               <h2 className="text-4xl md:text-5xl font-semibold text-white mb-4">
                 Conte-nos sobre seu projeto
               </h2>
-              <Button 
+              <Button
                 className="bg-white text-black hover:bg-gray-100 px-6 py-2 text-sm font-medium rounded-full mb-12"
                 onClick={handleSearch}
               >
                 Diga Olá!
               </Button>
             </div>
-            
+
             <div className="text-white">
               <h3 className="text-lg font-medium mb-8">Nossos escritórios</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16">
                 <div>
                   <h4 className="font-medium mb-2">São Paulo</h4>
                   <p className="text-gray-400 text-sm leading-relaxed">
-                    1 Centro, Cidade<br />
+                    1 Centro, Cidade
+                    <br />
                     1200, Sudoeste, São Paulo
                   </p>
                 </div>
                 <div>
                   <h4 className="font-medium mb-2">Rio de Janeiro</h4>
                   <p className="text-gray-400 text-sm leading-relaxed">
-                    04 Lage Ave<br />
+                    04 Lage Ave
+                    <br />
                     7740 Barra, Rio de Janeiro
                   </p>
                 </div>

@@ -1,21 +1,27 @@
-import useSearchStore from "./search.store";
+import useSearchStore from './search.store';
 
 export const useSearchActions = () => {
-    const { fetchSearchResultAction } = useSearchStore();
+  const { fetchSearchResultAction } = useSearchStore();
 
-    return {
-        fetchSearchResultAction,
-    };
+  return {
+    fetchSearchResultAction,
+  };
 };
 
 export const useSearchAttributes = () => {
-    const { searchResults, fetchingStatus, showFilters, showSearchBar, hasActiveFilters } = useSearchStore();
+  const {
+    searchResults,
+    fetchingStatus,
+    showFilters,
+    showSearchBar,
+    hasActiveFilters,
+  } = useSearchStore();
 
-    return {
-        searchResults,
-        fetchingStatus,
-        showFilters,
-        showSearchBar,
-        hasActiveFilters,
-    };
+  return {
+    searchResults,
+    fetchingStatus,
+    showFilters,
+    showSearchBar,
+    hasActiveFilters,
+  };
 };

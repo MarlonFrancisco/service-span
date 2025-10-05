@@ -1,8 +1,8 @@
-import { useState } from "react";
-import { Plus, Minus, Check } from "lucide-react";
-import { Button } from "../ui/button";
-import { Badge } from "../ui/badge";
-import { SelectedService } from "../NewBookingFlow";
+import { useState } from 'react';
+import { Plus, Minus, Check } from 'lucide-react';
+import { Button } from '../ui/button';
+import { Badge } from '../ui/badge';
+import { SelectedService } from '../NewBookingFlow';
 
 interface Service {
   id: string;
@@ -18,7 +18,10 @@ interface ServiceSelectionStepProps {
   onServicesChange: (services: SelectedService[]) => void;
 }
 
-export function ServiceSelectionStep({ selectedServices, onServicesChange }: ServiceSelectionStepProps) {
+export function ServiceSelectionStep({
+  selectedServices,
+  onServicesChange,
+}: ServiceSelectionStepProps) {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   // Mock data - substituir por dados reais
@@ -28,58 +31,60 @@ export function ServiceSelectionStep({ selectedServices, onServicesChange }: Ser
       name: 'Corte de Cabelo Masculino',
       description: 'Corte moderno e estiloso',
       duration: 45,
-      price: 45.00,
-      category: 'Cabelo'
+      price: 45.0,
+      category: 'Cabelo',
     },
     {
-      id: '2', 
+      id: '2',
       name: 'Barba Completa',
       description: 'Aparar e modelar a barba',
       duration: 30,
-      price: 25.00,
-      category: 'Barba'
+      price: 25.0,
+      category: 'Barba',
     },
     {
       id: '3',
       name: 'Sobrancelha',
       description: 'Limpeza e design de sobrancelhas',
       duration: 20,
-      price: 15.00,
-      category: 'Estética'
+      price: 15.0,
+      category: 'Estética',
     },
     {
       id: '4',
       name: 'Relaxamento',
       description: 'Procedimento químico para alisar',
       duration: 120,
-      price: 80.00,
-      category: 'Cabelo'
+      price: 80.0,
+      category: 'Cabelo',
     },
     {
       id: '5',
       name: 'Tratamento Capilar',
       description: 'Hidratação profunda',
       duration: 60,
-      price: 35.00,
-      category: 'Tratamento'
+      price: 35.0,
+      category: 'Tratamento',
     },
     {
       id: '6',
       name: 'Escova Progressiva',
       description: 'Alisamento temporário',
       duration: 180,
-      price: 120.00,
-      category: 'Cabelo'
-    }
+      price: 120.0,
+      category: 'Cabelo',
+    },
   ];
 
-  const categories = Array.from(new Set(mockServices.map(service => service.category)));
-  const filteredServices = selectedCategory 
-    ? mockServices.filter(service => service.category === selectedCategory)
+  const categories = Array.from(
+    new Set(mockServices.map((service) => service.category)),
+  );
+  const filteredServices = selectedCategory
+    ? mockServices.filter((service) => service.category === selectedCategory)
     : mockServices;
 
   const getServiceQuantity = (serviceId: string) => {
-    const service = selectedServices.find(s => s.id === serviceId);
+    const service = selectedServices.find((s) => s.id === serviceId);
     return service ? service.quantity : 0;
   };
 
@@ -88,12 +93,14 @@ export function ServiceSelectionStep({ selectedServices, onServicesChange }: Ser
   };
 
   const handleQuantityChange = (service: Service, newQuantity: number) => {
-    const existingServiceIndex = selectedServices.findIndex(s => s.id === service.id);
-    
+    const existingServiceIndex = selectedServices.findIndex(
+      (s) => s.id === service.id,
+    );
+
     if (newQuantity <= 0) {
       // Remove service if quantity is 0 or less
       if (existingServiceIndex !== -1) {
-        const newServices = selectedServices.filter(s => s.id !== service.id);
+        const newServices = selectedServices.filter((s) => s.id !== service.id);
         onServicesChange(newServices);
       }
     } else {
@@ -102,7 +109,7 @@ export function ServiceSelectionStep({ selectedServices, onServicesChange }: Ser
         const newServices = [...selectedServices];
         newServices[existingServiceIndex] = {
           ...newServices[existingServiceIndex],
-          quantity: newQuantity
+          quantity: newQuantity,
         };
         onServicesChange(newServices);
       } else {
@@ -113,7 +120,7 @@ export function ServiceSelectionStep({ selectedServices, onServicesChange }: Ser
           duration: service.duration,
           price: service.price,
           category: service.category,
-          quantity: newQuantity
+          quantity: newQuantity,
         };
         onServicesChange([...selectedServices, newService]);
       }
@@ -132,13 +139,15 @@ export function ServiceSelectionStep({ selectedServices, onServicesChange }: Ser
     }
     const hours = Math.floor(minutes / 60);
     const remainingMinutes = minutes % 60;
-    return remainingMinutes > 0 ? `${hours}h ${remainingMinutes}min` : `${hours}h`;
+    return remainingMinutes > 0
+      ? `${hours}h ${remainingMinutes}min`
+      : `${hours}h`;
   };
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
-      currency: 'BRL'
+      currency: 'BRL',
     }).format(price);
   };
 
@@ -146,7 +155,9 @@ export function ServiceSelectionStep({ selectedServices, onServicesChange }: Ser
     <div className="space-y-6">
       <div>
         <h2 className="text-xl text-[#1a2b4c] mb-2">Selecione os serviços</h2>
-        <p className="text-gray-600">Escolha um ou mais serviços que deseja agendar</p>
+        <p className="text-gray-600">
+          Escolha um ou mais serviços que deseja agendar
+        </p>
       </div>
 
       {/* Category Filter */}
@@ -154,25 +165,27 @@ export function ServiceSelectionStep({ selectedServices, onServicesChange }: Ser
         <h3 className="text-sm text-gray-700">Filtrar por categoria:</h3>
         <div className="flex flex-wrap gap-2">
           <Button
-            variant={selectedCategory === null ? "default" : "outline"}
+            variant={selectedCategory === null ? 'default' : 'outline'}
             size="sm"
             onClick={() => setSelectedCategory(null)}
-            className={selectedCategory === null 
-              ? "bg-[#20b2aa] hover:bg-[#20b2aa]/90 text-white" 
-              : "border-gray-300 text-gray-700 hover:bg-gray-50"
+            className={
+              selectedCategory === null
+                ? 'bg-[#20b2aa] hover:bg-[#20b2aa]/90 text-white'
+                : 'border-gray-300 text-gray-700 hover:bg-gray-50'
             }
           >
             Todos
           </Button>
-          {categories.map(category => (
+          {categories.map((category) => (
             <Button
               key={category}
-              variant={selectedCategory === category ? "default" : "outline"}
+              variant={selectedCategory === category ? 'default' : 'outline'}
               size="sm"
               onClick={() => setSelectedCategory(category)}
-              className={selectedCategory === category 
-                ? "bg-[#20b2aa] hover:bg-[#20b2aa]/90 text-white" 
-                : "border-gray-300 text-gray-700 hover:bg-gray-50"
+              className={
+                selectedCategory === category
+                  ? 'bg-[#20b2aa] hover:bg-[#20b2aa]/90 text-white'
+                  : 'border-gray-300 text-gray-700 hover:bg-gray-50'
               }
             >
               {category}
@@ -183,7 +196,7 @@ export function ServiceSelectionStep({ selectedServices, onServicesChange }: Ser
 
       {/* Services List */}
       <div className="space-y-3">
-        {filteredServices.map(service => (
+        {filteredServices.map((service) => (
           <div
             key={service.id}
             className={`border-2 rounded-lg p-4 transition-all ${
@@ -202,11 +215,16 @@ export function ServiceSelectionStep({ selectedServices, onServicesChange }: Ser
                     </div>
                   )}
                 </div>
-                
-                <p className="text-sm text-gray-600 mb-2">{service.description}</p>
-                
+
+                <p className="text-sm text-gray-600 mb-2">
+                  {service.description}
+                </p>
+
                 <div className="flex items-center gap-4">
-                  <Badge variant="secondary" className="bg-gray-100 text-gray-700">
+                  <Badge
+                    variant="secondary"
+                    className="bg-gray-100 text-gray-700"
+                  >
                     {service.category}
                   </Badge>
                   <span className="text-sm text-gray-500">
@@ -214,12 +232,12 @@ export function ServiceSelectionStep({ selectedServices, onServicesChange }: Ser
                   </span>
                 </div>
               </div>
-              
+
               <div className="text-right">
                 <div className="text-lg text-[#1a2b4c] mb-1">
                   {formatPrice(service.price)}
                 </div>
-                
+
                 {isSelected(service.id) ? (
                   <div className="flex items-center gap-2">
                     <Button
@@ -228,23 +246,29 @@ export function ServiceSelectionStep({ selectedServices, onServicesChange }: Ser
                       className="w-8 h-8 p-0 border-gray-300 text-gray-700 hover:bg-gray-50"
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleQuantityChange(service, getServiceQuantity(service.id) - 1);
+                        handleQuantityChange(
+                          service,
+                          getServiceQuantity(service.id) - 1,
+                        );
                       }}
                     >
                       <Minus className="h-3 w-3" />
                     </Button>
-                    
+
                     <span className="mx-2 min-w-[24px] text-center text-[#1a2b4c] font-medium">
                       {getServiceQuantity(service.id)}
                     </span>
-                    
+
                     <Button
                       size="sm"
                       variant="outline"
                       className="w-8 h-8 p-0 border-[#20b2aa] text-[#20b2aa] hover:bg-[#20b2aa]/10"
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleQuantityChange(service, getServiceQuantity(service.id) + 1);
+                        handleQuantityChange(
+                          service,
+                          getServiceQuantity(service.id) + 1,
+                        );
                       }}
                     >
                       <Plus className="h-3 w-3" />
@@ -274,8 +298,11 @@ export function ServiceSelectionStep({ selectedServices, onServicesChange }: Ser
         <div className="bg-[#20b2aa]/10 border border-[#20b2aa]/20 rounded-lg p-4">
           <h4 className="text-[#1a2b4c] mb-2">Serviços selecionados:</h4>
           <div className="space-y-2">
-            {selectedServices.map(service => (
-              <div key={service.id} className="flex justify-between items-center text-sm">
+            {selectedServices.map((service) => (
+              <div
+                key={service.id}
+                className="flex justify-between items-center text-sm"
+              >
                 <div className="flex items-center gap-2">
                   <span>{service.name}</span>
                   {service.quantity > 1 && (
@@ -289,12 +316,18 @@ export function ServiceSelectionStep({ selectedServices, onServicesChange }: Ser
                 </span>
               </div>
             ))}
-            
+
             {selectedServices.length > 1 && (
               <div className="border-t border-[#20b2aa]/20 pt-2 flex justify-between items-center font-medium">
                 <span>Total:</span>
                 <span className="text-[#1a2b4c]">
-                  {formatPrice(selectedServices.reduce((total, service) => total + (service.price * service.quantity), 0))}
+                  {formatPrice(
+                    selectedServices.reduce(
+                      (total, service) =>
+                        total + service.price * service.quantity,
+                      0,
+                    ),
+                  )}
                 </span>
               </div>
             )}

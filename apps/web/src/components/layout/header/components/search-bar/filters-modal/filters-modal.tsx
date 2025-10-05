@@ -1,33 +1,45 @@
-'use client'
+'use client';
 
-import { useState, useEffect } from 'react'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
-import { Label } from '@/components/ui/label'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Slider } from '@/components/ui/slider'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { useState, useEffect } from 'react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Slider } from '@/components/ui/slider';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 interface SearchFilters {
-  categories: string[]
-  priceRange: [number, number]
-  rating: number
-  location: string
-  availability: string
+  categories: string[];
+  priceRange: [number, number];
+  rating: number;
+  location: string;
+  availability: string;
 }
 
 interface FiltersModalProps {
-  children?: React.ReactNode
-  onApplyFilters?: (filters: SearchFilters) => void
-  initialFilters?: SearchFilters
-  onClearFilters?: () => void
+  children?: React.ReactNode;
+  onApplyFilters?: (filters: SearchFilters) => void;
+  initialFilters?: SearchFilters;
+  onClearFilters?: () => void;
 }
 
 export const FiltersModal = ({
   children,
   onApplyFilters,
   initialFilters,
-  onClearFilters
+  onClearFilters,
 }: FiltersModalProps) => {
   const [filters, setFilters] = useState<SearchFilters>(
     initialFilters || {
@@ -35,16 +47,16 @@ export const FiltersModal = ({
       priceRange: [0, 500],
       rating: 0,
       location: '',
-      availability: 'any'
-    }
-  )
+      availability: 'any',
+    },
+  );
 
   // Atualizar estado quando initialFilters mudar
   useEffect(() => {
     if (initialFilters) {
-      setFilters(initialFilters)
+      setFilters(initialFilters);
     }
-  }, [initialFilters])
+  }, [initialFilters]);
 
   const categories = [
     'Salão de Beleza',
@@ -52,52 +64,52 @@ export const FiltersModal = ({
     'Spa & Massagem',
     'Odontologia',
     'Personal Trainer',
-    'Estética'
-  ]
+    'Estética',
+  ];
 
   const handleCategoryChange = (category: string, checked: boolean) => {
-    setFilters(prev => ({
+    setFilters((prev) => ({
       ...prev,
       categories: checked
         ? [...prev.categories, category]
-        : prev.categories.filter(c => c !== category)
-    }))
-  }
+        : prev.categories.filter((c) => c !== category),
+    }));
+  };
 
   const handlePriceRangeChange = (value: number[]) => {
-    setFilters(prev => ({
+    setFilters((prev) => ({
       ...prev,
-      priceRange: value as [number, number]
-    }))
-  }
+      priceRange: value as [number, number],
+    }));
+  };
 
   const handleRatingChange = (rating: string) => {
-    setFilters(prev => ({
+    setFilters((prev) => ({
       ...prev,
-      rating: parseInt(rating)
-    }))
-  }
+      rating: parseInt(rating),
+    }));
+  };
 
   const handleLocationChange = (location: string) => {
-    setFilters(prev => ({
+    setFilters((prev) => ({
       ...prev,
-      location
-    }))
-  }
+      location,
+    }));
+  };
 
   const handleAvailabilityChange = (availability: string) => {
-    setFilters(prev => ({
+    setFilters((prev) => ({
       ...prev,
-      availability
-    }))
-  }
+      availability,
+    }));
+  };
 
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
 
   const handleApply = () => {
-    onApplyFilters?.(filters)
-    setOpen(false)
-  }
+    onApplyFilters?.(filters);
+    setOpen(false);
+  };
 
   const handleClear = () => {
     setFilters({
@@ -105,10 +117,10 @@ export const FiltersModal = ({
       priceRange: [0, 500],
       rating: 0,
       location: '',
-      availability: 'any'
-    })
-    onClearFilters?.()
-  }
+      availability: 'any',
+    });
+    onClearFilters?.();
+  };
 
   const FiltersContent = () => (
     <DialogContent className="max-w-md">
@@ -121,12 +133,14 @@ export const FiltersModal = ({
         <div>
           <Label className="text-base font-medium mb-3 block">Categorias</Label>
           <div className="space-y-2">
-            {categories.map(category => (
+            {categories.map((category) => (
               <div key={category} className="flex items-center space-x-2">
                 <Checkbox
                   id={category}
                   checked={filters.categories.includes(category)}
-                  onCheckedChange={(checked) => handleCategoryChange(category, !!checked)}
+                  onCheckedChange={(checked) =>
+                    handleCategoryChange(category, !!checked)
+                  }
                 />
                 <Label htmlFor={category} className="text-sm">
                   {category}
@@ -139,7 +153,8 @@ export const FiltersModal = ({
         {/* Price Range */}
         <div>
           <Label className="text-base font-medium mb-3 block">
-            Faixa de Preço: R$ {filters.priceRange[0]} - R$ {filters.priceRange[1]}
+            Faixa de Preço: R$ {filters.priceRange[0]} - R${' '}
+            {filters.priceRange[1]}
           </Label>
           <Slider
             value={filters.priceRange}
@@ -153,8 +168,13 @@ export const FiltersModal = ({
 
         {/* Rating */}
         <div>
-          <Label className="text-base font-medium mb-3 block">Avaliação Mínima</Label>
-          <Select value={filters.rating.toString()} onValueChange={handleRatingChange}>
+          <Label className="text-base font-medium mb-3 block">
+            Avaliação Mínima
+          </Label>
+          <Select
+            value={filters.rating.toString()}
+            onValueChange={handleRatingChange}
+          >
             <SelectTrigger>
               <SelectValue placeholder="Selecionar avaliação" />
             </SelectTrigger>
@@ -169,7 +189,9 @@ export const FiltersModal = ({
 
         {/* Location */}
         <div>
-          <Label className="text-base font-medium mb-3 block">Localização</Label>
+          <Label className="text-base font-medium mb-3 block">
+            Localização
+          </Label>
           <Select value={filters.location} onValueChange={handleLocationChange}>
             <SelectTrigger>
               <SelectValue placeholder="Selecionar localização" />
@@ -186,8 +208,13 @@ export const FiltersModal = ({
 
         {/* Availability */}
         <div>
-          <Label className="text-base font-medium mb-3 block">Disponibilidade</Label>
-          <Select value={filters.availability} onValueChange={handleAvailabilityChange}>
+          <Label className="text-base font-medium mb-3 block">
+            Disponibilidade
+          </Label>
+          <Select
+            value={filters.availability}
+            onValueChange={handleAvailabilityChange}
+          >
             <SelectTrigger>
               <SelectValue placeholder="Selecionar disponibilidade" />
             </SelectTrigger>
@@ -211,22 +238,20 @@ export const FiltersModal = ({
         </div>
       </div>
     </DialogContent>
-  )
+  );
 
   if (children) {
     return (
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger asChild>
-          {children}
-        </DialogTrigger>
+        <DialogTrigger asChild>{children}</DialogTrigger>
         <FiltersContent />
       </Dialog>
-    )
+    );
   }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <FiltersContent />
     </Dialog>
-  )
-}
+  );
+};

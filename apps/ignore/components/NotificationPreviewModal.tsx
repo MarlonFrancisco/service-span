@@ -1,7 +1,7 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
-import { Button } from "./ui/button";
-import { Separator } from "./ui/separator";
-import { Mail, MessageSquare } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
+import { Button } from './ui/button';
+import { Separator } from './ui/separator';
+import { Mail, MessageSquare } from 'lucide-react';
 
 interface NotificationPreviewModalProps {
   isOpen: boolean;
@@ -10,11 +10,11 @@ interface NotificationPreviewModalProps {
   customMessage: string;
 }
 
-export function NotificationPreviewModal({ 
-  isOpen, 
-  onClose, 
-  type, 
-  customMessage 
+export function NotificationPreviewModal({
+  isOpen,
+  onClose,
+  type,
+  customMessage,
 }: NotificationPreviewModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -34,7 +34,7 @@ export function NotificationPreviewModal({
             )}
           </DialogTitle>
         </DialogHeader>
-        
+
         <div className="py-4">
           {type === 'email' ? (
             <EmailTemplate customMessage={customMessage} />
@@ -86,13 +86,17 @@ function EmailTemplate({ customMessage }: { customMessage: string }) {
               <p className="text-[#1a2b4c]">R$ 45,00</p>
             </div>
           </div>
-          
+
           <Separator />
-          
+
           <div>
             <p className="text-gray-600 text-sm">Endereço:</p>
-            <p className="text-[#1a2b4c] text-sm">Barbearia Silva - Unidade Centro</p>
-            <p className="text-gray-500 text-sm">Rua das Flores, 123 - Centro, São Paulo</p>
+            <p className="text-[#1a2b4c] text-sm">
+              Barbearia Silva - Unidade Centro
+            </p>
+            <p className="text-gray-500 text-sm">
+              Rua das Flores, 123 - Centro, São Paulo
+            </p>
           </div>
         </div>
 
@@ -116,7 +120,9 @@ function EmailTemplate({ customMessage }: { customMessage: string }) {
         {/* Footer */}
         <div className="text-center text-xs text-gray-500 pt-4 border-t">
           <p>Precisa de ajuda? Responda este e-mail ou ligue (11) 9999-9999</p>
-          <p className="mt-1">© 2024 ServiceSnap - Agendamentos Inteligentes</p>
+          <p className="mt-1">
+            © 2024 ServiceSnap - Agendamentos Inteligentes
+          </p>
         </div>
       </div>
     </div>
@@ -125,9 +131,10 @@ function EmailTemplate({ customMessage }: { customMessage: string }) {
 
 // SMS Template Component
 function SmsTemplate({ customMessage }: { customMessage: string }) {
-  const baseMessage = "Lembrete: Seu Corte de Cabelo com Barbearia Silva (Centro) é amanha as 14:30. Detalhes no email.";
-  const linkMessage = " Link: agenda.x/c/abc123";
-  const fullMessage = customMessage 
+  const baseMessage =
+    'Lembrete: Seu Corte de Cabelo com Barbearia Silva (Centro) é amanha as 14:30. Detalhes no email.';
+  const linkMessage = ' Link: agenda.x/c/abc123';
+  const fullMessage = customMessage
     ? `${baseMessage} ${customMessage}${linkMessage}`
     : `${baseMessage}${linkMessage}`;
 
@@ -140,11 +147,11 @@ function SmsTemplate({ customMessage }: { customMessage: string }) {
             <div className="w-2 h-2 bg-green-500 rounded-full"></div>
             <span>SMS • ServiceSnap</span>
           </div>
-          
+
           <div className="bg-[#20b2aa] text-white p-3 rounded-lg rounded-bl-none inline-block max-w-[90%]">
             <p className="text-sm leading-relaxed">{fullMessage}</p>
           </div>
-          
+
           <div className="text-xs text-gray-500 mt-2">
             Agora • {fullMessage.length}/160 caracteres
           </div>
@@ -155,8 +162,8 @@ function SmsTemplate({ customMessage }: { customMessage: string }) {
       <div className="mt-4 text-center">
         {fullMessage.length > 160 ? (
           <p className="text-red-600 text-sm">
-            ⚠️ Mensagem muito longa ({fullMessage.length} caracteres). 
-            Será enviada em {Math.ceil(fullMessage.length / 160)} partes.
+            ⚠️ Mensagem muito longa ({fullMessage.length} caracteres). Será
+            enviada em {Math.ceil(fullMessage.length / 160)} partes.
           </p>
         ) : (
           <p className="text-green-600 text-sm">

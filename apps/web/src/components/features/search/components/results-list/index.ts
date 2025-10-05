@@ -1,2 +1,1 @@
-export { ResultsList } from './results-list'
-
+export { ResultsList } from './results-list';

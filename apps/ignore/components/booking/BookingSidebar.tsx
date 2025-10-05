@@ -1,8 +1,8 @@
-import { Calendar, Clock, User, MapPin, Phone } from "lucide-react";
-import { Card } from "../ui/card";
-import { Badge } from "../ui/badge";
-import { Separator } from "../ui/separator";
-import { SelectedService, Professional, BookingStep } from "../NewBookingFlow";
+import { Calendar, Clock, User, MapPin, Phone } from 'lucide-react';
+import { Card } from '../ui/card';
+import { Badge } from '../ui/badge';
+import { Separator } from '../ui/separator';
+import { SelectedService, Professional, BookingStep } from '../NewBookingFlow';
 
 interface BookingSidebarProps {
   businessName: string;
@@ -29,12 +29,12 @@ export function BookingSidebar({
   selectedTime,
   totalPrice,
   totalDuration,
-  currentStep
+  currentStep,
 }: BookingSidebarProps) {
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
-      currency: 'BRL'
+      currency: 'BRL',
     }).format(price);
   };
 
@@ -44,14 +44,16 @@ export function BookingSidebar({
     }
     const hours = Math.floor(minutes / 60);
     const remainingMinutes = minutes % 60;
-    return remainingMinutes > 0 ? `${hours}h ${remainingMinutes}min` : `${hours}h`;
+    return remainingMinutes > 0
+      ? `${hours}h ${remainingMinutes}min`
+      : `${hours}h`;
   };
 
   const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat('pt-BR', {
       weekday: 'short',
       day: 'numeric',
-      month: 'short'
+      month: 'short',
     }).format(date);
   };
 
@@ -60,7 +62,7 @@ export function BookingSidebar({
       weekday: 'long',
       year: 'numeric',
       month: 'long',
-      day: 'numeric'
+      day: 'numeric',
     }).format(date);
   };
 
@@ -87,7 +89,7 @@ export function BookingSidebar({
           {/* Resumo do Agendamento */}
           <div>
             <h4 className="text-[#1a2b4c] mb-3">Resumo da Reserva</h4>
-            
+
             {/* Serviços */}
             {selectedServices.length > 0 && (
               <div className="space-y-3 mb-4">
@@ -95,11 +97,16 @@ export function BookingSidebar({
                   <span>Serviços selecionados:</span>
                 </div>
                 <div className="space-y-2">
-                  {selectedServices.map(service => (
-                    <div key={service.id} className="flex justify-between items-start">
+                  {selectedServices.map((service) => (
+                    <div
+                      key={service.id}
+                      className="flex justify-between items-start"
+                    >
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
-                          <p className="text-sm text-gray-900">{service.name}</p>
+                          <p className="text-sm text-gray-900">
+                            {service.name}
+                          </p>
                           {service.quantity > 1 && (
                             <span className="bg-[#20b2aa] text-white px-1.5 py-0.5 rounded-full text-xs">
                               {service.quantity}x
@@ -111,7 +118,9 @@ export function BookingSidebar({
                             {service.category}
                           </Badge>
                           <span className="text-xs text-gray-500">
-                            {formatDuration(service.duration * service.quantity)}
+                            {formatDuration(
+                              service.duration * service.quantity,
+                            )}
                           </span>
                         </div>
                       </div>
@@ -121,7 +130,7 @@ export function BookingSidebar({
                     </div>
                   ))}
                 </div>
-                
+
                 {selectedServices.length > 1 && (
                   <div className="border-t border-gray-200 pt-2 flex justify-between items-center">
                     <span className="text-sm">Duração total:</span>
@@ -141,7 +150,9 @@ export function BookingSidebar({
                   <span className="text-sm text-gray-600">Profissional:</span>
                 </div>
                 <p className="text-sm text-gray-900 ml-6">
-                  {isAnyProfessional ? 'Qualquer profissional' : selectedProfessional?.name}
+                  {isAnyProfessional
+                    ? 'Qualquer profissional'
+                    : selectedProfessional?.name}
                 </p>
                 {selectedProfessional && (
                   <p className="text-xs text-gray-500 ml-6">
@@ -159,10 +170,14 @@ export function BookingSidebar({
                   <span className="text-sm text-gray-600">Agendado para:</span>
                 </div>
                 <div className="ml-6">
-                  <p className="text-sm text-gray-900">{formatFullDate(selectedDate)}</p>
+                  <p className="text-sm text-gray-900">
+                    {formatFullDate(selectedDate)}
+                  </p>
                   <div className="flex items-center gap-2 mt-1">
                     <Clock className="h-3 w-3 text-gray-500" />
-                    <span className="text-sm text-gray-700">{selectedTime}</span>
+                    <span className="text-sm text-gray-700">
+                      {selectedTime}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -179,7 +194,7 @@ export function BookingSidebar({
                       {formatPrice(totalPrice)}
                     </span>
                   </div>
-                  
+
                   {currentStep !== 'checkout' && (
                     <p className="text-xs text-gray-500 mt-1">
                       Pagamento no local
@@ -198,19 +213,25 @@ export function BookingSidebar({
             </div>
           )}
 
-          {selectedServices.length > 0 && !selectedProfessional && !isAnyProfessional && currentStep !== 'services' && (
-            <div className="text-center py-4 text-amber-600 bg-amber-50 rounded-lg">
-              <User className="h-6 w-6 mx-auto mb-1" />
-              <p className="text-sm">Escolha um profissional</p>
-            </div>
-          )}
+          {selectedServices.length > 0 &&
+            !selectedProfessional &&
+            !isAnyProfessional &&
+            currentStep !== 'services' && (
+              <div className="text-center py-4 text-amber-600 bg-amber-50 rounded-lg">
+                <User className="h-6 w-6 mx-auto mb-1" />
+                <p className="text-sm">Escolha um profissional</p>
+              </div>
+            )}
 
-          {(selectedProfessional || isAnyProfessional) && (!selectedDate || !selectedTime) && currentStep !== 'services' && currentStep !== 'professional' && (
-            <div className="text-center py-4 text-blue-600 bg-blue-50 rounded-lg">
-              <Clock className="h-6 w-6 mx-auto mb-1" />
-              <p className="text-sm">Selecione data e horário</p>
-            </div>
-          )}
+          {(selectedProfessional || isAnyProfessional) &&
+            (!selectedDate || !selectedTime) &&
+            currentStep !== 'services' &&
+            currentStep !== 'professional' && (
+              <div className="text-center py-4 text-blue-600 bg-blue-50 rounded-lg">
+                <Clock className="h-6 w-6 mx-auto mb-1" />
+                <p className="text-sm">Selecione data e horário</p>
+              </div>
+            )}
         </div>
       </Card>
     </div>
