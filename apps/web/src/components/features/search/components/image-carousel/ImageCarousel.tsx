@@ -1,9 +1,7 @@
-import { useState } from 'react';
+import { Badge, Button, Dialog, DialogContent } from '@repo/ui';
 import { ChevronLeft, ChevronRight, Maximize2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { useState } from 'react';
 import { ImageWithFallback } from '../image-with-fallback';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
 
 interface ImageCarouselProps {
   images: string[];

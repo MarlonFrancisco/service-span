@@ -1,7 +1,5 @@
-import { Calendar, Clock, User, MapPin, Phone } from 'lucide-react';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
+import { Badge, Card, Separator } from '@repo/ui';
+import { Calendar, Clock, MapPin, Phone, User } from 'lucide-react';
 
 export interface SelectedService {
   id: string;

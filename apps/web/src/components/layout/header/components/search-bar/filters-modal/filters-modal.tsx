@@ -1,24 +1,22 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import {
+  Button,
+  Checkbox,
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Slider } from '@/components/ui/slider';
-import {
+  Label,
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+  Slider,
+} from '@repo/ui';
+import { useEffect, useState } from 'react';
 
 interface SearchFilters {
   categories: string[];

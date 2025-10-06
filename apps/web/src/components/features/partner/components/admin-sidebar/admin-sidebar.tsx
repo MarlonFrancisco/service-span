@@ -1,4 +1,5 @@
 'use client';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useAdminSidebar } from './admin-sidebar.hook';
 import {
@@ -20,8 +21,9 @@ export const AdminSidebarComponent = () => {
       {/* Header */}
       <div className={sidebarHeaderVariants()}>
         <div>
-          <h2 className="text-[#1a2b4c] text-lg font-semibold">ServiceSnap</h2>
-          <p className="text-sm text-gray-600">Painel Administrativo</p>
+          <Link href="/">
+            <Image src="/logo.png" alt="ServiceSnap" width={200} height={32} />
+          </Link>
         </div>
       </div>
 

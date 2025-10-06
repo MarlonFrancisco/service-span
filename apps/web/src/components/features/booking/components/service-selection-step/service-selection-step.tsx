@@ -1,7 +1,6 @@
+import { Badge, Button } from '@repo/ui';
+import { Check, Minus, Plus } from 'lucide-react';
 import { useState } from 'react';
-import { Plus, Minus, Check } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { SelectedService } from './BookingSidebar';
 
 interface Service {

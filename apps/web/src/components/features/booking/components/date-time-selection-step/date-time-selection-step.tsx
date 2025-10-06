@@ -1,9 +1,7 @@
-import { useState, useEffect } from 'react';
+import { Button, Calendar as CalendarComponent, Card } from '@repo/ui';
 import { Calendar, Clock } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Calendar as CalendarComponent } from '@repo/ui';
-import { SelectedService, Professional } from './BookingSidebar';
+import { useEffect, useState } from 'react';
+import { Professional, SelectedService } from './BookingSidebar';
 
 export interface TimeSlot {
   time: string;

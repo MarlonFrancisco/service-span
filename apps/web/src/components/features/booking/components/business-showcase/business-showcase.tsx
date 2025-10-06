@@ -1,10 +1,9 @@
-import { Star, Share, Heart, Images } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button, Dialog, DialogContent } from '@repo/ui';
+import { Heart, Images, Share, Star } from 'lucide-react';
+import Image from 'next/image';
 import { useState } from 'react';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { ImageCarousel } from '../../../search/components/image-carousel';
 import { BUSINESS_SHOWCASE_MOCK } from './business-showcase.mock';
-import Image from 'next/image';
 
 interface BusinessShowcaseProps {
   businessName: string;

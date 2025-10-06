@@ -1,18 +1,15 @@
-import { useState } from 'react';
+import { Button, Card, Checkbox, Input } from '@repo/ui';
 import {
-  User,
-  Mail,
-  Phone,
-  Check,
   Calendar,
+  Check,
   Clock,
+  Mail,
   MapPin,
+  Phone,
+  User,
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Checkbox } from '@/components/ui/checkbox';
-import { SelectedService, Professional } from './BookingSidebar';
+import { useState } from 'react';
+import { Professional, SelectedService } from './BookingSidebar';
 
 interface CheckoutStepProps {
   selectedServices: SelectedService[];

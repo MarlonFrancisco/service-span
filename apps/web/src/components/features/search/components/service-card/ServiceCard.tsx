@@ -1,6 +1,5 @@
-import { Star, MapPin } from 'lucide-react';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Badge, Card } from '@repo/ui';
+import { MapPin, Star } from 'lucide-react';
 import { ImageCarousel } from '../image-carousel';
 
 interface ServiceCardProps {

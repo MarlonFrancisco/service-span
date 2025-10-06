@@ -1,16 +1,16 @@
 'use client';
 
 import { Footer, Header } from '@/components/layout';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import {
+  Badge,
+  Button,
+  Input,
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@repo/ui';
 import { MapPin, Search, Sparkles } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
@@ -58,7 +58,7 @@ export const Homepage = () => {
                 className="font-display text-5xl font-medium tracking-tight text-balance text-neutral-950 sm:text-7xl mb-8"
                 id="service-snap-title"
               >
-                ServiceSnap
+                ServiceSnap.
               </h1>
               <p
                 className="text-lg text-neutral-600 mb-12 max-w-2xl mx-auto text-balance"

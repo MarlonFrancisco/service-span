@@ -3,7 +3,7 @@ import { cva } from 'class-variance-authority';
 
 export const adminSidebarVariants = cva(
   // Base styles
-  'w-64 bg-white border-r border-gray-200 flex flex-col',
+  'w-64 bg-white flex flex-col',
   {
     variants: {
       layout: {
@@ -19,7 +19,7 @@ export const adminSidebarVariants = cva(
 
 export const sidebarHeaderVariants = cva(
   // Base styles
-  'p-6 border-b border-gray-200',
+  'p-6',
   {
     variants: {
       layout: {

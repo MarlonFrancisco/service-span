@@ -1,9 +1,9 @@
 'use client';
 
+import { Button } from '@repo/ui';
 import { useEffect } from 'react';
-import { ServiceCard } from '../service-card';
-import { Button } from '@/components/ui/button';
 import type { Service } from '../../types/search.types';
+import { ServiceCard } from '../service-card';
 
 interface ResultsListProps {
   selectedServiceId: string | null;

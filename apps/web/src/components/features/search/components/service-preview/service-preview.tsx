@@ -1,12 +1,9 @@
 'use client';
 
-import { Star, Phone, MapPin, Clock, Calendar } from 'lucide-react';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
-import { ImageCarousel } from '../image-carousel';
+import { Badge, Button, Card, Separator } from '@repo/ui';
+import { Calendar, Clock, MapPin, Phone, Star } from 'lucide-react';
 import type { Service } from '../../types/search.types';
+import { ImageCarousel } from '../image-carousel';
 
 interface ServicePreviewProps {
   service: Service | null;
