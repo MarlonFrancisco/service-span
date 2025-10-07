@@ -17,5 +17,5 @@ export interface ISearchStore {
   showFilters: boolean;
   showSearchBar: boolean;
   hasActiveFilters: boolean;
-  fetchSearchResultAction: (searchResults: ISearchResult[]) => void;
+  fetchSearchResultAction: () => void;
 }

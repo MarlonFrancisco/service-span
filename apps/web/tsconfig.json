@@ -8,9 +8,8 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "./src/*"
-      ]
+      "@/*": ["./src/*"],
+      "@repo/ui/*": ["../../packages/ui/src/*"]
     }
   },
   "include": [
@@ -18,9 +17,8 @@
     "**/*.tsx",
     "next-env.d.ts",
     "next.config.js",
+    "postcss.config.mjs",
     ".next/types/**/*.ts"
   ],
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules"]
 }

@@ -1,5 +1,9 @@
 'use client';
 
+import {
+  CONTACT_ADDRESSES,
+  SOCIAL_LINKS,
+} from '@/utils/constants/contact.constants';
 import { ContactInfo } from './components/contact-info';
 import { HeaderLogo } from './components/header-logo';
 import { MenuButton } from './components/menu-button';
@@ -7,11 +11,7 @@ import { NavigationMenu } from './components/navigation-menu';
 import { PartnerButton } from './components/partner-button';
 import { SearchBar } from './components/search-bar/search-bar';
 import { SocialLinks } from './components/social-links';
-import {
-  CONTACT_ADDRESSES,
-  NAVIGATION_ITEMS,
-  SOCIAL_LINKS,
-} from './header.constants';
+import { NAVIGATION_ITEMS } from './header.constants';
 import { useHeader } from './header.hook';
 import type { THeaderConfig } from './header.types';
 

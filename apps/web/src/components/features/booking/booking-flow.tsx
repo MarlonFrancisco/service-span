@@ -109,7 +109,7 @@ export const BookingFlow = ({
                   src="/logo.png"
                   alt="ServiceSnap"
                   width={200}
-                  height={200}
+                  height={26}
                 />
               </Link>
             </div>
