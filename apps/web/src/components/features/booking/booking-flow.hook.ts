@@ -1,5 +1,11 @@
-import { useState, useCallback, useMemo } from 'react';
-import type { TBookingStep, TSelectedService, TProfessional } from './types';
+'use client';
+
+import { useCallback, useMemo, useState } from 'react';
+import type {
+  TBookingStep,
+  TProfessional,
+  TSelectedService,
+} from './booking.types';
 
 export type TUseBookingFlowConfig = {
   onBack: () => void;
@@ -30,9 +36,7 @@ export type TUseBookingFlowReturn = {
   setValidationError: (error: string | null) => void;
 };
 
-export const useBookingFlow = ({
-  onBack,
-}: TUseBookingFlowConfig): TUseBookingFlowReturn => {
+export const useBookingFlow = (): TUseBookingFlowReturn => {
   const [currentStep, setCurrentStep] = useState<TBookingStep>('services');
   const [selectedServices, setSelectedServices] = useState<TSelectedService[]>(
     [],
@@ -141,8 +145,7 @@ export const useBookingFlow = ({
 
   const handleFinishBooking = useCallback(() => {
     alert('Agendamento realizado com sucesso!');
-    onBack();
-  }, [onBack]);
+  }, []);
 
   return {
     currentStep,

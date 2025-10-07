@@ -1,3 +1,5 @@
+'use client';
+
 import { Footer } from '@/components/layout';
 import { Button, Card } from '@repo/ui';
 import { AlertTriangle, Check } from 'lucide-react';
@@ -24,7 +26,6 @@ export const BookingFlow = ({
   businessReviewCount,
   businessCategory,
   businessDescription,
-  onBack,
 }: TBookingFlowConfig) => {
   const {
     currentStep,
@@ -46,7 +47,7 @@ export const BookingFlow = ({
     handlePrevStep,
     handleFinishBooking,
     setValidationError,
-  } = useBookingFlow({ onBack });
+  } = useBookingFlow();
 
   const renderStepContent = () => {
     switch (currentStep) {

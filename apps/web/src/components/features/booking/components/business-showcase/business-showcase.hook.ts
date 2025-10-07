@@ -1,3 +1,5 @@
+'use client';
+
 import { useCallback, useState } from 'react';
 import { toast } from 'sonner';
 import { BUSINESS_SHOWCASE_MOCK } from './business-showcase.mock';

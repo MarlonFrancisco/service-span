@@ -48,18 +48,8 @@ export function LoginStep({ onNext, onClose }: LoginStepProps) {
 
   return (
     <div className="w-full max-w-lg">
-      {/* Header */}
-      <div className="flex items-center justify-between p-8 pb-6">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-primary rounded-xl flex items-center justify-center">
-            <div className="w-4 h-4 bg-primary-foreground rounded-lg"></div>
-          </div>
-          <h1 className="text-foreground font-semibold text-xl">ServiceSnap</h1>
-        </div>
-      </div>
-
       {/* Content */}
-      <div className="px-8 pb-8">
+      <div className="px-8 pb-8 pt-8">
         <div className="space-y-8">
           {/* Welcome Section */}
           <div className="space-y-3">

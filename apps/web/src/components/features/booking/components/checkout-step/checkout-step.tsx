@@ -1,3 +1,5 @@
+'use client';
+
 import { Button, Card, Checkbox, Input } from '@repo/ui';
 import {
   Calendar,
@@ -9,7 +11,7 @@ import {
   User,
 } from 'lucide-react';
 import { useState } from 'react';
-import { Professional, SelectedService } from './BookingSidebar';
+import { Professional, SelectedService } from '../booking-sidebar';
 
 interface CheckoutStepProps {
   selectedServices: SelectedService[];

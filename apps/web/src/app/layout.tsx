@@ -1,5 +1,6 @@
 import { AuthModal } from '@/components/features/auth';
 import { Toaster } from '@/components/layout';
+import useSearchStore from '@/store/search/search.store';
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import './globals.css';
@@ -149,6 +150,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  console.log('layout');
+  useSearchStore.setState({ showFilters: true, showSearchBar: true });
   return (
     <html lang="pt-BR">
       <body

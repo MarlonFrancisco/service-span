@@ -1,3 +1,5 @@
+'use client';
+
 import { Button, Input, Textarea } from '@repo/ui';
 import { ArrowLeft } from 'lucide-react';
 

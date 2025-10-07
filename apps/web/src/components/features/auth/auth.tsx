@@ -1,5 +1,5 @@
 'use client';
-import { useAuthAttributes } from '@/store/auth/auth.hook';
+import { useAuthActions, useAuthAttributes } from '@/store/auth/auth.hook';
 import { Dialog, DialogContent } from '@repo/ui';
 import { useState } from 'react';
 import { AuthStep, UserType } from './auth.types';
@@ -20,6 +20,7 @@ export function AuthModal() {
     isNewUser: false,
   });
   const { isOpen } = useAuthAttributes();
+  const { toggleAuthAction } = useAuthActions();
   const isProfileSelection = currentStep === 'profile-selection';
 
   const handleStepChange = async (step: AuthStep, data?: any) => {
@@ -39,6 +40,7 @@ export function AuthModal() {
 
   const handleClose = () => {
     setCurrentStep('login');
+    toggleAuthAction(false);
     setUserData({ email: '', phone: '', name: '', isNewUser: false });
   };
 

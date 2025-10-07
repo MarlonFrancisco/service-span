@@ -1,13 +1,8 @@
 'use client';
 
-import { useParams, useRouter } from 'next/navigation';
 import { BookingFlow } from '@/components/features/booking';
 
 export default function BookingPage() {
-  const params = useParams();
-  const router = useRouter();
-  const serviceId = params.id as string;
-
   // Mock business data - em produção viria de uma API baseada no serviceId
   const mockBusinessData = {
     businessName: 'Salão Elegance',
@@ -25,9 +20,5 @@ export default function BookingPage() {
       'Salão especializado em tratamentos capilares e estéticos com profissionais altamente qualificados.',
   };
 
-  const handleBack = () => {
-    router.back();
-  };
-
-  return <BookingFlow {...mockBusinessData} onBack={handleBack} />;
+  return <BookingFlow {...mockBusinessData} />;
 }
