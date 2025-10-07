@@ -15,7 +15,7 @@ import { NAVIGATION_ITEMS } from './header.constants';
 import { useHeader } from './header.hook';
 import type { THeaderConfig } from './header.types';
 
-export const Header = ({ ...props }: THeaderConfig) => {
+export const Header = ({ showSearchBar = false, ...props }: THeaderConfig) => {
   const { isMenuOpen, toggleMenu, goToPlansPage } = useHeader();
 
   return (
@@ -27,7 +27,7 @@ export const Header = ({ ...props }: THeaderConfig) => {
             <div className="flex items-center justify-between">
               <HeaderLogo variant="light" />
 
-              <SearchBar />
+              {showSearchBar && <SearchBar />}
 
               <div className="flex items-center gap-x-8">
                 <PartnerButton variant="light" onClick={goToPlansPage} />

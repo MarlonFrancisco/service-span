@@ -1,13 +1,17 @@
-import { Button } from '@repo/ui';
-import { Filter, MapPin, Search } from 'lucide-react';
-import { FiltersModal } from './filters-modal';
-import { useEffect, useRef, useState } from 'react';
-import { Popover, PopoverTrigger, PopoverContent, Calendar } from '@repo/ui';
 import { useSearchAttributes } from '@/store/search/search.hook';
+import {
+  Button,
+  Calendar,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@repo/ui';
+import { Filter, MapPin, Search } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { FiltersModal } from './filters-modal';
 
 export const SearchBar = () => {
-  const { showFilters, hasActiveFilters, showSearchBar } =
-    useSearchAttributes();
+  const { hasActiveFilters } = useSearchAttributes();
 
   const [searchFilters, setSearchFilters] = useState({
     location: '',
@@ -83,8 +87,6 @@ export const SearchBar = () => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
-
-  if (!showSearchBar) return null;
 
   return (
     <div>
@@ -219,25 +221,22 @@ export const SearchBar = () => {
           </div>
         </div>
 
-        {/* Filters Button */}
-        {showFilters && (
-          <div className="ml-6">
-            <FiltersModal onClearFilters={() => {}}>
-              <Button
-                variant="outline"
-                className={`flex items-center gap-2 border-gray-300 hover:border-gray-400 rounded-2xl px-6 py-4 h-14 font-medium transition-all hover:shadow-lg ${hasActiveFilters ? 'border-blue-500 text-blue-600' : ''}`}
-              >
-                <Filter className="h-4 w-4" />
-                <span className="hidden lg:inline">Filtros</span>
-                {hasActiveFilters && (
-                  <span className="ml-1 bg-blue-100 text-blue-600 text-xs px-1.5 py-0.5 rounded-full">
-                    ●
-                  </span>
-                )}
-              </Button>
-            </FiltersModal>
-          </div>
-        )}
+        <div className="ml-6 flex items-center">
+          <FiltersModal onClearFilters={() => {}}>
+            <Button
+              variant="outline"
+              className={`flex items-center gap-2 border-gray-300 hover:border-gray-400 rounded-2xl px-6 py-4 h-14 font-medium transition-all hover:shadow-lg ${hasActiveFilters ? 'border-blue-500 text-blue-600' : ''}`}
+            >
+              <Filter className="h-4 w-4" />
+              <span className="hidden lg:inline">Filtros</span>
+              {hasActiveFilters && (
+                <span className="ml-1 bg-blue-100 text-blue-600 text-xs px-1.5 py-0.5 rounded-full">
+                  ●
+                </span>
+              )}
+            </Button>
+          </FiltersModal>
+        </div>
       </div>
 
       <div className="md:hidden flex-1 mx-4">

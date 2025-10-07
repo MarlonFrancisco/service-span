@@ -1,4 +1,5 @@
-import { Badge, Button, Dialog, DialogContent } from '@repo/ui';
+import { ImageGallery } from '@/components/layout/image-gallery';
+import { Badge, Button } from '@repo/ui';
 import { ChevronLeft, ChevronRight, Maximize2 } from 'lucide-react';
 import { useState } from 'react';
 import { ImageWithFallback } from '../image-with-fallback';
@@ -116,6 +117,14 @@ export function ImageCarousel({
               <Maximize2 className="h-4 w-4" />
             </Button>
           )}
+
+          <ImageGallery
+            isOpen={isFullscreenOpen}
+            onClose={() => setIsFullscreenOpen(false)}
+            images={images}
+            businessName={alt}
+            currentIndex={currentIndex}
+          />
         </div>
 
         {/* Dot Indicators */}
@@ -163,46 +172,6 @@ export function ImageCarousel({
           </div>
         )}
       </div>
-
-      {/* Fullscreen Modal */}
-      <Dialog open={isFullscreenOpen} onOpenChange={setIsFullscreenOpen}>
-        <DialogContent className="max-w-[95vw] max-h-[95vh] p-0">
-          <div className="relative w-full h-full">
-            <ImageWithFallback
-              src={images[currentIndex]}
-              alt={`${alt} - Imagem ${currentIndex + 1}`}
-              className="w-full h-full object-contain"
-            />
-
-            {/* Navigation in fullscreen */}
-            {images.length > 1 && (
-              <>
-                <Button
-                  variant="ghost"
-                  onClick={prevImage}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 p-0 bg-black/50 hover:bg-black/70 text-white rounded-full"
-                >
-                  <ChevronLeft className="h-6 w-6" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  onClick={nextImage}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 p-0 bg-black/50 hover:bg-black/70 text-white rounded-full"
-                >
-                  <ChevronRight className="h-6 w-6" />
-                </Button>
-              </>
-            )}
-
-            {/* Counter in fullscreen */}
-            <div className="absolute top-4 right-4">
-              <Badge className="bg-black/60 text-white">
-                {currentIndex + 1} / {images.length}
-              </Badge>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
     </>
   );
 }

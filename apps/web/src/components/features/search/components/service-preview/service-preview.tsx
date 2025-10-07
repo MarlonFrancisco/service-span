@@ -32,20 +32,20 @@ export function ServicePreview({
       : [service.imageUrl];
 
   return (
-    <Card className="p-6 h-fit border-gray-200 shadow-lg">
+    <Card className="h-fit border-gray-200 shadow-lg pt-0">
       <div className="space-y-6">
         {/* Header com carousel de imagens */}
         <div className="space-y-4">
           <ImageCarousel
             images={allImages}
             alt={service.name}
-            className="w-full h-56"
+            className="w-full h-56 rounded-b-none!"
             showCounter={allImages.length > 1}
             showFullscreenButton={allImages.length > 1}
             aspectRatio="auto"
           />
 
-          <div className="space-y-2">
+          <div className="space-y-2 px-6">
             <div className="flex items-start justify-between gap-2">
               <h3 className="text-xl font-semibold text-gray-900">
                 {service.name}
@@ -70,7 +70,7 @@ export function ServicePreview({
         <Separator />
 
         {/* Descrição */}
-        <div className="space-y-2">
+        <div className="space-y-2 px-6">
           <h4 className="font-semibold text-gray-900">Sobre o Serviço</h4>
           <p className="text-gray-600 leading-relaxed">{service.description}</p>
         </div>
@@ -78,7 +78,7 @@ export function ServicePreview({
         <Separator />
 
         {/* Informações de contato */}
-        <div className="space-y-3">
+        <div className="space-y-3 px-6">
           <h4 className="font-semibold text-gray-900">Informações</h4>
 
           <div className="space-y-2">
@@ -102,7 +102,7 @@ export function ServicePreview({
         <Separator />
 
         {/* Avaliações em destaque */}
-        <div className="space-y-3">
+        <div className="space-y-3 px-6">
           <h4 className="font-semibold text-gray-900">Avaliações Recentes</h4>
 
           <div className="space-y-3">
@@ -143,15 +143,17 @@ export function ServicePreview({
           </div>
         </div>
 
-        {/* Botão de ação principal */}
-        <Button
-          className="w-full bg-black hover:bg-gray-800 text-white py-4 rounded-xl"
-          size="lg"
-          onClick={() => onStartBooking?.(service)}
-        >
-          <Calendar className="h-5 w-5 mr-2" />
-          Ver Agenda e Agendar
-        </Button>
+        <div className="px-6">
+          {/* Botão de ação principal */}
+          <Button
+            className="w-full bg-black hover:bg-gray-800 text-white py-4 rounded-xl"
+            size="lg"
+            onClick={() => onStartBooking?.(service)}
+          >
+            <Calendar className="h-5 w-5 mr-2" />
+            Ver Agenda e Agendar
+          </Button>
+        </div>
       </div>
     </Card>
   );

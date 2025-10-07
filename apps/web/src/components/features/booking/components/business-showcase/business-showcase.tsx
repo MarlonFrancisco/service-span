@@ -1,10 +1,10 @@
 'use client';
 
+import { ImageGallery } from '@/components/layout/image-gallery';
 import { BusinessDetails } from './business-details';
 import { BusinessHeader } from './business-header';
 import { useBusinessShowcase } from './business-showcase.hook';
 import type { TBusinessShowcaseConfig } from './business-showcase.types';
-import { ImageGallery } from './image-gallery';
 import { ImageGrid } from './image-grid';
 
 export const BusinessShowcase = ({

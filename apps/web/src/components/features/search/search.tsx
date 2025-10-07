@@ -16,7 +16,7 @@ export function SearchResults() {
 
   return (
     <div className="min-h-screen bg-black">
-      <Header />
+      <Header showSearchBar />
 
       {/* Modern Layout */}
       <div className="max-w-8xl mx-auto px-6 sm:px-8 lg:px-12 pt-8 rounded-tl-[40px] rounded-tr-[40px] bg-background">

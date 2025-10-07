@@ -32,7 +32,7 @@ export function ServiceCard({
   const allImages = images && images.length > 0 ? images : [imageUrl];
   return (
     <Card
-      className={`group overflow-hidden cursor-pointer transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border-0 shadow-lg bg-white ${
+      className={`group overflow-hidden cursor-pointer transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border-0 shadow-lg bg-white p-0 ${
         isSelected ? 'ring-2 ring-black shadow-2xl scale-[1.02]' : ''
       }`}
       onClick={onClick}
