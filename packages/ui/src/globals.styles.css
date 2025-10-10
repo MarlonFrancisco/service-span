@@ -162,6 +162,28 @@
     .gradient-secondary {
         background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
     }
+
+    .admin-content-scroll {
+        scrollbar-width: thin;
+        scrollbar-color: #d1d5db #f3f4f6;
+    }
+
+    .admin-content-scroll::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .admin-content-scroll::-webkit-scrollbar-track {
+        background: #f3f4f6;
+    }
+
+    .admin-content-scroll::-webkit-scrollbar-thumb {
+        background: #d1d5db;
+        border-radius: 4px;
+    }
+
+    .admin-content-scroll::-webkit-scrollbar-thumb:hover {
+        background: #9ca3af;
+    }
 }
 
 @keyframes animate-in {

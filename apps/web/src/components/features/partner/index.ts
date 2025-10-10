@@ -1,5 +1,4 @@
 export { Partner } from './partner';
-export { usePartnerDashboard } from './partner.hook';
 
 // Sub-components
 export { AdminSidebar } from './components/admin-sidebar';
@@ -10,7 +9,3 @@ export { PlansModule } from './components/plans-module';
 export { ServicesModule } from './components/services-module';
 export { StoreSelector } from './components/store-selector';
 export { StoresModule } from './components/stores-module';
-
-export type * from './partner.types';
-
-export * from './partner.styles';

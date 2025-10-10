@@ -1,8 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useCallback, useEffect, useState } from 'react';
-import { headerAnimation } from './header.animation';
+import { useCallback, useState } from 'react';
 import type { TUseHeaderConfig } from './header.types';
 
 export const useHeader = ({ onMenuToggle }: TUseHeaderConfig = {}) => {
@@ -20,10 +19,6 @@ export const useHeader = ({ onMenuToggle }: TUseHeaderConfig = {}) => {
   const goToPlansPage = useCallback(() => {
     router.push('/partner');
   }, [router]);
-
-  useEffect(() => {
-    headerAnimation();
-  }, []);
 
   return {
     isMenuOpen,

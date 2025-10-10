@@ -4,6 +4,7 @@ import {
   CONTACT_ADDRESSES,
   SOCIAL_LINKS,
 } from '@/utils/constants/contact.constants';
+import { motion } from 'motion/react';
 import { ContactInfo } from './components/contact-info';
 import { HeaderLogo } from './components/header-logo';
 import { MenuButton } from './components/menu-button';
@@ -11,6 +12,7 @@ import { NavigationMenu } from './components/navigation-menu';
 import { PartnerButton } from './components/partner-button';
 import { SearchBar } from './components/search-bar/search-bar';
 import { SocialLinks } from './components/social-links';
+import { dropdownAnimation } from './header.animation';
 import { NAVIGATION_ITEMS } from './header.constants';
 import { useHeader } from './header.hook';
 import type { THeaderConfig } from './header.types';
@@ -44,11 +46,11 @@ export const Header = ({ showSearchBar = false, ...props }: THeaderConfig) => {
       </div>
 
       {/* Menu Dropdown */}
-      <div
-        className={`relative z-50 overflow-hidden bg-neutral-950 pt-2 transition-all ${isMenuOpen ? 'h-auto' : 'h-2'}`}
-        id="header-menu-content"
+      <motion.div
+        className="relative z-50 overflow-hidden h-full bg-neutral-950 pt-2 will-change-max-height will-change-opacity"
         aria-hidden={!isMenuOpen}
         inert={isMenuOpen ? false : true}
+        {...dropdownAnimation(isMenuOpen)}
       >
         <div className="bg-neutral-800">
           {/* Menu Header */}
@@ -87,7 +89,7 @@ export const Header = ({ showSearchBar = false, ...props }: THeaderConfig) => {
             </div>
           </div>
         </div>
-      </div>
+      </motion.div>
     </header>
   );
 };
