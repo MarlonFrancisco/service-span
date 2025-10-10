@@ -17,6 +17,7 @@
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@repo/vitest-config": "workspace:*",
+    "@repo/api": "workspace:*",
     "@tailwindcss/postcss": "^4.1.14",
     "postcss": "^8.5.3",
     "prettier": "^3.2.5",
