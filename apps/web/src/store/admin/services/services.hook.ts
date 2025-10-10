@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useServicesStore } from './services.store';
 
 export const useServices = () => {
@@ -12,11 +13,6 @@ export const useServices = () => {
     editingCategory,
     formData,
     categoryFormData,
-    filteredServices,
-    totalServices,
-    activeServices,
-    totalBookings,
-    totalRevenue,
     setSearchQuery,
     setFilterCategory,
     setIsAddModalOpen,
@@ -35,6 +31,35 @@ export const useServices = () => {
     updateCategory,
     deleteCategory,
   } = useServicesStore();
+
+  // Computed values com useMemo
+  const filteredServices = useMemo(() => {
+    return services.filter((service) => {
+      const matchesSearch =
+        service.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        service.description.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesCategory =
+        filterCategory === 'all' || service.category === filterCategory;
+      return matchesSearch && matchesCategory;
+    });
+  }, [services, searchQuery, filterCategory]);
+
+  const totalServices = useMemo(() => services.length, [services]);
+
+  const activeServices = useMemo(
+    () => services.filter((s) => s.isActive).length,
+    [services],
+  );
+
+  const totalBookings = useMemo(
+    () => services.reduce((acc, s) => acc + (s.bookingsThisMonth || 0), 0),
+    [services],
+  );
+
+  const totalRevenue = useMemo(
+    () => services.reduce((acc, s) => acc + (s.revenue || 0), 0),
+    [services],
+  );
 
   return {
     // State

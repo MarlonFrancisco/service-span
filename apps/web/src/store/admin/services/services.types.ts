@@ -50,13 +50,6 @@ export interface IServicesStore {
   formData: IServiceFormData;
   categoryFormData: ICategoryFormData;
 
-  // Computed
-  filteredServices: IService[];
-  totalServices: number;
-  activeServices: number;
-  totalBookings: number;
-  totalRevenue: number;
-
   // Actions
   setSearchQuery: (query: string) => void;
   setFilterCategory: (category: string) => void;
