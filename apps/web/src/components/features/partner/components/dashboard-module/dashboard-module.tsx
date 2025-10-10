@@ -1,17 +1,19 @@
 'use client';
+import {
+  getActivityColor,
+  getActivityIconColor,
+  useDashboard,
+} from '@/store/admin/dashboard';
 import { Badge, Card, CardContent, CardHeader, CardTitle } from '@repo/ui';
 import {
-  AlertCircle,
   ArrowDownRight,
   ArrowUpRight,
   Calendar,
-  CheckCircle2,
   Clock,
   DollarSign,
   Star,
   TrendingUp,
   Users,
-  XCircle,
 } from 'lucide-react';
 import { motion } from 'motion/react';
 import {
@@ -27,117 +29,29 @@ import {
 } from 'recharts';
 
 export function DashboardModule() {
-  // Mock data for the selected store
-  const storeMetrics = {
-    todayAppointments: 8,
-    weeklyRevenue: 3250,
-    monthlyTotal: 147,
-    averageRating: 4.7,
-    pendingBookings: 3,
-    completedToday: 5,
-    totalCustomers: 342,
-    growthRate: 18,
-  };
-
-  const performanceData = [
-    { day: 'Seg', appointments: 12, revenue: 580 },
-    { day: 'Ter', appointments: 15, revenue: 720 },
-    { day: 'Qua', appointments: 10, revenue: 490 },
-    { day: 'Qui', appointments: 18, revenue: 850 },
-    { day: 'Sex', appointments: 22, revenue: 1050 },
-    { day: 'Sáb', appointments: 28, revenue: 1340 },
-    { day: 'Dom', appointments: 14, revenue: 670 },
-  ];
-
-  const recentActivity = [
-    {
-      id: 1,
-      type: 'booking',
-      icon: CheckCircle2,
-      message: 'Novo agendamento - Maria Silva',
-      service: 'Corte e Escova',
-      time: '2 min atrás',
-      status: 'new',
-    },
-    {
-      id: 2,
-      type: 'completion',
-      icon: CheckCircle2,
-      message: 'Serviço concluído - João Santos',
-      service: 'Barba + Corte',
-      time: '15 min atrás',
-      status: 'completed',
-    },
-    {
-      id: 3,
-      type: 'cancellation',
-      icon: XCircle,
-      message: 'Cancelamento - Ana Costa',
-      service: 'Manicure',
-      time: '1h atrás',
-      status: 'cancelled',
-    },
-    {
-      id: 4,
-      type: 'booking',
-      icon: AlertCircle,
-      message: 'Agendamento pendente - Pedro Lima',
-      service: 'Massagem',
-      time: '2h atrás',
-      status: 'pending',
-    },
-  ];
-
-  const upcomingAppointments = [
-    {
-      id: 1,
-      client: 'Ana Silva',
-      service: 'Corte',
-      time: '14:30 - 15:00',
-      duration: '30min',
-      badge: 'Em 30min',
-      badgeColor: 'bg-green-50 text-green-700 border-green-200',
-    },
-    {
-      id: 2,
-      client: 'Carlos Moreira',
-      service: 'Barba',
-      time: '15:00 - 15:30',
-      duration: '30min',
-      badge: 'Em 1h',
-      badgeColor: 'bg-blue-50 text-blue-700 border-blue-200',
-    },
-    {
-      id: 3,
-      client: 'Beatriz Santos',
-      service: 'Manicure',
-      time: '15:30 - 16:30',
-      duration: '1h',
-      badge: 'Em 1h30',
-      badgeColor: 'bg-gray-100 text-gray-700 border-gray-200',
-    },
-  ];
+  const { metrics, performanceData, recentActivity, upcomingAppointments } =
+    useDashboard();
 
   const stats = [
     {
       label: 'Agendamentos Hoje',
-      value: storeMetrics.todayAppointments,
-      subValue: `${storeMetrics.completedToday} concluídos • ${storeMetrics.pendingBookings} pendentes`,
+      value: metrics.todayAppointments,
+      subValue: `${metrics.completedToday} concluídos • ${metrics.pendingBookings} pendentes`,
       icon: Calendar,
       trend: '+12%',
       trendUp: true,
     },
     {
       label: 'Receita Semanal',
-      value: `R$ ${storeMetrics.weeklyRevenue.toLocaleString()}`,
+      value: `R$ ${metrics.weeklyRevenue.toLocaleString()}`,
       subValue: 'vs semana anterior',
       icon: DollarSign,
-      trend: `+${storeMetrics.growthRate}%`,
+      trend: `+${metrics.growthRate}%`,
       trendUp: true,
     },
     {
       label: 'Avaliação Média',
-      value: storeMetrics.averageRating.toFixed(1),
+      value: metrics.averageRating.toFixed(1),
       subValue: '23 avaliações esta semana',
       icon: Star,
       trend: '+0.2',
@@ -145,43 +59,13 @@ export function DashboardModule() {
     },
     {
       label: 'Total de Clientes',
-      value: storeMetrics.totalCustomers,
+      value: metrics.totalCustomers,
       subValue: 'clientes ativos',
       icon: Users,
       trend: '+8%',
       trendUp: true,
     },
   ];
-
-  const getActivityColor = (status: string) => {
-    switch (status) {
-      case 'new':
-        return 'bg-green-50 border-green-200';
-      case 'completed':
-        return 'bg-blue-50 border-blue-200';
-      case 'cancelled':
-        return 'bg-red-50 border-red-200';
-      case 'pending':
-        return 'bg-orange-50 border-orange-200';
-      default:
-        return 'bg-gray-50 border-gray-200';
-    }
-  };
-
-  const getActivityIconColor = (status: string) => {
-    switch (status) {
-      case 'new':
-        return 'text-green-600';
-      case 'completed':
-        return 'text-blue-600';
-      case 'cancelled':
-        return 'text-red-600';
-      case 'pending':
-        return 'text-orange-600';
-      default:
-        return 'text-gray-600';
-    }
-  };
 
   return (
     <div className="space-y-6">
@@ -476,3 +360,4 @@ export function DashboardModule() {
     </div>
   );
 }
+
