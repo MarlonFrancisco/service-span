@@ -1,3 +1,4 @@
+import { useAuthActions } from '@/store/auth/auth.hook';
 import { Button, Input, Separator } from '@repo/ui';
 import { ArrowRight, Globe, Mail, Phone } from 'lucide-react';
 import { useState } from 'react';
@@ -8,27 +9,22 @@ interface LoginStepProps {
   onClose: () => void;
 }
 
-export function LoginStep({ onNext, onClose }: LoginStepProps) {
+const isLoading = false;
+
+export function LoginStep({ onNext }: LoginStepProps) {
   const [contact, setContact] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
   const [contactType, setContactType] = useState<'email' | 'phone'>('email');
+  const { createAuthSessionAction } = useAuthActions();
 
   const handleContinue = async () => {
-    if (!contact.trim()) return;
-
-    setIsLoading(true);
-
-    // Simular verificação se é usuário novo ou existente
-    await new Promise((resolve) => setTimeout(resolve, 1200));
-
-    const isNewUser = Math.random() > 0.5; // Mock: 50% chance de ser usuário novo
-
-    setIsLoading(false);
-
     const isEmail = contact.includes('@') || contactType === 'email';
+
+    await createAuthSessionAction({
+      email: contactType === 'email' ? contact : undefined,
+      telephone: contactType === 'email' ? undefined : contact,
+    });
     onNext('verification', {
       [isEmail ? 'email' : 'phone']: contact,
-      isNewUser,
     });
   };
 

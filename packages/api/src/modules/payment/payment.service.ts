@@ -1,20 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import Stripe from 'stripe';
+import { StripeService } from '../stripe';
 
 @Injectable()
 export class PaymentService {
-  stripe: Stripe;
-
-  constructor(private configService: ConfigService) {
-    const stripeKey = this.configService.get('STRIPE_API_KEY');
-
-    if (!stripeKey) {
-      throw new Error('STRIPE_API_KEY not configured');
-    }
-
-    this.stripe = new Stripe(stripeKey);
-  }
+  constructor(private readonly stripe: StripeService) {}
 
   async createPayment(priceId: string) {
     const session = await this.stripe.checkout.sessions.create({
@@ -32,11 +21,5 @@ export class PaymentService {
     return {
       url: session.url,
     };
-  }
-
-  async getPlans() {
-    const plans = await this.stripe.plans.list();
-
-    return plans;
   }
 }

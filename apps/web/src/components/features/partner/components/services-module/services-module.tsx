@@ -1,4 +1,6 @@
 'use client';
+import type { ICategory, IService } from '@/store/admin/services';
+import { useServices } from '@/store/admin/services';
 import {
   Alert,
   AlertDescription,
@@ -43,175 +45,43 @@ import {
   TrendingUp,
 } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
-import { useState } from 'react';
 import { toast } from 'sonner';
 
-interface Service {
-  id: string;
-  name: string;
-  description: string;
-  duration: number;
-  price: number;
-  category: string;
-  isActive: boolean;
-  bookingsThisMonth?: number;
-  revenue?: number;
-  imageUrl?: string;
-  maxBookingsPerDay?: number;
-  tags?: string[];
-}
-
-interface Category {
-  id: string;
-  name: string;
-  description?: string;
-  icon?: string;
-  color?: string;
-}
-
 export function ServicesModule() {
-  const [services, setServices] = useState<Service[]>([
-    {
-      id: '1',
-      name: 'Corte Feminino',
-      description:
-        'Corte de cabelo feminino com acabamento profissional e lavagem incluída',
-      duration: 60,
-      price: 65,
-      category: 'Cabelo',
-      isActive: true,
-      bookingsThisMonth: 34,
-      revenue: 2210,
-      maxBookingsPerDay: 8,
-      tags: ['Popular', 'Feminino'],
-    },
-    {
-      id: '2',
-      name: 'Corte Masculino',
-      description:
-        'Corte de cabelo masculino tradicional com máquina e tesoura',
-      duration: 30,
-      price: 35,
-      category: 'Cabelo',
-      isActive: true,
-      bookingsThisMonth: 52,
-      revenue: 1820,
-      maxBookingsPerDay: 12,
-      tags: ['Popular', 'Masculino'],
-    },
-    {
-      id: '3',
-      name: 'Escova',
-      description:
-        'Escova modeladora para cabelos médios e longos com finalização',
-      duration: 45,
-      price: 45,
-      category: 'Cabelo',
-      isActive: true,
-      bookingsThisMonth: 28,
-      revenue: 1260,
-      maxBookingsPerDay: 10,
-    },
-    {
-      id: '4',
-      name: 'Barba',
-      description: 'Aparar e modelar barba com navalha e acabamento',
-      duration: 30,
-      price: 25,
-      category: 'Barba',
-      isActive: true,
-      bookingsThisMonth: 41,
-      revenue: 1025,
-      maxBookingsPerDay: 15,
-      tags: ['Masculino'],
-    },
-    {
-      id: '5',
-      name: 'Limpeza de Pele',
-      description: 'Limpeza profunda facial completa com extração e máscara',
-      duration: 90,
-      price: 120,
-      category: 'Estética',
-      isActive: false,
-      bookingsThisMonth: 0,
-      revenue: 0,
-      maxBookingsPerDay: 4,
-    },
-  ]);
-
-  const [categories, setCategories] = useState<Category[]>([
-    {
-      id: '1',
-      name: 'Cabelo',
-      description: 'Serviços de corte e tratamento capilar',
-      color: 'purple',
-    },
-    {
-      id: '2',
-      name: 'Barba',
-      description: 'Serviços de barbear e modelagem',
-      color: 'blue',
-    },
-    {
-      id: '3',
-      name: 'Estética',
-      description: 'Tratamentos faciais e corporais',
-      color: 'pink',
-    },
-    {
-      id: '4',
-      name: 'Manicure',
-      description: 'Cuidados com unhas',
-      color: 'red',
-    },
-    {
-      id: '5',
-      name: 'Massagem',
-      description: 'Terapias e relaxamento',
-      color: 'green',
-    },
-  ]);
-
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [editingService, setEditingService] = useState<Service | null>(null);
-  const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [filterCategory, setFilterCategory] = useState<string>('all');
-  const [editingCategory, setEditingCategory] = useState<Category | null>(null);
-
-  // Form state for add/edit service
-  const [formData, setFormData] = useState({
-    name: '',
-    description: '',
-    duration: '',
-    price: '',
-    category: '',
-    maxBookingsPerDay: '',
-    isActive: true,
-  });
-
-  // Category form state
-  const [categoryFormData, setCategoryFormData] = useState({
-    name: '',
-    description: '',
-    color: 'blue',
-  });
-
-  const toggleServiceStatus = (serviceId: string) => {
-    setServices(
-      services.map((service) =>
-        service.id === serviceId
-          ? { ...service, isActive: !service.isActive }
-          : service,
-      ),
-    );
-    toast.success('Status atualizado com sucesso!');
-  };
-
-  const deleteService = (serviceId: string) => {
-    setServices(services.filter((service) => service.id !== serviceId));
-    toast.success('Serviço excluído com sucesso!');
-  };
+  const {
+    services,
+    categories,
+    searchQuery,
+    filterCategory,
+    isAddModalOpen,
+    isCategoryModalOpen,
+    editingService,
+    editingCategory,
+    formData,
+    categoryFormData,
+    filteredServices,
+    totalServices,
+    activeServices,
+    totalBookings,
+    totalRevenue,
+    setSearchQuery,
+    setFilterCategory,
+    setIsAddModalOpen,
+    setIsCategoryModalOpen,
+    setEditingService,
+    setEditingCategory,
+    setFormData,
+    setCategoryFormData,
+    resetForm,
+    resetCategoryForm,
+    addService,
+    updateService,
+    deleteService,
+    toggleServiceStatus,
+    addCategory,
+    updateCategory,
+    deleteCategory,
+  } = useServices();
 
   const handleAddService = () => {
     if (
@@ -224,8 +94,7 @@ export function ServicesModule() {
       return;
     }
 
-    const newService: Service = {
-      id: String(Date.now()),
+    const newService: Omit<IService, 'id'> = {
       name: formData.name,
       description: formData.description,
       duration: Number(formData.duration),
@@ -239,7 +108,7 @@ export function ServicesModule() {
       revenue: 0,
     };
 
-    setServices([...services, newService]);
+    addService(newService);
     setIsAddModalOpen(false);
     resetForm();
     toast.success('Serviço criado com sucesso!');
@@ -248,42 +117,23 @@ export function ServicesModule() {
   const handleUpdateService = () => {
     if (!editingService) return;
 
-    setServices(
-      services.map((service) =>
-        service.id === editingService.id
-          ? {
-              ...service,
-              name: formData.name,
-              description: formData.description,
-              duration: Number(formData.duration),
-              price: Number(formData.price),
-              category: formData.category,
-              maxBookingsPerDay: formData.maxBookingsPerDay
-                ? Number(formData.maxBookingsPerDay)
-                : undefined,
-            }
-          : service,
-      ),
-    );
+    updateService(editingService.id, {
+      name: formData.name,
+      description: formData.description,
+      duration: Number(formData.duration),
+      price: Number(formData.price),
+      category: formData.category,
+      maxBookingsPerDay: formData.maxBookingsPerDay
+        ? Number(formData.maxBookingsPerDay)
+        : undefined,
+    });
 
     setEditingService(null);
     resetForm();
     toast.success('Serviço atualizado com sucesso!');
   };
 
-  const resetForm = () => {
-    setFormData({
-      name: '',
-      description: '',
-      duration: '',
-      price: '',
-      category: '',
-      maxBookingsPerDay: '',
-      isActive: true,
-    });
-  };
-
-  const handleEditService = (service: Service) => {
+  const handleEditService = (service: IService) => {
     setFormData({
       name: service.name,
       description: service.description,
@@ -298,7 +148,7 @@ export function ServicesModule() {
     setEditingService(service);
   };
 
-  const addCategory = () => {
+  const handleAddCategory = () => {
     if (!categoryFormData.name.trim()) {
       toast.error('Digite um nome para a categoria');
       return;
@@ -313,19 +163,18 @@ export function ServicesModule() {
       return;
     }
 
-    const newCategory: Category = {
-      id: String(Date.now()),
+    const newCategory: Omit<ICategory, 'id'> = {
       name: categoryFormData.name.trim(),
       description: categoryFormData.description.trim(),
       color: categoryFormData.color,
     };
 
-    setCategories([...categories, newCategory]);
-    setCategoryFormData({ name: '', description: '', color: 'blue' });
+    addCategory(newCategory);
+    resetCategoryForm();
     toast.success('Categoria criada com sucesso!');
   };
 
-  const handleEditCategory = (category: Category) => {
+  const handleEditCategory = (category: ICategory) => {
     setCategoryFormData({
       name: category.name,
       description: category.description || '',
@@ -334,7 +183,7 @@ export function ServicesModule() {
     setEditingCategory(category);
   };
 
-  const updateCategory = () => {
+  const handleUpdateCategory = () => {
     if (!editingCategory) return;
 
     if (!categoryFormData.name.trim()) {
@@ -342,7 +191,6 @@ export function ServicesModule() {
       return;
     }
 
-    // Check for duplicate names (excluding the current category being edited)
     if (
       categories.some(
         (cat) =>
@@ -354,45 +202,23 @@ export function ServicesModule() {
       return;
     }
 
-    const oldCategoryName = editingCategory.name;
-    const newCategoryName = categoryFormData.name.trim();
-
-    // Update category
-    setCategories(
-      categories.map((cat) =>
-        cat.id === editingCategory.id
-          ? {
-              ...cat,
-              name: newCategoryName,
-              description: categoryFormData.description.trim(),
-              color: categoryFormData.color,
-            }
-          : cat,
-      ),
-    );
-
-    // Update services that use this category
-    if (oldCategoryName !== newCategoryName) {
-      setServices(
-        services.map((service) =>
-          service.category === oldCategoryName
-            ? { ...service, category: newCategoryName }
-            : service,
-        ),
-      );
-    }
+    updateCategory(editingCategory.id, {
+      name: categoryFormData.name.trim(),
+      description: categoryFormData.description.trim(),
+      color: categoryFormData.color,
+    });
 
     setEditingCategory(null);
-    setCategoryFormData({ name: '', description: '', color: 'blue' });
+    resetCategoryForm();
     toast.success('Categoria atualizada com sucesso!');
   };
 
   const cancelEditCategory = () => {
     setEditingCategory(null);
-    setCategoryFormData({ name: '', description: '', color: 'blue' });
+    resetCategoryForm();
   };
 
-  const deleteCategory = (categoryId: string) => {
+  const handleDeleteCategory = (categoryId: string) => {
     const category = categories.find((cat) => cat.id === categoryId);
     if (!category) return;
 
@@ -405,28 +231,19 @@ export function ServicesModule() {
       return;
     }
 
-    setCategories(categories.filter((cat) => cat.id !== categoryId));
+    deleteCategory(categoryId);
     toast.success('Categoria excluída com sucesso!');
   };
 
-  // Calculate overview stats
-  const totalServices = services.length;
-  const activeServices = services.filter((s) => s.isActive).length;
-  const totalBookings = services.reduce(
-    (acc, s) => acc + (s.bookingsThisMonth || 0),
-    0,
-  );
-  const totalRevenue = services.reduce((acc, s) => acc + (s.revenue || 0), 0);
+  const handleDeleteService = (serviceId: string) => {
+    deleteService(serviceId);
+    toast.success('Serviço excluído com sucesso!');
+  };
 
-  // Filter services
-  const filteredServices = services.filter((service) => {
-    const matchesSearch =
-      service.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      service.description.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory =
-      filterCategory === 'all' || service.category === filterCategory;
-    return matchesSearch && matchesCategory;
-  });
+  const handleToggleServiceStatus = (serviceId: string) => {
+    toggleServiceStatus(serviceId);
+    toast.success('Status atualizado com sucesso!');
+  };
 
   const getColorClass = (color: string) => {
     const colors: Record<string, string> = {
@@ -627,8 +444,8 @@ export function ServicesModule() {
                       key={service.id}
                       service={service}
                       onEdit={handleEditService}
-                      onDelete={deleteService}
-                      onToggleStatus={toggleServiceStatus}
+                      onDelete={handleDeleteService}
+                      onToggleStatus={handleToggleServiceStatus}
                     />
                   ))}
                 </div>
@@ -650,8 +467,8 @@ export function ServicesModule() {
                   key={service.id}
                   service={service}
                   onEdit={handleEditService}
-                  onDelete={deleteService}
-                  onToggleStatus={toggleServiceStatus}
+                  onDelete={handleDeleteService}
+                  onToggleStatus={handleToggleServiceStatus}
                 />
               ))}
             </div>
@@ -707,9 +524,7 @@ export function ServicesModule() {
                       id="serviceName"
                       placeholder="Ex: Corte Feminino"
                       value={formData.name}
-                      onChange={(e) =>
-                        setFormData({ ...formData, name: e.target.value })
-                      }
+                      onChange={(e) => setFormData({ name: e.target.value })}
                     />
                   </div>
 
@@ -721,10 +536,7 @@ export function ServicesModule() {
                       rows={3}
                       value={formData.description}
                       onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          description: e.target.value,
-                        })
+                        setFormData({ description: e.target.value })
                       }
                     />
                   </div>
@@ -736,7 +548,7 @@ export function ServicesModule() {
                     <Select
                       value={formData.category}
                       onValueChange={(value) =>
-                        setFormData({ ...formData, category: value })
+                        setFormData({ category: value })
                       }
                     >
                       <SelectTrigger id="serviceCategory">
@@ -775,7 +587,7 @@ export function ServicesModule() {
                       step="5"
                       value={formData.duration}
                       onChange={(e) =>
-                        setFormData({ ...formData, duration: e.target.value })
+                        setFormData({ duration: e.target.value })
                       }
                     />
                     <p className="text-xs text-gray-500 mt-1">
@@ -794,9 +606,7 @@ export function ServicesModule() {
                       min="0"
                       step="0.01"
                       value={formData.price}
-                      onChange={(e) =>
-                        setFormData({ ...formData, price: e.target.value })
-                      }
+                      onChange={(e) => setFormData({ price: e.target.value })}
                     />
                     <p className="text-xs text-gray-500 mt-1">
                       Valor cobrado pelo serviço
@@ -820,10 +630,7 @@ export function ServicesModule() {
                       min="1"
                       value={formData.maxBookingsPerDay}
                       onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          maxBookingsPerDay: e.target.value,
-                        })
+                        setFormData({ maxBookingsPerDay: e.target.value })
                       }
                     />
                     <p className="text-xs text-gray-500 mt-1">
@@ -848,7 +655,7 @@ export function ServicesModule() {
                         id="serviceActive"
                         checked={formData.isActive}
                         onCheckedChange={(checked) =>
-                          setFormData({ ...formData, isActive: checked })
+                          setFormData({ isActive: checked })
                         }
                       />
                     </div>
@@ -900,7 +707,7 @@ export function ServicesModule() {
           setIsCategoryModalOpen(open);
           if (!open) {
             setEditingCategory(null);
-            setCategoryFormData({ name: '', description: '', color: 'blue' });
+            resetCategoryForm();
           }
         }}
       >
@@ -975,7 +782,7 @@ export function ServicesModule() {
                         <Button
                           size="sm"
                           variant="ghost"
-                          onClick={() => deleteCategory(category.id)}
+                          onClick={() => handleDeleteCategory(category.id)}
                           disabled={serviceCount > 0}
                           className="text-red-600 hover:text-red-700 hover:bg-red-50 disabled:opacity-50"
                         >
@@ -1021,10 +828,7 @@ export function ServicesModule() {
                     placeholder="Ex: Tratamentos Faciais"
                     value={categoryFormData.name}
                     onChange={(e) =>
-                      setCategoryFormData({
-                        ...categoryFormData,
-                        name: e.target.value,
-                      })
+                      setCategoryFormData({ name: e.target.value })
                     }
                   />
                 </div>
@@ -1037,10 +841,7 @@ export function ServicesModule() {
                     rows={3}
                     value={categoryFormData.description}
                     onChange={(e) =>
-                      setCategoryFormData({
-                        ...categoryFormData,
-                        description: e.target.value,
-                      })
+                      setCategoryFormData({ description: e.target.value })
                     }
                   />
                 </div>
@@ -1050,7 +851,7 @@ export function ServicesModule() {
                   <Select
                     value={categoryFormData.color}
                     onValueChange={(value) =>
-                      setCategoryFormData({ ...categoryFormData, color: value })
+                      setCategoryFormData({ color: value })
                     }
                   >
                     <SelectTrigger id="categoryColor">
@@ -1102,7 +903,7 @@ export function ServicesModule() {
                       </Button>
                       <Button
                         className="flex-1 bg-black hover:bg-gray-800 text-white"
-                        onClick={updateCategory}
+                        onClick={handleUpdateCategory}
                       >
                         <CheckCircle2 className="h-4 w-4 mr-2" />
                         Salvar Alterações
@@ -1111,7 +912,7 @@ export function ServicesModule() {
                   ) : (
                     <Button
                       className="w-full bg-black hover:bg-gray-800 text-white"
-                      onClick={addCategory}
+                      onClick={handleAddCategory}
                     >
                       <Plus className="h-4 w-4 mr-2" />
                       Adicionar Categoria
@@ -1141,10 +942,7 @@ export function ServicesModule() {
                       placeholder="Ex: Tratamentos Faciais"
                       value={categoryFormData.name}
                       onChange={(e) =>
-                        setCategoryFormData({
-                          ...categoryFormData,
-                          name: e.target.value,
-                        })
+                        setCategoryFormData({ name: e.target.value })
                       }
                     />
                   </div>
@@ -1157,10 +955,7 @@ export function ServicesModule() {
                       rows={3}
                       value={categoryFormData.description}
                       onChange={(e) =>
-                        setCategoryFormData({
-                          ...categoryFormData,
-                          description: e.target.value,
-                        })
+                        setCategoryFormData({ description: e.target.value })
                       }
                     />
                   </div>
@@ -1170,10 +965,7 @@ export function ServicesModule() {
                     <Select
                       value={categoryFormData.color}
                       onValueChange={(value) =>
-                        setCategoryFormData({
-                          ...categoryFormData,
-                          color: value,
-                        })
+                        setCategoryFormData({ color: value })
                       }
                     >
                       <SelectTrigger id="editCategoryColor">
@@ -1221,7 +1013,7 @@ export function ServicesModule() {
                     </Button>
                     <Button
                       className="flex-1 bg-black hover:bg-gray-800 text-white"
-                      onClick={updateCategory}
+                      onClick={handleUpdateCategory}
                     >
                       <CheckCircle2 className="h-4 w-4 mr-2" />
                       Salvar Alterações
@@ -1244,8 +1036,8 @@ function ServiceCard({
   onDelete,
   onToggleStatus,
 }: {
-  service: Service;
-  onEdit: (service: Service) => void;
+  service: IService;
+  onEdit: (service: IService) => void;
   onDelete: (id: string) => void;
   onToggleStatus: (id: string) => void;
 }) {

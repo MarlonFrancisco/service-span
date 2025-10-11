@@ -7,7 +7,7 @@ export const useAuthAttributes = () => {
 };
 
 export const useAuthActions = () => {
-  const { toggleAuthAction } = useAuthStore();
+  const { toggleAuthAction, createAuthSessionAction } = useAuthStore();
 
-  return { toggleAuthAction };
+  return { toggleAuthAction, createAuthSessionAction };
 };

@@ -1,0 +1,16 @@
+import crypto from 'crypto';
+
+export const generateAuthCode = () => {
+  // 1. Gera bytes aleatórios:
+  //    3 bytes aleatórios são suficientes para um número de até 6 dígitos.
+  const bytes = crypto.randomBytes(3);
+
+  // 2. Converte os bytes para um inteiro:
+  //    O .readUIntBE(0, 3) lê os 3 bytes como um inteiro sem sinal.
+  const numInteger = bytes.readUIntBE(0, 3);
+
+  // 3. Garante que o número tenha 6 dígitos:
+  const code = (numInteger % 1000000).toString().padStart(6, '0');
+
+  return code;
+};

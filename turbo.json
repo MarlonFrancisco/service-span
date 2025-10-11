@@ -1,6 +1,21 @@
 {
   "$schema": "https://turborepo.com/schema.json",
-  "globalEnv": ["NEXT_PUBLIC_API_URL", "STRIPE_API_KEY"],
+  "globalEnv": [
+    "NEXT_PUBLIC_API_URL",
+    "STRIPE_API_KEY",
+    "DB_HOST",
+    "DB_PORT",
+    "DB_USERNAME",
+    "DB_PASSWORD",
+    "DB_NAME",
+    "DB_DATABASE",
+    "DB_SYNCHRONIZE",
+    "DB_LOGGING",
+    "JWT_SECRET",
+    "AWS_ACCESS_KEY_ID",
+    "AWS_SECRET_ACCESS_KEY",
+    "AWS_REGION"
+  ],
   "globalDependencies": ["**/.env.*local"],
   "tasks": {
     "dev": {
@@ -10,7 +25,22 @@
     "build": {
       "dependsOn": ["^build"],
       "outputs": [".next/**", "!.next/cache/**", "dist/**"],
-      "env": ["NEXT_PUBLIC_API_URL", "STRIPE_API_KEY"]
+      "env": [
+        "NEXT_PUBLIC_API_URL",
+        "STRIPE_API_KEY",
+        "DB_HOST",
+        "DB_PORT",
+        "DB_USERNAME",
+        "DB_PASSWORD",
+        "DB_NAME",
+        "DB_DATABASE",
+        "DB_SYNCHRONIZE",
+        "DB_LOGGING",
+        "JWT_SECRET",
+        "AWS_ACCESS_KEY_ID",
+        "AWS_SECRET_ACCESS_KEY",
+        "AWS_REGION"
+      ]
     },
     "lint": {}
   }

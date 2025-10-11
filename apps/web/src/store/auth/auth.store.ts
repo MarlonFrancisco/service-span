@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { toggleAuthAction } from './auth.actions';
+import { createAuthSessionAction, toggleAuthAction } from './auth.actions';
 import { IAuthState } from './auth.types';
 
 export const useAuthStore = create<IAuthState>((set) => {
@@ -7,5 +7,6 @@ export const useAuthStore = create<IAuthState>((set) => {
     isOpen: false,
     fetchingStatus: 'idle',
     toggleAuthAction: toggleAuthAction(set),
+    createAuthSessionAction: createAuthSessionAction(set),
   };
 });

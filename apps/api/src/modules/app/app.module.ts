@@ -1,6 +1,13 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { PaymentModule } from '@repo/api';
+import {
+  AuthModule,
+  DatabaseModule,
+  PaymentModule,
+  PlansModule,
+  SMSModule,
+  UsersModule,
+} from '@repo/api';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -11,7 +18,12 @@ import { AppService } from './app.service';
       isGlobal: true,
       envFilePath: ['.env.local', '.env'],
     }),
+    DatabaseModule,
     PaymentModule,
+    PlansModule,
+    UsersModule,
+    AuthModule,
+    SMSModule,
   ],
   controllers: [AppController],
   providers: [AppService],

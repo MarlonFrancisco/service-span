@@ -1,8 +1,21 @@
 import { Pricing } from '@/components/features/pricing';
-import { PaymentService } from '@/service/payment/payment.service';
+import { PlansService } from '@/service/plans';
+import { getQueryClient } from '@/utils/helpers/query.helper';
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 
 export default async function PricingPage() {
-  const plans = await PaymentService.getPlans();
-  console.log(plans);
-  return <Pricing />;
+  const queryClient = getQueryClient();
+
+  queryClient.prefetchQuery({
+    queryKey: ['plans'],
+    queryFn: () => PlansService.getPlans(),
+  });
+
+  const dehydratedState = dehydrate(queryClient);
+
+  return (
+    <HydrationBoundary state={dehydratedState}>
+      <Pricing />
+    </HydrationBoundary>
+  );
 }

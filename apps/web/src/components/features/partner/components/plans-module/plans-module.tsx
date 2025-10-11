@@ -1,5 +1,7 @@
 'use client';
 import { ROICalculator } from '@/components/features/roi-calculator';
+import { useQueryPlans } from '@/hooks/query/query-plans.hook';
+import { formatPrice } from '@/utils/helpers/price.helper';
 import {
   Alert,
   AlertDescription,
@@ -29,7 +31,6 @@ import {
   BarChart3,
   Calendar,
   Check,
-  ChevronRight,
   Clock,
   CreditCard,
   Crown,
@@ -42,7 +43,6 @@ import {
   Sparkles,
   TrendingUp,
   Users,
-  X,
   Zap,
 } from 'lucide-react';
 import { motion } from 'motion/react';
@@ -129,6 +129,8 @@ export function PlansModule() {
   const [avgBookingValue, setAvgBookingValue] = useState(80);
   const [noShowRate, setNoShowRate] = useState(20);
 
+  const { plans } = useQueryPlans();
+
   const currentPlan = {
     id: 'starter' as PlanId,
     name: 'Starter',
@@ -177,101 +179,6 @@ export function PlansModule() {
     },
   ];
 
-  const plans: Plan[] = [
-    {
-      id: 'starter',
-      name: 'Starter',
-      description: 'Perfeito para começar seu negócio.',
-      monthlyPrice: 29,
-      yearlyPrice: 23,
-      maxStores: 2,
-      maxUsers: 2,
-      maxBookings: 500,
-      popular: false,
-      features: [
-        { name: 'Até 2 lojas', included: true },
-        { name: 'Até 500 agendamentos/mês', included: true },
-        { name: 'Agenda básica', included: true },
-        { name: 'Relatórios simples', included: true },
-        { name: 'Suporte por email', included: true },
-        { name: 'App mobile', included: true },
-        { name: 'Analytics avançado', included: false },
-        { name: 'Integração WhatsApp', included: false },
-        { name: 'Automação', included: false },
-        { name: 'API acesso', included: false },
-      ],
-    },
-    {
-      id: 'professional',
-      name: 'Professional',
-      description: 'Um plano que escala com seu negócio.',
-      monthlyPrice: 79,
-      yearlyPrice: 63,
-      maxStores: 10,
-      maxUsers: 10,
-      maxBookings: 5000,
-      popular: true,
-      features: [
-        { name: 'Até 10 lojas', included: true },
-        { name: 'Até 5.000 agendamentos/mês', included: true },
-        { name: 'Agenda avançada', included: true },
-        { name: 'Relatórios detalhados', included: true },
-        { name: 'Suporte prioritário', included: true },
-        { name: 'App mobile', included: true },
-        { name: 'Analytics avançado', included: true },
-        { name: 'Integração WhatsApp', included: true },
-        { name: 'Automação básica', included: true },
-        { name: 'API acesso', included: false },
-      ],
-    },
-    {
-      id: 'business',
-      name: 'Business',
-      description: 'Para empresas estabelecidas.',
-      monthlyPrice: 159,
-      yearlyPrice: 127,
-      maxStores: 25,
-      maxUsers: 25,
-      maxBookings: 20000,
-      popular: false,
-      features: [
-        { name: 'Até 25 lojas', included: true },
-        { name: 'Até 20.000 agendamentos/mês', included: true },
-        { name: 'Agenda completa', included: true },
-        { name: 'Relatórios executivos', included: true },
-        { name: 'Suporte 24/7', included: true },
-        { name: 'App mobile', included: true },
-        { name: 'Analytics completo', included: true },
-        { name: 'Integração WhatsApp', included: true },
-        { name: 'Automação avançada', included: true },
-        { name: 'API acesso', included: true },
-      ],
-    },
-    {
-      id: 'enterprise',
-      name: 'Enterprise',
-      description: 'Suporte dedicado e infraestrutura para sua empresa.',
-      monthlyPrice: 299,
-      yearlyPrice: 239,
-      maxStores: 'unlimited',
-      maxUsers: 'unlimited',
-      maxBookings: 'unlimited',
-      popular: false,
-      features: [
-        { name: 'Lojas ilimitadas', included: true },
-        { name: 'Agendamentos ilimitados', included: true },
-        { name: 'Dashboard personalizado', included: true },
-        { name: 'Relatórios personalizados', included: true },
-        { name: 'Gerente dedicado', included: true },
-        { name: 'App mobile', included: true },
-        { name: 'Analytics personalizado', included: true },
-        { name: 'Integrações ilimitadas', included: true },
-        { name: 'Automação completa', included: true },
-        { name: 'API ilimitada', included: true },
-      ],
-    },
-  ];
-
   const handleSelectPlan = (planId: PlanId) => {
     setSelectedPlan(planId);
     setShowCheckout(true);
@@ -287,10 +194,10 @@ export function PlansModule() {
     return billingPeriod === 'monthly' ? plan.monthlyPrice : plan.yearlyPrice;
   };
 
-  const selectedPlanData = plans.find((p) => p.id === selectedPlan);
+  const selectedPlanData = plans?.find((p) => p.id === selectedPlan);
 
   const allFeatures = Array.from(
-    new Set(plans.flatMap((p) => p.features.map((f) => f.name))),
+    new Set(plans?.flatMap((p) => p.features.map((f) => f.name))),
   );
 
   // ROI Calculator
@@ -635,38 +542,9 @@ export function PlansModule() {
             </AlertDescription>
           </Alert>
 
-          {/* Billing Toggle */}
-          <div className="flex items-center justify-center gap-4">
-            <button
-              onClick={() => setBillingPeriod('monthly')}
-              className={`px-6 py-2 rounded-full transition-all ${
-                billingPeriod === 'monthly'
-                  ? 'bg-black text-white shadow-lg'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              }`}
-            >
-              Mensal
-            </button>
-            <button
-              onClick={() => setBillingPeriod('yearly')}
-              className={`px-6 py-2 rounded-full transition-all ${
-                billingPeriod === 'yearly'
-                  ? 'bg-black text-white shadow-lg'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              }`}
-            >
-              Anual
-            </button>
-            {billingPeriod === 'yearly' && (
-              <Badge className="bg-green-50 text-green-700 border-green-200">
-                Economize 20%
-              </Badge>
-            )}
-          </div>
-
           {/* Plans Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {plans.map((plan, index) => {
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mx-auto">
+            {plans?.map((plan, index) => {
               const isCurrentPlan = plan.id === currentPlan.id;
               const isUpgrade =
                 plans.findIndex((p) => p.id === plan.id) >
@@ -711,15 +589,10 @@ export function PlansModule() {
                     <div className="mb-8">
                       <div className="flex items-baseline gap-2">
                         <span className="text-5xl text-gray-900">
-                          R${getPrice(plan)}
+                          {formatPrice(plan.priceMonthly)}
                         </span>
                         <span className="text-gray-600">/mês</span>
                       </div>
-                      {billingPeriod === 'yearly' && (
-                        <p className="text-sm text-gray-500 mt-1">
-                          Cobrado R${getPrice(plan) * 12}/ano
-                        </p>
-                      )}
                     </div>
 
                     <Button
@@ -743,17 +616,11 @@ export function PlansModule() {
                     </Button>
 
                     <ul className="space-y-4">
-                      {plan.features.map((feature, idx) => (
-                        <li key={idx} className="flex items-start gap-3">
-                          {feature.included ? (
-                            <Check className="w-5 h-5 text-black flex-shrink-0 mt-0.5" />
-                          ) : (
-                            <X className="w-5 h-5 text-gray-300 flex-shrink-0 mt-0.5" />
-                          )}
-                          <span
-                            className={`text-sm ${feature.included ? 'text-gray-700' : 'text-gray-400'}`}
-                          >
-                            {feature.name}
+                      {plan.features.map((feature) => (
+                        <li key={feature} className="flex items-start gap-3">
+                          <Check className="w-5 h-5 text-black flex-shrink-0 mt-0.5" />
+                          <span className={`text-sm text-gray-700`}>
+                            {feature}
                           </span>
                         </li>
                       ))}
@@ -762,20 +629,6 @@ export function PlansModule() {
                 </motion.div>
               );
             })}
-          </div>
-
-          {/* Feature Comparison Button */}
-          <div className="text-center">
-            <Button
-              variant="outline"
-              size="lg"
-              onClick={() => setShowComparison(true)}
-              className="border-gray-300 text-gray-700 hover:bg-gray-50"
-            >
-              <BarChart3 className="h-5 w-5 mr-2" />
-              Comparar todos os recursos
-              <ChevronRight className="h-4 w-4 ml-2" />
-            </Button>
           </div>
 
           {/* ROI Calculator Section */}
@@ -850,7 +703,7 @@ export function PlansModule() {
             {/* Plans Header */}
             <div className="grid grid-cols-5 gap-4">
               <div className="text-gray-900">Recursos</div>
-              {plans.map((plan) => (
+              {plans?.map((plan) => (
                 <div key={plan.id} className="text-center space-y-2">
                   <div className="text-gray-900">{plan.name}</div>
                   <div className="text-sm text-gray-600">
@@ -869,17 +722,13 @@ export function PlansModule() {
                   className="grid grid-cols-5 gap-4 py-3 border-b border-gray-100 last:border-b-0"
                 >
                   <div className="text-gray-900">{featureName}</div>
-                  {plans.map((plan) => {
+                  {plans?.map((plan) => {
                     const feature = plan.features.find(
                       (f) => f.name === featureName,
                     );
                     return (
                       <div key={plan.id} className="text-center">
-                        {feature && feature.included ? (
-                          <Check className="h-5 w-5 text-black mx-auto" />
-                        ) : (
-                          <X className="h-5 w-5 text-gray-300 mx-auto" />
-                        )}
+                        <Check className="h-5 w-5 text-black mx-auto" />
                       </div>
                     );
                   })}

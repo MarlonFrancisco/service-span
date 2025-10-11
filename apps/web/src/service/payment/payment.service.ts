@@ -1,4 +1,3 @@
-import { IPlansResponse } from '@/types/api';
 import { apiClient, HttpClientService } from '../api';
 
 export class PaymentService {
@@ -15,18 +14,5 @@ export class PaymentService {
       },
     );
     return response.data;
-  }
-
-  static async getPlans() {
-    const response = await this.apiClient.get<IPlansResponse>(
-      '/payment/plans',
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      },
-    );
-
-    return response.data.data;
   }
 }

@@ -1,6 +1,7 @@
 import { AuthModal } from '@/components/features/auth';
 import { Toaster } from '@/components/layout';
 import { Config } from '@/components/layout/config';
+import { QueryProvider } from '@/providers';
 import useSearchStore from '@/store/search/search.store';
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
@@ -158,10 +159,12 @@ export default function RootLayout({
       <body
         className={`${monaSans.variable} ${geistSans.variable} ${geistMono.variable}`}
       >
-        {children}
-        <Config />
-        <AuthModal />
-        <Toaster />
+        <QueryProvider>
+          {children}
+          <Config />
+          <AuthModal />
+          <Toaster />
+        </QueryProvider>
       </body>
     </html>
   );

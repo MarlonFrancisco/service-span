@@ -25,7 +25,7 @@ export class HttpClientService {
     return this.httpClient.get<T>(url, config);
   }
 
-  public post<T>(url: string, data: unknown, config: AxiosRequestConfig) {
+  public post<T>(url: string, data: unknown, config?: AxiosRequestConfig) {
     return this.httpClient.post<T>(url, data, config);
   }
 
