@@ -1,13 +1,23 @@
 import { useAuthStore } from './auth.store';
 
 export const useAuthAttributes = () => {
-  const { isOpen, fetchingStatus } = useAuthStore();
+  const { isOpen, fetchingStatus, isNewUser } = useAuthStore();
 
-  return { isOpen, fetchingStatus };
+  return { isOpen, fetchingStatus, isNewUser };
 };
 
 export const useAuthActions = () => {
-  const { toggleAuthAction, createAuthSessionAction } = useAuthStore();
+  const {
+    toggleAuthAction,
+    createAuthSessionAction,
+    validateAuthSessionAction,
+    registerAction,
+  } = useAuthStore();
 
-  return { toggleAuthAction, createAuthSessionAction };
+  return {
+    toggleAuthAction,
+    createAuthSessionAction,
+    validateAuthSessionAction,
+    registerAction,
+  };
 };

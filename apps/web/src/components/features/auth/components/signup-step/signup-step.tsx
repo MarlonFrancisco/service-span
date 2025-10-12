@@ -1,5 +1,6 @@
+import { useAuthActions, useAuthAttributes } from '@/store';
 import { Button, Checkbox, Input, Label } from '@repo/ui';
-import { ArrowLeft, ArrowRight, Eye, EyeOff, User } from 'lucide-react';
+import { ArrowLeft, ArrowRight, User } from 'lucide-react';
 import { useState } from 'react';
 import { AuthStep } from '../../auth.types';
 
@@ -18,11 +19,16 @@ export function SignupStep({ userData, onNext, onBack }: SignupStepProps) {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
-    password: '',
-    acceptTerms: false,
+    email: userData.email,
+    telephone: userData.phone,
+    acceptedTerms: false,
   });
   const [isLoading, setIsLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
+  const { registerAction, toggleAuthAction } = useAuthActions();
+  const { isNewUser } = useAuthAttributes();
+
+  const contact = userData.email || userData.phone;
+  const isEmail = contact.includes('@');
 
   const handleInputChange = (field: string, value: string | boolean) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -31,28 +37,29 @@ export function SignupStep({ userData, onNext, onBack }: SignupStepProps) {
   const handleContinue = async () => {
     if (!isFormValid) return;
 
-    setIsLoading(true);
-
-    // Simular criação da conta
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-
-    setIsLoading(false);
-
-    onNext('profile-selection', {
-      ...userData,
-      name: `${formData.firstName} ${formData.lastName}`,
-      isNewUser: true,
+    await registerAction({
+      ...formData,
+      email: isEmail ? userData.email : formData.email,
+      telephone: isEmail ? userData.phone : formData.telephone,
     });
+
+    if (isNewUser) {
+      onNext('profile-selection', {
+        ...userData,
+        name: `${formData.firstName} ${formData.lastName}`,
+        isNewUser: true,
+      });
+    } else {
+      toggleAuthAction(false);
+    }
   };
 
   const isFormValid =
     formData.firstName.trim().length >= 2 &&
     formData.lastName.trim().length >= 2 &&
-    formData.password.length >= 6 &&
-    formData.acceptTerms;
-
-  const contact = userData.email || userData.phone;
-  const isEmail = contact.includes('@');
+    formData.email.trim().length >= 2 &&
+    formData.telephone.trim().length >= 2 &&
+    formData.acceptedTerms;
 
   return (
     <div className="w-full max-w-lg">
@@ -179,46 +186,38 @@ export function SignupStep({ userData, onNext, onBack }: SignupStepProps) {
             {/* Password Field */}
             <div className="space-y-2">
               <label className="text-foreground font-medium text-sm">
-                Senha
+                {isEmail ? 'Telefone' : 'Email'}
               </label>
               <div className="relative">
-                <Input
-                  type={showPassword ? 'text' : 'password'}
-                  placeholder="Mínimo 6 caracteres"
-                  value={formData.password}
-                  onChange={(e) =>
-                    handleInputChange('password', e.target.value)
-                  }
-                  className="h-12 px-4 pr-12 bg-input border-border focus:border-primary focus:ring-1 focus:ring-primary rounded-xl transition-all"
-                />
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center h-12 w-12 hover:bg-transparent"
-                >
-                  {showPassword ? (
-                    <EyeOff className="h-4 w-4 text-muted-foreground" />
-                  ) : (
-                    <Eye className="h-4 w-4 text-muted-foreground" />
-                  )}
-                </Button>
+                {isEmail ? (
+                  <Input
+                    type="tel"
+                    placeholder="Telefone"
+                    value={formData.telephone}
+                    onChange={(e) =>
+                      handleInputChange('telephone', e.target.value)
+                    }
+                    className="h-12 px-4 bg-input border-2 border-border focus:border-primary focus:ring-2 focus:ring-primary/20 rounded-xl transition-all duration-200 group-hover:border-border/80"
+                  />
+                ) : (
+                  <Input
+                    type="email"
+                    placeholder="Email"
+                    value={formData.email}
+                    onChange={(e) => handleInputChange('email', e.target.value)}
+                    className="h-12 px-4 bg-input border-2 border-border focus:border-primary focus:ring-2 focus:ring-primary/20 rounded-xl transition-all duration-200 group-hover:border-border/80"
+                  />
+                )}
               </div>
-              {formData.password.length > 0 && formData.password.length < 6 && (
-                <p className="text-xs text-destructive">
-                  A senha deve ter pelo menos 6 caracteres
-                </p>
-              )}
             </div>
 
             {/* Terms Checkbox */}
             <div className="space-y-4">
               <Label className="flex items-start cursor-pointer p-4 bg-muted/20 rounded-2xl border border-border/50 hover:border-border transition-colors">
                 <Checkbox
-                  checked={formData.acceptTerms}
+                  checked={formData.acceptedTerms}
                   onCheckedChange={(checked) =>
-                    handleInputChange('acceptTerms', checked)
+                    handleInputChange('acceptedTerms', checked)
                   }
                   className="mt-1"
                 />

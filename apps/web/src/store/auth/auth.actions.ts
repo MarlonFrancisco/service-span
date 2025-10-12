@@ -11,6 +11,32 @@ export const createAuthSessionAction =
   (set: TStoreSet<IAuthState>) =>
   async (payload: { email?: string; telephone?: string }) => {
     set({ fetchingStatus: 'loading' });
-    await AuthService.login(payload.email, payload.telephone);
+    const response = await AuthService.login(payload.email, payload.telephone);
+    set({ fetchingStatus: 'success', isNewUser: response.isNewUser });
+  };
+
+export const validateAuthSessionAction =
+  (set: TStoreSet<IAuthState>) =>
+  async (payload: { code: string; email?: string; telephone?: string }) => {
+    set({ fetchingStatus: 'loading' });
+    await AuthService.validateCode(
+      payload.code,
+      payload.email,
+      payload.telephone,
+    );
+    set({ fetchingStatus: 'success' });
+  };
+
+export const registerAction =
+  (set: TStoreSet<IAuthState>) =>
+  async (payload: {
+    email: string;
+    telephone: string;
+    firstName: string;
+    lastName: string;
+    acceptedTerms: boolean;
+  }) => {
+    set({ fetchingStatus: 'loading' });
+    await AuthService.register(payload);
     set({ fetchingStatus: 'success' });
   };

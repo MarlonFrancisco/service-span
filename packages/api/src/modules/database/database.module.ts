@@ -22,6 +22,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
             ? { rejectUnauthorized: false }
             : false,
         autoLoadEntities: true,
+        cache: false,
       }),
     }),
   ],

@@ -1,20 +1,18 @@
 import { Column, Entity, Index } from 'typeorm';
 import { BaseEntity } from '../database/base.entity';
 
-@Entity('tb_users')
+@Entity('users')
 export class User extends BaseEntity {
-  @Column({ unique: true, nullable: false })
-  @Index()
+  @Column({ type: 'varchar', nullable: true, unique: true })
   email: string;
 
-  @Column({ unique: true, nullable: false })
-  @Index()
-  telephone?: string;
+  @Column({ type: 'varchar', nullable: true, unique: true })
+  telephone: string;
 
-  @Column({ name: 'first_name', nullable: true })
+  @Column({ name: 'first_name', type: 'varchar', nullable: true })
   firstName: string;
 
-  @Column({ name: 'last_name', nullable: true })
+  @Column({ name: 'last_name', type: 'varchar', nullable: true })
   lastName: string;
 
   @Column({ name: 'auth_code', type: 'varchar', length: 6, nullable: true })

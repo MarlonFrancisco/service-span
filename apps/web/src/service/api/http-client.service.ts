@@ -9,6 +9,7 @@ export class HttpClientService {
     }
 
     this.httpClient.defaults.baseURL = baseURL;
+    this.httpClient.defaults.withCredentials = true;
 
     this.httpClient.interceptors.request.use(async (config) => {
       return config;

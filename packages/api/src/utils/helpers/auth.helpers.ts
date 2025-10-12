@@ -12,5 +12,15 @@ export const generateAuthCode = () => {
   // 3. Garante que o número tenha 6 dígitos:
   const code = (numInteger % 1000000).toString().padStart(6, '0');
 
-  return code;
+  // 4. Calcula o tempo de expiração (20 minutos a partir de agora):
+  const expiresIn = new Date(Date.now() + 20 * 60 * 1000);
+
+  return { code, expiresIn };
+};
+
+export const getAccessTokenFromCookie = (cookie: string) => {
+  return cookie
+    .split('; ')
+    .find((cookie) => cookie.includes('access_token'))
+    ?.split('=')[1];
 };

@@ -1,3 +1,4 @@
+import { useAuthActions, useAuthAttributes } from '@/store/auth/auth.hook';
 import { Button } from '@repo/ui';
 import { ArrowLeft, ArrowRight, RefreshCw, Shield } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
@@ -20,6 +21,8 @@ export function VerificationStep({
   const [countdown, setCountdown] = useState(60);
   const [canResend, setCanResend] = useState(false);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const { validateAuthSessionAction } = useAuthActions();
+  const { isNewUser } = useAuthAttributes();
 
   const isEmail = contact.includes('@');
   const maskedContact = isEmail
@@ -37,22 +40,17 @@ export function VerificationStep({
 
   const handleVerify = async () => {
     const fullCode = code.join('');
-    if (fullCode.length !== 6) return;
 
-    setIsLoading(true);
-
-    // Simular verificação do código
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-
-    setIsLoading(false);
-
-    // Simular se é usuário novo ou existente (do step anterior)
-    const isNewUser = Math.random() > 0.5;
+    await validateAuthSessionAction({
+      code: fullCode,
+      email: isEmail ? contact : undefined,
+      telephone: isEmail ? undefined : contact,
+    });
 
     if (isNewUser) {
-      onNext('signup', { isNewUser: true });
+      onNext('signup');
     } else {
-      onNext('profile-selection', { isNewUser: false });
+      onNext('profile-selection');
     }
   };
 
