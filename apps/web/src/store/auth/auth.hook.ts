@@ -12,6 +12,7 @@ export const useAuthActions = () => {
     createAuthSessionAction,
     validateAuthSessionAction,
     registerAction,
+    googleLoginAction,
   } = useAuthStore();
 
   return {
@@ -19,5 +20,6 @@ export const useAuthActions = () => {
     createAuthSessionAction,
     validateAuthSessionAction,
     registerAction,
+    googleLoginAction,
   };
 };

@@ -2,7 +2,7 @@
 
 import { Button } from '@repo/ui';
 import { useEffect } from 'react';
-import type { Service } from '../../types/search.types';
+import type { Service } from '../../search.types';
 import { ServiceCard } from '../service-card';
 
 interface ResultsListProps {

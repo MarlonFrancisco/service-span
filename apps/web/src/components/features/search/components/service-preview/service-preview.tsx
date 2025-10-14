@@ -2,7 +2,7 @@
 
 import { Badge, Button, Card, Separator } from '@repo/ui';
 import { Calendar, Clock, MapPin, Phone, Star } from 'lucide-react';
-import type { Service } from '../../types/search.types';
+import type { Service } from '../../search.types';
 import { ImageCarousel } from '../image-carousel';
 
 interface ServicePreviewProps {

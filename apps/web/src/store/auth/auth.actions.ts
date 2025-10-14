@@ -40,3 +40,10 @@ export const registerAction =
     await AuthService.register(payload);
     set({ fetchingStatus: 'success' });
   };
+
+export const googleLoginAction =
+  (set: TStoreSet<IAuthState>) => async (token: string) => {
+    set({ fetchingStatus: 'loading' });
+    const response = await AuthService.googleLogin(token);
+    set({ fetchingStatus: 'success', isNewUser: response.data.isNewUser });
+  };

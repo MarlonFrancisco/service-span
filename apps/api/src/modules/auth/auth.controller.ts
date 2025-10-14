@@ -8,17 +8,21 @@ import {
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
+import { getAccessTokenFromCookie } from '@repo/api';
 import { Request, Response } from 'express';
-import { getAccessTokenFromCookie } from '../../utils/helpers/auth.helpers';
 import { AuthService } from './auth.service';
 import { LoginFirstStepDto } from './dto/login-first-step.dto';
 import { RegisterDto } from './dto/register.dto';
 import { ValidationCodeDto } from './dto/validation-code.dto';
+import { GoogleSSOService } from './google-sso.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly googleSSOService: GoogleSSOService,
+  ) {}
 
   @Post('code')
   async createOtpCode(@Body() body: LoginFirstStepDto) {
@@ -41,14 +45,6 @@ export class AuthController {
         maxAge: tokens.expires_in * 1000, // converte para milissegundos
         path: '/',
       });
-
-      res.cookie('refresh_token', tokens.refresh_token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
-        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 dias em milissegundos
-        path: '/',
-      });
     } catch (error) {
       throw new UnauthorizedException(error);
     }
@@ -62,5 +58,22 @@ export class AuthController {
       body,
       getAccessTokenFromCookie(req.headers.cookie),
     );
+  }
+
+  @Post('social/google')
+  async googleLogin(
+    @Body() body: { token: string },
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const { tokens, isNewUser } = await this.googleSSOService.login(body.token);
+
+    res.cookie('access_token', tokens.access_token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
+      maxAge: tokens.expires_in * 1000,
+    });
+
+    return { isNewUser };
   }
 }

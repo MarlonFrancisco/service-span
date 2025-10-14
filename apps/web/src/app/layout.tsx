@@ -5,6 +5,7 @@ import { QueryProvider } from '@/providers';
 import useSearchStore from '@/store/search/search.store';
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
+import Script from 'next/script';
 import './globals.css';
 
 const geistSans = localFont({
@@ -152,7 +153,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  console.log('layout');
   useSearchStore.setState({ showFilters: true, showSearchBar: true });
   return (
     <html lang="pt-BR">
@@ -165,6 +165,11 @@ export default function RootLayout({
           <AuthModal />
           <Toaster />
         </QueryProvider>
+
+        <Script
+          src="https://accounts.google.com/gsi/client"
+          strategy="beforeInteractive"
+        />
       </body>
     </html>
   );

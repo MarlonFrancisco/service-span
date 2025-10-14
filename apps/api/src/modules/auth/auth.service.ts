@@ -1,6 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { generateAuthCode } from '../../utils/helpers/auth.helpers';
+import { generateAuthCode } from '@repo/api';
 import { SMSService } from '../sms';
 import { UsersService } from '../users';
 import { LoginFirstStepDto } from './dto/login-first-step.dto';
@@ -83,7 +83,7 @@ export class AuthService {
     }
 
     if (body.email) {
-      await this.smsService.sendOTP(body.email, authCode.code);
+      //await this.smsService.sendOTP(body.email, authCode.code);
     }
 
     return { isNewUser };

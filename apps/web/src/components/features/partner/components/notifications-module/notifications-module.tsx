@@ -85,12 +85,9 @@ interface Notification {
   recipient?: string;
   status?: 'sent' | 'delivered' | 'failed' | 'pending';
 }
+const activeStore = 'centro';
 
-interface NotificationsModuleProps {
-  activeStore: string;
-}
-
-export function NotificationsModule({ activeStore }: NotificationsModuleProps) {
+export function NotificationsModule() {
   const [activeTab, setActiveTab] = useState<'history' | 'settings'>('history');
   const [searchQuery, setSearchQuery] = useState('');
   const [filterType, setFilterType] = useState<string>('all');

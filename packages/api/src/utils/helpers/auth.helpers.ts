@@ -1,4 +1,4 @@
-import crypto from 'crypto';
+import * as crypto from 'crypto';
 
 export const generateAuthCode = () => {
   // 1. Gera bytes aleatórios:
@@ -20,7 +20,7 @@ export const generateAuthCode = () => {
 
 export const getAccessTokenFromCookie = (cookie: string) => {
   return cookie
-    .split('; ')
-    .find((cookie) => cookie.includes('access_token'))
+    ?.split('; ')
+    ?.find((cookie) => cookie.includes('access_token'))
     ?.split('=')[1];
 };

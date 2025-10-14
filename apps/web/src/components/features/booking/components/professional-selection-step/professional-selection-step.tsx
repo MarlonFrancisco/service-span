@@ -1,17 +1,14 @@
-import { useState, useEffect } from 'react';
-import { User, Check, Info } from 'lucide-react';
 import { Card } from '@repo/ui';
-import {
-  SelectedService,
-  Professional,
-} from '../booking-sidebar/booking-sidebar';
+import { Check, Info, User } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { TProfessional, TSelectedService } from '../../booking.types';
 
 interface ProfessionalSelectionStepProps {
-  selectedServices: SelectedService[];
-  selectedProfessional: Professional | null;
+  selectedServices: TSelectedService[];
+  selectedProfessional: TProfessional | null;
   isAnyProfessional: boolean;
   onProfessionalChange: (
-    professional: Professional | null,
+    professional: TProfessional | null,
     isAny: boolean,
   ) => void;
   onValidationError: (error: string | null) => void;
@@ -25,36 +22,44 @@ export function ProfessionalSelectionStep({
   onValidationError,
 }: ProfessionalSelectionStepProps) {
   // Mock data - substituir por dados reais
-  const mockProfessionals: Professional[] = [
+  const mockProfessionals: TProfessional[] = [
     {
       id: '1',
       name: 'Carlos Silva',
       specialties: ['Cortes Masculinos', 'Barba'],
       availableServices: ['1', '2', '3'], // IDs dos serviços que pode realizar
+      avatar: 'https://via.placeholder.com/150',
+      rating: 4.5,
     },
     {
       id: '2',
       name: 'Ana Costa',
       specialties: ['Cabelo Feminino', 'Tratamentos'],
       availableServices: ['1', '4', '5', '6'],
+      avatar: 'https://via.placeholder.com/150',
+      rating: 4.5,
     },
     {
       id: '3',
       name: 'João Pereira',
       specialties: ['Estética Masculina'],
       availableServices: ['1', '2', '3'],
+      avatar: 'https://via.placeholder.com/150',
+      rating: 4.5,
     },
     {
       id: '4',
       name: 'Maria Santos',
       specialties: ['Tratamentos Capilares'],
       availableServices: ['4', '5', '6'],
+      avatar: 'https://via.placeholder.com/150',
+      rating: 4.5,
     },
   ];
 
   const [compatibilityStatus, setCompatibilityStatus] = useState<{
     canUseAny: boolean;
-    availableProfessionals: Professional[];
+    availableProfessionals: TProfessional[];
     hasIncompatibleCombination: boolean;
   }>({
     canUseAny: true,
@@ -130,18 +135,18 @@ export function ProfessionalSelectionStep({
     }
   };
 
-  const handleProfessionalSelect = (professional: Professional) => {
+  const handleProfessionalSelect = (professional: TProfessional) => {
     onProfessionalChange(professional, false);
   };
 
-  const canProfessionalDoAllServices = (professional: Professional) => {
+  const canProfessionalDoAllServices = (professional: TProfessional) => {
     const selectedServiceIds = selectedServices.map((s) => s.id);
     return selectedServiceIds.every((serviceId) =>
       professional.availableServices.includes(serviceId),
     );
   };
 
-  const getServicesForProfessional = (professional: Professional) => {
+  const getServicesForProfessional = (professional: TProfessional) => {
     return selectedServices.filter((service) =>
       professional.availableServices.includes(service.id),
     );

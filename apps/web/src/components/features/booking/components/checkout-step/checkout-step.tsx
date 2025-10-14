@@ -11,11 +11,11 @@ import {
   User,
 } from 'lucide-react';
 import { useState } from 'react';
-import { Professional, SelectedService } from '../booking-sidebar';
+import { TProfessional, TSelectedService } from '../../booking.types';
 
 interface CheckoutStepProps {
-  selectedServices: SelectedService[];
-  selectedProfessional: Professional | null;
+  selectedServices: TSelectedService[];
+  selectedProfessional: TProfessional | null;
   isAnyProfessional: boolean;
   selectedDate: Date | undefined;
   selectedTime: string | null;

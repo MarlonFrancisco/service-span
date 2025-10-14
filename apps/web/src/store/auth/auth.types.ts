@@ -21,4 +21,5 @@ export interface IAuthState {
     lastName: string;
     acceptedTerms: boolean;
   }) => Promise<void>;
+  googleLoginAction: (token: string) => Promise<void>;
 }

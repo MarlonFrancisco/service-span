@@ -1,23 +1,6 @@
-import { Button } from '@repo/ui';
-import { ArrowLeft } from 'lucide-react';
-
 export default function TermsPage() {
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="border-b border-gray-200">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <Button
-            variant="ghost"
-            onClick={() => window.history.back()}
-            className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Voltar
-          </Button>
-        </div>
-      </div>
-
       {/* Content */}
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="prose prose-gray max-w-none">

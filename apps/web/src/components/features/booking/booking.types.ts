@@ -10,14 +10,16 @@ export type TSelectedService = {
   price: number;
   duration: number;
   quantity: number;
+  category: string;
 };
 
 export type TProfessional = {
   id: string;
   name: string;
-  specialty: string;
   avatar: string;
   rating: number;
+  specialties: string[];
+  availableServices: string[];
 };
 
 export type TBookingFlowConfig = {
@@ -30,5 +32,4 @@ export type TBookingFlowConfig = {
   businessReviewCount?: number;
   businessCategory?: string;
   businessDescription?: string;
-  onBack: () => void;
 };

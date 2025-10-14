@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindOptionsSelect, Repository } from 'typeorm';
 import { User } from './user.entity';
 
 @Injectable()
@@ -14,8 +14,24 @@ export class UsersService {
     return this.userRepository.find();
   }
 
-  async findById(id: string): Promise<User> {
-    const user = await this.userRepository.findOne({ where: { id } });
+  async findById(
+    id: string,
+    fields: string[] = [
+      'email',
+      'firstName',
+      'lastName',
+      'telephone',
+      'createdAt',
+      'updatedAt',
+      'authCode',
+      'authCodeExpiresAt',
+      'acceptedTerms',
+    ],
+  ): Promise<User> {
+    const user = await this.userRepository.findOne({
+      where: { id },
+      select: fields as FindOptionsSelect<User>,
+    });
     if (!user) {
       throw new NotFoundException(`User with ID ${id} not found`);
     }

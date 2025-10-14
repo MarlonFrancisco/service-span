@@ -6,6 +6,7 @@ import { SMSModule } from '../sms';
 import { UsersModule } from '../users';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+import { GoogleSSOService } from './google-sso.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
 
 @Module({
@@ -18,14 +19,14 @@ import { JwtStrategy } from './strategies/jwt.strategy';
       useFactory: async (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET') || 'secret-key',
         signOptions: {
-          expiresIn: '15m',
+          expiresIn: '1d',
         },
       }),
     }),
     SMSModule,
     UsersModule,
   ],
-  providers: [AuthService, JwtStrategy],
+  providers: [AuthService, JwtStrategy, GoogleSSOService],
   exports: [AuthService, JwtModule, PassportModule],
   controllers: [AuthController],
 })

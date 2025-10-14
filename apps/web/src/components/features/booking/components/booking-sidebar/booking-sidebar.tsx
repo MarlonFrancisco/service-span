@@ -1,5 +1,6 @@
 import { Badge, Card, Separator } from '@repo/ui';
 import { Calendar, Clock, MapPin, Phone, User } from 'lucide-react';
+import { TProfessional, TSelectedService } from '../../booking.types';
 
 export interface SelectedService {
   id: string;
@@ -23,8 +24,8 @@ interface BookingSidebarProps {
   businessName: string;
   businessAddress: string;
   businessPhone: string;
-  selectedServices: SelectedService[];
-  selectedProfessional: Professional | null;
+  selectedServices: TSelectedService[];
+  selectedProfessional: TProfessional | null;
   isAnyProfessional: boolean;
   selectedDate: Date | undefined;
   selectedTime: string | null;

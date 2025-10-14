@@ -1,7 +1,7 @@
 import { Button, Calendar as CalendarComponent, Card } from '@repo/ui';
 import { Calendar, Clock } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { Professional, SelectedService } from './BookingSidebar';
+import { TProfessional, TSelectedService } from '../../booking.types';
 
 export interface TimeSlot {
   time: string;
@@ -10,8 +10,8 @@ export interface TimeSlot {
 }
 
 interface DateTimeSelectionStepProps {
-  selectedServices: SelectedService[];
-  selectedProfessional: Professional | null;
+  selectedServices: TSelectedService[];
+  selectedProfessional: TProfessional | null;
   isAnyProfessional: boolean;
   selectedDate: Date | undefined;
   selectedTime: string | null;

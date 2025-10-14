@@ -22,7 +22,7 @@ export class HttpClientService {
     );
   }
 
-  public get<T>(url: string, config: AxiosRequestConfig) {
+  public get<T>(url: string, config?: AxiosRequestConfig) {
     return this.httpClient.get<T>(url, config);
   }
 
@@ -30,11 +30,11 @@ export class HttpClientService {
     return this.httpClient.post<T>(url, data, config);
   }
 
-  public put<T>(url: string, data: unknown, config: AxiosRequestConfig) {
+  public put<T>(url: string, data: unknown, config?: AxiosRequestConfig) {
     return this.httpClient.put<T>(url, data, config);
   }
 
-  public delete<T>(url: string, config: AxiosRequestConfig) {
+  public delete<T>(url: string, config?: AxiosRequestConfig) {
     return this.httpClient.delete<T>(url, config);
   }
 }

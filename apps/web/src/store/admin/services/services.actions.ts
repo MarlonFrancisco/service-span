@@ -1,95 +1,108 @@
+import { TStoreSet } from '@/types/store.types';
 import type {
   ICategory,
   ICategoryFormData,
   IService,
   IServiceFormData,
+  IServicesStore,
 } from './services.types';
 
-export const setSearchQueryAction = (set: any) => (query: string) => {
-  set({ searchQuery: query });
-};
+export const setSearchQueryAction =
+  (set: TStoreSet<IServicesStore>) => (query: string) => {
+    set({ searchQuery: query });
+  };
 
-export const setFilterCategoryAction = (set: any) => (category: string) => {
-  set({ filterCategory: category });
-};
+export const setFilterCategoryAction =
+  (set: TStoreSet<IServicesStore>) => (category: string) => {
+    set({ filterCategory: category });
+  };
 
-export const setIsAddModalOpenAction = (set: any) => (isOpen: boolean) => {
-  set({ isAddModalOpen: isOpen });
-};
+export const setIsAddModalOpenAction =
+  (set: TStoreSet<IServicesStore>) => (isOpen: boolean) => {
+    set({ isAddModalOpen: isOpen });
+  };
 
-export const setIsCategoryModalOpenAction = (set: any) => (isOpen: boolean) => {
-  set({ isCategoryModalOpen: isOpen });
-};
+export const setIsCategoryModalOpenAction =
+  (set: TStoreSet<IServicesStore>) => (isOpen: boolean) => {
+    set({ isCategoryModalOpen: isOpen });
+  };
 
 export const setEditingServiceAction =
-  (set: any) => (service: IService | null) => {
+  (set: TStoreSet<IServicesStore>) => (service: IService | null) => {
     set({ editingService: service });
   };
 
 export const setEditingCategoryAction =
-  (set: any) => (category: ICategory | null) => {
+  (set: TStoreSet<IServicesStore>) => (category: ICategory | null) => {
     set({ editingCategory: category });
   };
 
 export const setFormDataAction =
-  (set: any) => (data: Partial<IServiceFormData>) => {
-    set((state: any) => ({
+  (set: TStoreSet<IServicesStore>) => (data: Partial<IServiceFormData>) => {
+    set((state) => ({
       formData: { ...state.formData, ...data },
     }));
   };
 
 export const setCategoryFormDataAction =
-  (set: any) => (data: Partial<ICategoryFormData>) => {
-    set((state: any) => ({
+  (set: TStoreSet<IServicesStore>) => (data: Partial<ICategoryFormData>) => {
+    set((state) => ({
       categoryFormData: { ...state.categoryFormData, ...data },
     }));
   };
 
 export const resetFormAction =
-  (set: any, initialFormData: IServiceFormData) => () => {
+  (set: TStoreSet<IServicesStore>, initialFormData: IServiceFormData) => () => {
     set({ formData: initialFormData });
   };
 
 export const resetCategoryFormAction =
-  (set: any, initialCategoryFormData: ICategoryFormData) => () => {
+  (
+    set: TStoreSet<IServicesStore>,
+    initialCategoryFormData: ICategoryFormData,
+  ) =>
+  () => {
     set({ categoryFormData: initialCategoryFormData });
   };
 
 // Service CRUD Actions
 export const addServiceAction =
-  (set: any) => (service: Omit<IService, 'id'>) => {
-    set((state: any) => ({
+  (set: TStoreSet<IServicesStore>) => (service: Omit<IService, 'id'>) => {
+    set((state) => ({
       services: [...state.services, { ...service, id: String(Date.now()) }],
     }));
   };
 
 export const updateServiceAction =
-  (set: any) => (id: string, service: Partial<IService>) => {
-    set((state: any) => ({
+  (set: TStoreSet<IServicesStore>) =>
+  (id: string, service: Partial<IService>) => {
+    set((state) => ({
       services: state.services.map((s: IService) =>
         s.id === id ? { ...s, ...service } : s,
       ),
     }));
   };
 
-export const deleteServiceAction = (set: any) => (id: string) => {
-  set((state: any) => ({
-    services: state.services.filter((s: IService) => s.id !== id),
-  }));
-};
+export const deleteServiceAction =
+  (set: TStoreSet<IServicesStore>) => (id: string) => {
+    set((state) => ({
+      services: state.services.filter((s: IService) => s.id !== id),
+    }));
+  };
 
-export const toggleServiceStatusAction = (set: any) => (id: string) => {
-  set((state: any) => ({
-    services: state.services.map((s: IService) =>
-      s.id === id ? { ...s, isActive: !s.isActive } : s,
-    ),
-  }));
-};
+export const toggleServiceStatusAction =
+  (set: TStoreSet<IServicesStore>) => (id: string) => {
+    set((state) => ({
+      services: state.services.map((s: IService) =>
+        s.id === id ? { ...s, isActive: !s.isActive } : s,
+      ),
+    }));
+  };
 
 // Category CRUD Actions
 export const addCategoryAction =
-  (set: any) => (category: Omit<ICategory, 'id'>) => {
-    set((state: any) => ({
+  (set: TStoreSet<IServicesStore>) => (category: Omit<ICategory, 'id'>) => {
+    set((state) => ({
       categories: [
         ...state.categories,
         { ...category, id: String(Date.now()) },
@@ -98,8 +111,9 @@ export const addCategoryAction =
   };
 
 export const updateCategoryAction =
-  (set: any) => (id: string, category: Partial<ICategory>) => {
-    set((state: any) => {
+  (set: TStoreSet<IServicesStore>) =>
+  (id: string, category: Partial<ICategory>) => {
+    set((state) => {
       const oldCategory = state.categories.find((c: ICategory) => c.id === id);
       const newCategories = state.categories.map((c: ICategory) =>
         c.id === id ? { ...c, ...category } : c,
@@ -110,7 +124,7 @@ export const updateCategoryAction =
         oldCategory && category.name && oldCategory.name !== category.name
           ? state.services.map((s: IService) =>
               s.category === oldCategory.name
-                ? { ...s, category: category.name }
+                ? { ...s, category: category.name || 'Não categorizado' }
                 : s,
             )
           : state.services;
@@ -122,8 +136,9 @@ export const updateCategoryAction =
     });
   };
 
-export const deleteCategoryAction = (set: any) => (id: string) => {
-  set((state: any) => ({
-    categories: state.categories.filter((c: ICategory) => c.id !== id),
-  }));
-};
+export const deleteCategoryAction =
+  (set: TStoreSet<IServicesStore>) => (id: string) => {
+    set((state) => ({
+      categories: state.categories.filter((c: ICategory) => c.id !== id),
+    }));
+  };

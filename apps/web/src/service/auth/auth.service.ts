@@ -32,4 +32,13 @@ export class AuthService {
     const response = await this.apiClient.post<void>('/auth/register', payload);
     return response;
   }
+
+  static async googleLogin(token: string) {
+    const response = await this.apiClient.post<{
+      isNewUser: boolean;
+    }>('/auth/social/google', {
+      token,
+    });
+    return response;
+  }
 }

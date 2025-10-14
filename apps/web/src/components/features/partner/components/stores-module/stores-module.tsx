@@ -116,10 +116,6 @@ interface Store {
   amenities?: string[];
 }
 
-interface StoresModuleProps {
-  stores: any[];
-}
-
 const defaultWorkingHours: WorkingHours = {
   monday: { start: '09:00', end: '18:00', isOpen: true },
   tuesday: { start: '09:00', end: '18:00', isOpen: true },
@@ -151,7 +147,7 @@ const amenitiesList = [
   'Área de Espera',
 ];
 
-export function StoresModule({ stores: initialStores }: StoresModuleProps) {
+export function StoresModule() {
   const [stores, setStores] = useState<Store[]>([
     {
       id: '1',

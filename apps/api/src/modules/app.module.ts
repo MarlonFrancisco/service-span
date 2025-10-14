@@ -1,16 +1,12 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import {
-  AuthModule,
-  DatabaseModule,
-  PaymentModule,
-  PlansModule,
-  SMSModule,
-  UsersModule,
-} from '@repo/api';
 
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { AuthModule } from './auth';
+import { DatabaseModule } from './database';
+import { PlansModule } from './plans';
+import { SMSModule } from './sms';
+import { SubscriptionModule } from './subscription';
+import { UsersModule } from './users';
 
 @Module({
   imports: [
@@ -19,13 +15,11 @@ import { AppService } from './app.service';
       envFilePath: ['.env.local', '.env'],
     }),
     DatabaseModule,
-    PaymentModule,
+    SubscriptionModule,
     PlansModule,
     UsersModule,
     AuthModule,
     SMSModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}

@@ -1,10 +1,6 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
-import type {
-  TSearchConfig,
-  Service,
-  SearchFilters,
-} from '../types/search.types';
-import { MOCK_SERVICES } from '../constants';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { MOCK_SERVICES } from './search.constants';
+import type { SearchFilters, Service, TSearchConfig } from './search.types';
 
 export const useSearch = ({ query, category, location }: TSearchConfig) => {
   const [searchResults, setSearchResults] = useState<Service[]>([]);

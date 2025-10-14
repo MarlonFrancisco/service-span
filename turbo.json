@@ -1,8 +1,10 @@
 {
   "$schema": "https://turborepo.com/schema.json",
   "globalEnv": [
-    "NODE_ENV",
+    "NEXT_PUBLIC_GOOGLE_CLIENT_ID",
     "NEXT_PUBLIC_API_URL",
+
+    "NODE_ENV",
     "STRIPE_API_KEY",
     "DB_HOST",
     "DB_PORT",
@@ -15,7 +17,9 @@
     "JWT_SECRET",
     "AWS_ACCESS_KEY_ID",
     "AWS_SECRET_ACCESS_KEY",
-    "AWS_REGION"
+    "AWS_REGION",
+    "GOOGLE_CLIENT_ID",
+    "GOOGLE_CLIENT_SECRET"
   ],
   "globalDependencies": ["**/.env.*local"],
   "tasks": {
@@ -28,8 +32,10 @@
       "dependsOn": ["^build"],
       "outputs": [".next/**", "!.next/cache/**", "dist/**"],
       "env": [
-        "NODE_ENV",
+        "NEXT_PUBLIC_GOOGLE_CLIENT_ID",
         "NEXT_PUBLIC_API_URL",
+
+        "NODE_ENV",
         "STRIPE_API_KEY",
         "DB_HOST",
         "DB_PORT",
@@ -42,7 +48,9 @@
         "JWT_SECRET",
         "AWS_ACCESS_KEY_ID",
         "AWS_SECRET_ACCESS_KEY",
-        "AWS_REGION"
+        "AWS_REGION",
+        "GOOGLE_CLIENT_ID",
+        "GOOGLE_CLIENT_SECRET"
       ]
     },
     "lint": {}
