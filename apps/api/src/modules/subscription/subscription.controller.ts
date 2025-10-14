@@ -1,9 +1,9 @@
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
-import { JwtPayload } from '../auth/auth.service';
+import type { JwtPayload } from '../auth/auth.service';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { SubscriptionService } from './subscription.service';
-import { IWebhookPayload } from './subscription.types';
+import type { IWebhookPayload } from './subscription.types';
 
 @Controller('subscription')
 export class SubscriptionController {
