@@ -9,7 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { getAccessTokenFromCookie } from '@repo/api';
-import { Request, Response } from 'express';
+import type { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { LoginFirstStepDto } from './dto/login-first-step.dto';
 import { RegisterDto } from './dto/register.dto';

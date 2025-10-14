@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOptionsSelect, Repository } from 'typeorm';
+import type { FindOptionsSelect, Repository } from 'typeorm';
 import { User } from './user.entity';
 
 @Injectable()

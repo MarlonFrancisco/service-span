@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 
-import { Repository } from 'typeorm';
+import type { Repository } from 'typeorm';
 
 import { InjectRepository } from '@nestjs/typeorm';
 import { StripeService } from '../stripe';
@@ -12,7 +12,7 @@ import { UsersService } from '../users';
 import { CustomerSubscriptionCreatedDto } from './dto/customer-subscription-created.dto';
 import { CustomerSubscriptionUpdateDto } from './dto/customer-subscription-update.dto';
 import { Subscription } from './subscription.entity';
-import {
+import type {
   ICustomerSubscriptionCreatedEvent,
   ICustomerSubscriptionUpdatedEvent,
   IWebhookPayload,
