@@ -1,7 +1,8 @@
+import type { INestApplication } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './modules/app.module';
 
-async function bootstrap() {
+export async function createApp(): Promise<INestApplication> {
   const app = await NestFactory.create(AppModule);
 
   app.enableCors({
@@ -9,7 +10,18 @@ async function bootstrap() {
     credentials: true,
   });
 
+  return app;
+}
+
+async function bootstrap() {
+  const app = await createApp();
   await app.listen(3000);
 }
 
-void bootstrap();
+// Executa apenas se for o arquivo principal (não quando importado)
+if (require.main === module) {
+  void bootstrap();
+}
+
+// Exporta para ambientes serverless
+export default bootstrap;
