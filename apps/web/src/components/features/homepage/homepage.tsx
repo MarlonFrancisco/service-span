@@ -12,10 +12,9 @@ import {
   SelectValue,
 } from '@repo/ui';
 import { MapPin, Search, Sparkles } from 'lucide-react';
+import { motion } from 'motion/react';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
 import { CTA, Features, Recomendations } from './components';
-import { homepageAnimation } from './homepage.animation';
 import { useHomepage } from './homepage.hook';
 import { featuredCategories } from './homepage.mock';
 
@@ -34,15 +33,11 @@ export const Homepage = () => {
     router.push(`/booking?category=${encodeURIComponent(categoryName)}`);
   };
 
-  useEffect(() => {
-    homepageAnimation();
-  }, []);
-
   return (
     <div className="min-h-screen bg-black">
       <Header />
 
-      <div className="rounded-tl-[40px] rounded-tr-[40px] bg-background">
+      <motion.div className="rounded-tl-[40px] rounded-tr-[40px] bg-background">
         {/* Hero Section */}
         <section className="relative overflow-hidden pt-24 mb-10">
           <div className="relative max-w-7xl mx-auto px-6 pt-52 pb-20">
@@ -151,7 +146,7 @@ export const Homepage = () => {
         <CTA />
 
         <Footer />
-      </div>
+      </motion.div>
     </div>
   );
 };

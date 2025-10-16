@@ -1,4 +1,6 @@
+import { fadeInUpAnimation } from '@/utils/animations/common.animation';
 import { Clock, Shield, Star } from 'lucide-react';
+import { motion } from 'motion/react';
 
 export const Features = () => {
   return (
@@ -15,7 +17,10 @@ export const Features = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-          <div className="feature-item text-center group opacity-0">
+          <motion.div
+            className="feature-item text-center group"
+            {...fadeInUpAnimation}
+          >
             <div className="flex justify-center mb-6">
               <div className="p-4 bg-blue-50 rounded-2xl group-hover:scale-110 transition-transform">
                 <Clock className="h-8 w-8 text-blue-600" />
@@ -28,9 +33,12 @@ export const Features = () => {
               Reserve seus horários em segundos, com confirmação automática e
               lembretes inteligentes.
             </p>
-          </div>
+          </motion.div>
 
-          <div className="feature-item text-center group opacity-0">
+          <motion.div
+            className="feature-item text-center group"
+            {...fadeInUpAnimation}
+          >
             <div className="flex justify-center mb-6">
               <div className="p-4 bg-purple-50 rounded-2xl group-hover:scale-110 transition-transform">
                 <Shield className="h-8 w-8 text-purple-600" />
@@ -43,9 +51,12 @@ export const Features = () => {
               Todos os prestadores passam por verificação rigorosa de documentos
               e qualificações.
             </p>
-          </div>
+          </motion.div>
 
-          <div className="feature-item text-center group opacity-0">
+          <motion.div
+            className="feature-item text-center group"
+            {...fadeInUpAnimation}
+          >
             <div className="flex justify-center mb-6">
               <div className="p-4 bg-green-50 rounded-2xl group-hover:scale-110 transition-transform">
                 <Star className="h-8 w-8 text-green-600" />
@@ -58,7 +69,7 @@ export const Features = () => {
               Sistema de avaliações transparente com feedback real de milhares
               de clientes satisfeitos.
             </p>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>

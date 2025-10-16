@@ -1,10 +1,15 @@
+import { fadeInUpAnimation } from '@/utils/animations/common.animation';
 import { Button } from '@repo/ui';
+import { motion } from 'motion/react';
 
 export const CTA = () => {
   return (
-    <section className="py-24 px-6" id="service-snap-cta">
+    <section className="py-24 px-6">
       <div className="max-w-6xl mx-auto">
-        <div className="cta-section -mx-6 rounded-4xl bg-neutral-950 px-6 py-20 sm:mx-0 sm:py-32 md:px-12 opacity-0">
+        <motion.div
+          className="cta-section -mx-6 rounded-4xl bg-neutral-950 px-6 py-20 sm:mx-0 sm:py-32 md:px-12"
+          {...fadeInUpAnimation}
+        >
           <div className="mx-auto max-w-4xl">
             <div className="max-w-xl">
               <div className="text-left">
@@ -39,7 +44,7 @@ export const CTA = () => {
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

@@ -133,10 +133,4 @@ const setupCardHoverAnimations = () => {
   });
 };
 
-export const homepageAnimation = () => {
-  animateHeroBanner();
-  animateRecommendations();
-  setupCardHoverAnimations();
-  animateFeatures();
-  animateCTA();
-};
+export const homepageAnimation = () => {};

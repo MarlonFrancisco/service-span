@@ -1,10 +1,11 @@
-import { Button, Card, CardContent, Badge } from '@repo/ui';
-import { ArrowRight, Heart, Calendar, Star } from 'lucide-react';
+import { Badge, Button, Card, CardContent } from '@repo/ui';
+import { ArrowRight, Calendar, Heart, Star } from 'lucide-react';
+import { motion } from 'motion/react';
 import { popularServices } from '../../homepage.mock';
 
 export const Recomendations = () => {
   return (
-    <section className="pb-24 px-6" id="service-snap-recomendations">
+    <section className="pb-24 px-6">
       <div className="max-w-7xl mx-auto">
         <div className="flex items-center justify-between mb-12">
           <div>
@@ -23,11 +24,17 @@ export const Recomendations = () => {
           </Button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+        >
           {popularServices.map((service) => (
             <Card
               key={service.id}
-              className="recommendations-card group cursor-pointer hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border-0 shadow-lg bg-white overflow-hidden opacity-0"
+              className="recommendations-card group cursor-pointer hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border-0 shadow-lg bg-white overflow-hidden"
             >
               <CardContent className="p-0">
                 <div className="relative overflow-hidden">
@@ -85,7 +92,7 @@ export const Recomendations = () => {
               </CardContent>
             </Card>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
