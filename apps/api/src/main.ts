@@ -34,6 +34,9 @@ export async function createApp(
     credentials: true,
   });
 
+  // Global prefix para todas as rotas (opcional)
+  // app.setGlobalPrefix('api');
+
   await app.init();
 
   // Cacheia somente em produção serverless
