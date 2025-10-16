@@ -3,8 +3,8 @@ import { ConfigModule } from '@nestjs/config';
 
 import { AuthModule } from './auth';
 import { DatabaseModule } from './database';
+import { NotificationModule } from './notification';
 import { PlansModule } from './plans';
-import { SMSModule } from './sms';
 import { SubscriptionModule } from './subscription';
 import { UsersModule } from './users';
 
@@ -19,7 +19,7 @@ import { UsersModule } from './users';
     PlansModule,
     UsersModule,
     AuthModule,
-    SMSModule,
+    NotificationModule,
   ],
 })
 export class AppModule {}

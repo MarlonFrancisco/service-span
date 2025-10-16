@@ -22,7 +22,16 @@ import { TypeOrmModule } from '@nestjs/typeorm';
             ? { rejectUnauthorized: false }
             : false,
         autoLoadEntities: true,
-        cache: false,
+        cache: true,
+        // Serverless-friendly connection settings
+        extra: {
+          max: 1, // Apenas 1 conexão por instância serverless
+          connectionTimeoutMillis: 5000,
+          idleTimeoutMillis: 10000,
+          statement_timeout: 10000,
+        },
+        keepConnectionAlive: false, // Fecha conexão após cada request
+        poolSize: 1,
       }),
     }),
   ],

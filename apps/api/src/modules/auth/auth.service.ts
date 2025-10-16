@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { generateAuthCode } from '@repo/api';
-import { SMSService } from '../sms';
+import { NotificationService } from '../notification';
 import { UsersService } from '../users';
 import { LoginFirstStepDto } from './dto/login-first-step.dto';
 import { RegisterDto } from './dto/register.dto';
@@ -24,7 +24,7 @@ export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
     private readonly userService: UsersService,
-    private readonly smsService: SMSService,
+    private readonly notificationService: NotificationService,
   ) {}
 
   async generateAccessToken(payload: JwtPayload): Promise<string> {
@@ -79,11 +79,11 @@ export class AuthService {
     }
 
     if (body.telephone) {
-      await this.smsService.sendOTP(body.telephone, authCode.code);
+      await this.notificationService.sendSMSOTP(body.telephone, authCode.code);
     }
 
     if (body.email) {
-      //await this.smsService.sendOTP(body.email, authCode.code);
+      await this.notificationService.sendEmailOTP(body.email, authCode.code);
     }
 
     return { isNewUser };
