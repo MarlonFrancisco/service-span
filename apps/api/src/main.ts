@@ -1,33 +1,21 @@
 import type { INestApplication } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import { ExpressAdapter } from '@nestjs/platform-express';
-import type { Express } from 'express';
-import express from 'express';
 import { AppModule } from './modules/app.module';
 
 let cachedApp: INestApplication | null = null;
 
-export async function createApp(
-  expressApp?: Express,
-): Promise<INestApplication> {
-  const isProduction = process.env.NODE_ENV === 'production';
+const isProduction = process.env.NODE_ENV === 'production';
 
+export async function createApp(): Promise<INestApplication> {
   // Cache da app APENAS em produção serverless
   // Em dev, sempre recria para permitir hot reload
   if (cachedApp && isProduction) {
     return cachedApp;
   }
 
-  const serverInstance = expressApp || express();
-  const app = await NestFactory.create(
-    AppModule,
-    new ExpressAdapter(serverInstance),
-    {
-      logger: isProduction
-        ? ['error', 'warn']
-        : ['log', 'error', 'warn', 'debug'],
-    },
-  );
+  const app = await NestFactory.create(AppModule);
+
+  app.getHttpAdapter().getInstance().set('trust proxy', true);
 
   app.enableCors({
     origin: process.env.FRONTEND_URL || 'http://localhost:3001',
@@ -54,9 +42,8 @@ async function bootstrap() {
 }
 
 // Executa apenas se for o arquivo principal (não quando importado em serverless)
-if (require.main === module) {
+if (isProduction) {
+  void createApp();
+} else {
   void bootstrap();
 }
-
-// Handler para ambientes serverless (Vercel, AWS Lambda, etc)
-export default createApp;
