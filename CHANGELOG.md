@@ -1,7 +1,9 @@
-## Unreleased
+## 0.1.0 (2025-10-16)
 
 ### Feat
 
+- added commitizen settings and added all .env on .gitignore
+- **web**: improved animation at homepage
 - **api**: 🎸 added notification module and suport to serveless
 - **subscription**: atualiza lógica da controller de subscription
 - atualizar fluxo de autenticação e registro de usuário
