@@ -1,6 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { generateAuthCode } from '@repo/api';
+import { generateAuthCode } from '../../utils';
 import { NotificationService } from '../notification';
 import { UsersService } from '../users';
 import { LoginFirstStepDto } from './dto/login-first-step.dto';

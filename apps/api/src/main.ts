@@ -42,8 +42,11 @@ async function bootstrap() {
 }
 
 // Executa apenas se for o arquivo principal (não quando importado em serverless)
-if (isProduction) {
-  void createApp();
-} else {
+if (!isProduction) {
   void bootstrap();
+}
+
+export default async function handler(req: Request, res: Response) {
+  const app = await createApp();
+  return app.getHttpAdapter().getInstance().handle(req, res);
 }

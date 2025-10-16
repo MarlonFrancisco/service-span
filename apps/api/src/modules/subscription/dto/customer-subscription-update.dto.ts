@@ -1,5 +1,5 @@
-import { getSubscriptionPeriodDate } from '@repo/api';
-import type { User } from 'src/modules/users';
+import { getSubscriptionPeriodDate } from '../../../utils';
+import type { User } from '../../users';
 import type {
   ICustomerSubscriptionUpdatedEvent,
   TSubscriptionStatus,
