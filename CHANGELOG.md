@@ -1,3 +1,11 @@
+## 0.1.2 (2025-10-17)
+
+### Fix
+
+- **api**: remove api package and migrate to app api
+- **api**: build application on serveless function on vercel
+- **api**: install module express
+
 ## 0.1.1 (2025-10-16)
 
 ### Fix
