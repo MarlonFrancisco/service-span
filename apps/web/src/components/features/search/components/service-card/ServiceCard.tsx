@@ -1,5 +1,6 @@
 import { Badge, Button, Card } from '@repo/ui';
 import { MapPin, Star } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { ImageCarousel } from '../image-carousel';
 
 interface ServiceCardProps {
@@ -28,8 +29,13 @@ export function ServiceCard({
   isSelected,
   onClick,
 }: ServiceCardProps) {
-  // Use images array if available, otherwise fallback to single imageUrl
+  const router = useRouter();
   const allImages = images && images.length > 0 ? images : [imageUrl];
+
+  const handleSchedule = () => {
+    router.push(`/booking/${name}`);
+  };
+
   return (
     <Card
       className={`group overflow-hidden cursor-pointer transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border-0 shadow-lg bg-white p-0 ${
@@ -84,7 +90,13 @@ export function ServiceCard({
 
           <div className="flex justify-between items-center pt-4 border-t border-gray-100">
             <div className="text-sm text-gray-600">Disponível hoje</div>
-            <Button className="cursor-pointer">Ver agenda e agendar</Button>
+            <Button
+              className="cursor-pointer"
+              variant="outline"
+              onClick={handleSchedule}
+            >
+              Ver agenda e agendar
+            </Button>
           </div>
         </div>
       </div>

@@ -16,7 +16,6 @@ export interface ISearchStore {
   searchResults: ISearchResult[];
   fetchingStatus: FetchingStatus;
   showFilters: boolean;
-  hasActiveFilters: boolean;
   isMobileSearchOpen: boolean;
   searchFilters: ISearchFilters;
   setSearchFilters: (filters: ISearchFilters) => void;

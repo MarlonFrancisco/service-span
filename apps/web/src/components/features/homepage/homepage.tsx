@@ -1,6 +1,7 @@
 'use client';
 
 import { Footer, Header } from '@/components/layout';
+import { useSearchApp } from '@/store';
 import {
   Badge,
   Button,
@@ -10,6 +11,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+  useIsMobile,
 } from '@repo/ui';
 import { MapPin, Search, Sparkles } from 'lucide-react';
 import { motion } from 'motion/react';
@@ -27,6 +29,8 @@ export const Homepage = () => {
     setSelectedLocation,
     handleSearch,
   } = useHomepage();
+  const isMobile = useIsMobile();
+  const { setIsMobileSearchOpen } = useSearchApp();
 
   const handleCategoryClick = (categoryName: string) => {
     // Navegar para busca com categoria selecionada
@@ -76,12 +80,17 @@ export const Homepage = () => {
                         <Input
                           placeholder="Que serviço você está procurando?"
                           value={searchQuery}
+                          onClick={
+                            isMobile
+                              ? () => setIsMobileSearchOpen(true)
+                              : undefined
+                          }
                           onChange={(e) => setSearchQuery(e.target.value)}
                           className="border-0 bg-gray-50 h-14 pl-12 text-base rounded-xl focus:bg-white transition-colors"
                         />
                       </div>
                     </div>
-                    <div className="md:col-span-4">
+                    <div className="hidden md:block col-span-4">
                       <Select
                         value={selectedLocation}
                         onValueChange={setSelectedLocation}
@@ -101,7 +110,7 @@ export const Homepage = () => {
                         </SelectContent>
                       </Select>
                     </div>
-                    <div className="md:col-span-2">
+                    <div className="hidden md:block md:col-span-2">
                       <Button
                         onClick={handleSearch}
                         className="w-full h-14 bg-black hover:bg-gray-800 text-white rounded-xl font-medium transition-all hover:scale-105"
