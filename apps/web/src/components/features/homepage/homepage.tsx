@@ -39,8 +39,8 @@ export const Homepage = () => {
 
       <motion.div className="rounded-tl-[40px] rounded-tr-[40px] bg-background">
         {/* Hero Section */}
-        <section className="relative overflow-hidden pt-24 mb-10">
-          <div className="relative max-w-7xl mx-auto px-6 pt-52 pb-20">
+        <section className="relative overflow-hidden pt-24 md:mb-10">
+          <div className="relative max-w-7xl mx-auto px-6 pt-52 md:pb-20">
             <div className="text-center fade-in relative top-[-100px]">
               <Badge
                 className="mb-6 bg-black text-white px-4 py-2 rounded-full border-0"

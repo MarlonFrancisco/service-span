@@ -1,4 +1,4 @@
-import { Badge, Card } from '@repo/ui';
+import { Badge, Button, Card } from '@repo/ui';
 import { MapPin, Star } from 'lucide-react';
 import { ImageCarousel } from '../image-carousel';
 
@@ -84,9 +84,7 @@ export function ServiceCard({
 
           <div className="flex justify-between items-center pt-4 border-t border-gray-100">
             <div className="text-sm text-gray-600">Disponível hoje</div>
-            <button className="text-sm font-medium text-black hover:underline">
-              Ver detalhes
-            </button>
+            <Button className="cursor-pointer">Ver agenda e agendar</Button>
           </div>
         </div>
       </div>

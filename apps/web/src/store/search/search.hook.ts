@@ -1,27 +1,33 @@
 import useSearchStore from './search.store';
 
-export const useSearchActions = () => {
-  const { fetchSearchResultAction } = useSearchStore();
-
-  return {
-    fetchSearchResultAction,
-  };
-};
-
-export const useSearchAttributes = () => {
+export const useSearchApp = () => {
   const {
     searchResults,
     fetchingStatus,
     showFilters,
-    showSearchBar,
-    hasActiveFilters,
+    isMobileSearchOpen,
+    searchFilters,
+    setIsMobileSearchOpen,
+    fetchSearchResultAction,
+    setSearchFilters,
   } = useSearchStore();
+
+  const activeFiltersCount = [
+    searchFilters.location,
+    searchFilters.query,
+    searchFilters.date,
+  ].filter(Boolean).length;
 
   return {
     searchResults,
     fetchingStatus,
     showFilters,
-    showSearchBar,
-    hasActiveFilters,
+    isMobileSearchOpen,
+    hasActiveFilters: Boolean(activeFiltersCount),
+    activeFiltersCount,
+    searchFilters,
+    setIsMobileSearchOpen,
+    fetchSearchResultAction,
+    setSearchFilters,
   };
 };

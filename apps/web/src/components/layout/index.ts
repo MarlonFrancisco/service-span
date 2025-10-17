@@ -1,5 +1,7 @@
-export { Footer } from './footer';
+export * from './config';
+export * from './footer';
 export type { TFooterConfig } from './footer';
-export { Header } from './header';
+export * from './header';
 export type { THeaderConfig } from './header';
-export { Toaster } from './toaster';
+export * from './mobile-search-overlay';
+export * from './toaster';

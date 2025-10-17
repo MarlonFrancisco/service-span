@@ -2,6 +2,7 @@ import type { HTMLAttributes } from 'react';
 
 export type THeaderConfig = HTMLAttributes<HTMLElement> & {
   showSearchBar?: boolean;
+  logoProps?: HTMLAttributes<HTMLAnchorElement>;
 };
 
 export type TUseHeaderConfig = {

@@ -7,7 +7,7 @@ export const CTA = () => {
     <section className="py-24 px-6">
       <div className="max-w-6xl mx-auto">
         <motion.div
-          className="cta-section -mx-6 rounded-4xl bg-neutral-950 px-6 py-20 sm:mx-0 sm:py-32 md:px-12"
+          className="cta-section -mx-6 md:rounded-4xl bg-neutral-950 px-6 py-20 sm:mx-0 sm:py-32 md:px-12"
           {...fadeInUpAnimation}
         >
           <div className="mx-auto max-w-4xl">

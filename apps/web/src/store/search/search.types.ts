@@ -1,4 +1,5 @@
 import { FetchingStatus } from '@/types/api';
+import { ISearchFilters } from '@/types/layout/search.types';
 
 export interface ISearchResult {
   name: string;
@@ -15,7 +16,10 @@ export interface ISearchStore {
   searchResults: ISearchResult[];
   fetchingStatus: FetchingStatus;
   showFilters: boolean;
-  showSearchBar: boolean;
   hasActiveFilters: boolean;
+  isMobileSearchOpen: boolean;
+  searchFilters: ISearchFilters;
+  setSearchFilters: (filters: ISearchFilters) => void;
+  setIsMobileSearchOpen: (isOpen: boolean) => void;
   fetchSearchResultAction: () => void;
 }

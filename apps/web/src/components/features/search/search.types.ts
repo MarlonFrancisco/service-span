@@ -15,20 +15,6 @@ export interface Service {
   nextSlot?: string;
 }
 
-export interface SearchFilters {
-  categories: string[];
-  priceRange: [number, number];
-  rating: number;
-  location: string;
-  availability: string;
-}
-
-export type TSearchConfig = {
-  query?: string;
-  category?: string;
-  location?: string;
-};
-
 export type UserType = 'customer' | 'provider' | null;
 
 export interface SearchResultsProps {

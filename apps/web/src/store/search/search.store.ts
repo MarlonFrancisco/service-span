@@ -1,16 +1,28 @@
 import { create } from 'zustand';
-import { fetchSearchResultAction } from './search.actions';
+import {
+  fetchSearchResultAction,
+  setIsMobileSearchOpenAction,
+  setSearchFiltersAction,
+} from './search.actions';
 import { ISearchStore } from './search.types';
 
 const useSearchStore = create<ISearchStore>((set) => {
-  const isSearchPage = false;
-
   return {
     searchResults: [],
     fetchingStatus: 'idle',
     showFilters: false,
-    showSearchBar: isSearchPage,
-    hasActiveFilters: false,
+    isMobileSearchOpen: false,
+    searchFilters: {
+      categories: [],
+      priceRange: [0, 500],
+      rating: 0,
+      availability: 'any',
+      query: '',
+      location: '',
+      date: undefined,
+    },
+    setSearchFilters: setSearchFiltersAction(set),
+    setIsMobileSearchOpen: setIsMobileSearchOpenAction(set),
     fetchSearchResultAction: fetchSearchResultAction(set),
   };
 });

@@ -1,8 +1,6 @@
 import { AuthModal } from '@/components/features/auth';
-import { Toaster } from '@/components/layout';
-import { Config } from '@/components/layout/config';
+import { Config, MobileSearchOverlay, Toaster } from '@/components/layout';
 import { QueryProvider } from '@/providers';
-import useSearchStore from '@/store/search/search.store';
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import Script from 'next/script';
@@ -153,7 +151,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  useSearchStore.setState({ showFilters: true, showSearchBar: true });
   return (
     <html lang="pt-BR">
       <body
@@ -164,6 +161,7 @@ export default function RootLayout({
           <Config />
           <AuthModal />
           <Toaster />
+          <MobileSearchOverlay />
         </QueryProvider>
 
         <Script

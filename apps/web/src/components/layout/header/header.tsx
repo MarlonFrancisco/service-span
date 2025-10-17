@@ -17,22 +17,28 @@ import { NAVIGATION_ITEMS } from './header.constants';
 import { useHeader } from './header.hook';
 import type { THeaderConfig } from './header.types';
 
-export const Header = ({ showSearchBar = false, ...props }: THeaderConfig) => {
+export const Header = ({
+  showSearchBar = false,
+  logoProps = {},
+  ...props
+}: THeaderConfig) => {
   const { isMenuOpen, toggleMenu, goToPlansPage } = useHeader();
 
   return (
     <header {...props}>
       {/* Header Bar */}
       <div className="absolute top-0 right-0 left-0 z-40 h-[168px] flex items-center">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8 w-full">
-          <div className="mx-auto max-w-2xl lg:max-w-none">
+        <div className="mx-auto max-w-7xl px-6 lg:px-6 w-full">
+          <div className="mx-auto md:max-w-2xl lg:max-w-none">
             <div className="flex items-center justify-between">
-              <HeaderLogo variant="light" />
+              <HeaderLogo variant="light" {...logoProps} />
 
               {showSearchBar && <SearchBar />}
 
               <div className="flex items-center gap-x-8">
-                <PartnerButton variant="light" onClick={goToPlansPage} />
+                <div className="hidden lg:block">
+                  <PartnerButton variant="light" onClick={goToPlansPage} />
+                </div>
                 <MenuButton
                   isOpen={isMenuOpen}
                   onClick={toggleMenu}
