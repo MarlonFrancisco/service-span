@@ -2,28 +2,17 @@
 
 import { useCallback, useState } from 'react';
 import { toast } from 'sonner';
-import { BUSINESS_SHOWCASE_MOCK } from './business-showcase.mock';
-import type { TUseBusinessShowcaseConfig } from './business-showcase.types';
 
-export const useBusinessShowcase = ({
-  onImageClick,
-}: TUseBusinessShowcaseConfig = {}) => {
+export const useBusinessShowcase = ({ images }: { images: string[] }) => {
   const [showAllPhotos, setShowAllPhotos] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
-  // Use images array if available, otherwise fallback to single imageUrl or default images
-  const allImages = BUSINESS_SHOWCASE_MOCK;
+  const displayImages = images.slice(0, 5);
 
-  const displayImages = allImages.slice(0, 5);
-
-  const handleImageClick = useCallback(
-    (index: number) => {
-      setSelectedImageIndex(index);
-      setShowAllPhotos(true);
-      onImageClick?.(index);
-    },
-    [onImageClick],
-  );
+  const handleImageClick = useCallback((index: number) => {
+    setSelectedImageIndex(index);
+    setShowAllPhotos(true);
+  }, []);
 
   const handleCloseGallery = useCallback(() => {
     setShowAllPhotos(false);
@@ -48,7 +37,6 @@ export const useBusinessShowcase = ({
   }, []);
 
   return {
-    allImages,
     displayImages,
     showAllPhotos,
     selectedImageIndex,

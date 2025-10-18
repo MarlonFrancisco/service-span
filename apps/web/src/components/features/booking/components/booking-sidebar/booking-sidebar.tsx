@@ -1,24 +1,10 @@
 import { Badge, Card, Separator } from '@repo/ui';
 import { Calendar, Clock, MapPin, Phone, User } from 'lucide-react';
-import { TProfessional, TSelectedService } from '../../booking.types';
-
-export interface SelectedService {
-  id: string;
-  name: string;
-  duration: number;
-  price: number;
-  category: string;
-  quantity: number;
-}
-
-export interface Professional {
-  id: string;
-  name: string;
-  specialties: string[];
-  availableServices: string[];
-}
-
-export type BookingStep = 'services' | 'professional' | 'datetime' | 'checkout';
+import {
+  TBookingStep,
+  TProfessional,
+  TSelectedService,
+} from '../../booking.types';
 
 interface BookingSidebarProps {
   businessName: string;
@@ -31,7 +17,7 @@ interface BookingSidebarProps {
   selectedTime: string | null;
   totalPrice: number;
   totalDuration: number;
-  currentStep: BookingStep;
+  currentStep: TBookingStep;
 }
 
 export function BookingSidebar({
@@ -65,6 +51,14 @@ export function BookingSidebar({
       : `${hours}h`;
   };
 
+  const formatDate = (date: Date) => {
+    return new Intl.DateTimeFormat('pt-BR', {
+      weekday: 'short',
+      day: 'numeric',
+      month: 'short',
+    }).format(date);
+  };
+
   const formatFullDate = (date: Date) => {
     return new Intl.DateTimeFormat('pt-BR', {
       weekday: 'long',
@@ -75,19 +69,25 @@ export function BookingSidebar({
   };
 
   return (
-    <div className="space-y-4">
+    <div
+      className="space-y-4"
+      role="complementary"
+      aria-label="Resumo do agendamento"
+    >
       {/* Informações do Estabelecimento */}
-      <Card className="p-4 sticky top-24">
+      <Card className="p-4 sm:p-5 sticky top-24 bg-white shadow-xl">
         <div className="space-y-4">
           {/* Header do estabelecimento */}
           <div>
-            <h3 className="text-lg text-[#1a2b4c] mb-1">{businessName}</h3>
-            <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
-              <MapPin className="h-4 w-4" />
+            <h3 className="text-base sm:text-lg text-[#1a2b4c] mb-1">
+              {businessName}
+            </h3>
+            <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-600 mb-2">
+              <MapPin className="h-4 w-4" aria-hidden="true" />
               <span>{businessAddress}</span>
             </div>
-            <div className="flex items-center gap-2 text-sm text-gray-600">
-              <Phone className="h-4 w-4" />
+            <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-600">
+              <Phone className="h-4 w-4" aria-hidden="true" />
               <span>{businessPhone}</span>
             </div>
           </div>
@@ -116,7 +116,7 @@ export function BookingSidebar({
                             {service.name}
                           </p>
                           {service.quantity > 1 && (
-                            <span className="bg-[black] text-white px-1.5 py-0.5 rounded-full text-xs">
+                            <span className="bg-black text-white px-1.5 py-0.5 rounded-full text-xs">
                               {service.quantity}x
                             </span>
                           )}
@@ -235,7 +235,7 @@ export function BookingSidebar({
             (!selectedDate || !selectedTime) &&
             currentStep !== 'services' &&
             currentStep !== 'professional' && (
-              <div className="text-center py-4 text-blue-600 bg-blue-50 rounded-lg">
+              <div className="text-center py-4 text-gray-600 bg-gray-100 rounded-lg">
                 <Clock className="h-6 w-6 mx-auto mb-1" />
                 <p className="text-sm">Selecione data e horário</p>
               </div>

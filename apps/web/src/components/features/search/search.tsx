@@ -15,12 +15,10 @@ export function SearchResults() {
   };
 
   return (
-    <div className="min-h-screen bg-black">
-      <Header showSearchBar logoProps={{ className: 'hidden lg:block' }} />
-
+    <Header showSearchBar logoProps={{ className: 'hidden lg:block' }}>
       {/* Modern Layout */}
-      <div className="max-w-8xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 pt-30 sm:pt-8 rounded-tl-[32px] sm:rounded-tl-[40px] rounded-tr-[32px] sm:rounded-tr-[40px] bg-background">
-        <div className="grid grid-cols-12 gap-6 sm:gap-8 lg:gap-12 min-h-[calc(100vh-180px)] my-12 sm:my-20 lg:my-32">
+      <div className="max-w-8xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
+        <div className="grid grid-cols-12 gap-6 sm:gap-8 lg:gap-12 min-h-[calc(100vh-180px)]">
           {/* Results Column */}
           <div className="col-span-12 lg:col-span-7">
             <div className="fade-in">
@@ -46,6 +44,6 @@ export function SearchResults() {
 
         <Footer />
       </div>
-    </div>
+    </Header>
   );
 }

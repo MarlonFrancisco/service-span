@@ -1,6 +1,6 @@
 import useSearchStore from './search.store';
 
-export const useSearchApp = () => {
+export const useSearch = () => {
   const {
     searchResults,
     fetchingStatus,

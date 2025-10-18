@@ -1,4 +1,4 @@
-import { useSearchApp } from '@/store';
+import { useSearch } from '@/store';
 import { buildSearchUrl } from '@/utils/helpers/search.helper';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -12,7 +12,7 @@ export const useMobileSearchOverlay = (
   _config: TUseMobileSearchOverlayConfig = {},
 ): TUseMobileSearchOverlayReturn => {
   const { searchFilters, setSearchFilters, setIsMobileSearchOpen } =
-    useSearchApp();
+    useSearch();
 
   const [showLocationSuggestions, setShowLocationSuggestions] = useState(false);
   const [showQuerySuggestions, setShowQuerySuggestions] = useState(false);

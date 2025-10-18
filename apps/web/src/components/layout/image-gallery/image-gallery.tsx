@@ -1,15 +1,19 @@
 'use client';
 
-import { Button, Dialog, DialogContent } from '@repo/ui';
 import {
-  ChevronLeft,
-  ChevronRight,
-  Copy,
+  Button,
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+} from '@repo/ui';
+import {
   Download,
   Grid3X3,
   Heart,
-  Instagram,
-  MessageCircle,
   RotateCcw,
   Share,
   X,
@@ -35,66 +39,68 @@ export const ImageGallery = ({
     goToPrevious,
     goToIndex,
     handleImageLoad,
+    setCarouselApi,
   } = useImageGallery({
     images,
     initialIndex: currentIndex,
-    isOpen,
   });
 
   const {
     showThumbnails,
     zoom,
-    showShareMenu,
     setShowThumbnails,
-    setShowShareMenu,
     handleShare,
     handleDownload,
     handleZoomIn,
     handleZoomOut,
     resetZoom,
     handleDoubleClick,
-    handleTouchStart,
-    handleTouchMove,
-    handleTouchEnd,
   } = useGalleryControls({
     businessName,
     images,
     activeIndex,
+    isOpen,
     goToNext,
     goToPrevious,
     onClose,
-    isOpen,
   });
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-full! max-h-full w-full p-0 border-0 bg-black/95 backdrop-blur-md">
-        <div className="relative w-full h-screen flex flex-col">
+      <DialogContent className="!max-w-[95vw] w-full h-[85vh] sm:h-[80vh] p-0 border-0 bg-black/95 backdrop-blur-md [&>button]:hidden">
+        <DialogTitle className="sr-only">
+          Galeria de Imagens - {businessName}
+        </DialogTitle>
+        <DialogDescription className="sr-only">
+          Navegue pelas {images.length} fotos de {businessName}. Use as setas do
+          teclado para navegar.
+        </DialogDescription>
+        <div className="relative w-full h-full flex flex-col overflow-hidden">
           {/* Header */}
-          <div
-            className={`absolute top-0 left-0 right-0 z-50 bg-gradient-to-b from-black/80 to-transparent p-6 transition-opacity duration-300 opacity-100`}
-          >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
+          <div className="absolute top-0 left-0 right-0 z-50 bg-gradient-to-b from-black/80 to-transparent p-3 sm:p-6">
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2 sm:gap-4 min-w-0">
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={onClose}
-                  className="h-10 w-10 p-0 rounded-full bg-white/10 hover:bg-white/20 text-white"
+                  className="h-8 w-8 sm:h-10 sm:w-10 p-0 rounded-full bg-white/10 hover:bg-white/20 text-white flex-shrink-0"
                 >
-                  <X className="h-5 w-5" />
+                  <X className="h-4 w-4 sm:h-5 sm:w-5" />
                 </Button>
-                <div className="text-white">
-                  <h2 className="font-semibold text-lg">{businessName}</h2>
-                  <p className="text-sm text-white/70">
+                <div className="text-white min-w-0">
+                  <h2 className="font-semibold text-sm sm:text-lg truncate">
+                    {businessName}
+                  </h2>
+                  <p className="text-xs sm:text-sm text-white/70">
                     {activeIndex + 1} de {images.length} fotos
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2">
-                {/* Zoom Controls */}
-                <div className="flex items-center gap-1 bg-white/10 rounded-xl p-1">
+              <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+                {/* Zoom Controls - Hidden on mobile */}
+                <div className="hidden md:flex items-center gap-1 bg-white/10 rounded-xl p-1">
                   <Button
                     variant="ghost"
                     size="sm"
@@ -131,9 +137,9 @@ export const ImageGallery = ({
                   variant="ghost"
                   size="sm"
                   onClick={() => setShowThumbnails(!showThumbnails)}
-                  className="h-10 w-10 p-0 rounded-full bg-white/10 hover:bg-white/20 text-white"
+                  className="h-8 w-8 sm:h-10 sm:w-10 p-0 rounded-full bg-white/10 hover:bg-white/20 text-white"
                 >
-                  <Grid3X3 className="h-5 w-5" />
+                  <Grid3X3 className="h-4 w-4 sm:h-5 sm:w-5" />
                 </Button>
 
                 <div className="relative">
@@ -141,175 +147,100 @@ export const ImageGallery = ({
                     variant="ghost"
                     size="sm"
                     onClick={() => handleShare()}
-                    className="h-10 w-10 p-0 rounded-full bg-white/10 hover:bg-white/20 text-white"
+                    className="h-8 w-8 sm:h-10 sm:w-10 p-0 rounded-full bg-white/10 hover:bg-white/20 text-white"
                   >
-                    <Share className="h-5 w-5" />
+                    <Share className="h-4 w-4 sm:h-5 sm:w-5" />
                   </Button>
-
-                  {/* Share Menu */}
-                  {showShareMenu && (
-                    <div className="absolute top-12 right-0 bg-white rounded-2xl shadow-xl p-4 min-w-[250px] z-60">
-                      <h3 className="font-semibold text-gray-900 mb-3">
-                        Compartilhar
-                      </h3>
-                      <div className="space-y-1">
-                        <Button
-                          variant="ghost"
-                          onClick={() => handleShare('copy')}
-                          className="w-full justify-start h-11 hover:bg-gray-100 rounded-lg"
-                        >
-                          <Copy className="h-4 w-4 mr-3 text-gray-600" />
-                          <span>Copiar link</span>
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          onClick={() => handleShare('whatsapp')}
-                          className="w-full justify-start h-11 hover:bg-gray-100 rounded-lg"
-                        >
-                          <MessageCircle className="h-4 w-4 mr-3 text-green-600" />
-                          <span>WhatsApp</span>
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          onClick={() => handleShare('facebook')}
-                          className="w-full justify-start h-11 hover:bg-gray-100 rounded-lg"
-                        >
-                          <svg
-                            className="h-4 w-4 mr-3 text-blue-600"
-                            viewBox="0 0 24 24"
-                            fill="currentColor"
-                          >
-                            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-                          </svg>
-                          <span>Facebook</span>
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          onClick={() => handleShare('twitter')}
-                          className="w-full justify-start h-11 hover:bg-gray-100 rounded-lg"
-                        >
-                          <svg
-                            className="h-4 w-4 mr-3 text-blue-400"
-                            viewBox="0 0 24 24"
-                            fill="currentColor"
-                          >
-                            <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z" />
-                          </svg>
-                          <span>Twitter</span>
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          onClick={() => handleShare('instagram')}
-                          className="w-full justify-start h-11 hover:bg-gray-100 rounded-lg"
-                        >
-                          <Instagram className="h-4 w-4 mr-3 text-pink-600" />
-                          <span>Instagram</span>
-                        </Button>
-                      </div>
-                    </div>
-                  )}
                 </div>
 
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={handleDownload}
-                  className="h-10 w-10 p-0 rounded-full bg-white/10 hover:bg-white/20 text-white"
+                  className="hidden sm:flex h-8 w-8 sm:h-10 sm:w-10 p-0 rounded-full bg-white/10 hover:bg-white/20 text-white"
                 >
-                  <Download className="h-5 w-5" />
+                  <Download className="h-4 w-4 sm:h-5 sm:w-5" />
                 </Button>
 
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="h-10 w-10 p-0 rounded-full bg-white/10 hover:bg-white/20 text-white"
+                  className="hidden sm:flex h-8 w-8 sm:h-10 sm:w-10 p-0 rounded-full bg-white/10 hover:bg-white/20 text-white"
                 >
-                  <Heart className="h-5 w-5" />
+                  <Heart className="h-4 w-4 sm:h-5 sm:w-5" />
                 </Button>
               </div>
             </div>
           </div>
 
-          {/* Main Image Area */}
-          <div
-            className="flex-1 flex items-center justify-center relative"
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={handleTouchEnd}
-          >
-            {/* Navigation Buttons */}
-            {images.length > 1 && (
-              <>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={goToPrevious}
-                  className={`absolute left-6 top-1/2 transform -translate-y-1/2 z-40 h-14 w-14 p-0 rounded-full bg-black/30 hover:bg-black/50 text-white backdrop-blur-sm transition-all duration-300 opacity-100`}
-                >
-                  <ChevronLeft className="h-7 w-7" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={goToNext}
-                  className={`absolute right-6 top-1/2 transform -translate-y-1/2 z-40 h-14 w-14 p-0 rounded-full bg-black/30 hover:bg-black/50 text-white backdrop-blur-sm transition-all duration-300 opacity-100`}
-                >
-                  <ChevronRight className="h-7 w-7" />
-                </Button>
-              </>
-            )}
-
-            {/* Image Container */}
-            <div className="relative w-full h-full flex items-center justify-center overflow-hidden">
-              {isImageLoading && (
-                <div className="absolute inset-0 flex items-center justify-center bg-black/20 backdrop-blur-sm">
-                  <div className="flex flex-col items-center gap-4">
-                    <div className="relative">
-                      <div className="w-12 h-12 border-3 border-white/20 border-t-white rounded-full animate-spin"></div>
-                      <div className="absolute inset-0 w-12 h-12 border-3 border-transparent border-r-white/50 rounded-full animate-spin animate-reverse"></div>
+          {/* Main Carousel Area */}
+          <div className="flex-1 flex items-center justify-center relative min-h-0 w-full">
+            <Carousel
+              className="w-full"
+              opts={{
+                align: 'center',
+                loop: true,
+                startIndex: currentIndex,
+              }}
+              setApi={setCarouselApi}
+            >
+              <CarouselContent className="h-full -ml-0">
+                {images.map((image, index) => (
+                  <CarouselItem
+                    key={index}
+                    className="pl-0 basis-full flex items-center justify-center"
+                  >
+                    <div className="relative w-full h-full flex items-center justify-center px-4 sm:px-8 py-16 sm:py-20">
+                      {isImageLoading && (
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/20 backdrop-blur-sm z-10">
+                          <div className="flex flex-col items-center gap-4">
+                            <div className="relative">
+                              <div className="w-12 h-12 border-3 border-white/20 border-t-white rounded-full animate-spin"></div>
+                              <div className="absolute inset-0 w-12 h-12 border-3 border-transparent border-r-white/50 rounded-full animate-spin animate-reverse"></div>
+                            </div>
+                            <div className="text-center">
+                              <p className="text-white/90 text-sm font-medium">
+                                Carregando imagem...
+                              </p>
+                              <p className="text-white/60 text-xs mt-1">
+                                {index + 1} de {images.length}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                      <Image
+                        width={800}
+                        height={800}
+                        src={image}
+                        alt={`${businessName} - Foto ${index + 1}`}
+                        className="w-auto h-auto max-w-full max-h-[calc(85vh-12rem)] sm:max-h-[calc(80vh-12rem)] object-contain transition-all duration-500 ease-out"
+                        style={{
+                          transform: `scale(${zoom})`,
+                          cursor: zoom > 1 ? 'grab' : 'default',
+                          transition: 'transform 0.3s ease-out',
+                        }}
+                        onLoad={handleImageLoad}
+                        onDoubleClick={handleDoubleClick}
+                        draggable={false}
+                      />
                     </div>
-                    <div className="text-center">
-                      <p className="text-white/90 text-sm font-medium">
-                        Carregando imagem...
-                      </p>
-                      <p className="text-white/60 text-xs mt-1">
-                        {activeIndex + 1} de {images.length}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              )}
-              <Image
-                src={images[activeIndex]!}
-                alt={`${businessName} - Foto ${activeIndex + 1}`}
-                className={`max-w-full max-h-full object-contain transition-all duration-500 ease-out ${
-                  isImageLoading
-                    ? 'opacity-0 scale-95'
-                    : 'opacity-100 scale-100'
-                }`}
-                style={{
-                  transform: `scale(${zoom})`,
-                  cursor: zoom > 1 ? 'grab' : 'default',
-                  transition: 'transform 0.3s ease-out',
-                }}
-                onLoad={handleImageLoad}
-                onDoubleClick={handleDoubleClick}
-                draggable={false}
-                fill
-              />
-            </div>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+            </Carousel>
           </div>
 
           {/* Bottom Thumbnails */}
           {showThumbnails && (
-            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-6 transition-opacity duration-300 opacity-100">
-              <div className="flex justify-center gap-3 overflow-x-auto scrollbar-hide py-3">
+            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-3 sm:p-6">
+              <div className="flex gap-2 sm:gap-3 overflow-x-auto scrollbar-hide pb-2 justify-center">
                 {images.map((image, index) => (
                   <button
                     key={index}
                     onClick={() => goToIndex(index)}
                     className={`
-                      flex-shrink-0 w-24 h-16 rounded-xl overflow-hidden border-3 transition-all duration-200
+                      flex-shrink-0 w-16 h-12 sm:w-24 sm:h-16 rounded-lg sm:rounded-xl overflow-hidden border-2 sm:border-3 transition-all duration-200
                       ${
                         index === activeIndex
                           ? 'border-white scale-110 shadow-lg'
@@ -318,12 +249,12 @@ export const ImageGallery = ({
                     `}
                   >
                     <Image
+                      width={100}
+                      height={60}
                       src={image}
                       alt={`Miniatura ${index + 1}`}
                       className="w-full h-full object-cover"
                       loading="lazy"
-                      width={90}
-                      height={58}
                     />
                   </button>
                 ))}
@@ -333,16 +264,14 @@ export const ImageGallery = ({
 
           {/* Image Counter Dots */}
           {images.length > 1 && !showThumbnails && (
-            <div
-              className={`absolute bottom-8 left-1/2 transform -translate-x-1/2 transition-opacity duration-300 opacity-100`}
-            >
-              <div className="flex gap-2 bg-black/30 backdrop-blur-sm rounded-full px-4 py-2">
+            <div className="absolute bottom-4 sm:bottom-8 left-1/2 transform -translate-x-1/2 z-40">
+              <div className="flex gap-1.5 sm:gap-2 bg-black/30 backdrop-blur-sm rounded-full px-3 sm:px-4 py-1.5 sm:py-2">
                 {images.map((_, index) => (
                   <button
                     key={index}
                     onClick={() => goToIndex(index)}
                     className={`
-                      w-2.5 h-2.5 rounded-full transition-all duration-200
+                      w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full transition-all duration-200
                       ${
                         index === activeIndex
                           ? 'bg-white scale-125'
@@ -355,14 +284,6 @@ export const ImageGallery = ({
             </div>
           )}
         </div>
-
-        {/* Click outside overlay */}
-        {showShareMenu && (
-          <div
-            className="fixed inset-0 z-50"
-            onClick={() => setShowShareMenu(false)}
-          />
-        )}
       </DialogContent>
     </Dialog>
   );

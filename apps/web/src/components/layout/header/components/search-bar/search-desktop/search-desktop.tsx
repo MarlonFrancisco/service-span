@@ -1,23 +1,35 @@
-import { useSearchApp } from '@/store/search/search.hook';
+import { useSearch } from '@/store/search/search.hook';
+import { isSearchPage } from '@/utils/helpers/search.helper';
 import {
   Button,
   Calendar,
+  cn,
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from '@repo/ui';
 import { Filter, MapPin, Search } from 'lucide-react';
+import { usePathname } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { FiltersModal } from '../filters-modal';
 
 export const SearchDesktop = () => {
-  const { searchFilters, hasActiveFilters, setSearchFilters } = useSearchApp();
+  const {
+    searchFilters,
+    hasActiveFilters,
+    activeFiltersCount,
+    setSearchFilters,
+    setIsMobileSearchOpen,
+  } = useSearch();
 
   const [showLocationSuggestions, setShowLocationSuggestions] = useState(false);
   const [showServiceSuggestions, setShowServiceSuggestions] = useState(false);
 
   const locationRef = useRef<HTMLInputElement>(null);
   const serviceRef = useRef<HTMLInputElement>(null);
+
+  const pathname = usePathname();
+  const isSearchPageHelper = isSearchPage(pathname);
 
   const locationSuggestions = [
     'São Paulo, SP',
@@ -81,8 +93,8 @@ export const SearchDesktop = () => {
   }, []);
 
   return (
-    <div className="hidden md:flex flex-1 mr-6 lg:mx-12 relative">
-      <div className="w-full bg-white border border-gray-200 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300">
+    <div className="flex-1 mr-6 lg:mx-12 relative">
+      <div className="hidden md:flex w-full bg-white border border-gray-200 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300">
         <div className="flex items-center">
           {/* Where */}
           <div className="flex-1 px-5 py-3 relative" ref={locationRef}>
@@ -210,7 +222,43 @@ export const SearchDesktop = () => {
         </div>
       </div>
 
-      <div className="ml-6 flex items-center">
+      <div className="md:hidden flex-1 flex-row flex items-center gap-6 mr-6">
+        <button
+          onClick={() => setIsMobileSearchOpen(true)}
+          className="relative flex w-full bg-white border border-gray-200 rounded-full shadow-sm px-4 py-3 hover:shadow-md transition-shadow"
+        >
+          <div className="flex items-center gap-3">
+            <Search className="w-4 h-4 text-gray-400 flex-shrink-0" />
+            <div className="text-left flex-1 min-w-0">
+              <div className="text-sm font-medium text-gray-900">
+                {searchFilters.location ||
+                searchFilters.query ||
+                searchFilters.date
+                  ? 'Buscar'
+                  : 'Para onde?'}
+              </div>
+              <div className="text-xs text-gray-500 line-clamp-2">
+                {searchFilters.location || 'Qualquer lugar'} •{' '}
+                {searchFilters.query || 'Qualquer serviço'} •{' '}
+                {searchFilters.date?.toLocaleDateString('pt-BR') ||
+                  'Qualquer data'}
+              </div>
+            </div>
+            {activeFiltersCount > 0 && (
+              <div className="flex-shrink-0 w-5 h-5 bg-gray-900 text-white rounded-full flex items-center justify-center text-xs font-medium">
+                {activeFiltersCount}
+              </div>
+            )}
+          </div>
+        </button>
+      </div>
+
+      <div
+        className={cn(
+          'ml-6 flex items-center',
+          !isSearchPageHelper && 'hidden',
+        )}
+      >
         <FiltersModal onClearFilters={() => {}}>
           <Button
             variant="outline"

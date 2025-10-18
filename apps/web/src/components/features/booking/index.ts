@@ -1,2 +1,2 @@
-export { BookingFlow } from './booking-flow';
+export { BookingFlow } from './booking';
 export * from './components';

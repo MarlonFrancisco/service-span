@@ -4,32 +4,48 @@ export type TBookingStep =
   | 'datetime'
   | 'checkout';
 
-export type TSelectedService = {
+export interface IService {
   id: string;
   name: string;
+  description: string;
   price: number;
   duration: number;
-  quantity: number;
   category: string;
-};
+}
 
-export type TProfessional = {
+export interface ISelectedService extends IService {
+  quantity: number;
+}
+
+export interface IProfessional {
   id: string;
   name: string;
   avatar: string;
   rating: number;
   specialties: string[];
   availableServices: string[];
-};
+}
 
-export type TBookingFlowConfig = {
+export interface IBookingFlowConfig {
   businessName: string;
   businessAddress: string;
   businessPhone: string;
-  businessImages?: string[];
-  businessImageUrl?: string;
+  businessImages: string[];
   businessRating?: number;
   businessReviewCount?: number;
   businessCategory?: string;
   businessDescription?: string;
-};
+}
+
+export interface ITimeSlot {
+  time: string;
+  available: boolean;
+  price?: number;
+}
+
+export interface ICheckoutStep {
+  id: TBookingStep;
+  title: string;
+  description: string;
+  number: number;
+}

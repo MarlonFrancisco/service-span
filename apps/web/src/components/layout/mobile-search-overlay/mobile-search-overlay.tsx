@@ -1,5 +1,5 @@
 'use client';
-import { useSearchApp } from '@/store';
+import { useSearch } from '@/store';
 import { Button, Sheet, SheetContent } from '@repo/ui';
 import { Search, X } from 'lucide-react';
 import { motion } from 'motion/react';
@@ -16,7 +16,7 @@ export const MobileSearchOverlay = () => {
     isMobileSearchOpen,
     setIsMobileSearchOpen,
     setSearchFilters,
-  } = useSearchApp();
+  } = useSearch();
 
   const {
     activeField,

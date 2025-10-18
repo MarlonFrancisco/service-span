@@ -1,7 +1,7 @@
 'use client';
 
 import { Footer, Header } from '@/components/layout';
-import { useSearchApp } from '@/store';
+import { useSearch } from '@/store';
 import {
   Badge,
   Button,
@@ -30,7 +30,7 @@ export const Homepage = () => {
     handleSearch,
   } = useHomepage();
   const isMobile = useIsMobile();
-  const { setIsMobileSearchOpen } = useSearchApp();
+  const { setIsMobileSearchOpen } = useSearch();
 
   const handleCategoryClick = (categoryName: string) => {
     // Navegar para busca com categoria selecionada
@@ -38,14 +38,12 @@ export const Homepage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-black">
-      <Header />
-
-      <motion.div className="rounded-tl-[40px] rounded-tr-[40px] bg-background">
+    <Header>
+      <motion.div className="pt-12">
         {/* Hero Section */}
-        <section className="relative overflow-hidden pt-24 md:mb-10">
-          <div className="relative max-w-7xl mx-auto px-6 pt-52 md:pb-20">
-            <div className="text-center fade-in relative top-[-100px]">
+        <section className="relative md:mb-10">
+          <div className="relative max-w-7xl mx-auto px-6 md:pb-20">
+            <div className="text-center fade-in relative">
               <Badge
                 className="mb-6 bg-black text-white px-4 py-2 rounded-full border-0"
                 id="service-snap-badge"
@@ -156,6 +154,6 @@ export const Homepage = () => {
 
         <Footer />
       </motion.div>
-    </div>
+    </Header>
   );
 };

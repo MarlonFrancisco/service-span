@@ -1,14 +1,14 @@
 import { Card } from '@repo/ui';
 import { Check, Info, User } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { TProfessional, TSelectedService } from '../../booking.types';
+import { IProfessional, ISelectedService } from '../../booking.types';
 
-interface ProfessionalSelectionStepProps {
-  selectedServices: TSelectedService[];
-  selectedProfessional: TProfessional | null;
+interface IProfessionalSelectionStepProps {
+  selectedServices: ISelectedService[];
+  selectedProfessional: IProfessional | null;
   isAnyProfessional: boolean;
   onProfessionalChange: (
-    professional: TProfessional | null,
+    professional: IProfessional | null,
     isAny: boolean,
   ) => void;
   onValidationError: (error: string | null) => void;
@@ -20,46 +20,46 @@ export function ProfessionalSelectionStep({
   isAnyProfessional,
   onProfessionalChange,
   onValidationError,
-}: ProfessionalSelectionStepProps) {
+}: IProfessionalSelectionStepProps) {
   // Mock data - substituir por dados reais
-  const mockProfessionals: TProfessional[] = [
+  const mockProfessionals: IProfessional[] = [
     {
       id: '1',
       name: 'Carlos Silva',
-      specialties: ['Cortes Masculinos', 'Barba'],
-      availableServices: ['1', '2', '3'], // IDs dos serviços que pode realizar
       avatar: 'https://via.placeholder.com/150',
       rating: 4.5,
+      specialties: ['Cortes Masculinos', 'Barba'],
+      availableServices: ['1', '2', '3'], // IDs dos serviços que pode realizar
     },
     {
       id: '2',
       name: 'Ana Costa',
-      specialties: ['Cabelo Feminino', 'Tratamentos'],
-      availableServices: ['1', '4', '5', '6'],
       avatar: 'https://via.placeholder.com/150',
       rating: 4.5,
+      specialties: ['Cabelo Feminino', 'Tratamentos'],
+      availableServices: ['1', '4', '5', '6'],
     },
     {
       id: '3',
       name: 'João Pereira',
-      specialties: ['Estética Masculina'],
-      availableServices: ['1', '2', '3'],
       avatar: 'https://via.placeholder.com/150',
       rating: 4.5,
+      specialties: ['Estética Masculina'],
+      availableServices: ['1', '2', '3'],
     },
     {
       id: '4',
       name: 'Maria Santos',
-      specialties: ['Tratamentos Capilares'],
-      availableServices: ['4', '5', '6'],
       avatar: 'https://via.placeholder.com/150',
       rating: 4.5,
+      specialties: ['Tratamentos Capilares'],
+      availableServices: ['4', '5', '6'],
     },
   ];
 
   const [compatibilityStatus, setCompatibilityStatus] = useState<{
     canUseAny: boolean;
-    availableProfessionals: TProfessional[];
+    availableProfessionals: IProfessional[];
     hasIncompatibleCombination: boolean;
   }>({
     canUseAny: true,
@@ -135,28 +135,30 @@ export function ProfessionalSelectionStep({
     }
   };
 
-  const handleProfessionalSelect = (professional: TProfessional) => {
+  const handleProfessionalSelect = (professional: IProfessional) => {
     onProfessionalChange(professional, false);
   };
 
-  const canProfessionalDoAllServices = (professional: TProfessional) => {
+  const canProfessionalDoAllServices = (professional: IProfessional) => {
     const selectedServiceIds = selectedServices.map((s) => s.id);
     return selectedServiceIds.every((serviceId) =>
       professional.availableServices.includes(serviceId),
     );
   };
 
-  const getServicesForProfessional = (professional: TProfessional) => {
+  const getServicesForProfessional = (professional: IProfessional) => {
     return selectedServices.filter((service) =>
       professional.availableServices.includes(service.id),
     );
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div>
-        <h2 className="text-xl text-[#1a2b4c] mb-2">Escolha o profissional</h2>
-        <p className="text-gray-600">
+        <h2 className="text-lg sm:text-2xl text-[#1a2b4c] mb-1">
+          Escolha o profissional
+        </h2>
+        <p className="text-sm sm:text-base text-gray-600">
           Selecione um profissional ou deixe o sistema escolher automaticamente
         </p>
       </div>
@@ -164,15 +166,15 @@ export function ProfessionalSelectionStep({
       {/* Informações de compatibilidade */}
       {!compatibilityStatus.canUseAny &&
         !compatibilityStatus.hasIncompatibleCombination && (
-          <Card className="p-4 border-blue-200 bg-blue-50">
-            <div className="flex items-start gap-3 text-blue-800">
-              <Info className="h-5 w-5 text-blue-600 mt-0.5" />
+          <Card className="p-4 bg-gray-50 shadow-sm">
+            <div className="flex items-start gap-3 text-gray-800">
+              <Info className="h-5 w-5 text-gray-600 mt-0.5" />
               <div>
                 <p className="text-sm mb-1">
                   <strong>Atenção:</strong> A combinação de serviços
                   selecionados exige profissionais específicos.
                 </p>
-                <p className="text-xs text-blue-700">
+                <p className="text-xs text-gray-700">
                   Escolha um dos profissionais listados abaixo para continuar.
                 </p>
               </div>
@@ -182,12 +184,12 @@ export function ProfessionalSelectionStep({
 
       {/* Opção "Qualquer Profissional" */}
       <Card
-        className={`p-4 cursor-pointer transition-all ${
+        className={`p-4 cursor-pointer transition-all bg-white ${
           compatibilityStatus.canUseAny
             ? isAnyProfessional
-              ? 'border-[#20b2aa] bg-[#20b2aa]/5'
-              : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
-            : 'border-gray-200 bg-gray-100 cursor-not-allowed opacity-50'
+              ? 'shadow-md ring-1 ring-black/5'
+              : 'shadow-sm hover:shadow-md'
+            : 'shadow-sm cursor-not-allowed opacity-50'
         }`}
         onClick={
           compatibilityStatus.canUseAny
@@ -199,15 +201,13 @@ export function ProfessionalSelectionStep({
           <div className="flex items-center gap-3">
             <div
               className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                compatibilityStatus.canUseAny
-                  ? 'bg-[#20b2aa]/20'
-                  : 'bg-gray-200'
+                compatibilityStatus.canUseAny ? 'bg-gray-200' : 'bg-gray-200'
               }`}
             >
               <User
                 className={`h-5 w-5 ${
                   compatibilityStatus.canUseAny
-                    ? 'text-[#20b2aa]'
+                    ? 'text-gray-700'
                     : 'text-gray-400'
                 }`}
               />
@@ -238,7 +238,7 @@ export function ProfessionalSelectionStep({
           </div>
 
           {isAnyProfessional && compatibilityStatus.canUseAny && (
-            <div className="w-6 h-6 bg-[#20b2aa] rounded-full flex items-center justify-center">
+            <div className="w-6 h-6 bg-black rounded-full flex items-center justify-center">
               <Check className="h-4 w-4 text-white" />
             </div>
           )}
@@ -259,10 +259,10 @@ export function ProfessionalSelectionStep({
           return (
             <Card
               key={professional.id}
-              className={`p-4 cursor-pointer transition-all ${
+              className={`p-4 cursor-pointer transition-all bg-white ${
                 isSelected
-                  ? 'border-[#20b2aa] bg-[#20b2aa]/5'
-                  : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                  ? 'shadow-md ring-1 ring-black/5'
+                  : 'shadow-sm hover:shadow-md'
               }`}
               onClick={() => handleProfessionalSelect(professional)}
             >
@@ -296,7 +296,7 @@ export function ProfessionalSelectionStep({
                 </div>
 
                 {isSelected && (
-                  <div className="w-6 h-6 bg-[#20b2aa] rounded-full flex items-center justify-center">
+                  <div className="w-6 h-6 bg-black rounded-full flex items-center justify-center">
                     <Check className="h-4 w-4 text-white" />
                   </div>
                 )}
@@ -305,37 +305,6 @@ export function ProfessionalSelectionStep({
           );
         })}
       </div>
-
-      {/* Resumo da seleção */}
-      {(selectedProfessional || isAnyProfessional) && (
-        <Card className="p-4 bg-[#20b2aa]/10 border-[#20b2aa]/20">
-          <h4 className="text-[#1a2b4c] mb-2">Seleção confirmada:</h4>
-          {isAnyProfessional ? (
-            <p className="text-sm text-gray-700">
-              Qualquer profissional disponível realizará todos os serviços
-              selecionados.
-            </p>
-          ) : (
-            selectedProfessional && (
-              <div className="space-y-1">
-                <p className="text-sm text-gray-700">
-                  <strong>{selectedProfessional.name}</strong> realizará{' '}
-                  {canProfessionalDoAllServices(selectedProfessional)
-                    ? 'todos os serviços selecionados'
-                    : 'os serviços compatíveis'}
-                  .
-                </p>
-                {!canProfessionalDoAllServices(selectedProfessional) && (
-                  <p className="text-xs text-yellow-700 bg-yellow-100 p-2 rounded">
-                    Alguns serviços podem precisar ser reagendados com outro
-                    profissional.
-                  </p>
-                )}
-              </div>
-            )
-          )}
-        </Card>
-      )}
     </div>
   );
 }

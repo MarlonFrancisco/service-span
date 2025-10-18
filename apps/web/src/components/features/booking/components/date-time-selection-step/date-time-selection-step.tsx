@@ -1,17 +1,18 @@
 import { Button, Calendar as CalendarComponent, Card } from '@repo/ui';
 import { Calendar, Clock } from 'lucide-react';
+import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useState } from 'react';
-import { TProfessional, TSelectedService } from '../../booking.types';
+import {
+  IProfessional,
+  ISelectedService,
+  ITimeSlot,
+} from '../../booking.types';
+import { DatePickerHorizontal } from './date-picker-horizontal';
+import { SkeletonTimeSlots } from './skeleton-time-slots';
 
-export interface TimeSlot {
-  time: string;
-  available: boolean;
-  price?: number;
-}
-
-interface DateTimeSelectionStepProps {
-  selectedServices: TSelectedService[];
-  selectedProfessional: TProfessional | null;
+interface IDateTimeSelectionStepProps {
+  selectedServices: ISelectedService[];
+  selectedProfessional: IProfessional | null;
   isAnyProfessional: boolean;
   selectedDate: Date | undefined;
   selectedTime: string | null;
@@ -26,14 +27,13 @@ export function DateTimeSelectionStep({
   selectedDate,
   selectedTime,
   onDateTimeChange,
-  totalDuration,
-}: DateTimeSelectionStepProps) {
-  const [availableSlots, setAvailableSlots] = useState<TimeSlot[]>([]);
+}: IDateTimeSelectionStepProps) {
+  const [availableSlots, setAvailableSlots] = useState<ITimeSlot[]>([]);
   const [isLoadingSlots, setIsLoadingSlots] = useState(false);
 
   // Mock data para disponibilidade
-  const generateMockSlots = (date: Date): TimeSlot[] => {
-    const slots: TimeSlot[] = [];
+  const generateMockSlots = (date: Date): ITimeSlot[] => {
+    const slots: ITimeSlot[] = [];
     const dayOfWeek = date.getDay(); // 0 = domingo, 6 = sábado
 
     // Horários básicos da semana
@@ -91,17 +91,6 @@ export function DateTimeSelectionStep({
     onDateTimeChange(selectedDate, time);
   };
 
-  const formatDuration = (minutes: number) => {
-    if (minutes < 60) {
-      return `${minutes}min`;
-    }
-    const hours = Math.floor(minutes / 60);
-    const remainingMinutes = minutes % 60;
-    return remainingMinutes > 0
-      ? `${hours}h ${remainingMinutes}min`
-      : `${hours}h`;
-  };
-
   const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat('pt-BR', {
       weekday: 'long',
@@ -118,7 +107,7 @@ export function DateTimeSelectionStep({
     }).format(price);
   };
 
-  // Desabilitar datas no passado
+  // Desabilitar datas no passado e domingos (exemplo)
   const isDateDisabled = (date: Date) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -127,46 +116,120 @@ export function DateTimeSelectionStep({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div>
-        <h2 className="text-xl text-[#1a2b4c] mb-2">Escolha data e horário</h2>
-        <p className="text-gray-600">
+        <h2 className="text-lg sm:text-2xl text-[#1a2b4c] mb-1">
+          Escolha data e horário
+        </h2>
+        <p className="text-sm sm:text-base text-gray-600">
           Selecione quando deseja realizar{' '}
           {selectedServices.length > 1 ? 'os serviços' : 'o serviço'}
         </p>
       </div>
 
-      {/* Informações do agendamento */}
-      <Card className="p-4 bg-gray-50 border-gray-200">
-        <div className="flex items-center gap-4 text-sm">
-          <div className="flex items-center gap-2">
-            <Clock className="h-4 w-4 text-[black]" />
-            <span>
-              Duração total: <strong>{formatDuration(totalDuration)}</strong>
-            </span>
+      {/* Mobile Date Picker Horizontal */}
+      <div className="md:hidden space-y-4">
+        <Card className="p-5 bg-white shadow-card">
+          <div className="flex items-center gap-2 mb-4">
+            <Calendar className="h-5 w-5 text-gray-600" />
+            <h3 className="text-[#1a2b4c]">Selecione a data</h3>
           </div>
 
-          {(selectedProfessional || isAnyProfessional) && (
-            <div className="flex items-center gap-2">
-              <span>
-                Com:{' '}
-                <strong>
-                  {isAnyProfessional
-                    ? 'Qualquer profissional'
-                    : selectedProfessional?.name}
-                </strong>
-              </span>
+          <DatePickerHorizontal
+            selected={selectedDate}
+            onSelect={handleDateSelect}
+            disabled={isDateDisabled}
+          />
+        </Card>
+
+        {/* Mobile Time Slots */}
+        <Card className="p-5 border-gray-200">
+          <div className="flex items-center gap-2 mb-4">
+            <Clock className="h-5 w-5 text-gray-600" />
+            <h3 className="text-[#1a2b4c]">Selecione o horário</h3>
+          </div>
+
+          {!selectedDate && (
+            <div className="text-center py-12">
+              <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <Calendar className="h-6 w-6 text-gray-400" />
+              </div>
+              <p className="text-sm text-gray-500">
+                Selecione uma data primeiro
+              </p>
             </div>
           )}
-        </div>
-      </Card>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {selectedDate && isLoadingSlots && <SkeletonTimeSlots />}
+
+          {selectedDate && !isLoadingSlots && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="space-y-3"
+            >
+              <div className="text-sm text-gray-600 mb-3">
+                {formatDate(selectedDate)}
+              </div>
+
+              {availableSlots.length === 0 ? (
+                <div className="text-center py-8">
+                  <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <Clock className="h-6 w-6 text-gray-400" />
+                  </div>
+                  <p className="text-sm text-gray-500">
+                    Nenhum horário disponível nesta data
+                  </p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 gap-2">
+                  <AnimatePresence>
+                    {availableSlots.map((slot, index) => (
+                      <motion.div
+                        key={slot.time}
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: index * 0.05 }}
+                      >
+                        <Button
+                          variant={
+                            selectedTime === slot.time ? 'default' : 'outline'
+                          }
+                          disabled={!slot.available}
+                          onClick={() => handleTimeSelect(slot.time)}
+                          className={`p-3 h-auto flex flex-col w-full transition-all ${
+                            selectedTime === slot.time
+                              ? 'bg-black hover:bg-gray-800 text-white'
+                              : slot.available
+                                ? 'border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400'
+                                : 'border-gray-200 text-gray-400 cursor-not-allowed'
+                          }`}
+                          aria-label={`Selecionar horário ${slot.time}`}
+                        >
+                          <span className="font-medium">{slot.time}</span>
+                          {slot.available && slot.price && (
+                            <span className="text-xs opacity-80">
+                              {formatPrice(slot.price)}
+                            </span>
+                          )}
+                        </Button>
+                      </motion.div>
+                    ))}
+                  </AnimatePresence>
+                </div>
+              )}
+            </motion.div>
+          )}
+        </Card>
+      </div>
+
+      {/* Desktop Date and Time Grid */}
+      <div className="hidden md:grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Calendário */}
-        <Card className="p-4">
+        <Card className="p-5 border-gray-200">
           <div className="flex items-center gap-2 mb-4">
-            <Calendar className="h-5 w-5 text-[black]" />
-            <h3 className="text-lg text-[#1a2b4c]">Selecione a data</h3>
+            <Calendar className="h-5 w-5 text-gray-600" />
+            <h3 className="text-[#1a2b4c]">Selecione a data</h3>
           </div>
 
           <CalendarComponent
@@ -179,96 +242,84 @@ export function DateTimeSelectionStep({
         </Card>
 
         {/* Horários */}
-        <Card className="p-4">
+        <Card className="p-5 border-gray-200">
           <div className="flex items-center gap-2 mb-4">
-            <Clock className="h-5 w-5 text-[black]" />
-            <h3 className="text-lg text-[#1a2b4c]">Selecione o horário</h3>
+            <Clock className="h-5 w-5 text-gray-600" />
+            <h3 className="text-[#1a2b4c]">Selecione o horário</h3>
           </div>
 
           {!selectedDate && (
-            <div className="text-center py-8 text-gray-500">
-              <Calendar className="h-12 w-12 mx-auto mb-3 text-gray-300" />
-              <p>Selecione uma data primeiro</p>
+            <div className="text-center py-12">
+              <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <Calendar className="h-6 w-6 text-gray-400" />
+              </div>
+              <p className="text-sm text-gray-500">
+                Selecione uma data primeiro
+              </p>
             </div>
           )}
 
-          {selectedDate && isLoadingSlots && (
-            <div className="text-center py-8 text-gray-500">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[black] mx-auto mb-3"></div>
-              <p>Carregando horários...</p>
-            </div>
-          )}
+          {selectedDate && isLoadingSlots && <SkeletonTimeSlots />}
 
           {selectedDate && !isLoadingSlots && (
-            <div className="space-y-3">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="space-y-3"
+            >
               <div className="text-sm text-gray-600 mb-3">
                 {formatDate(selectedDate)}
               </div>
 
               {availableSlots.length === 0 ? (
-                <div className="text-center py-4 text-gray-500">
-                  <p>Nenhum horário disponível nesta data</p>
+                <div className="text-center py-8">
+                  <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <Clock className="h-6 w-6 text-gray-400" />
+                  </div>
+                  <p className="text-sm text-gray-500">
+                    Nenhum horário disponível nesta data
+                  </p>
                 </div>
               ) : (
                 <div className="grid grid-cols-2 gap-2">
-                  {availableSlots.map((slot) => (
-                    <Button
-                      key={slot.time}
-                      variant={
-                        selectedTime === slot.time ? 'default' : 'outline'
-                      }
-                      disabled={!slot.available}
-                      onClick={() => handleTimeSelect(slot.time)}
-                      className={`p-3 h-auto flex flex-col ${
-                        selectedTime === slot.time
-                          ? 'bg-[black] hover:bg-[black]/90 text-white'
-                          : slot.available
-                            ? 'border-gray-300 text-gray-700 hover:bg-gray-50'
-                            : 'border-gray-200 text-gray-400 cursor-not-allowed'
-                      }`}
-                    >
-                      <span className="font-medium">{slot.time}</span>
-                      {slot.available && slot.price && (
-                        <span className="text-xs opacity-80">
-                          {formatPrice(slot.price)}
-                        </span>
-                      )}
-                    </Button>
-                  ))}
+                  <AnimatePresence>
+                    {availableSlots.map((slot, index) => (
+                      <motion.div
+                        key={slot.time}
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: index * 0.05 }}
+                      >
+                        <Button
+                          variant={
+                            selectedTime === slot.time ? 'default' : 'outline'
+                          }
+                          disabled={!slot.available}
+                          onClick={() => handleTimeSelect(slot.time)}
+                          className={`p-3 h-auto flex flex-col w-full transition-all ${
+                            selectedTime === slot.time
+                              ? 'bg-black hover:bg-gray-800 text-white'
+                              : slot.available
+                                ? 'border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400'
+                                : 'border-gray-200 text-gray-400 cursor-not-allowed'
+                          }`}
+                        >
+                          <span className="font-medium">{slot.time}</span>
+                          {slot.available && slot.price && (
+                            <span className="text-xs opacity-80">
+                              {formatPrice(slot.price)}
+                            </span>
+                          )}
+                        </Button>
+                      </motion.div>
+                    ))}
+                  </AnimatePresence>
                 </div>
               )}
-            </div>
+            </motion.div>
           )}
         </Card>
       </div>
-
-      {/* Confirmação da seleção */}
-      {selectedDate && selectedTime && (
-        <Card className="p-4 bg-[black]/10 border-[black]/20">
-          <h4 className="text-[#1a2b4c] mb-2">Agendamento selecionado:</h4>
-          <div className="space-y-1 text-sm">
-            <p>
-              <strong>Data:</strong> {formatDate(selectedDate)}
-            </p>
-            <p>
-              <strong>Horário:</strong> {selectedTime}
-            </p>
-            <p>
-              <strong>Duração:</strong> {formatDuration(totalDuration)}
-            </p>
-            {availableSlots.find((slot) => slot.time === selectedTime)
-              ?.price && (
-              <p>
-                <strong>Valor total:</strong>{' '}
-                {formatPrice(
-                  availableSlots.find((slot) => slot.time === selectedTime)!
-                    .price!,
-                )}
-              </p>
-            )}
-          </div>
-        </Card>
-      )}
     </div>
   );
 }

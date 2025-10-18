@@ -1,20 +1,12 @@
 import { Badge, Button } from '@repo/ui';
 import { Check, Minus, Plus } from 'lucide-react';
 import { useState } from 'react';
-import { SelectedService } from './BookingSidebar';
-
-interface Service {
-  id: string;
-  name: string;
-  description: string;
-  duration: number;
-  price: number;
-  category: string;
-}
+import { toast } from 'sonner';
+import { ISelectedService, IService } from '../../booking.types';
 
 interface ServiceSelectionStepProps {
-  selectedServices: SelectedService[];
-  onServicesChange: (services: SelectedService[]) => void;
+  selectedServices: ISelectedService[];
+  onServicesChange: (services: ISelectedService[]) => void;
 }
 
 export function ServiceSelectionStep({
@@ -24,7 +16,7 @@ export function ServiceSelectionStep({
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   // Mock data - substituir por dados reais
-  const mockServices: Service[] = [
+  const mockServices: IService[] = [
     {
       id: '1',
       name: 'Corte de Cabelo Masculino',
@@ -91,42 +83,43 @@ export function ServiceSelectionStep({
     return getServiceQuantity(serviceId) > 0;
   };
 
-  const handleQuantityChange = (service: Service, newQuantity: number) => {
+  const handleQuantityChange = (service: IService, newQuantity: number) => {
     const existingServiceIndex = selectedServices.findIndex(
       (s) => s.id === service.id,
     );
+    const oldQuantity = getServiceQuantity(service.id);
 
     if (newQuantity <= 0) {
       // Remove service if quantity is 0 or less
       if (existingServiceIndex !== -1) {
         const newServices = selectedServices.filter((s) => s.id !== service.id);
         onServicesChange(newServices);
+        toast.info(`${service.name} removido`);
       }
     } else {
       if (existingServiceIndex !== -1) {
         // Update existing service quantity
         const newServices = [...selectedServices];
-        newServices[existingServiceIndex] = {
-          ...newServices[existingServiceIndex],
-          quantity: newQuantity,
-        };
+        (newServices[existingServiceIndex] as ISelectedService).quantity =
+          newQuantity;
         onServicesChange(newServices);
+
+        if (newQuantity > oldQuantity) {
+          toast.success(`Quantidade atualizada`);
+        }
       } else {
         // Add new service
-        const newService: SelectedService = {
-          id: service.id,
-          name: service.name,
-          duration: service.duration,
-          price: service.price,
-          category: service.category,
+        const newService: ISelectedService = {
+          ...service,
           quantity: newQuantity,
         };
         onServicesChange([...selectedServices, newService]);
+        toast.success(`${service.name} adicionado`);
       }
     }
   };
 
-  const handleServiceToggle = (service: Service) => {
+  const handleServiceToggle = (service: IService) => {
     const currentQuantity = getServiceQuantity(service.id);
     const newQuantity = currentQuantity > 0 ? 0 : 1;
     handleQuantityChange(service, newQuantity);
@@ -151,10 +144,12 @@ export function ServiceSelectionStep({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div>
-        <h2 className="text-xl text-[#1a2b4c] mb-2">Selecione os serviços</h2>
-        <p className="text-gray-600">
+        <h2 className="text-lg sm:text-2xl text-[#1a2b4c] mb-1">
+          Selecione os serviços
+        </h2>
+        <p className="text-sm sm:text-base text-gray-600">
           Escolha um ou mais serviços que deseja agendar
         </p>
       </div>
@@ -169,7 +164,7 @@ export function ServiceSelectionStep({
             onClick={() => setSelectedCategory(null)}
             className={
               selectedCategory === null
-                ? 'bg-[black] hover:bg-[black]/90 text-white'
+                ? 'bg-black hover:bg-gray-800 text-white'
                 : 'border-gray-300 text-gray-700 hover:bg-gray-50'
             }
           >
@@ -183,7 +178,7 @@ export function ServiceSelectionStep({
               onClick={() => setSelectedCategory(category)}
               className={
                 selectedCategory === category
-                  ? 'bg-[black] hover:bg-[black]/90 text-white'
+                  ? 'bg-black hover:bg-gray-800 text-white'
                   : 'border-gray-300 text-gray-700 hover:bg-gray-50'
               }
             >
@@ -194,55 +189,64 @@ export function ServiceSelectionStep({
       </div>
 
       {/* Services List */}
-      <div className="space-y-3">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
         {filteredServices.map((service) => (
           <div
             key={service.id}
-            className={`border-2 rounded-lg p-4 transition-all ${
+            className={`rounded-lg p-3 sm:p-4 transition-all bg-white cursor-pointer ${
               isSelected(service.id)
-                ? 'border-[#20b2aa] bg-[#20b2aa]/5'
-                : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                ? 'shadow-md ring-1 ring-black/5'
+                : 'shadow-sm hover:shadow-md'
             }`}
           >
-            <div className="flex items-center justify-between">
-              <div className="flex-1">
-                <div className="flex items-center gap-3 mb-2">
-                  <h4 className="text-[#1a2b4c]">{service.name}</h4>
-                  {isSelected(service.id) && (
-                    <div className="w-5 h-5 bg-[#20b2aa] rounded-full flex items-center justify-center">
-                      <Check className="h-3 w-3 text-white" />
-                    </div>
-                  )}
+            <div className="flex flex-col gap-3">
+              {/* Header com título e check */}
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-2">
+                    <h4 className="text-sm sm:text-base text-[#1a2b4c]">
+                      {service.name}
+                    </h4>
+                    {isSelected(service.id) && (
+                      <div className="w-5 h-5 bg-black rounded-full flex items-center justify-center flex-shrink-0">
+                        <Check className="h-3 w-3 text-white" />
+                      </div>
+                    )}
+                  </div>
+
+                  <p className="text-xs sm:text-sm text-gray-600 mb-2">
+                    {service.description}
+                  </p>
+
+                  <div className="flex items-center gap-3">
+                    <Badge
+                      variant="secondary"
+                      className="bg-gray-100 text-gray-700 text-xs"
+                    >
+                      {service.category}
+                    </Badge>
+                    <span className="text-xs sm:text-sm text-gray-500">
+                      {formatDuration(service.duration)}
+                    </span>
+                  </div>
                 </div>
 
-                <p className="text-sm text-gray-600 mb-2">
-                  {service.description}
-                </p>
-
-                <div className="flex items-center gap-4">
-                  <Badge
-                    variant="secondary"
-                    className="bg-gray-100 text-gray-700"
-                  >
-                    {service.category}
-                  </Badge>
-                  <span className="text-sm text-gray-500">
-                    {formatDuration(service.duration)}
-                  </span>
+                {/* Preço - sempre visível */}
+                <div className="text-right flex-shrink-0">
+                  <div className="text-base sm:text-lg text-[#1a2b4c]">
+                    {formatPrice(service.price)}
+                  </div>
                 </div>
               </div>
 
-              <div className="text-right">
-                <div className="text-lg text-[#1a2b4c] mb-1">
-                  {formatPrice(service.price)}
-                </div>
-
+              {/* Controles de quantidade - linha separada no mobile */}
+              <div className="flex justify-end">
                 {isSelected(service.id) ? (
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1.5 sm:gap-2">
                     <Button
                       size="sm"
                       variant="outline"
-                      className="w-8 h-8 p-0 border-gray-300 text-gray-700 hover:bg-gray-50"
+                      className="w-8 h-8 sm:w-9 sm:h-9 p-0 border-gray-300 text-gray-700 hover:bg-gray-50"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleQuantityChange(
@@ -251,17 +255,17 @@ export function ServiceSelectionStep({
                         );
                       }}
                     >
-                      <Minus className="h-3 w-3" />
+                      <Minus className="h-3 w-3 sm:h-4 sm:w-4" />
                     </Button>
 
-                    <span className="mx-2 min-w-[24px] text-center text-[#1a2b4c] font-medium">
+                    <span className="mx-1 sm:mx-2 min-w-[20px] sm:min-w-[24px] text-center text-sm sm:text-base text-[#1a2b4c] font-medium">
                       {getServiceQuantity(service.id)}
                     </span>
 
                     <Button
                       size="sm"
                       variant="outline"
-                      className="w-8 h-8 p-0 border-[black] text-[black] hover:bg-[black]/10"
+                      className="w-8 h-8 sm:w-9 sm:h-9 p-0 border-black text-black hover:bg-gray-50"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleQuantityChange(
@@ -270,20 +274,20 @@ export function ServiceSelectionStep({
                         );
                       }}
                     >
-                      <Plus className="h-3 w-3" />
+                      <Plus className="h-3 w-3 sm:h-4 sm:w-4" />
                     </Button>
                   </div>
                 ) : (
                   <Button
                     size="sm"
                     variant="outline"
-                    className="border-gray-300 text-gray-700 hover:bg-gray-50"
+                    className="border-gray-300 text-gray-700 hover:bg-gray-50 h-8 sm:h-9 px-3 sm:px-4 text-xs sm:text-sm"
                     onClick={(e) => {
                       e.stopPropagation();
                       handleServiceToggle(service);
                     }}
                   >
-                    <Plus className="h-4 w-4 mr-1" />
+                    <Plus className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
                     Adicionar
                   </Button>
                 )}
@@ -292,47 +296,6 @@ export function ServiceSelectionStep({
           </div>
         ))}
       </div>
-
-      {selectedServices.length > 0 && (
-        <div className="bg-[black]/10 border border-[black]/20 rounded-lg p-4">
-          <h4 className="text-[#1a2b4c] mb-2">Serviços selecionados:</h4>
-          <div className="space-y-2">
-            {selectedServices.map((service) => (
-              <div
-                key={service.id}
-                className="flex justify-between items-center text-sm"
-              >
-                <div className="flex items-center gap-2">
-                  <span>{service.name}</span>
-                  {service.quantity > 1 && (
-                    <span className="bg-[black] text-white px-2 py-0.5 rounded-full text-xs">
-                      {service.quantity}x
-                    </span>
-                  )}
-                </div>
-                <span className="text-[#1a2b4c]">
-                  {formatPrice(service.price * service.quantity)}
-                </span>
-              </div>
-            ))}
-
-            {selectedServices.length > 1 && (
-              <div className="border-t border-[black]/20 pt-2 flex justify-between items-center font-medium">
-                <span>Total:</span>
-                <span className="text-[#1a2b4c]">
-                  {formatPrice(
-                    selectedServices.reduce(
-                      (total, service) =>
-                        total + service.price * service.quantity,
-                      0,
-                    ),
-                  )}
-                </span>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
     </div>
   );
 }

@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
-import type { TSharePlatform } from './image-gallery.types';
 
 type TUseGalleryControlsConfig = {
   businessName: string;
@@ -23,7 +22,6 @@ export const useGalleryControls = ({
 }: TUseGalleryControlsConfig) => {
   const [showThumbnails, setShowThumbnails] = useState(false);
   const [zoom, setZoom] = useState(1);
-  const [showShareMenu, setShowShareMenu] = useState(false);
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
 
@@ -50,68 +48,21 @@ export const useGalleryControls = ({
     };
   }, [isOpen, goToNext, goToPrevious, onClose]);
 
-  const handleShare = useCallback(
-    async (platform?: TSharePlatform) => {
-      const shareText = `Confira essas fotos incríveis do ${businessName}!`;
-      const shareUrl = window.location.href;
+  const handleShare = useCallback(async () => {
+    const shareText = `Confira essas fotos incríveis do ${businessName}!`;
+    const shareUrl = window.location.href;
 
-      try {
-        switch (platform) {
-          case 'copy':
-            if (navigator.clipboard) {
-              await navigator.clipboard.writeText(shareUrl);
-              toast.success('Link copiado para a área de transferência!');
-            }
-            break;
-          case 'facebook':
-            window.open(
-              `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`,
-              '_blank',
-            );
-            break;
-          case 'twitter':
-            window.open(
-              `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`,
-              '_blank',
-            );
-            break;
-          case 'whatsapp':
-            window.open(
-              `https://wa.me/?text=${encodeURIComponent(shareText + ' ' + shareUrl)}`,
-              '_blank',
-            );
-            break;
-          case 'instagram':
-            toast.info('Abra o Instagram e compartilhe manualmente');
-            break;
-          default:
-            if (navigator.share) {
-              try {
-                await navigator.share({
-                  title: businessName,
-                  text: shareText,
-                  url: shareUrl,
-                });
-              } catch (err) {
-                const error = err as Error;
-                if (error.name !== 'AbortError') {
-                  setShowShareMenu(true);
-                }
-              }
-            } else {
-              setShowShareMenu(true);
-            }
-            return;
-        }
-      } catch (err) {
-        console.error('Share error:', err);
-        toast.error('Erro ao compartilhar');
-      }
-
-      setShowShareMenu(false);
-    },
-    [businessName],
-  );
+    try {
+      await navigator.share({
+        title: businessName,
+        text: shareText,
+        url: shareUrl,
+      });
+    } catch (err) {
+      console.error('Share error:', err);
+      toast.error('Erro ao compartilhar');
+    }
+  }, [businessName]);
 
   const handleDownload = useCallback(async () => {
     try {
@@ -187,10 +138,8 @@ export const useGalleryControls = ({
 
   return {
     showThumbnails,
-    setShowThumbnails,
     zoom,
-    showShareMenu,
-    setShowShareMenu,
+    setShowThumbnails,
     handleShare,
     handleDownload,
     handleZoomIn,

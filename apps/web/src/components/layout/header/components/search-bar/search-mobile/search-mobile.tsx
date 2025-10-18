@@ -1,4 +1,4 @@
-import { useSearchApp } from '@/store';
+import { useSearch } from '@/store';
 import { Button } from '@repo/ui';
 import { Filter, Search } from 'lucide-react';
 import { FiltersModal } from '../filters-modal';
@@ -9,7 +9,7 @@ export const SearchMobile = () => {
     activeFiltersCount,
     hasActiveFilters,
     setIsMobileSearchOpen,
-  } = useSearchApp();
+  } = useSearch();
 
   return (
     <div className="md:hidden flex-1 flex-row flex items-center gap-6 mr-6">

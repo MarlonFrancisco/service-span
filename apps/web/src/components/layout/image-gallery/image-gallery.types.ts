@@ -9,7 +9,6 @@ export type TImageGalleryConfig = {
 export type TUseImageGalleryConfig = {
   images: string[];
   initialIndex?: number;
-  isOpen: boolean;
 };
 
 export type TSharePlatform =

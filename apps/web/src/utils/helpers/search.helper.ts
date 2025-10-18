@@ -17,3 +17,7 @@ export const buildSearchUrl = (searchFilters: ISearchFilters) => {
 
   return `/booking?${params.toString()}`;
 };
+
+export const isSearchPage = (pathname: string) => {
+  return pathname === '/booking';
+};
