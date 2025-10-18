@@ -72,6 +72,15 @@ export class GoogleSSOService extends OAuth2Client {
       telephone: user.telephone,
     });
 
-    return { tokens, isNewUser };
+    return {
+      tokens,
+      isNewUser,
+      user: {
+        email: user.email,
+        telephone: user.telephone,
+        firstName: user.firstName,
+        lastName: user.lastName,
+      },
+    };
   }
 }

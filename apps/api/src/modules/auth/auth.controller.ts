@@ -36,15 +36,17 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     try {
-      const tokens = await this.authService.validateCode(body);
+      const { tokens, user } = await this.authService.validateCode(body);
 
       res.cookie('access_token', tokens.access_token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
+        sameSite: process.env.NODE_ENV === 'production' ? 'lax' : 'lax',
         maxAge: tokens.expires_in * 1000, // converte para milissegundos
         path: '/',
       });
+
+      return { user };
     } catch (error) {
       throw new UnauthorizedException(error);
     }
@@ -65,15 +67,17 @@ export class AuthController {
     @Body() body: { token: string },
     @Res({ passthrough: true }) res: Response,
   ) {
-    const { tokens, isNewUser } = await this.googleSSOService.login(body.token);
+    const { tokens, isNewUser, user } = await this.googleSSOService.login(
+      body.token,
+    );
 
     res.cookie('access_token', tokens.access_token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
+      sameSite: process.env.NODE_ENV === 'production' ? 'lax' : 'lax', // production should be strict, but for now we'll use lax
       maxAge: tokens.expires_in * 1000,
     });
 
-    return { isNewUser };
+    return { isNewUser, user };
   }
 }

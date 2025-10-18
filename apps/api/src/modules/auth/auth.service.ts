@@ -107,13 +107,24 @@ export class AuthService {
       throw new UnauthorizedException('Code expired');
     }
 
+    const isNewUser = !user.email || !user.telephone;
     const tokens = await this.generateTokens({
       sub: user.id,
       email: user.email,
       telephone: user.telephone,
     });
 
-    return tokens;
+    return {
+      tokens,
+      user: !isNewUser
+        ? {
+            email: user.email,
+            telephone: user.telephone,
+            firstName: user.firstName,
+            lastName: user.lastName,
+          }
+        : undefined,
+    };
   }
 
   async register(body: RegisterDto, token: string) {
