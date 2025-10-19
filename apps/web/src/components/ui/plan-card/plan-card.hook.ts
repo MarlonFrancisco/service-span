@@ -20,6 +20,8 @@ export const usePlanCard = ({ priceId }: { priceId: string }) => {
           window.location.href = url;
         },
       });
+
+      return;
     }
     const { url } = await createSubscription(priceId);
     window.location.href = url;
