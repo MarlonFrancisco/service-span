@@ -7,8 +7,10 @@ export class PlansService {
   constructor(private readonly stripe: StripeService) {}
 
   async findAll() {
-    const responseProducts = await this.stripe.products.list();
-    const responsePrices = await this.stripe.prices.list();
+    const responseProducts = await this.stripe.products.list({
+      active: true,
+    });
+    const responsePrices = await this.stripe.prices.list({ active: true });
 
     const plans = responseProducts.data
       .sort((a, b) => {
@@ -20,7 +22,7 @@ export class PlansService {
         const price = responsePrices.data.find(
           (price) => price.product === product.id,
         );
-        return new PlanDto(product, price.unit_amount);
+        return new PlanDto(product, price);
       });
 
     return plans;
