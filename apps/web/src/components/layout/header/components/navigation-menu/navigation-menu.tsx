@@ -1,14 +1,14 @@
-import { useAuthActions } from '@/store/auth/auth.hook';
+import { useAuth } from '@/store/auth/auth.hook';
 import { useUser } from '@/store/user/user.hook';
 import Link from 'next/link';
 import type { TNavigationMenuConfig } from './navigation-menu.types';
 
 export const NavigationMenu = ({ items }: TNavigationMenuConfig) => {
-  const { toggleAuthAction } = useAuthActions();
+  const { openAuthAction } = useAuth();
   const { isLoggedIn } = useUser();
 
   const handleAuth = () => {
-    toggleAuthAction(true);
+    openAuthAction({});
   };
 
   return (

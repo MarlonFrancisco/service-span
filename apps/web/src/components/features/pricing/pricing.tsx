@@ -1,11 +1,9 @@
 'use client';
 import { Footer, Header } from '@/components/layout';
-import { formatPrice } from '@/utils/helpers/price.helper';
-import { Badge, Button, Card } from '@repo/ui';
+import { PlanCard } from '@/components/ui';
+import { Badge, Card, Carousel, CarouselContent, CarouselItem } from '@repo/ui';
 import {
-  ArrowRight,
   BarChart3,
-  Check,
   Clock,
   Shield,
   Sparkles,
@@ -60,12 +58,11 @@ export const Pricing = () => {
   const { plans } = usePricing();
 
   return (
-    <motion.div layout className="min-h-screen bg-black">
-      <Header />
-      <div className="rounded-tl-[40px] rounded-tr-[40px] bg-background">
+    <Header>
+      <motion.div layout>
         {/* Hero Section */}
         <div>
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16 sm:pt-52 sm:pb-20">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 sm:pb-20">
             <div className="text-center">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -90,64 +87,28 @@ export const Pricing = () => {
 
         {/* Pricing Cards */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {plans?.map((plan, index) => (
-              <motion.div
-                key={plan.name}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.2 + index * 0.1 }}
-                className="relative"
-              >
-                <Card
-                  className={`relative h-full p-8 ${
-                    plan.popular
-                      ? 'border-2 border-black shadow-xl'
-                      : 'border border-gray-200'
-                  }`}
+          <Carousel
+            opts={{
+              slidesToScroll: 1,
+              active: true,
+              align: 'start',
+              breakpoints: {
+                '(min-width: 64rem)': { active: false },
+              },
+            }}
+            className="-mx-4"
+          >
+            <CarouselContent className="pt-3 px-4">
+              {plans?.map((plan, index) => (
+                <CarouselItem
+                  key={plan.name}
+                  className="pl-4 basis-[85%] lg:basis-[calc(100%/3)]"
                 >
-                  {plan.popular && (
-                    <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-black text-white">
-                      Mais popular
-                    </Badge>
-                  )}
-
-                  <div className="mb-8">
-                    <h3 className="text-xl text-gray-900 mb-2">{plan.name}</h3>
-                    <p className="text-sm text-gray-600">{plan.description}</p>
-                  </div>
-
-                  <div className="mb-8">
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-5xl text-gray-900">
-                        {formatPrice(plan.priceMonthly)}
-                      </span>
-                      <span className="text-gray-600">/mês</span>
-                    </div>
-                  </div>
-
-                  <Button
-                    className={`w-full mb-8 ${
-                      plan.popular
-                        ? 'bg-black hover:bg-gray-800 text-white'
-                        : 'bg-gray-100 hover:bg-gray-200 text-gray-900'
-                    }`}
-                  >
-                    Assinar plano
-                  </Button>
-
-                  <ul className="space-y-4">
-                    {plan.features.map((feature) => (
-                      <li key={feature} className="flex items-start gap-3">
-                        <Check className="w-5 h-5 text-black flex-shrink-0 mt-0.5" />
-                        <span className="text-sm text-gray-700">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
+                  <PlanCard plan={plan} index={index} />
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+          </Carousel>
         </div>
 
         {/* ROI Calculator Section */}
@@ -221,7 +182,7 @@ export const Pricing = () => {
         </div>
 
         <Footer />
-      </div>
-    </motion.div>
+      </motion.div>
+    </Header>
   );
 };

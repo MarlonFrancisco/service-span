@@ -1,17 +1,12 @@
 import { apiClient, HttpClientService } from '../api';
 
-export class PaymentService {
+export class SubscriptionService {
   static readonly apiClient: HttpClientService = apiClient;
 
-  static async createPayment(priceId: string) {
+  static async createSubscription(priceId: string) {
     const response = await this.apiClient.post<{ url: string }>(
-      '/payment',
+      '/subscription',
       { priceId },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      },
     );
     return response.data;
   }

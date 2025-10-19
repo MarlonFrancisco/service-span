@@ -93,7 +93,7 @@ export const SearchBar = () => {
   }, []);
 
   return (
-    <div className="flex-1 mr-6 lg:mx-12 relative flex">
+    <div className="w-full lg:w-auto mr-6 lg:mx-12 relative flex">
       <div className="hidden md:flex w-full bg-white border border-gray-200 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300">
         <div className="flex items-center">
           {/* Where */}

@@ -1,8 +1,8 @@
 'use client';
-import { useAuthActions, useAuthAttributes } from '@/store/auth/auth.hook';
+import { useAuth } from '@/store/auth/auth.hook';
 import { Dialog, DialogContent } from '@repo/ui';
 import { useState } from 'react';
-import { AuthStep, UserType } from './auth.types';
+import { AuthStep } from './auth.types';
 import { LoginStep } from './components/login-step';
 import { ProfileSelectionStep } from './components/profile-selection';
 import { SignupStep } from './components/signup-step';
@@ -11,7 +11,6 @@ import { VerificationStep } from './components/verification-step';
 
 export function AuthModal() {
   const [currentStep, setCurrentStep] = useState<AuthStep>('login');
-  const [previousStep, setPreviousStep] = useState<AuthStep>('login');
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [userData, setUserData] = useState({
     email: '',
@@ -19,13 +18,11 @@ export function AuthModal() {
     name: '',
     isNewUser: false,
   });
-  const { isOpen } = useAuthAttributes();
-  const { toggleAuthAction } = useAuthActions();
+  const { isOpen, closeAuthAction } = useAuth();
   const isProfileSelection = currentStep === 'profile-selection';
 
   const handleStepChange = async (step: AuthStep, data?: any) => {
     setIsTransitioning(true);
-    setPreviousStep(currentStep);
 
     // Small delay for smooth transition
     await new Promise((resolve) => setTimeout(resolve, 150));
@@ -40,11 +37,11 @@ export function AuthModal() {
 
   const handleClose = () => {
     setCurrentStep('login');
-    toggleAuthAction(false);
+    closeAuthAction();
     setUserData({ email: '', phone: '', name: '', isNewUser: false });
   };
 
-  const handleAuthComplete = (userType: UserType) => {
+  const handleAuthComplete = () => {
     handleClose();
   };
 

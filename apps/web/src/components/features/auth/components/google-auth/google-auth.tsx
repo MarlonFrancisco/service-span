@@ -1,16 +1,16 @@
 'use client';
-import { useAuthActions } from '@/store/auth/auth.hook';
+import { useAuth } from '@/store/auth/auth.hook';
 import { useCallback, useEffect } from 'react';
 
 export const GoogleAuth = () => {
-  const { googleLoginAction, toggleAuthAction } = useAuthActions();
+  const { googleLoginAction, onAuth } = useAuth();
 
   const handleAuth = useCallback(
     async (response: { credential: string }) => {
       await googleLoginAction(response.credential);
-      toggleAuthAction(false);
+      onAuth?.();
     },
-    [googleLoginAction, toggleAuthAction],
+    [googleLoginAction, onAuth],
   );
 
   useEffect(() => {

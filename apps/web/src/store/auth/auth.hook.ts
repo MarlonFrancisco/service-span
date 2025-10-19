@@ -1,25 +1,29 @@
 import { useAuthStore } from './auth.store';
 
-export const useAuthAttributes = () => {
-  const { isOpen, fetchingStatus, isNewUser } = useAuthStore();
-
-  return { isOpen, fetchingStatus, isNewUser };
-};
-
-export const useAuthActions = () => {
+export const useAuth = () => {
   const {
-    toggleAuthAction,
+    isOpen,
+    fetchingStatus,
+    isNewUser,
+    openAuthAction,
+    closeAuthAction,
     createAuthSessionAction,
     validateAuthSessionAction,
     registerAction,
     googleLoginAction,
+    onAuth,
   } = useAuthStore();
 
   return {
-    toggleAuthAction,
+    isOpen,
+    fetchingStatus,
+    isNewUser,
+    openAuthAction,
+    closeAuthAction,
     createAuthSessionAction,
     validateAuthSessionAction,
     registerAction,
     googleLoginAction,
+    onAuth,
   };
 };

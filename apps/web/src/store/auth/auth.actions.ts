@@ -1,49 +1,82 @@
 import { AuthService } from '@/service/auth';
-import { TStoreSet } from '@/types/store.types';
+import { TStoreAction } from '@/types/store.types';
+import { useUserStore } from '../user/user.store';
 import { IAuthState } from './auth.types';
 
-export const toggleAuthAction =
-  (set: TStoreSet<IAuthState>) => (isOpen: boolean) => {
-    set({ isOpen });
+export const openAuthAction: TStoreAction<
+  IAuthState,
+  { onAuth?: () => void }
+> =
+  (set, get) =>
+  async ({ onAuth }) => {
+    set({
+      isOpen: true,
+      onAuth: async () => {
+        get().closeAuthAction();
+        onAuth?.();
+      },
+    });
   };
 
-export const createAuthSessionAction =
-  (set: TStoreSet<IAuthState>) =>
-  async (payload: { email?: string; telephone?: string }) => {
+export const closeAuthAction: TStoreAction<IAuthState> = (set) => async () => {
+  set({ isOpen: false });
+};
+
+export const onAuthDefaultAction: TStoreAction<IAuthState> =
+  (_, get) => async () => {
+    get().closeAuthAction();
+  };
+
+export const createAuthSessionAction: TStoreAction<
+  IAuthState,
+  { email?: string; telephone?: string }
+> =
+  (set) =>
+  async ({ email, telephone }) => {
     set({ fetchingStatus: 'loading' });
-    const response = await AuthService.login(payload.email, payload.telephone);
+    const response = await AuthService.login(email, telephone);
     set({ fetchingStatus: 'success', isNewUser: response.isNewUser });
   };
 
-export const validateAuthSessionAction =
-  (set: TStoreSet<IAuthState>) =>
-  async (payload: { code: string; email?: string; telephone?: string }) => {
+export const validateAuthSessionAction: TStoreAction<
+  IAuthState,
+  { code: string; email?: string; telephone?: string }
+> =
+  (set) =>
+  async ({ code, email, telephone }) => {
     set({ fetchingStatus: 'loading' });
-    await AuthService.validateCode(
-      payload.code,
-      payload.email,
-      payload.telephone,
-    );
+    await AuthService.validateCode(code, email, telephone);
     set({ fetchingStatus: 'success' });
   };
 
-export const registerAction =
-  (set: TStoreSet<IAuthState>) =>
-  async (payload: {
+export const registerAction: TStoreAction<
+  IAuthState,
+  {
     email: string;
     telephone: string;
     firstName: string;
     lastName: string;
     acceptedTerms: boolean;
-  }) => {
+  }
+> =
+  (set) =>
+  async ({ email, telephone, firstName, lastName, acceptedTerms }) => {
     set({ fetchingStatus: 'loading' });
-    await AuthService.register(payload);
+    await AuthService.register({
+      email,
+      telephone,
+      firstName,
+      lastName,
+      acceptedTerms,
+    });
     set({ fetchingStatus: 'success' });
   };
 
-export const googleLoginAction =
-  (set: TStoreSet<IAuthState>) => async (token: string) => {
+export const googleLoginAction: TStoreAction<IAuthState, string> =
+  (set) => async (token) => {
     set({ fetchingStatus: 'loading' });
     const response = await AuthService.googleLogin(token);
-    set({ fetchingStatus: 'success', isNewUser: response.data.isNewUser });
+    const { user, isNewUser } = response.data;
+    useUserStore.setState({ authenticatedUser: user });
+    set({ fetchingStatus: 'success', isNewUser: isNewUser });
   };

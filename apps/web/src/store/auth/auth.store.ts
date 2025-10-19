@@ -1,22 +1,26 @@
 import { create } from 'zustand';
 import {
+  closeAuthAction,
   createAuthSessionAction,
   googleLoginAction,
+  onAuthDefaultAction,
+  openAuthAction,
   registerAction,
-  toggleAuthAction,
   validateAuthSessionAction,
 } from './auth.actions';
 import { IAuthState } from './auth.types';
 
-export const useAuthStore = create<IAuthState>((set) => {
+export const useAuthStore = create<IAuthState>((set, get) => {
   return {
     isOpen: false,
     fetchingStatus: 'idle',
     isNewUser: false,
-    googleLoginAction: googleLoginAction(set),
-    toggleAuthAction: toggleAuthAction(set),
-    createAuthSessionAction: createAuthSessionAction(set),
-    validateAuthSessionAction: validateAuthSessionAction(set),
-    registerAction: registerAction(set),
+    onAuth: onAuthDefaultAction(set, get),
+    googleLoginAction: googleLoginAction(set, get),
+    openAuthAction: openAuthAction(set, get),
+    closeAuthAction: closeAuthAction(set, get),
+    createAuthSessionAction: createAuthSessionAction(set, get),
+    validateAuthSessionAction: validateAuthSessionAction(set, get),
+    registerAction: registerAction(set, get),
   };
 });

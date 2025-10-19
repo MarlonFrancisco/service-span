@@ -1,19 +1,13 @@
+import { useAuth } from '@/store/auth/auth.hook';
 import { Button } from '@repo/ui';
-import { ArrowLeft, ArrowRight, Store, User, Users } from 'lucide-react';
+import { ArrowRight, Store, User, Users } from 'lucide-react';
 import { useState } from 'react';
 import { UserType } from '../../auth.types';
 
-interface ProfileSelectionStepProps {
-  onSelect: (userType: UserType) => void;
-  onBack: () => void;
-}
-
-export function ProfileSelectionStep({
-  onSelect,
-  onBack,
-}: ProfileSelectionStepProps) {
+export function ProfileSelectionStep() {
   const [selectedType, setSelectedType] = useState<UserType | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const { onAuth } = useAuth();
 
   const handleContinue = async () => {
     if (!selectedType) return;
@@ -23,7 +17,9 @@ export function ProfileSelectionStep({
     // Simular finalização do processo
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    onSelect(selectedType);
+    setIsLoading(false);
+
+    onAuth?.();
   };
 
   const profileTypes = [
@@ -73,14 +69,6 @@ export function ProfileSelectionStep({
     <div className="w-full max-w-4xl mx-auto">
       {/* Header */}
       <div className="flex items-center justify-between p-8 pb-6">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={onBack}
-          className="h-10 w-10 p-0 hover:bg-muted rounded-full"
-        >
-          <ArrowLeft className="h-5 w-5" />
-        </Button>
         <div className="text-center">
           <div className="w-10 h-10 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto">
             <Users className="h-5 w-5 text-primary" />

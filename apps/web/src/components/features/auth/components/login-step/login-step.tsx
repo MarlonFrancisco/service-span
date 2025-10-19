@@ -1,4 +1,4 @@
-import { useAuthActions } from '@/store/auth/auth.hook';
+import { useAuth } from '@/store/auth/auth.hook';
 import { Button, Input, Separator } from '@repo/ui';
 import { ArrowRight, Globe, Mail, Phone } from 'lucide-react';
 import { useState } from 'react';
@@ -10,16 +10,17 @@ interface LoginStepProps {
   onClose: () => void;
 }
 
-const isLoading = false;
-
 export function LoginStep({ onNext }: LoginStepProps) {
   const [contact, setContact] = useState('');
   const [countryCode, setCountryCode] = useState('+55');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [contactType, setContactType] = useState<'email' | 'phone'>('email');
-  const { createAuthSessionAction } = useAuthActions();
+  const [isLoading, setIsLoading] = useState(false);
+  const { createAuthSessionAction } = useAuth();
 
   const handleContinue = async () => {
+    setIsLoading(true);
+
     const isEmail = contactType === 'email';
     const fullPhone =
       contactType === 'phone' ? `${countryCode}${phoneNumber}` : undefined;
@@ -28,21 +29,12 @@ export function LoginStep({ onNext }: LoginStepProps) {
       email: isEmail ? contact : undefined,
       telephone: fullPhone,
     });
+
+    setIsLoading(false);
+
     onNext('verification', {
       [isEmail ? 'email' : 'phone']: isEmail ? contact : fullPhone,
     });
-  };
-
-  const handleSocialLogin = (provider: string) => {
-    // Simular login social - por enquanto só completa o fluxo
-    const isNewUser = Math.random() > 0.5;
-
-    if (isNewUser) {
-      onNext('profile-selection');
-    } else {
-      // Login existente - assumir que é cliente por padrão
-      onNext('profile-selection');
-    }
   };
 
   const isValidContact =

@@ -1,3 +1,4 @@
+import { IUser } from '@/types/api';
 import { apiClient } from '../api';
 import { HttpClientService } from '../api/http-client.service';
 
@@ -28,6 +29,7 @@ export class AuthService {
     telephone: string;
     firstName: string;
     lastName: string;
+    acceptedTerms: boolean;
   }) {
     const response = await this.apiClient.post<void>('/auth/register', payload);
     return response;
@@ -36,6 +38,7 @@ export class AuthService {
   static async googleLogin(token: string) {
     const response = await this.apiClient.post<{
       isNewUser: boolean;
+      user: IUser;
     }>('/auth/social/google', {
       token,
     });

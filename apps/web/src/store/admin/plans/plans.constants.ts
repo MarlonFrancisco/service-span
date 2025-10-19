@@ -1,13 +1,14 @@
-import type { IPlan, IUsageStats } from './plans.types';
+import { IPlan } from '@/types/api';
+import type { IUsageStats } from './plans.types';
 
 export const MOCK_PLANS: IPlan[] = [
   {
     id: '1',
+    priceId: '1',
     name: 'Básico',
+    description: 'Plano básico para pequenas empresas',
     price: 49,
-    billingCycle: 'monthly',
-    maxAppointments: 100,
-    maxStores: 1,
+    popular: false,
     features: [
       'Até 100 agendamentos/mês',
       '1 loja',
@@ -17,11 +18,11 @@ export const MOCK_PLANS: IPlan[] = [
   },
   {
     id: '2',
+    priceId: '2',
     name: 'Profissional',
     price: 99,
-    billingCycle: 'monthly',
-    maxAppointments: 500,
-    maxStores: 3,
+    popular: true,
+    description: 'Plano profissional para empresas médias',
     features: [
       'Até 500 agendamentos/mês',
       'Até 3 lojas',
@@ -30,16 +31,14 @@ export const MOCK_PLANS: IPlan[] = [
       'Relatórios avançados',
       'Suporte prioritário',
     ],
-    isPopular: true,
-    isCurrent: true,
   },
   {
     id: '3',
+    priceId: '3',
     name: 'Enterprise',
     price: 199,
-    billingCycle: 'monthly',
-    maxAppointments: -1, // ilimitado
-    maxStores: -1, // ilimitado
+    popular: false,
+    description: 'Plano enterprise para grandes empresas',
     features: [
       'Agendamentos ilimitados',
       'Lojas ilimitadas',

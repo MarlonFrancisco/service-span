@@ -1,4 +1,4 @@
-import { useAuthActions, useAuthAttributes } from '@/store';
+import { useAuth } from '@/store/auth/auth.hook';
 import { Button, Checkbox, Input, Label } from '@repo/ui';
 import { ArrowLeft, ArrowRight, User } from 'lucide-react';
 import { useState } from 'react';
@@ -24,8 +24,7 @@ export function SignupStep({ userData, onNext, onBack }: SignupStepProps) {
     acceptedTerms: false,
   });
   const [isLoading, setIsLoading] = useState(false);
-  const { registerAction, toggleAuthAction } = useAuthActions();
-  const { isNewUser } = useAuthAttributes();
+  const { registerAction, onAuth } = useAuth();
 
   const contact = userData.email || userData.phone;
   const isEmail = contact.includes('@');
@@ -37,20 +36,24 @@ export function SignupStep({ userData, onNext, onBack }: SignupStepProps) {
   const handleContinue = async () => {
     if (!isFormValid) return;
 
+    setIsLoading(true);
+
     await registerAction({
       ...formData,
       email: isEmail ? userData.email : formData.email,
       telephone: isEmail ? userData.phone : formData.telephone,
     });
 
-    if (isNewUser) {
+    setIsLoading(false);
+
+    if (userData.isNewUser) {
       onNext('profile-selection', {
         ...userData,
         name: `${formData.firstName} ${formData.lastName}`,
         isNewUser: true,
       });
     } else {
-      toggleAuthAction(false);
+      onAuth?.();
     }
   };
 

@@ -1,10 +1,8 @@
 import { FetchingStatus } from '@/types/api';
 
-export interface IAuthState {
-  fetchingStatus: FetchingStatus;
-  isOpen: boolean;
-  isNewUser: boolean;
-  toggleAuthAction: (isOpen: boolean) => void;
+interface IAuthActions {
+  openAuthAction: ({ onAuth }: { onAuth?: () => void }) => Promise<void>;
+  closeAuthAction: () => Promise<void>;
   createAuthSessionAction: (payload: {
     email?: string;
     telephone?: string;
@@ -22,4 +20,11 @@ export interface IAuthState {
     acceptedTerms: boolean;
   }) => Promise<void>;
   googleLoginAction: (token: string) => Promise<void>;
+  onAuth?: () => Promise<void>;
+}
+
+export interface IAuthState extends IAuthActions {
+  fetchingStatus: FetchingStatus;
+  isOpen: boolean;
+  isNewUser: boolean;
 }
