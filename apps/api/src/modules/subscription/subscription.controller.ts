@@ -15,7 +15,11 @@ export class SubscriptionController {
     @Body({ transform: (value) => value.priceId }) priceId: string,
     @CurrentUser() user: JwtPayload,
   ) {
-    return this.subscriptionService.create(priceId, user.paymentCustomerId);
+    return this.subscriptionService.create(
+      priceId,
+      user.sub,
+      user.paymentCustomerId,
+    );
   }
 
   @Post('webhook')

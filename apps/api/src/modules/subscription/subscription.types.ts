@@ -107,6 +107,7 @@ export interface ICustomerSubscriptionCreatedEvent {
 export interface ICustomerSubscriptionUpdatedEvent {
   object: ICustomerSubscriptionObject;
   previous_attributes: {
+    id: string;
     // Contém apenas os atributos que mudaram
     // Por exemplo, em caso de upgrade/downgrade:
     items?: {

@@ -27,7 +27,16 @@ export class SubscriptionService {
     private readonly stripeService: StripeService,
   ) {}
 
-  async create(priceId: string, paymentCustomerId: string) {
+  async create(priceId: string, userId: string, paymentCustomerId: string) {
+    const subscription = await this.subscriptionRepository.findOne({
+      where: { user: { id: userId }, status: 'active' },
+      relations: ['user'],
+    });
+
+    if (subscription) {
+      return await this.update(priceId, subscription);
+    }
+
     const session = await this.stripeService.checkout.sessions.create({
       mode: 'subscription',
       customer: paymentCustomerId,
@@ -46,18 +55,55 @@ export class SubscriptionService {
     };
   }
 
+  async update(priceId: string, subscription: Subscription) {
+    const session = await this.stripeService.checkout.sessions.create({
+      mode: 'subscription',
+      customer: subscription.user.paymentCustomerId,
+      line_items: [
+        {
+          price: priceId,
+          quantity: 1,
+        },
+      ],
+      subscription_data: {
+        billing_cycle_anchor: Math.floor(Date.now() / 1000),
+      },
+      success_url: `${process.env.FRONTEND_URL}/checkout?session_id={CHECKOUT_SESSION_ID}&upgrade=true`,
+      cancel_url: `${process.env.FRONTEND_URL}/checkout`,
+      metadata: {
+        previous_subscription: subscription.subscriptionId,
+        upgrade: 'true',
+      },
+    });
+
+    return { url: session.url };
+  }
+
   async customerSubscriptionCreation({
     user: { paymentCustomerId },
     ...customerSubscription
   }: CustomerSubscriptionCreatedDto) {
     try {
+      let subscription = await this.subscriptionRepository.findOne({
+        where: { user: { paymentCustomerId }, status: 'active' },
+        relations: ['user'],
+      });
+
+      if (subscription) {
+        return await this.customerSubscriptionUpdate({
+          ...customerSubscription,
+          previousSubscriptionId: subscription.subscriptionId,
+          user: subscription.user,
+        });
+      }
+
       const user = await this.userService.findByOne({ paymentCustomerId });
 
       if (!user) {
         throw new NotFoundException('User not found');
       }
 
-      const subscription = await this.subscriptionRepository.create({
+      subscription = await this.subscriptionRepository.create({
         ...customerSubscription,
         user,
       });
@@ -67,39 +113,48 @@ export class SubscriptionService {
       throw new InternalServerErrorException(error);
     }
   }
+
   async customerSubscriptionUpdate(
     customerSubscription: CustomerSubscriptionUpdateDto,
   ) {
     try {
       const subscription = await this.subscriptionRepository.findOne({
-        where: { subscriptionId: customerSubscription.subscriptionId },
+        where: { subscriptionId: customerSubscription.previousSubscriptionId },
+        relations: ['user'],
       });
 
       if (!subscription) {
-        delete customerSubscription.previousPriceId;
-        delete customerSubscription.previousProductId;
+        delete customerSubscription.previousSubscriptionId;
         return await this.customerSubscriptionCreation(customerSubscription);
       }
 
-      if (subscription.priceId !== customerSubscription.previousPriceId) {
-        subscription.status = 'canceled';
-        subscription.currentPeriodEnd = new Date();
+      if (subscription.priceId !== customerSubscription.priceId) {
+        await this.subscriptionRepository.update(subscription.id, {
+          status: 'canceled',
+          currentPeriodEnd: new Date(),
+        });
 
-        await this.subscriptionRepository.save(subscription);
+        const newSubscription = await this.subscriptionRepository.create({
+          ...customerSubscription,
+          user: subscription.user,
+        });
 
-        delete customerSubscription.previousPriceId;
-        delete customerSubscription.previousProductId;
+        await this.subscriptionRepository.save(newSubscription);
 
-        return await this.customerSubscriptionCreation(customerSubscription);
+        await this.stripeService.subscriptions.cancel(
+          subscription.subscriptionId,
+        );
+
+        return newSubscription;
       }
 
-      subscription.status = customerSubscription.status;
-      subscription.currentPeriodStart = customerSubscription.currentPeriodStart;
-      subscription.currentPeriodEnd = customerSubscription.currentPeriodEnd;
-      subscription.priceId = customerSubscription.priceId;
-      subscription.productId = customerSubscription.productId;
-
-      await this.subscriptionRepository.save(subscription);
+      await this.subscriptionRepository.update(subscription.id, {
+        status: customerSubscription.status,
+        currentPeriodStart: customerSubscription.currentPeriodStart,
+        currentPeriodEnd: customerSubscription.currentPeriodEnd,
+        priceId: customerSubscription.priceId,
+        productId: customerSubscription.productId,
+      });
     } catch (error) {
       throw new InternalServerErrorException(error);
     }

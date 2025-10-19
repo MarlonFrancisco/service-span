@@ -12,9 +12,8 @@ export class CustomerSubscriptionUpdateDto {
   status: TSubscriptionStatus;
   currentPeriodStart: Date;
   currentPeriodEnd: Date;
-  previousPriceId: string;
-  previousProductId: string;
   user: Partial<User>;
+  previousSubscriptionId: string;
 
   constructor(subscription: ICustomerSubscriptionUpdatedEvent) {
     const { currentPeriodStart, currentPeriodEnd } = getSubscriptionPeriodDate(
@@ -28,10 +27,7 @@ export class CustomerSubscriptionUpdateDto {
     this.status = subscription.object.status;
     this.currentPeriodStart = currentPeriodStart;
     this.currentPeriodEnd = currentPeriodEnd;
-    this.previousPriceId =
-      subscription.previous_attributes.items.data[0].price.id;
-    this.previousProductId =
-      subscription.previous_attributes.items.data[0].price.product;
     this.user = { paymentCustomerId: subscription.object.customer };
+    this.previousSubscriptionId = subscription.previous_attributes.id;
   }
 }
