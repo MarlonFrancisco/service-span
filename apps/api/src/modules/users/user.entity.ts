@@ -23,6 +23,14 @@ export class User extends BaseEntity {
   @Column({ name: 'auth_code_expires_at', type: 'timestamp', nullable: true })
   authCodeExpiresAt: Date;
 
+  @Column({
+    name: 'payment_customer_id',
+    type: 'varchar',
+    unique: true,
+    nullable: true,
+  })
+  paymentCustomerId: string;
+
   @OneToMany(() => Subscription, (subscription) => subscription.user)
   subscriptions: Subscription[];
 

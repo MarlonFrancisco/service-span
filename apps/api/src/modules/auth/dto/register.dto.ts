@@ -4,6 +4,7 @@ export class RegisterDto {
   firstName: string;
   lastName: string;
   acceptedTerms: boolean;
+  paymentCustomerId: string;
 
   constructor(data: Partial<RegisterDto>) {
     Object.assign(this, data);

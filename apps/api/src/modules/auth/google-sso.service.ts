@@ -56,6 +56,7 @@ export class GoogleSSOService extends OAuth2Client {
 
     if (!user) {
       isNewUser = true;
+
       user = await this.usersService.create(
         new RegisterDto({
           email: userInfo.email,
@@ -70,6 +71,7 @@ export class GoogleSSOService extends OAuth2Client {
       sub: user.id,
       email: user.email,
       telephone: user.telephone,
+      paymentCustomerId: user.paymentCustomerId,
     });
 
     return {

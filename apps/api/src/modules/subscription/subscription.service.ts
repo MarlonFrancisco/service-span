@@ -27,10 +27,10 @@ export class SubscriptionService {
     private readonly stripeService: StripeService,
   ) {}
 
-  async create(priceId: string, customer: string) {
+  async create(priceId: string, paymentCustomerId: string) {
     const session = await this.stripeService.checkout.sessions.create({
       mode: 'subscription',
-      customer,
+      customer: paymentCustomerId,
       line_items: [
         {
           price: priceId,
@@ -47,11 +47,11 @@ export class SubscriptionService {
   }
 
   async customerSubscriptionCreation({
-    user: { id: userId },
+    user: { paymentCustomerId },
     ...customerSubscription
   }: CustomerSubscriptionCreatedDto) {
     try {
-      const user = await this.userService.findById(userId);
+      const user = await this.userService.findByOne({ paymentCustomerId });
 
       if (!user) {
         throw new NotFoundException('User not found');

@@ -27,6 +27,6 @@ export class CustomerSubscriptionCreatedDto {
     this.status = subscription.object.status;
     this.currentPeriodStart = currentPeriodStart;
     this.currentPeriodEnd = currentPeriodEnd;
-    this.user = { id: subscription.object.customer };
+    this.user = { paymentCustomerId: subscription.object.customer };
   }
 }

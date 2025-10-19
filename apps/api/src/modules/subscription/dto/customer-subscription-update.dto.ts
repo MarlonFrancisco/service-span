@@ -32,6 +32,6 @@ export class CustomerSubscriptionUpdateDto {
       subscription.previous_attributes.items.data[0].price.id;
     this.previousProductId =
       subscription.previous_attributes.items.data[0].price.product;
-    this.user = { id: subscription.object.customer };
+    this.user = { paymentCustomerId: subscription.object.customer };
   }
 }

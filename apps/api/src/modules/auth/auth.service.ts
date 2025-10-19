@@ -10,6 +10,7 @@ import { ValidationCodeDto } from './dto/validation-code.dto';
 export interface JwtPayload {
   sub: string;
   email: string;
+  paymentCustomerId: string;
   [key: string]: any;
 }
 
@@ -112,6 +113,7 @@ export class AuthService {
       sub: user.id,
       email: user.email,
       telephone: user.telephone,
+      paymentCustomerId: user.paymentCustomerId,
     });
 
     return {
