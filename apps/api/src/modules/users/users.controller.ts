@@ -11,12 +11,6 @@ export class UsersController {
   @Get('/me')
   @UseGuards(JwtAuthGuard)
   async getUser(@CurrentUser() user: JwtPayload) {
-    return await this.usersService.findById(user.sub, [
-      'email',
-      'firstName',
-      'lastName',
-      'telephone',
-      'createdAt',
-    ]);
+    return await this.usersService.getSubscription(user.sub);
   }
 }

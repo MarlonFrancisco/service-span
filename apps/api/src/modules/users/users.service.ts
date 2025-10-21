@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import type { FindOptionsSelect, Repository } from 'typeorm';
+import type { Repository } from 'typeorm';
 import { StripeService } from '../stripe';
 import { User } from './user.entity';
 
@@ -16,24 +16,9 @@ export class UsersService {
     return this.userRepository.find();
   }
 
-  async findById(
-    id: string,
-    fields: string[] = [
-      'email',
-      'firstName',
-      'lastName',
-      'telephone',
-      'createdAt',
-      'updatedAt',
-      'authCode',
-      'authCodeExpiresAt',
-      'acceptedTerms',
-      'paymentCustomerId',
-    ],
-  ): Promise<User> {
+  async findById(id: string): Promise<User> {
     const user = await this.userRepository.findOne({
       where: { id },
-      select: fields as FindOptionsSelect<User>,
     });
     if (!user) {
       throw new NotFoundException(`User with ID ${id} not found`);
@@ -92,5 +77,18 @@ export class UsersService {
 
   async updateLastLogin(id: string): Promise<void> {
     await this.userRepository.update(id, { updatedAt: new Date() });
+  }
+
+  async getSubscription(id: string) {
+    const user = await this.userRepository.findOne({
+      where: { id, subscriptions: { status: 'active' } },
+      relations: ['subscriptions'],
+    });
+
+    return {
+      ...user,
+      isSubscribed: !!user.subscriptions[0],
+      subscriptions: undefined,
+    };
   }
 }
