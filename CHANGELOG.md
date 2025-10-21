@@ -1,3 +1,28 @@
+## 0.3.0 (2025-10-21)
+
+### Feat
+
+- **web**: add partner route protection middleware
+- **api/subscription**: add subscription upgrade flow
+- **api**: enhance user and subscription management
+- **web/checkout**: add checkout flow with plan selection and payment
+
+### Fix
+
+- **web/subscription**: dont generate subscription on user is not authenticated
+- **api/auth**: set lax value on sameSite setting on header set-cookie at response, and return user data on authentication
+
+### Refactor
+
+- **api/users**: simplify user service and add subscription check
+- **api**: update plans and subscription services
+- **web/booking**: restructure flow with mobile-first design and reviews
+- **web**: search split overlay into modular components
+
+### Perf
+
+- **web**: added reverse proxy from next api to nest api
+
 ## 0.2.0 (2025-10-17)
 
 ### Feat
