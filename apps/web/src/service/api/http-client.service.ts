@@ -1,7 +1,7 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 
 export class HttpClientService {
-  private readonly httpClient: AxiosInstance = axios.create();
+  public readonly httpClient: AxiosInstance = axios.create();
 
   constructor(baseURL: string) {
     if (!baseURL) {

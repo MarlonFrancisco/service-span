@@ -3,5 +3,6 @@ export interface IUser {
   name: string;
   surname: string;
   telephone: string;
+  isSubscribed: boolean;
   createdAt: Date;
 }

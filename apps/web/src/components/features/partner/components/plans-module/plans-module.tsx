@@ -1,6 +1,6 @@
 'use client';
 import { ROICalculator } from '@/components/features/roi-calculator';
-import { useQueryPlans } from '@/hooks/query/query-plans.hook';
+import { usePlans } from '@/store';
 import { formatPrice } from '@/utils/helpers/price.helper';
 import {
   Alert,
@@ -118,6 +118,7 @@ const benefits = [
 ];
 
 export function PlansModule() {
+  const { plans } = usePlans();
   const [activeTab, setActiveTab] = useState<'current' | 'upgrade'>('current');
   const [selectedPlan, setSelectedPlan] = useState<PlanId | null>(null);
   const [showCheckout, setShowCheckout] = useState(false);
@@ -128,8 +129,6 @@ export function PlansModule() {
   const [monthlyBookings, setMonthlyBookings] = useState(500);
   const [avgBookingValue, setAvgBookingValue] = useState(80);
   const [noShowRate, setNoShowRate] = useState(20);
-
-  const { plans } = useQueryPlans();
 
   const currentPlan = {
     id: 'starter' as PlanId,
@@ -589,7 +588,7 @@ export function PlansModule() {
                     <div className="mb-8">
                       <div className="flex items-baseline gap-2">
                         <span className="text-5xl text-gray-900">
-                          {formatPrice(plan.priceMonthly)}
+                          {formatPrice(plan.price)}
                         </span>
                         <span className="text-gray-600">/mês</span>
                       </div>
@@ -723,9 +722,6 @@ export function PlansModule() {
                 >
                   <div className="text-gray-900">{featureName}</div>
                   {plans?.map((plan) => {
-                    const feature = plan.features.find(
-                      (f) => f.name === featureName,
-                    );
                     return (
                       <div key={plan.id} className="text-center">
                         <Check className="h-5 w-5 text-black mx-auto" />
