@@ -94,6 +94,7 @@ export class AuthService {
     const user = await this.userService.findByOne({
       email: body.email,
       telephone: body.telephone,
+      includeSubscriptions: true,
     });
 
     if (!user) {

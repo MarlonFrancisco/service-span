@@ -1,5 +1,7 @@
 import { Column, Entity, Index, OneToMany } from 'typeorm';
 import { BaseEntity } from '../database/base.entity';
+import { StoreMember } from '../partner/stores/store-member/store-member.entity';
+import { Store } from '../partner/stores/store.entity';
 import { Subscription } from '../subscription/subscription.entity';
 
 @Entity('users')
@@ -31,9 +33,6 @@ export class User extends BaseEntity {
   })
   paymentCustomerId: string;
 
-  @OneToMany(() => Subscription, (subscription) => subscription.user)
-  subscriptions: Subscription[];
-
   @Column({
     name: 'accepted_terms',
     type: 'boolean',
@@ -41,4 +40,13 @@ export class User extends BaseEntity {
     nullable: true,
   })
   acceptedTerms: boolean;
+
+  @OneToMany(() => Subscription, (subscription) => subscription.user)
+  subscriptions: Subscription[];
+
+  @OneToMany(() => Store, (store) => store.id)
+  stores: Store[];
+
+  @OneToMany(() => StoreMember, (storeMember) => storeMember.user)
+  storeMembers: StoreMember[];
 }

@@ -5,6 +5,9 @@
     "NEXT_PUBLIC_API_URL",
     "FRONTEND_URL",
 
+    "SUPABASE_URL",
+    "SUPABASE_API_KEY",
+
     "NODE_ENV",
     "STRIPE_API_KEY",
     "DB_HOST",
@@ -36,6 +39,9 @@
         "NEXT_PUBLIC_GOOGLE_CLIENT_ID",
         "NEXT_PUBLIC_API_URL",
         "FRONTEND_URL",
+
+        "SUPABASE_URL",
+        "SUPABASE_API_KEY",
 
         "NODE_ENV",
         "STRIPE_API_KEY",

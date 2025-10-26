@@ -30,13 +30,21 @@ export class UsersService {
     email,
     telephone,
     paymentCustomerId,
+    includeSubscriptions = false,
   }: {
     email?: string;
     telephone?: string;
     paymentCustomerId?: string;
+    includeSubscriptions?: boolean;
   }): Promise<User | null> {
     return this.userRepository.findOne({
-      where: { email, telephone, paymentCustomerId },
+      where: {
+        email,
+        telephone,
+        paymentCustomerId,
+        subscriptions: { status: 'active' },
+      },
+      relations: includeSubscriptions ? ['subscriptions'] : undefined,
     });
   }
 
@@ -83,6 +91,7 @@ export class UsersService {
     const user = await this.userRepository.findOne({
       where: { id, subscriptions: { status: 'active' } },
       relations: ['subscriptions'],
+      select: ['id', 'email', 'firstName', 'lastName', 'telephone'],
     });
 
     return {
