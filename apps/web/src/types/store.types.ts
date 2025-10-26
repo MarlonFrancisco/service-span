@@ -4,7 +4,7 @@ export type TStoreSet<T> = (
 
 export type TStoreGet<T> = () => T;
 
-export type TStoreAction<T, R = void> = (
+export type TStoreAction<T, R = void, TResponse = void> = (
   set: TStoreSet<T>,
   get: TStoreGet<T>,
-) => (params: R) => Promise<void>;
+) => (params: R) => Promise<TResponse>;

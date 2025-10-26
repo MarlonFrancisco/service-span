@@ -6,6 +6,9 @@ export type TStore = {
 
 export type TModuleId =
   | 'dashboard'
+  | 'sales'
+  | 'operational'
+  | 'customers'
   | 'stores'
   | 'services'
   | 'agenda'

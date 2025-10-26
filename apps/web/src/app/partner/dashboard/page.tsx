@@ -1,9 +1,9 @@
-import { DashboardModule, Partner } from '@/components/features/partner';
+import { GeneralMetricsModule, Partner } from '@/components/features/partner';
 
 export default function PartnerDashboardPage() {
   return (
     <Partner>
-      <DashboardModule />
+      <GeneralMetricsModule />
     </Partner>
   );
 }

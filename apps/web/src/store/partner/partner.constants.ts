@@ -6,6 +6,21 @@ export const MODULE_CONFIG: Record<TModuleId, TModuleConfig> = {
     description: 'Visão geral e métricas em tempo real',
     showStoreSelector: true,
   },
+  sales: {
+    title: 'Vendas & Receita',
+    description: 'Visualize as vendas e receita da sua empresa',
+    showStoreSelector: true,
+  },
+  operational: {
+    title: 'Operacional',
+    description: 'Visualize as métricas operacionais da sua empresa',
+    showStoreSelector: true,
+  },
+  customers: {
+    title: 'Clientes',
+    description: 'Visualize os clientes da sua empresa',
+    showStoreSelector: true,
+  },
   stores: {
     title: 'Lojas',
     description: 'Gerencie todas as suas filiais em um só lugar',

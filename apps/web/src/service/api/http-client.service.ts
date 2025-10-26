@@ -30,6 +30,10 @@ export class HttpClientService {
     return this.httpClient.post<T>(url, data, config);
   }
 
+  public patch<T>(url: string, data: unknown, config?: AxiosRequestConfig) {
+    return this.httpClient.patch<T>(url, data, config);
+  }
+
   public put<T>(url: string, data: unknown, config?: AxiosRequestConfig) {
     return this.httpClient.put<T>(url, data, config);
   }

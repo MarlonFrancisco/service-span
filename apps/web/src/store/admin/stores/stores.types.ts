@@ -1,57 +1,65 @@
-export interface IStoreLocation {
-  id: string;
-  name: string;
-  address: string;
-  city: string;
-  state: string;
-  zipCode: string;
-  phone: string;
-  email: string;
-  isActive: boolean;
-  openingHours: {
-    monday: string;
-    tuesday: string;
-    wednesday: string;
-    thursday: string;
-    friday: string;
-    saturday: string;
-    sunday: string;
-  };
-  images?: string[];
-  professionals?: string[];
-}
-
-export interface IStoreFormData {
-  name: string;
-  address: string;
-  city: string;
-  state: string;
-  zipCode: string;
-  phone: string;
-  email: string;
-  isActive: boolean;
-}
+import { FetchingStatus } from '@/types/api';
+import { IStore, IStoreGallery } from '@/types/api/stores.types';
+import { IProfessional, TProfessionalRole } from '@/types/api/users.types';
 
 export interface IStoresStore {
   // State
-  stores: IStoreLocation[];
+  store: IStore;
+  stores: IStore[];
+  professional: IProfessional;
   isAddModalOpen: boolean;
-  editingStore: IStoreLocation | null;
-  formData: IStoreFormData;
-
-  // Computed
-  totalStores: number;
-  activeStores: number;
+  isViewDetailsStoreOpen: boolean;
+  isAddProfessional: boolean;
+  fetchingStatus: FetchingStatus;
 
   // Actions
-  setIsAddModalOpen: (isOpen: boolean) => void;
-  setEditingStore: (store: IStoreLocation | null) => void;
-  setFormData: (data: Partial<IStoreFormData>) => void;
-  resetForm: () => void;
+  setIsAddModalOpen: (params: { isOpen: boolean; store?: IStore }) => void;
+  resetStore: () => void;
+  setViewDetailsStore: (params: { isOpen: boolean; store?: IStore }) => void;
+  setIsAddProfessional: (params: {
+    isOpen: boolean;
+    professional?: IProfessional;
+  }) => void;
 
   // Store CRUD
-  addStore: (store: Omit<IStoreLocation, 'id'>) => void;
-  updateStore: (id: string, store: Partial<IStoreLocation>) => void;
-  deleteStore: (id: string) => void;
-  toggleStoreStatus: (id: string) => void;
+  addStore: (store: Partial<IStore>) => Promise<void>;
+  updateStore: (store: Partial<IStore>) => Promise<void>;
+  deleteStore: (id: string) => Promise<void>;
+  toggleStoreStatus: ({
+    id,
+    isActive,
+  }: {
+    id: string;
+    isActive: boolean;
+  }) => Promise<void>;
+
+  // Gallery CRUD
+  updateMainImage: (params: {
+    storeId: string;
+    imageId: string;
+  }) => Promise<void>;
+  createImage: (params: {
+    storeId: string;
+    image: Omit<IStoreGallery, 'id'>;
+  }) => Promise<IStoreGallery>;
+  deleteImage: (params: { storeId: string; imageId: string }) => Promise<void>;
+
+  // Store Members CRUD
+  createStoreMember: (params: {
+    storeId: string;
+    professional: { user: { email: string }; role: TProfessionalRole };
+  }) => Promise<IProfessional>;
+  updateStoreMember: (params: {
+    storeId: string;
+    professional: {
+      id: string;
+      role?: TProfessionalRole;
+      user?: { email: string };
+      isActive?: boolean;
+    };
+  }) => Promise<IProfessional>;
+  deleteStoreMember: (params: {
+    storeId: string;
+    professionalId: string;
+  }) => Promise<void>;
 }

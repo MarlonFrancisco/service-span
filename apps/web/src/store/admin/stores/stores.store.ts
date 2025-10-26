@@ -1,61 +1,57 @@
 import { create } from 'zustand';
-import { INITIAL_FORM_DATA, MOCK_STORES } from './stores.constants';
-import type { IStoreLocation, IStoresStore } from './stores.types';
+import {
+  addStoreAction,
+  createImageAction,
+  createStoreMemberAction,
+  deleteImageAction,
+  deleteStoreAction,
+  deleteStoreMemberAction,
+  fetchStoresAction,
+  resetStoreAction,
+  setIsAddModalOpenAction,
+  setIsAddProfessionalAction,
+  setViewDetailsStoreAction,
+  toggleStoreStatusAction,
+  updateMainImageAction,
+  updateStoreAction,
+  updateStoreMemberAction,
+} from './store.actions';
+import { INITIAL_PROFESSIONAL, INITIAL_STORE } from './stores.constants';
+import type { IStoresStore } from './stores.types';
 
-export const useStoresAdminStore = create<IStoresStore>((set, get) => ({
-  // State
-  stores: MOCK_STORES,
-  isAddModalOpen: false,
-  editingStore: null,
-  formData: INITIAL_FORM_DATA,
+export const useStoresAdminStore = create<IStoresStore>((set, get) => {
+  fetchStoresAction(set, get)();
 
-  // Computed
-  get totalStores() {
-    return get().stores.length;
-  },
+  return {
+    // State
+    store: INITIAL_STORE,
+    stores: [],
+    isAddModalOpen: false,
+    isViewDetailsStoreOpen: false,
+    isAddProfessional: false,
+    professional: INITIAL_PROFESSIONAL,
+    fetchingStatus: 'loading',
 
-  get activeStores() {
-    return get().stores.filter((s) => s.isActive).length;
-  },
+    // Actions
+    setIsAddModalOpen: setIsAddModalOpenAction(set, get),
+    resetStore: resetStoreAction(set, get),
+    setViewDetailsStore: setViewDetailsStoreAction(set, get),
+    setIsAddProfessional: setIsAddProfessionalAction(set, get),
 
-  // Actions
-  setIsAddModalOpen: (isOpen: boolean) => set({ isAddModalOpen: isOpen }),
+    // Store CRUD
+    addStore: addStoreAction(set, get),
+    updateStore: updateStoreAction(set, get),
+    deleteStore: deleteStoreAction(set, get),
+    toggleStoreStatus: toggleStoreStatusAction(set, get),
 
-  setEditingStore: (store: IStoreLocation | null) =>
-    set({ editingStore: store }),
+    // Gallery CRUD
+    updateMainImage: updateMainImageAction(set, get),
+    createImage: createImageAction(set, get),
+    deleteImage: deleteImageAction(set, get),
 
-  setFormData: (data) => {
-    set((state) => ({
-      formData: { ...state.formData, ...data },
-    }));
-  },
-
-  resetForm: () => set({ formData: INITIAL_FORM_DATA }),
-
-  // Store CRUD
-  addStore: (store: Omit<IStoreLocation, 'id'>) => {
-    set((state) => ({
-      stores: [...state.stores, { ...store, id: String(Date.now()) }],
-    }));
-  },
-
-  updateStore: (id: string, store: Partial<IStoreLocation>) => {
-    set((state) => ({
-      stores: state.stores.map((s) => (s.id === id ? { ...s, ...store } : s)),
-    }));
-  },
-
-  deleteStore: (id: string) => {
-    set((state) => ({
-      stores: state.stores.filter((s) => s.id !== id),
-    }));
-  },
-
-  toggleStoreStatus: (id: string) => {
-    set((state) => ({
-      stores: state.stores.map((s) =>
-        s.id === id ? { ...s, isActive: !s.isActive } : s,
-      ),
-    }));
-  },
-}));
+    // Store Members CRUD
+    createStoreMember: createStoreMemberAction(set, get),
+    updateStoreMember: updateStoreMemberAction(set, get),
+    deleteStoreMember: deleteStoreMemberAction(set, get),
+  };
+});

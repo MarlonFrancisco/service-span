@@ -1,8 +1,8 @@
 import { ImageGallery } from '@/components/layout/image-gallery';
+import { ImageWithFallback } from '@/components/ui/image-with-fallback';
 import { Badge, Button } from '@repo/ui';
 import { ChevronLeft, ChevronRight, Maximize2 } from 'lucide-react';
 import { useState } from 'react';
-import { ImageWithFallback } from '../image-with-fallback';
 
 interface ImageCarouselProps {
   images: string[];
