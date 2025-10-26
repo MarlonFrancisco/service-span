@@ -1,3 +1,10 @@
+## 0.4.0 (2025-10-26)
+
+### Feat
+
+- **api/partner**: implement stores backend with member management and gallery
+- **web/partner**: implement modular dashboard and stores management
+
 ## 0.3.0 (2025-10-21)
 
 ### Feat
