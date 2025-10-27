@@ -1,5 +1,6 @@
-import type { User } from '../../../../users/user.entity';
-import type { Store } from '../../store.entity';
+import type { User } from '../../../users/user.entity';
+import type { Store } from '../store.entity';
+
 export class StoreMemberDto {
   id: string;
   user: Partial<User>;

@@ -2,7 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import sharp from 'sharp';
 import { StorageService } from 'src/modules/storage/storage.service';
-import { Repository } from 'typeorm';
+import { Repository, UpdateResult } from 'typeorm';
+import { Store } from '../store.entity';
 import { GalleryDto } from './dto/gallery.dto';
 import { Gallery } from './gallery.entity';
 
@@ -40,19 +41,24 @@ export class GalleryService {
     return this.galleryRepository.findOne({ where: { id } });
   }
 
-  async update(gallery: GalleryDto): Promise<void> {
-    await this.galleryRepository.update(gallery.id, gallery);
+  async update(gallery: GalleryDto): Promise<UpdateResult> {
+    return await this.galleryRepository.update(gallery.id, gallery);
   }
 
-  async delete(storeId: string, id: string): Promise<void> {
+  async delete(
+    storeId: string,
+    id: string,
+  ): Promise<{ id: string; store: Store }> {
     await this.galleryRepository.delete(id);
     await this.storageService.deleteFile({
       bucket: 'stores',
       path: `${storeId}/gallery/${id}.webp`,
     });
+
+    return { id, store: { id: storeId } as Store };
   }
 
-  async updateMainImage(gallery: GalleryDto): Promise<void> {
+  async updateMainImage(gallery: GalleryDto): Promise<Gallery> {
     const image = await this.galleryRepository.findOne({
       where: { store: { id: gallery.store.id }, isMain: true },
     });
@@ -63,5 +69,9 @@ export class GalleryService {
     }
 
     await this.update(gallery);
+
+    const updatedImage = await this.findOne(gallery.id);
+
+    return { ...updatedImage, store: { id: gallery.store.id } as Store };
   }
 }

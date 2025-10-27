@@ -2,7 +2,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UsersService } from '../../../users/users.service';
-import { StoreMemberDto } from './dto/store-member.dto';
+import { Store } from '../store.entity';
+import { StoreMemberDto } from './store-member.dto';
 import { StoreMember } from './store-member.entity';
 
 @Injectable()
@@ -41,30 +42,32 @@ export class StoreMemberService {
 
     const storeMember = this.storeMemberRepository.create({
       ...storeMemberDto,
-      user,
+      user: { id: user.id },
     });
 
-    return await this.storeMemberRepository.save(storeMember);
+    await this.storeMemberRepository.save(storeMember);
+
+    return { ...storeMember, user };
   }
 
   async update(storeMemberDto: Partial<StoreMemberDto>): Promise<StoreMember> {
-    const storeMember = await this.storeMemberRepository.findOne({
-      where: {
-        user: { id: storeMemberDto.user?.id },
-        store: { id: storeMemberDto.store?.id },
-      },
+    await this.storeMemberRepository.update(storeMemberDto.id, storeMemberDto);
+
+    return this.storeMemberRepository.findOne({
+      where: { id: storeMemberDto.id },
+      relations: ['user'],
     });
-    if (!storeMember) {
-      throw new NotFoundException('Store member not found');
-    }
-    Object.assign(storeMember, storeMemberDto);
-    return this.storeMemberRepository.save(storeMember);
   }
 
-  async delete(storeId: string, userId: string): Promise<void> {
+  async delete(
+    storeId: string,
+    id: string,
+  ): Promise<{ id: string; store: Store }> {
     await this.storeMemberRepository.delete({
+      id,
       store: { id: storeId },
-      user: { id: userId },
     });
+
+    return { id, store: { id: storeId } as Store };
   }
 }

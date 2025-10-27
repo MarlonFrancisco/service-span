@@ -9,7 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/modules/auth/guards/jwt-auth.guard';
-import { StoreMemberDto } from './dto/store-member.dto';
+import { StoreMemberDto } from './store-member.dto';
 import { StoreMemberService } from './store-member.service';
 
 @Controller('partner/stores/:storeId/members')

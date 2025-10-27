@@ -35,13 +35,13 @@ export class GalleryController {
     @Param('id') id: string,
     @Body() image: GalleryDto,
   ) {
-    return this.galleryService.updateMainImage(
+    return await this.galleryService.updateMainImage(
       new GalleryDto({ ...image, id, store: { id: storeId } }),
     );
   }
 
   @Delete(':id')
   async delete(@Param('storeId') storeId: string, @Param('id') id: string) {
-    return this.galleryService.delete(storeId, id);
+    return await this.galleryService.delete(storeId, id);
   }
 }

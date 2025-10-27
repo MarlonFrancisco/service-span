@@ -48,6 +48,7 @@ export class StoresController {
   @Delete(':id')
   @UseGuards(StoreOwnerGuard)
   async deleteStore(@Param('id') id: string) {
-    return this.storesService.delete(id);
+    await this.storesService.delete(id);
+    return { id };
   }
 }

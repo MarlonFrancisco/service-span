@@ -6,10 +6,12 @@ import { Store } from '../store.entity';
 @Entity('store_members')
 @Index(['user', 'store'], { unique: true })
 export class StoreMember extends BaseEntity {
-  @ManyToOne(() => User, (user) => user.id)
+  @ManyToOne(() => User, (user) => user.storeMembers, { onDelete: 'CASCADE' })
   user: User;
 
-  @ManyToOne(() => Store, (store) => store.id)
+  @ManyToOne(() => Store, (store) => store.storeMembers, {
+    onDelete: 'CASCADE',
+  })
   store: Store;
 
   @Column({

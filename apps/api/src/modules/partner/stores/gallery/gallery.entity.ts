@@ -10,6 +10,6 @@ export class Gallery extends BaseEntity {
   @Column({ type: 'boolean', default: false, nullable: true })
   isMain: boolean;
 
-  @ManyToOne(() => Store, (store) => store.gallery)
+  @ManyToOne(() => Store, (store) => store.gallery, { onDelete: 'CASCADE' })
   store: Store;
 }

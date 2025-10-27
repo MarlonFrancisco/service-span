@@ -1,6 +1,8 @@
 import { User } from 'src/modules/users/user.entity';
 import { Column, Entity, Index, ManyToOne, OneToMany } from 'typeorm';
 import { BaseEntity } from '../../database';
+import { Category } from '../category/category.entity';
+import { Service } from '../category/service/service.entity';
 import { Gallery } from './gallery/gallery.entity';
 import { StoreMember } from './store-member/store-member.entity';
 
@@ -56,6 +58,12 @@ export class Store extends BaseEntity {
 
   @OneToMany(() => StoreMember, (storeMember) => storeMember.store)
   storeMembers: StoreMember[];
+
+  @OneToMany(() => Service, (service) => service.store)
+  services: Service[];
+
+  @OneToMany(() => Category, (category) => category.store)
+  categories: Category[];
 
   @OneToMany(() => Gallery, (gallery) => gallery.store)
   gallery: Gallery[];
