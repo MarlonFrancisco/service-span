@@ -1,40 +1,32 @@
 import { IStore } from '@/types/api/stores.types';
-import { getQueryClient } from '@/utils/helpers/query.helper';
 import { apiClient } from '../api';
-import { HttpClientService } from '../api/http-client.service';
 
 export class StoreService {
-  static readonly apiClient: HttpClientService = apiClient;
+  static apiClient = apiClient;
+  static headers?: HeadersInit;
 
-  static async getStores() {
-    return await this.apiClient.get<IStore[]>('/partner/stores');
+  static async getAll() {
+    return await this.apiClient.get<IStore[]>('/partner/stores', {
+      headers: this.headers,
+    });
   }
 
-  static async getStore(storeId: string) {
+  static async get(storeId: string) {
     return await this.apiClient.get<IStore>(`/partner/stores/${storeId}`);
   }
 
-  static async createStore(store: Partial<IStore>) {
+  static async create(store: Partial<IStore>) {
     return await this.apiClient.post<IStore>('/partner/stores', store);
   }
 
-  static async updateStore(store: Partial<IStore>) {
+  static async update(store: Partial<IStore>) {
     return await this.apiClient.put<IStore>(
       `/partner/stores/${store.id}`,
       store,
     );
   }
 
-  static async deleteStore(storeId: string) {
+  static async delete(storeId: string) {
     return await this.apiClient.delete<IStore>(`/partner/stores/${storeId}`);
-  }
-
-  static async getStoresQuery() {
-    const queryClient = getQueryClient();
-    const response = await queryClient.fetchQuery({
-      queryKey: ['stores'],
-      queryFn: () => this.apiClient.get<IStore[]>('/partner/stores'),
-    });
-    return response.data;
   }
 }

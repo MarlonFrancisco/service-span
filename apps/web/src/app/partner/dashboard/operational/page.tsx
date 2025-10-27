@@ -1,12 +1,5 @@
-import {
-  OperationalMetricsModule,
-  Partner,
-} from '@/components/features/partner';
+import { OperationalMetricsModule } from '@/components/features/partner';
 
 export default function PartnerDashboardOperationalPage() {
-  return (
-    <Partner>
-      <OperationalMetricsModule />
-    </Partner>
-  );
+  return <OperationalMetricsModule />;
 }

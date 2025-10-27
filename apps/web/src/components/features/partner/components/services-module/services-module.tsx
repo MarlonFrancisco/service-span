@@ -1,457 +1,166 @@
 'use client';
-import type { ICategory, IService } from '@/store/admin/services';
-import { useServices } from '@/store/admin/services';
-import {
-  Alert,
-  AlertDescription,
-  Badge,
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  Input,
-  Label,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-  Switch,
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-  Textarea,
-} from '@repo/ui';
-import {
-  AlertCircle,
-  CheckCircle2,
-  Clock,
-  DollarSign,
-  Edit,
-  Filter,
-  Folder,
-  Package,
-  Plus,
-  Search,
-  Settings,
-  Tags,
-  Trash2,
-  TrendingUp,
-} from 'lucide-react';
+import { Button, Card, CardContent, useIsMobile } from '@repo/ui';
+import { Package, Plus } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
-import { toast } from 'sonner';
+import { CategoryManagementModal } from './components/category-management';
+import { CategorySection } from './components/category-section';
+import { ServiceCard } from './components/service-card';
+import { ServiceFormModal } from './components/service-form';
+import {
+  ServicesFiltersDesktop,
+  ServicesFiltersMobile,
+} from './components/services-filters';
+import { ServicesStats } from './components/services-stats';
+import { useServicesModule } from './services-module.hook';
+import { getColorBgClass, getColorClass } from './utils/colors';
+
+interface Store {
+  id: string;
+  name: string;
+  address: string;
+}
+
+const activeStore: Store = {
+  id: '1',
+  name: 'Barbearia do João',
+  address: 'Rua das Flores, 123',
+};
 
 export function ServicesModule() {
+  const isMobile = useIsMobile();
   const {
     services,
     categories,
-    searchQuery,
-    filterCategory,
     isAddModalOpen,
-    isCategoryModalOpen,
+    setIsAddModalOpen,
     editingService,
+    isCategoryModalOpen,
+    setIsCategoryModalOpen,
+    searchQuery,
+    setSearchQuery,
+    filterCategory,
+    setFilterCategory,
     editingCategory,
+    expandedCategories,
     formData,
+    setFormData,
     categoryFormData,
-    filteredServices,
+    setCategoryFormData,
+    toggleServiceStatus,
+    deleteService,
+    handleAddService,
+    handleUpdateService,
+    handleEditService,
+    handleCloseModal,
+    handleQuickAddService,
+    addCategory,
+    handleEditCategory,
+    updateCategory,
+    cancelEditCategory,
+    deleteCategory,
+    toggleCategory,
     totalServices,
     activeServices,
-    totalBookings,
-    totalRevenue,
-    setSearchQuery,
-    setFilterCategory,
-    setIsAddModalOpen,
-    setIsCategoryModalOpen,
-    setEditingService,
-    setEditingCategory,
-    setFormData,
-    setCategoryFormData,
-    resetForm,
-    resetCategoryForm,
-    addService,
-    updateService,
-    deleteService,
-    toggleServiceStatus,
-    addCategory,
-    updateCategory,
-    deleteCategory,
-  } = useServices();
-
-  const handleAddService = () => {
-    if (
-      !formData.name ||
-      !formData.category ||
-      !formData.duration ||
-      !formData.price
-    ) {
-      toast.error('Preencha todos os campos obrigatórios');
-      return;
-    }
-
-    const newService: Omit<IService, 'id'> = {
-      name: formData.name,
-      description: formData.description,
-      duration: Number(formData.duration),
-      price: Number(formData.price),
-      category: formData.category,
-      isActive: formData.isActive,
-      maxBookingsPerDay: formData.maxBookingsPerDay
-        ? Number(formData.maxBookingsPerDay)
-        : undefined,
-      bookingsThisMonth: 0,
-      revenue: 0,
-    };
-
-    addService(newService);
-    setIsAddModalOpen(false);
-    resetForm();
-    toast.success('Serviço criado com sucesso!');
-  };
-
-  const handleUpdateService = () => {
-    if (!editingService) return;
-
-    updateService(editingService.id, {
-      name: formData.name,
-      description: formData.description,
-      duration: Number(formData.duration),
-      price: Number(formData.price),
-      category: formData.category,
-      maxBookingsPerDay: formData.maxBookingsPerDay
-        ? Number(formData.maxBookingsPerDay)
-        : undefined,
-    });
-
-    setEditingService(null);
-    resetForm();
-    toast.success('Serviço atualizado com sucesso!');
-  };
-
-  const handleEditService = (service: IService) => {
-    setFormData({
-      name: service.name,
-      description: service.description,
-      duration: String(service.duration),
-      price: String(service.price),
-      category: service.category,
-      maxBookingsPerDay: service.maxBookingsPerDay
-        ? String(service.maxBookingsPerDay)
-        : '',
-      isActive: service.isActive,
-    });
-    setEditingService(service);
-  };
-
-  const handleAddCategory = () => {
-    if (!categoryFormData.name.trim()) {
-      toast.error('Digite um nome para a categoria');
-      return;
-    }
-
-    if (
-      categories.some(
-        (cat) => cat.name.toLowerCase() === categoryFormData.name.toLowerCase(),
-      )
-    ) {
-      toast.error('Já existe uma categoria com este nome');
-      return;
-    }
-
-    const newCategory: Omit<ICategory, 'id'> = {
-      name: categoryFormData.name.trim(),
-      description: categoryFormData.description.trim(),
-      color: categoryFormData.color,
-    };
-
-    addCategory(newCategory);
-    resetCategoryForm();
-    toast.success('Categoria criada com sucesso!');
-  };
-
-  const handleEditCategory = (category: ICategory) => {
-    setCategoryFormData({
-      name: category.name,
-      description: category.description || '',
-      color: category.color || 'blue',
-    });
-    setEditingCategory(category);
-  };
-
-  const handleUpdateCategory = () => {
-    if (!editingCategory) return;
-
-    if (!categoryFormData.name.trim()) {
-      toast.error('Digite um nome para a categoria');
-      return;
-    }
-
-    if (
-      categories.some(
-        (cat) =>
-          cat.id !== editingCategory.id &&
-          cat.name.toLowerCase() === categoryFormData.name.trim().toLowerCase(),
-      )
-    ) {
-      toast.error('Já existe uma categoria com este nome');
-      return;
-    }
-
-    updateCategory(editingCategory.id, {
-      name: categoryFormData.name.trim(),
-      description: categoryFormData.description.trim(),
-      color: categoryFormData.color,
-    });
-
-    setEditingCategory(null);
-    resetCategoryForm();
-    toast.success('Categoria atualizada com sucesso!');
-  };
-
-  const cancelEditCategory = () => {
-    setEditingCategory(null);
-    resetCategoryForm();
-  };
-
-  const handleDeleteCategory = (categoryId: string) => {
-    const category = categories.find((cat) => cat.id === categoryId);
-    if (!category) return;
-
-    const isUsed = services.some(
-      (service) => service.category === category.name,
-    );
-
-    if (isUsed) {
-      toast.error('Não é possível excluir uma categoria em uso');
-      return;
-    }
-
-    deleteCategory(categoryId);
-    toast.success('Categoria excluída com sucesso!');
-  };
-
-  const handleDeleteService = (serviceId: string) => {
-    deleteService(serviceId);
-    toast.success('Serviço excluído com sucesso!');
-  };
-
-  const handleToggleServiceStatus = (serviceId: string) => {
-    toggleServiceStatus(serviceId);
-    toast.success('Status atualizado com sucesso!');
-  };
-
-  const getColorClass = (color: string) => {
-    const colors: Record<string, string> = {
-      purple: 'bg-purple-50 text-purple-600',
-      blue: 'bg-blue-50 text-blue-600',
-      pink: 'bg-pink-50 text-pink-600',
-      red: 'bg-red-50 text-red-600',
-      green: 'bg-green-50 text-green-600',
-      orange: 'bg-orange-50 text-orange-600',
-      yellow: 'bg-yellow-50 text-yellow-600',
-      gray: 'bg-gray-100 text-gray-600',
-    };
-    return colors[color] || colors.blue;
-  };
+    filteredServices,
+  } = useServicesModule();
 
   return (
-    <div className="space-y-6">
-      {/* Overview Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
-        >
-          <Card className="border-gray-200">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600 mb-1">
-                    Total de Serviços
-                  </p>
-                  <p className="text-3xl text-gray-900">{totalServices}</p>
-                </div>
-                <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
-                  <Package className="w-6 h-6 text-gray-900" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.1 }}
-        >
-          <Card className="border-gray-200">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600 mb-1">Serviços Ativos</p>
-                  <p className="text-3xl text-gray-900">{activeServices}</p>
-                </div>
-                <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
-                  <Settings className="w-6 h-6 text-gray-900" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.2 }}
-        >
-          <Card className="border-gray-200">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600 mb-1">Agendamentos/mês</p>
-                  <p className="text-3xl text-gray-900">{totalBookings}</p>
-                </div>
-                <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
-                  <TrendingUp className="w-6 h-6 text-gray-900" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.3 }}
-        >
-          <Card className="border-gray-200">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600 mb-1">Receita Mensal</p>
-                  <p className="text-3xl text-gray-900">
-                    R$ {totalRevenue.toLocaleString()}
-                  </p>
-                </div>
-                <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
-                  <DollarSign className="w-6 h-6 text-gray-900" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
+    <div className="space-y-6 pb-6 sm:pb-6 mb-20 sm:mb-0">
+      {/* Header */}
+      <div>
+        <h2 className="text-gray-900 mb-1">Gestão de Serviços</h2>
+        <p className="text-gray-600 text-sm">
+          Configure e gerencie os serviços oferecidos em{' '}
+          <span className="text-gray-900">{activeStore.name}</span>
+        </p>
       </div>
 
-      {/* Header with Actions */}
-      <div className="flex items-center justify-end gap-2">
-        <Button
-          variant="outline"
-          onClick={() => setIsCategoryModalOpen(true)}
-          className="border-gray-300"
-        >
-          <Tags className="h-4 w-4 mr-2" />
-          Categorias
-        </Button>
+      {/* Stats */}
+      <ServicesStats
+        totalServices={totalServices}
+        activeServices={activeServices}
+      />
 
-        <Button
-          onClick={() => setIsAddModalOpen(true)}
-          className="bg-black hover:bg-gray-800 text-white"
-        >
-          <Plus className="h-4 w-4 mr-2" />
-          Adicionar Serviço
-        </Button>
-      </div>
+      {/* Filters */}
+      {isMobile ? (
+        <ServicesFiltersMobile
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          filterCategory={filterCategory}
+          setFilterCategory={setFilterCategory}
+          categories={categories}
+          onManageCategories={() => setIsCategoryModalOpen(true)}
+          onAddService={() => setIsAddModalOpen(true)}
+          getColorClass={getColorClass}
+        />
+      ) : (
+        <ServicesFiltersDesktop
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          filterCategory={filterCategory}
+          setFilterCategory={setFilterCategory}
+          categories={categories}
+          onManageCategories={() => setIsCategoryModalOpen(true)}
+          onAddService={() => setIsAddModalOpen(true)}
+          getColorClass={getColorClass}
+        />
+      )}
 
-      {/* Search and Filter */}
-      <Card className="border-gray-200">
-        <CardContent className="p-4">
-          <div className="flex flex-col sm:flex-row gap-3">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-              <Input
-                placeholder="Buscar serviços..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-9"
-              />
-            </div>
-
-            <Select value={filterCategory} onValueChange={setFilterCategory}>
-              <SelectTrigger className="w-full sm:w-[200px]">
-                <Filter className="h-4 w-4 mr-2" />
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Todas categorias</SelectItem>
-                {categories.map((category) => (
-                  <SelectItem key={category.id} value={category.name}>
-                    {category.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+      {/* Results Counter */}
+      {filteredServices.length > 0 &&
+        (searchQuery || filterCategory !== 'all') && (
+          <div className="flex items-center gap-2 text-sm text-gray-600">
+            <Package className="h-4 w-4" />
+            <span>
+              {filteredServices.length}{' '}
+              {filteredServices.length === 1
+                ? 'serviço encontrado'
+                : 'serviços encontrados'}
+            </span>
           </div>
-        </CardContent>
-      </Card>
+        )}
 
       {/* Services by Category */}
       <AnimatePresence mode="wait">
         {filterCategory === 'all' ? (
           // Show all categories
-          categories.map((category) => {
-            const categoryServices = filteredServices.filter(
-              (service) => service.category === category.name,
-            );
+          <div className="space-y-3">
+            {categories
+              .slice()
+              .sort((a, b) => {
+                const aCount = filteredServices.filter(
+                  (s) => s.category === a.name,
+                ).length;
+                const bCount = filteredServices.filter(
+                  (s) => s.category === b.name,
+                ).length;
+                if (bCount !== aCount) return bCount - aCount;
+                return a.name.localeCompare(b.name);
+              })
+              .map((category) => {
+                const categoryServices = filteredServices.filter(
+                  (service) => service.category === category.name,
+                );
+                const isEmpty = categoryServices.length === 0;
+                const isExpanded = expandedCategories[category.id] ?? !isEmpty;
 
-            if (categoryServices.length === 0) return null;
-
-            return (
-              <motion.div
-                key={category.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                className="space-y-4"
-              >
-                <div className="flex items-center gap-2">
-                  <div
-                    className={`w-8 h-8 rounded-lg ${getColorClass(category.color || 'blue')} flex items-center justify-center`}
-                  >
-                    <Folder className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <h3 className="text-gray-900">{category.name}</h3>
-                    {category.description && (
-                      <p className="text-sm text-gray-600">
-                        {category.description}
-                      </p>
-                    )}
-                  </div>
-                  <Badge variant="outline" className="ml-auto">
-                    {categoryServices.length}
-                  </Badge>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {categoryServices.map((service) => (
-                    <ServiceCard
-                      key={service.id}
-                      service={service}
-                      onEdit={handleEditService}
-                      onDelete={handleDeleteService}
-                      onToggleStatus={handleToggleServiceStatus}
-                    />
-                  ))}
-                </div>
-              </motion.div>
-            );
-          })
+                return (
+                  <CategorySection
+                    key={category.id}
+                    category={category}
+                    services={categoryServices}
+                    isExpanded={isExpanded}
+                    onToggleExpanded={() => toggleCategory(category.id)}
+                    onQuickAdd={() => handleQuickAddService(category.name)}
+                    onEditService={handleEditService}
+                    onDeleteService={deleteService}
+                    onToggleServiceStatus={toggleServiceStatus}
+                    getColorClass={getColorClass}
+                    getColorBgClass={getColorBgClass}
+                  />
+                );
+              })}
+          </div>
         ) : (
           // Show filtered category only
           <motion.div
@@ -459,16 +168,15 @@ export function ServicesModule() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="space-y-4"
           >
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               {filteredServices.map((service) => (
                 <ServiceCard
                   key={service.id}
                   service={service}
                   onEdit={handleEditService}
-                  onDelete={handleDeleteService}
-                  onToggleStatus={handleToggleServiceStatus}
+                  onDelete={deleteService}
+                  onToggleStatus={toggleServiceStatus}
                 />
               ))}
             </div>
@@ -476,761 +184,73 @@ export function ServicesModule() {
         )}
       </AnimatePresence>
 
+      {/* Empty State */}
       {filteredServices.length === 0 && (
         <Card className="border-gray-200">
           <CardContent className="p-12 text-center">
-            <Package className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-gray-900 mb-2">Nenhum serviço encontrado</h3>
-            <p className="text-gray-600 text-sm">
+            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Package className="h-8 w-8 text-gray-400" />
+            </div>
+            <h3 className="text-gray-900 mb-2">
               {searchQuery || filterCategory !== 'all'
-                ? 'Tente ajustar os filtros de busca'
+                ? 'Nenhum serviço encontrado'
+                : 'Nenhum serviço cadastrado'}
+            </h3>
+            <p className="text-gray-600 text-sm mb-4">
+              {searchQuery || filterCategory !== 'all'
+                ? 'Tente ajustar os filtros ou fazer uma nova busca'
                 : 'Comece adicionando seu primeiro serviço'}
             </p>
+            {!searchQuery && filterCategory === 'all' && (
+              <Button
+                onClick={() => setIsAddModalOpen(true)}
+                className="bg-gray-900 hover:bg-gray-800 text-white"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Adicionar Primeiro Serviço
+              </Button>
+            )}
           </CardContent>
         </Card>
       )}
 
-      {/* Add/Edit Service Modal */}
-      <Dialog
-        open={isAddModalOpen || !!editingService}
-        onOpenChange={(open) => {
-          if (!open) {
-            setIsAddModalOpen(false);
-            setEditingService(null);
-            resetForm();
-          }
-        }}
+      {/* FAB - Mobile Only */}
+      <Button
+        onClick={() => setIsAddModalOpen(true)}
+        className="sm:hidden fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg bg-black hover:bg-gray-800 text-white z-40"
+        size="icon"
       >
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle className="text-gray-900">
-              {editingService ? 'Editar Serviço' : 'Novo Serviço'}
-            </DialogTitle>
-          </DialogHeader>
+        <Plus className="h-6 w-6" />
+      </Button>
 
-          <div className="space-y-6">
-            {/* Basic Information */}
-            <div className="space-y-4">
-              <div>
-                <h4 className="text-sm text-gray-900 mb-3">
-                  Informações Básicas
-                </h4>
-                <div className="space-y-4">
-                  <div>
-                    <Label htmlFor="serviceName">
-                      Nome do Serviço <span className="text-red-500">*</span>
-                    </Label>
-                    <Input
-                      id="serviceName"
-                      placeholder="Ex: Corte Feminino"
-                      value={formData.name}
-                      onChange={(e) => setFormData({ name: e.target.value })}
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="serviceDescription">Descrição</Label>
-                    <Textarea
-                      id="serviceDescription"
-                      placeholder="Descreva os detalhes do serviço..."
-                      rows={3}
-                      value={formData.description}
-                      onChange={(e) =>
-                        setFormData({ description: e.target.value })
-                      }
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="serviceCategory">
-                      Categoria <span className="text-red-500">*</span>
-                    </Label>
-                    <Select
-                      value={formData.category}
-                      onValueChange={(value) =>
-                        setFormData({ category: value })
-                      }
-                    >
-                      <SelectTrigger id="serviceCategory">
-                        <SelectValue placeholder="Selecione uma categoria" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {categories.map((category) => (
-                          <SelectItem key={category.id} value={category.name}>
-                            <div className="flex items-center gap-2">
-                              <div
-                                className={`w-3 h-3 rounded ${getColorClass(category.color || 'blue')}`}
-                              />
-                              {category.name}
-                            </div>
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-              </div>
-
-              {/* Pricing and Duration */}
-              <div>
-                <h4 className="text-sm text-gray-900 mb-3">Preço e Duração</h4>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="serviceDuration">
-                      Duração (minutos) <span className="text-red-500">*</span>
-                    </Label>
-                    <Input
-                      id="serviceDuration"
-                      type="number"
-                      placeholder="60"
-                      min="5"
-                      step="5"
-                      value={formData.duration}
-                      onChange={(e) =>
-                        setFormData({ duration: e.target.value })
-                      }
-                    />
-                    <p className="text-xs text-gray-500 mt-1">
-                      Tempo estimado do serviço
-                    </p>
-                  </div>
-
-                  <div>
-                    <Label htmlFor="servicePrice">
-                      Preço (R$) <span className="text-red-500">*</span>
-                    </Label>
-                    <Input
-                      id="servicePrice"
-                      type="number"
-                      placeholder="65.00"
-                      min="0"
-                      step="0.01"
-                      value={formData.price}
-                      onChange={(e) => setFormData({ price: e.target.value })}
-                    />
-                    <p className="text-xs text-gray-500 mt-1">
-                      Valor cobrado pelo serviço
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Capacity and Availability */}
-              <div>
-                <h4 className="text-sm text-gray-900 mb-3">Disponibilidade</h4>
-                <div className="space-y-4">
-                  <div>
-                    <Label htmlFor="maxBookings">
-                      Máximo de agendamentos por dia
-                    </Label>
-                    <Input
-                      id="maxBookings"
-                      type="number"
-                      placeholder="10"
-                      min="1"
-                      value={formData.maxBookingsPerDay}
-                      onChange={(e) =>
-                        setFormData({ maxBookingsPerDay: e.target.value })
-                      }
-                    />
-                    <p className="text-xs text-gray-500 mt-1">
-                      Limite diário de agendamentos (opcional)
-                    </p>
-                  </div>
-
-                  {!editingService && (
-                    <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
-                      <div className="flex-1">
-                        <Label
-                          htmlFor="serviceActive"
-                          className="cursor-pointer"
-                        >
-                          Serviço ativo
-                        </Label>
-                        <p className="text-xs text-gray-600 mt-1">
-                          O serviço estará disponível para agendamento
-                        </p>
-                      </div>
-                      <Switch
-                        id="serviceActive"
-                        checked={formData.isActive}
-                        onCheckedChange={(checked) =>
-                          setFormData({ isActive: checked })
-                        }
-                      />
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* Info Alert */}
-            <Alert>
-              <AlertCircle className="h-4 w-4" />
-              <AlertDescription className="text-sm">
-                Campos marcados com <span className="text-red-500">*</span> são
-                obrigatórios
-              </AlertDescription>
-            </Alert>
-
-            {/* Actions */}
-            <div className="flex gap-3 pt-4 border-t border-gray-200">
-              <Button
-                variant="outline"
-                className="flex-1"
-                onClick={() => {
-                  setIsAddModalOpen(false);
-                  setEditingService(null);
-                  resetForm();
-                }}
-              >
-                Cancelar
-              </Button>
-              <Button
-                className="flex-1 bg-black hover:bg-gray-800 text-white"
-                onClick={
-                  editingService ? handleUpdateService : handleAddService
-                }
-              >
-                <CheckCircle2 className="h-4 w-4 mr-2" />
-                {editingService ? 'Salvar Alterações' : 'Criar Serviço'}
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+      {/* Service Form Modal */}
+      <ServiceFormModal
+        isOpen={isAddModalOpen || !!editingService}
+        editingService={editingService}
+        formData={formData}
+        setFormData={setFormData}
+        categories={categories}
+        onClose={handleCloseModal}
+        onSave={editingService ? handleUpdateService : handleAddService}
+        getColorClass={getColorClass}
+      />
 
       {/* Category Management Modal */}
-      <Dialog
-        open={isCategoryModalOpen}
-        onOpenChange={(open) => {
-          setIsCategoryModalOpen(open);
-          if (!open) {
-            setEditingCategory(null);
-            resetCategoryForm();
-          }
-        }}
-      >
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle className="text-gray-900 flex items-center gap-2">
-              <Tags className="h-5 w-5" />
-              Gerenciar Categorias
-            </DialogTitle>
-          </DialogHeader>
-
-          <Tabs
-            defaultValue="list"
-            className="w-full"
-            value={editingCategory ? 'edit' : undefined}
-          >
-            <TabsList className="grid w-full grid-cols-2 bg-gray-100">
-              <TabsTrigger value="list" disabled={!!editingCategory}>
-                Categorias Atuais
-              </TabsTrigger>
-              <TabsTrigger value="add" disabled={!!editingCategory}>
-                {editingCategory ? 'Editar Categoria' : 'Adicionar Nova'}
-              </TabsTrigger>
-            </TabsList>
-
-            {/* List Categories */}
-            <TabsContent value="list" className="space-y-4 mt-6">
-              <div className="space-y-3">
-                {categories.map((category) => {
-                  const serviceCount = services.filter(
-                    (service) => service.category === category.name,
-                  ).length;
-
-                  return (
-                    <motion.div
-                      key={category.id}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      className="flex items-start justify-between p-4 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors"
-                    >
-                      <div className="flex items-start gap-3 flex-1">
-                        <div
-                          className={`w-10 h-10 rounded-lg ${getColorClass(category.color || 'blue')} flex items-center justify-center flex-shrink-0`}
-                        >
-                          <Folder className="w-5 h-5" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-1">
-                            <h4 className="text-gray-900">{category.name}</h4>
-                            <Badge variant="outline" className="text-xs">
-                              {serviceCount}{' '}
-                              {serviceCount === 1 ? 'serviço' : 'serviços'}
-                            </Badge>
-                          </div>
-                          {category.description && (
-                            <p className="text-sm text-gray-600">
-                              {category.description}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="flex gap-1">
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => handleEditCategory(category)}
-                          className="text-gray-600 hover:text-gray-900 hover:bg-gray-100"
-                        >
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => handleDeleteCategory(category.id)}
-                          disabled={serviceCount > 0}
-                          className="text-red-600 hover:text-red-700 hover:bg-red-50 disabled:opacity-50"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </motion.div>
-                  );
-                })}
-              </div>
-
-              {categories.length === 0 && (
-                <div className="text-center py-12">
-                  <Tags className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-gray-900 mb-2">
-                    Nenhuma categoria criada
-                  </h3>
-                  <p className="text-gray-600 text-sm">
-                    Adicione sua primeira categoria na aba ao lado
-                  </p>
-                </div>
-              )}
-            </TabsContent>
-
-            {/* Add/Edit Category */}
-            <TabsContent value="add" className="space-y-4 mt-6">
-              {editingCategory && (
-                <Alert className="mb-4">
-                  <AlertCircle className="h-4 w-4" />
-                  <AlertDescription className="text-sm">
-                    Editando categoria: <strong>{editingCategory.name}</strong>
-                  </AlertDescription>
-                </Alert>
-              )}
-
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="categoryName">
-                    Nome da Categoria <span className="text-red-500">*</span>
-                  </Label>
-                  <Input
-                    id="categoryName"
-                    placeholder="Ex: Tratamentos Faciais"
-                    value={categoryFormData.name}
-                    onChange={(e) =>
-                      setCategoryFormData({ name: e.target.value })
-                    }
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="categoryDescription">Descrição</Label>
-                  <Textarea
-                    id="categoryDescription"
-                    placeholder="Descreva o tipo de serviços desta categoria..."
-                    rows={3}
-                    value={categoryFormData.description}
-                    onChange={(e) =>
-                      setCategoryFormData({ description: e.target.value })
-                    }
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="categoryColor">Cor da Categoria</Label>
-                  <Select
-                    value={categoryFormData.color}
-                    onValueChange={(value) =>
-                      setCategoryFormData({ color: value })
-                    }
-                  >
-                    <SelectTrigger id="categoryColor">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {[
-                        'blue',
-                        'purple',
-                        'pink',
-                        'red',
-                        'orange',
-                        'yellow',
-                        'green',
-                        'gray',
-                      ].map((color) => (
-                        <SelectItem key={color} value={color}>
-                          <div className="flex items-center gap-2">
-                            <div
-                              className={`w-4 h-4 rounded ${getColorClass(color)}`}
-                            />
-                            {color.charAt(0).toUpperCase() + color.slice(1)}
-                          </div>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {!editingCategory && (
-                  <Alert>
-                    <AlertCircle className="h-4 w-4" />
-                    <AlertDescription className="text-sm">
-                      As categorias ajudam a organizar seus serviços e facilitar
-                      a busca dos clientes
-                    </AlertDescription>
-                  </Alert>
-                )}
-
-                <div className="flex gap-3">
-                  {editingCategory ? (
-                    <>
-                      <Button
-                        variant="outline"
-                        className="flex-1"
-                        onClick={cancelEditCategory}
-                      >
-                        Cancelar
-                      </Button>
-                      <Button
-                        className="flex-1 bg-black hover:bg-gray-800 text-white"
-                        onClick={handleUpdateCategory}
-                      >
-                        <CheckCircle2 className="h-4 w-4 mr-2" />
-                        Salvar Alterações
-                      </Button>
-                    </>
-                  ) : (
-                    <Button
-                      className="w-full bg-black hover:bg-gray-800 text-white"
-                      onClick={handleAddCategory}
-                    >
-                      <Plus className="h-4 w-4 mr-2" />
-                      Adicionar Categoria
-                    </Button>
-                  )}
-                </div>
-              </div>
-            </TabsContent>
-
-            {/* Edit Category Tab (dynamically shown) */}
-            {editingCategory && (
-              <TabsContent value="edit" className="space-y-4 mt-6">
-                <Alert className="mb-4">
-                  <AlertCircle className="h-4 w-4" />
-                  <AlertDescription className="text-sm">
-                    Editando categoria: <strong>{editingCategory.name}</strong>
-                  </AlertDescription>
-                </Alert>
-
-                <div className="space-y-4">
-                  <div>
-                    <Label htmlFor="editCategoryName">
-                      Nome da Categoria <span className="text-red-500">*</span>
-                    </Label>
-                    <Input
-                      id="editCategoryName"
-                      placeholder="Ex: Tratamentos Faciais"
-                      value={categoryFormData.name}
-                      onChange={(e) =>
-                        setCategoryFormData({ name: e.target.value })
-                      }
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="editCategoryDescription">Descrição</Label>
-                    <Textarea
-                      id="editCategoryDescription"
-                      placeholder="Descreva o tipo de serviços desta categoria..."
-                      rows={3}
-                      value={categoryFormData.description}
-                      onChange={(e) =>
-                        setCategoryFormData({ description: e.target.value })
-                      }
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="editCategoryColor">Cor da Categoria</Label>
-                    <Select
-                      value={categoryFormData.color}
-                      onValueChange={(value) =>
-                        setCategoryFormData({ color: value })
-                      }
-                    >
-                      <SelectTrigger id="editCategoryColor">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {[
-                          'blue',
-                          'purple',
-                          'pink',
-                          'red',
-                          'orange',
-                          'yellow',
-                          'green',
-                          'gray',
-                        ].map((color) => (
-                          <SelectItem key={color} value={color}>
-                            <div className="flex items-center gap-2">
-                              <div
-                                className={`w-4 h-4 rounded ${getColorClass(color)}`}
-                              />
-                              {color.charAt(0).toUpperCase() + color.slice(1)}
-                            </div>
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <Alert>
-                    <AlertCircle className="h-4 w-4" />
-                    <AlertDescription className="text-sm">
-                      Alterar o nome da categoria irá atualizar automaticamente
-                      todos os serviços vinculados
-                    </AlertDescription>
-                  </Alert>
-
-                  <div className="flex gap-3">
-                    <Button
-                      variant="outline"
-                      className="flex-1"
-                      onClick={cancelEditCategory}
-                    >
-                      Cancelar
-                    </Button>
-                    <Button
-                      className="flex-1 bg-black hover:bg-gray-800 text-white"
-                      onClick={handleUpdateCategory}
-                    >
-                      <CheckCircle2 className="h-4 w-4 mr-2" />
-                      Salvar Alterações
-                    </Button>
-                  </div>
-                </div>
-              </TabsContent>
-            )}
-          </Tabs>
-        </DialogContent>
-      </Dialog>
+      <CategoryManagementModal
+        isOpen={isCategoryModalOpen}
+        categories={categories}
+        services={services}
+        editingCategory={editingCategory}
+        categoryFormData={categoryFormData}
+        setCategoryFormData={setCategoryFormData}
+        onClose={() => setIsCategoryModalOpen(false)}
+        onEdit={handleEditCategory}
+        onDelete={deleteCategory}
+        onAdd={addCategory}
+        onUpdate={updateCategory}
+        onCancelEdit={cancelEditCategory}
+        getColorClass={getColorClass}
+      />
     </div>
-  );
-}
-
-// Service Card Component
-function ServiceCard({
-  service,
-  onEdit,
-  onDelete,
-  onToggleStatus,
-}: {
-  service: IService;
-  onEdit: (service: IService) => void;
-  onDelete: (id: string) => void;
-  onToggleStatus: (id: string) => void;
-}) {
-  const popularityLevel =
-    (service.bookingsThisMonth || 0) >= 30
-      ? 'high'
-      : (service.bookingsThisMonth || 0) >= 15
-        ? 'medium'
-        : 'low';
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.95 }}
-      whileHover={{ y: -4 }}
-      transition={{ duration: 0.2 }}
-    >
-      <Card
-        className={`relative border-gray-200 h-full hover:shadow-lg transition-all duration-300 pt-0 ${
-          !service.isActive ? 'opacity-60' : ''
-        }`}
-      >
-        {/* Image/Icon Header */}
-        <div className="relative h-32 bg-gradient-to-br from-gray-50 to-gray-100 border-b border-gray-200">
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-16 h-16 rounded-full bg-white shadow-sm flex items-center justify-center">
-              <Package className="h-8 w-8 text-gray-900" />
-            </div>
-          </div>
-
-          {/* Status Badge */}
-          <div className="absolute top-3 right-3">
-            <Badge
-              className={
-                service.isActive
-                  ? 'bg-green-50 text-green-700 border-green-200 shadow-sm'
-                  : 'bg-gray-100 text-gray-600 border-gray-200'
-              }
-            >
-              {service.isActive ? 'Ativo' : 'Inativo'}
-            </Badge>
-          </div>
-
-          {/* Popularity Indicator */}
-          {service.isActive && popularityLevel === 'high' && (
-            <div className="absolute top-3 left-3">
-              <Badge className="bg-orange-50 text-orange-700 border-orange-200 shadow-sm flex items-center gap-1">
-                <TrendingUp className="h-3 w-3" />
-                Popular
-              </Badge>
-            </div>
-          )}
-
-          {/* Category Badge */}
-          <div className="absolute bottom-3 left-3">
-            <Badge variant="outline" className="bg-white/80 backdrop-blur-sm">
-              {service.category}
-            </Badge>
-          </div>
-        </div>
-
-        <CardHeader className="pb-3">
-          <div className="flex items-start justify-between">
-            <div className="flex-1">
-              <CardTitle className="text-gray-900 text-lg mb-2">
-                {service.name}
-              </CardTitle>
-              <p className="text-sm text-gray-600 line-clamp-2">
-                {service.description || 'Sem descrição'}
-              </p>
-            </div>
-          </div>
-        </CardHeader>
-
-        <CardContent className="space-y-4">
-          {/* Price and Duration */}
-          <div className="grid grid-cols-2 gap-3">
-            <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg border border-gray-200">
-              <Clock className="h-4 w-4 text-gray-600 flex-shrink-0" />
-              <div className="min-w-0">
-                <p className="text-xs text-gray-500">Duração</p>
-                <p className="text-sm text-gray-900">{service.duration}min</p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg border border-gray-200">
-              <DollarSign className="h-4 w-4 text-gray-600 flex-shrink-0" />
-              <div className="min-w-0">
-                <p className="text-xs text-gray-500">Preço</p>
-                <p className="text-sm text-gray-900">
-                  R$ {service.price.toFixed(2)}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Performance Stats */}
-          {service.isActive && (
-            <div className="space-y-2 p-3 bg-gradient-to-br from-gray-50 to-white rounded-lg border border-gray-200">
-              <h4 className="text-xs text-gray-700 uppercase tracking-wide">
-                Desempenho
-              </h4>
-
-              <div className="space-y-2">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600">
-                    Agendamentos/mês
-                  </span>
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm text-gray-900">
-                      {service.bookingsThisMonth || 0}
-                    </span>
-                    {popularityLevel === 'high' && (
-                      <TrendingUp className="h-3 w-3 text-green-600" />
-                    )}
-                  </div>
-                </div>
-
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600">Receita gerada</span>
-                  <span className="text-sm text-gray-900">
-                    R$ {(service.revenue || 0).toLocaleString()}
-                  </span>
-                </div>
-
-                {service.maxBookingsPerDay && (
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">
-                      Capacidade/dia
-                    </span>
-                    <span className="text-sm text-gray-900">
-                      {service.maxBookingsPerDay} agendamentos
-                    </span>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-
-          {/* Tags */}
-          {service.tags && service.tags.length > 0 && (
-            <div className="flex flex-wrap gap-1.5">
-              {service.tags.map((tag, idx) => (
-                <Badge
-                  key={idx}
-                  variant="outline"
-                  className="text-xs border-gray-300"
-                >
-                  {tag}
-                </Badge>
-              ))}
-            </div>
-          )}
-
-          {/* Actions */}
-          <div className="space-y-2 pt-2 border-t border-gray-200">
-            <div className="grid grid-cols-2 gap-2">
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => onEdit(service)}
-                className="border-gray-300 hover:bg-gray-50"
-              >
-                <Edit className="h-3 w-3 mr-1" />
-                Editar
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => onDelete(service.id)}
-                className="text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200"
-              >
-                <Trash2 className="h-3 w-3 mr-1" />
-                Excluir
-              </Button>
-            </div>
-
-            <Button
-              variant={service.isActive ? 'outline' : 'default'}
-              size="sm"
-              className={`w-full ${
-                !service.isActive
-                  ? 'bg-black hover:bg-gray-800 text-white'
-                  : 'border-gray-300 hover:bg-gray-50'
-              }`}
-              onClick={() => onToggleStatus(service.id)}
-            >
-              {service.isActive ? 'Desativar Serviço' : 'Ativar Serviço'}
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-    </motion.div>
   );
 }

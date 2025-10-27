@@ -3,17 +3,14 @@ import {
   setActiveStoreAction,
   setIsMobileSidebarOpenAction,
 } from './partner.actions';
-import { MOCK_STORES, MODULE_CONFIG } from './partner.constants';
-import type { IPartnerStore } from './partner.types';
+import { MODULE_CONFIG } from './partner.constants';
+import type { IPartnerStore, TStore } from './partner.types';
 
-export const usePartnerStore = create<IPartnerStore>((set) => ({
-  activeStore: MOCK_STORES[0]!,
-  stores: MOCK_STORES,
+export const usePartnerStore = create<IPartnerStore>((set, get) => ({
+  activeStore: {} as TStore,
   isMobileSidebarOpen: false,
   activeModule: null,
   moduleConfig: MODULE_CONFIG,
-
-  // Actions
-  setActiveStore: setActiveStoreAction(set),
-  setIsMobileSidebarOpen: setIsMobileSidebarOpenAction(set),
+  setActiveStore: setActiveStoreAction(set, get),
+  setIsMobileSidebarOpen: setIsMobileSidebarOpenAction(set, get),
 }));

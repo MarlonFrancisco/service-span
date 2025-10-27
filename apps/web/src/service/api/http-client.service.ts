@@ -1,44 +1,60 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
-
 export class HttpClientService {
-  public readonly httpClient: AxiosInstance = axios.create();
+  private readonly baseUrl: string;
 
-  constructor(baseURL: string) {
-    if (!baseURL) {
-      throw new Error('Base URL is required');
+  constructor(baseUrl: string = process.env.NEXT_PUBLIC_API_URL!) {
+    this.baseUrl = baseUrl;
+  }
+
+  private async request<T>(
+    endpoint: string,
+    config: RequestInit = {},
+  ): Promise<T> {
+    const url = `${this.baseUrl}${endpoint}`;
+
+    const headers = {
+      'Content-Type': 'application/json',
+      ...config.headers,
+    };
+
+    const response = await fetch(url, { ...config, headers });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'Sorry, something went wrong.');
     }
 
-    this.httpClient.defaults.baseURL = baseURL;
-    this.httpClient.defaults.withCredentials = true;
+    return response.json();
+  }
 
-    this.httpClient.interceptors.request.use(async (config) => {
-      return config;
+  public get<T>(endpoint: string, config?: RequestInit) {
+    return this.request<T>(endpoint, { ...config, method: 'GET' });
+  }
+
+  public post<T>(endpoint: string, body: unknown, config?: RequestInit) {
+    return this.request<T>(endpoint, {
+      ...config,
+      method: 'POST',
+      body: JSON.stringify(body),
     });
-
-    this.httpClient.interceptors.response.use(
-      async (response: AxiosResponse) => {
-        return response;
-      },
-    );
   }
 
-  public get<T>(url: string, config?: AxiosRequestConfig) {
-    return this.httpClient.get<T>(url, config);
+  public put<T>(endpoint: string, body: unknown, config?: RequestInit) {
+    return this.request<T>(endpoint, {
+      ...config,
+      method: 'PUT',
+      body: JSON.stringify(body),
+    });
   }
 
-  public post<T>(url: string, data: unknown, config?: AxiosRequestConfig) {
-    return this.httpClient.post<T>(url, data, config);
+  public patch<T>(endpoint: string, body: unknown, config?: RequestInit) {
+    return this.request<T>(endpoint, {
+      ...config,
+      method: 'PATCH',
+      body: JSON.stringify(body),
+    });
   }
 
-  public patch<T>(url: string, data: unknown, config?: AxiosRequestConfig) {
-    return this.httpClient.patch<T>(url, data, config);
-  }
-
-  public put<T>(url: string, data: unknown, config?: AxiosRequestConfig) {
-    return this.httpClient.put<T>(url, data, config);
-  }
-
-  public delete<T>(url: string, config?: AxiosRequestConfig) {
-    return this.httpClient.delete<T>(url, config);
+  public delete<T>(endpoint: string, config?: RequestInit) {
+    return this.request<T>(endpoint, { ...config, method: 'DELETE' });
   }
 }

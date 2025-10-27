@@ -1,42 +1,32 @@
-import { IProfessional, TProfessionalRole } from '@/types/api/users.types';
+import { IProfessional } from '@/types/api/users.types';
 import { apiClient } from '../api';
 import { HttpClientService } from '../api/http-client.service';
 
 export class StoreMembersService {
   public static apiClient: HttpClientService = apiClient;
 
-  static async getStoreMembers(storeId: string) {
+  static async get(storeId: string) {
     return await this.apiClient.get<IProfessional[]>(
       `/partner/stores/${storeId}/members`,
     );
   }
 
-  static async createStoreMember(
-    storeId: string,
-    professional: { user: { email: string }; role: TProfessionalRole },
-  ) {
+  static async create(storeId: string, professional: Partial<IProfessional>) {
     return await this.apiClient.post<IProfessional>(
       `/partner/stores/${storeId}/members`,
       professional,
     );
   }
 
-  static async updateStoreMember(
-    storeId: string,
-    professional: {
-      id: string;
-      role: TProfessionalRole;
-      user: { email: string };
-    },
-  ) {
+  static async update(storeId: string, professional: Partial<IProfessional>) {
     return await this.apiClient.put<IProfessional>(
       `/partner/stores/${storeId}/members/${professional.id}`,
       professional,
     );
   }
 
-  static async deleteStoreMember(storeId: string, professionalId: string) {
-    return await this.apiClient.delete<void>(
+  static async delete(storeId: string, professionalId: string) {
+    return await this.apiClient.delete<{ id: string; store: { id: string } }>(
       `/partner/stores/${storeId}/members/${professionalId}`,
     );
   }

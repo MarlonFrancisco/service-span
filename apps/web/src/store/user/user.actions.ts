@@ -4,6 +4,6 @@ import { IUserState } from './user.types';
 
 export const getAuthenticatedUserAction =
   (set: TStoreSet<IUserState>) => async () => {
-    const response = await UsersService.getUser();
-    set({ authenticatedUser: response.data });
+    const user = await UsersService.getUser();
+    set({ authenticatedUser: user });
   };

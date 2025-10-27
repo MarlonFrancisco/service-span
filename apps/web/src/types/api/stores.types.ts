@@ -4,6 +4,7 @@ export interface IStoreGallery {
   id: string;
   url: string;
   isMain: boolean;
+  store?: IStore;
 }
 
 export interface IStore {

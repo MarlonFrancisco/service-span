@@ -1,4 +1,5 @@
 import { useStoresAdmin } from '@/store';
+import { IUser } from '@/types/api';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useCallback, useEffect } from 'react';
 import { useForm, useFormContext } from 'react-hook-form';
@@ -45,9 +46,6 @@ export const useAddProfessionalModal = () => {
           professional: {
             id: data.id!,
             role: data.role,
-            user: {
-              email: data.user.email,
-            },
           },
         });
         storeForm.setValue('storeMembers', [
@@ -62,7 +60,7 @@ export const useAddProfessionalModal = () => {
             role: data.role,
             user: {
               email: data.user.email,
-            },
+            } as IUser,
           },
         });
         storeForm.setValue('storeMembers', [
@@ -70,8 +68,6 @@ export const useAddProfessionalModal = () => {
           professional,
         ]);
       }
-
-      form.reset();
     };
 
     form.handleSubmit(asyncFn, (errors) => {

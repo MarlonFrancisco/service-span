@@ -1,9 +1,5 @@
-import { NotificationsModule, Partner } from '@/components/features/partner';
+import { NotificationsModule } from '@/components/features/partner';
 
 export default function PartnerNotificationsPage() {
-  return (
-    <Partner>
-      <NotificationsModule />
-    </Partner>
-  );
+  return <NotificationsModule />;
 }

@@ -7,15 +7,13 @@ export class PlansService {
 
   static async getPlansQuery() {
     const queryClient = getQueryClient();
-    const response = await queryClient.fetchQuery({
+    return await queryClient.fetchQuery({
       queryKey: ['plans'],
       queryFn: () => this.apiClient.get<IPlansResponse>('/plans'),
     });
-    return response.data;
   }
 
   static async getPlans() {
-    const response = await this.apiClient.get<IPlansResponse>('/plans');
-    return response.data;
+    return await this.apiClient.get<IPlansResponse>('/plans');
   }
 }

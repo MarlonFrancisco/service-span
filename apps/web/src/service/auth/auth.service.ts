@@ -1,27 +1,24 @@
 import { IUser } from '@/types/api';
 import { apiClient } from '../api';
-import { HttpClientService } from '../api/http-client.service';
 
 export class AuthService {
-  private static apiClient: HttpClientService = apiClient;
+  static readonly apiClient = apiClient;
 
   static async login(email?: string, telephone?: string) {
-    const response = await this.apiClient.post<{
+    return await this.apiClient.post<{
       isNewUser: boolean;
     }>('/auth/code', {
       email,
       telephone,
     });
-    return response.data;
   }
 
   static async validateCode(code: string, email?: string, telephone?: string) {
-    const response = await this.apiClient.post<void>('/auth/validate-code', {
+    return await this.apiClient.post<void>('/auth/validate-code', {
       code,
       email,
       telephone,
     });
-    return response.data;
   }
 
   static async register(payload: {
@@ -31,17 +28,15 @@ export class AuthService {
     lastName: string;
     acceptedTerms: boolean;
   }) {
-    const response = await this.apiClient.post<void>('/auth/register', payload);
-    return response;
+    return await this.apiClient.post<void>('/auth/register', payload);
   }
 
   static async googleLogin(token: string) {
-    const response = await this.apiClient.post<{
+    return await this.apiClient.post<{
       isNewUser: boolean;
       user: IUser;
     }>('/auth/social/google', {
       token,
     });
-    return response;
   }
 }

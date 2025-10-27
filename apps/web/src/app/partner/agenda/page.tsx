@@ -1,9 +1,5 @@
-import { AgendaModule, Partner } from '@/components/features/partner';
+import { AgendaModule } from '@/components/features/partner';
 
 export default function PartnerAgendaPage() {
-  return (
-    <Partner>
-      <AgendaModule />
-    </Partner>
-  );
+  return <AgendaModule />;
 }

@@ -17,22 +17,16 @@ export const useGalleryTab = () => {
       }),
     );
 
-    try {
-      const images = await Promise.all(promises);
-
+    await Promise.all(promises).then((images) => {
       form.setValue('gallery', [...gallery, ...images]);
-    } catch (error) {
-      throw new Error((error as Error).message);
-    }
+    });
   };
 
   const onChangeMainImage = async (image: IStoreGallery) => {
-    try {
-      await updateMainImage({
-        storeId: form.getValues('id')!,
-        imageId: image.id,
-      });
-
+    await updateMainImage({
+      storeId: form.getValues('id')!,
+      imageId: image.id,
+    }).then(() => {
       form.setValue(
         'gallery',
         gallery.map((img) => ({
@@ -40,21 +34,16 @@ export const useGalleryTab = () => {
           isMain: img.id === image.id,
         })),
       );
-    } catch (error) {
-      throw new Error((error as Error).message);
-    }
+    });
   };
 
-  const onDeleteImage = async (imageId: string) => {
-    try {
-      await deleteImage({ storeId: form.getValues('id')!, imageId });
+  const onDeleteImage = (imageId: string) => {
+    deleteImage({ storeId: form.getValues('id')!, imageId }).then(() => {
       form.setValue(
         'gallery',
         gallery.filter((img) => img.id !== imageId),
       );
-    } catch (error) {
-      throw new Error((error as Error).message);
-    }
+    });
   };
 
   return {

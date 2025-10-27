@@ -1,12 +1,15 @@
-import { TStoreSet } from '@/types/store.types';
-import type { IPartnerStore, TStore } from './partner.types';
+import { IStore } from '@/types/api/stores.types';
+import { TStoreAction } from '@/types/store.types';
+import type { IPartnerStore } from './partner.types';
 
-export const setActiveStoreAction =
-  (set: TStoreSet<IPartnerStore>) => (store: TStore) => {
+export const setActiveStoreAction: TStoreAction<IPartnerStore, IStore> =
+  (set) => async (store) => {
     set({ activeStore: store });
   };
 
-export const setIsMobileSidebarOpenAction =
-  (set: TStoreSet<IPartnerStore>) => (isOpen: boolean) => {
-    set({ isMobileSidebarOpen: isOpen });
-  };
+export const setIsMobileSidebarOpenAction: TStoreAction<
+  IPartnerStore,
+  boolean
+> = (set) => async (isOpen) => {
+  set({ isMobileSidebarOpen: isOpen });
+};

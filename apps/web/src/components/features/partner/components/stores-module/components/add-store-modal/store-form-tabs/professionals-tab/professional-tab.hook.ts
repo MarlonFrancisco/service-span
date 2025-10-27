@@ -5,7 +5,8 @@ import { useFormContext } from 'react-hook-form';
 import { TStoreFormSchema } from '../store-form.schema';
 
 export const useProfessionalTab = () => {
-  const { setIsAddProfessional, updateStoreMember } = useStoresAdmin();
+  const { setIsAddProfessional, updateStoreMember, deleteStoreMember } =
+    useStoresAdmin();
 
   const form = useFormContext<TStoreFormSchema>();
 
@@ -20,30 +21,35 @@ export const useProfessionalTab = () => {
 
   const handleDeleteProfessional = useCallback(
     (professionalId: string) => {
-      const updatedProfessionals = professionals.filter(
-        (professional) => professional.id !== professionalId,
-      );
-      form.setValue('storeMembers', updatedProfessionals);
+      deleteStoreMember({
+        storeId: form.getValues('id')!,
+        professionalId,
+      }).then(() => {
+        const updatedProfessionals = professionals.filter(
+          (professional) => professional.id !== professionalId,
+        );
+        form.setValue('storeMembers', updatedProfessionals);
+      });
     },
-    [professionals, form],
+    [professionals, form, deleteStoreMember],
   );
 
   const handleToggleProfessionalStatus = useCallback(
     async (professional: IProfessional) => {
-      await updateStoreMember({
+      updateStoreMember({
         storeId: form.getValues('id')!,
         professional: {
           id: professional.id,
           isActive: !professional.isActive,
         },
+      }).then(() => {
+        const updatedProfessionals = professionals.map((professional) =>
+          professional.id === professional.id
+            ? { ...professional, isActive: !professional.isActive }
+            : professional,
+        );
+        form.setValue('storeMembers', updatedProfessionals);
       });
-
-      const updatedProfessionals = professionals.map((professional) =>
-        professional.id === professional.id
-          ? { ...professional, isActive: !professional.isActive }
-          : professional,
-      );
-      form.setValue('storeMembers', updatedProfessionals);
     },
     [professionals, form, updateStoreMember],
   );

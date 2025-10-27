@@ -1,8 +1,4 @@
-export type TStore = {
-  id: string;
-  name: string;
-  address: string;
-};
+import { IStore } from '@/types/api/stores.types';
 
 export type TModuleId =
   | 'dashboard'
@@ -22,13 +18,12 @@ export type TModuleConfig = {
 };
 
 export interface IPartnerStore {
-  activeStore: TStore;
-  stores: TStore[];
+  activeStore: IStore;
   isMobileSidebarOpen: boolean;
   activeModule: TModuleId | null;
   moduleConfig: Record<TModuleId, TModuleConfig>;
 
   // Actions
-  setActiveStore: (store: TStore) => void;
-  setIsMobileSidebarOpen: (isOpen: boolean) => void;
+  setActiveStore: (store: IStore) => Promise<void>;
+  setIsMobileSidebarOpen: (isOpen: boolean) => Promise<void>;
 }

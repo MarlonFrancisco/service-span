@@ -1,8 +1,5 @@
 import { z } from 'zod';
 
-// Schema para validação de telefone brasileiro
-const phoneRegex = /^\(\d{2}\)\s\d{4,5}-\d{4}$/;
-
 // Schema para validação de CEP
 const zipCodeRegex = /^\d{5}-\d{3}$/;
 
@@ -48,9 +45,7 @@ export const storeFormSchema = z.object({
     .min(10, 'Descrição deve ter no mínimo 10 caracteres')
     .max(500, 'Descrição deve ter no máximo 500 caracteres'),
 
-  telephone: z
-    .string()
-    .regex(phoneRegex, 'Telefone inválido. Use o formato: (00) 00000-0000'),
+  telephone: z.string().min(1, 'Telefone é obrigatório'),
 
   email: emailSchema,
 
@@ -90,18 +85,13 @@ export const storeFormSchema = z.object({
         id: z.string(),
         role: z.enum(['professional', 'manager', 'owner']),
         isActive: z.boolean().default(false),
-        createdAt: z.date(),
+        createdAt: z.date().or(z.string()),
         user: z.object({
           id: z.string(),
           email: z.string().email('Email inválido'),
           firstName: z.string(),
           lastName: z.string(),
-          telephone: z
-            .string()
-            .regex(
-              phoneRegex,
-              'Telefone inválido. Use o formato: (00) 00000-0000',
-            ),
+          telephone: z.string().min(1, 'Telefone é obrigatório'),
           isSubscribed: z.boolean().default(false),
           avatar: z.string().optional(),
         }),

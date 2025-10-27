@@ -1,3 +1,5 @@
+import { IStore } from './stores.types';
+
 export type TProfessionalRole = 'owner' | 'manager' | 'professional';
 
 export interface IUser {
@@ -16,4 +18,5 @@ export interface IProfessional {
   isActive: boolean;
   user: IUser;
   createdAt: Date;
+  store?: IStore;
 }

@@ -5,28 +5,28 @@ import { HttpClientService } from '../api/http-client.service';
 export class GalleryService {
   static readonly apiClient: HttpClientService = apiClient;
 
-  static async getImages(storeId: string) {
+  static async getAll(storeId: string) {
     return await this.apiClient.get<IStoreGallery[]>(
       `/partner/stores/${storeId}/gallery`,
     );
   }
 
-  static async updateMainImage(storeId: string, imageId: string) {
+  static async update(storeId: string, imageId: string) {
     return await this.apiClient.patch<IStoreGallery>(
       `/partner/stores/${storeId}/gallery/${imageId}`,
       { isMain: true },
     );
   }
 
-  static async createImage(storeId: string, image: Omit<IStoreGallery, 'id'>) {
+  static async create(storeId: string, image: Omit<IStoreGallery, 'id'>) {
     return await this.apiClient.post<IStoreGallery>(
       `/partner/stores/${storeId}/gallery`,
       image,
     );
   }
 
-  static async deleteImage(storeId: string, imageId: string) {
-    return await this.apiClient.delete<void>(
+  static async delete(storeId: string, imageId: string) {
+    return await this.apiClient.delete<{ id: string; store: { id: string } }>(
       `/partner/stores/${storeId}/gallery/${imageId}`,
     );
   }
