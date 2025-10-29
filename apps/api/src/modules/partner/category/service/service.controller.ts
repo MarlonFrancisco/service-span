@@ -28,8 +28,18 @@ export class ServiceController {
   }
 
   @Post()
-  async create(@Body() service: ServiceDto) {
-    return this.serviceService.create(service);
+  async create(
+    @Param('storeId') storeId: string,
+    @Param('categoryId') categoryId: string,
+    @Body() service: ServiceDto,
+  ) {
+    return this.serviceService.create(
+      new ServiceDto({
+        ...service,
+        store: { id: storeId },
+        category: { id: categoryId },
+      }),
+    );
   }
 
   @Put(':id')
@@ -38,7 +48,11 @@ export class ServiceController {
   }
 
   @Delete(':id')
-  async delete(@Param('id') id: string) {
-    return this.serviceService.delete(id);
+  async delete(
+    @Param('id') id: string,
+    @Param('categoryId') categoryId: string,
+  ) {
+    await this.serviceService.delete(id);
+    return { id, category: { id: categoryId } };
   }
 }

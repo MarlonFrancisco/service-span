@@ -1,6 +1,14 @@
-import { Column, Entity, Index, ManyToOne } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+} from 'typeorm';
 import { BaseEntity } from '../../../database';
 import { User } from '../../../users/user.entity';
+import { Service } from '../../category/service/service.entity';
 import { Store } from '../store.entity';
 
 @Entity('store_members')
@@ -26,4 +34,18 @@ export class StoreMember extends BaseEntity {
 
   @Column({ type: 'boolean', nullable: true, default: false })
   isDeleted: boolean;
+
+  @ManyToMany(() => Service, (service) => service.storeMembers)
+  @JoinTable({
+    name: 'store_members_services',
+    joinColumn: {
+      name: 'store_member_id',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'service_id',
+      referencedColumnName: 'id',
+    },
+  })
+  services: Service[];
 }

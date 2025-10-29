@@ -1,5 +1,6 @@
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, ManyToMany, ManyToOne } from 'typeorm';
 import { BaseEntity } from '../../../database/base.entity';
+import { StoreMember } from '../../stores/store-member/store-member.entity';
 import { Store } from '../../stores/store.entity';
 import { Category } from '../category.entity';
 
@@ -14,7 +15,14 @@ export class Service extends BaseEntity {
   @Column({ type: 'int', nullable: true })
   duration: number;
 
-  @Column({ type: 'decimal', nullable: true })
+  @Column({
+    type: 'decimal',
+    nullable: true,
+    transformer: {
+      to: (value: number) => value,
+      from: (value: string) => (value ? parseFloat(value) : value),
+    },
+  })
   price: number;
 
   @Column({ type: 'boolean', nullable: true })
@@ -25,4 +33,7 @@ export class Service extends BaseEntity {
 
   @ManyToOne(() => Category, (category) => category.services)
   category: Category;
+
+  @ManyToMany(() => StoreMember, (storeMember) => storeMember.services)
+  storeMembers: StoreMember[];
 }

@@ -18,21 +18,30 @@ export class CategoryService {
   async findAll(storeId: string): Promise<Category[]> {
     return this.categoryRepository.find({
       where: { store: { id: storeId } },
-    });
-  }
-
-  async findOne(id: string): Promise<Category> {
-    return this.categoryRepository.findOne({
-      where: { id },
       relations: ['services'],
     });
   }
 
-  async update(category: CategoryDto): Promise<void> {
-    await this.categoryRepository.update(category.id, category);
+  async findOne(
+    id: string,
+    includeServices: boolean = false,
+  ): Promise<Category> {
+    const relations = includeServices ? ['services'] : [];
+
+    return this.categoryRepository.findOne({
+      where: { id },
+      relations,
+    });
   }
 
-  async delete(id: string): Promise<void> {
+  async update(category: CategoryDto): Promise<Category> {
+    await this.categoryRepository.update(category.id, category);
+    return this.findOne(category.id, true);
+  }
+
+  async delete(id: string): Promise<{ id: string }> {
     await this.categoryRepository.delete(id);
+
+    return { id };
   }
 }

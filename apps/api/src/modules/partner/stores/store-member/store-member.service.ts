@@ -43,19 +43,68 @@ export class StoreMemberService {
     const storeMember = this.storeMemberRepository.create({
       ...storeMemberDto,
       user: { id: user.id },
+      services: [],
     });
 
     await this.storeMemberRepository.save(storeMember);
 
-    return { ...storeMember, user };
+    if (storeMemberDto.services) {
+      await this.storeMemberRepository
+        .createQueryBuilder()
+        .relation(StoreMember, 'services')
+        .of(storeMember)
+        .add(storeMemberDto.services.map((s) => ({ id: s.id })));
+    }
+
+    return this.storeMemberRepository.findOne({
+      where: { id: storeMember.id },
+      relations: ['user', 'services'],
+    });
   }
 
   async update(storeMemberDto: Partial<StoreMemberDto>): Promise<StoreMember> {
-    await this.storeMemberRepository.update(storeMemberDto.id, storeMemberDto);
+    const storeMember = await this.storeMemberRepository.findOne({
+      where: { id: storeMemberDto.id },
+      relations: ['services'],
+    });
+
+    await this.storeMemberRepository.update(storeMemberDto.id, {
+      role: storeMemberDto.role,
+    });
+
+    const services = storeMemberDto.services;
+
+    if (services) {
+      const nextServiceIds = services.map((service) => service.id);
+      const currentServiceIds =
+        storeMember.services?.map((service) => service.id) ?? [];
+      const toAdd = nextServiceIds.filter(
+        (id) => !currentServiceIds.includes(id),
+      );
+      const toRemove = currentServiceIds.filter(
+        (id) => !nextServiceIds.includes(id),
+      );
+
+      if (toAdd.length) {
+        await this.storeMemberRepository
+          .createQueryBuilder()
+          .relation(StoreMember, 'services')
+          .of(storeMember.id)
+          .add(toAdd);
+      }
+
+      if (toRemove.length) {
+        await this.storeMemberRepository
+          .createQueryBuilder()
+          .relation(StoreMember, 'services')
+          .of(storeMember.id)
+          .remove(toRemove);
+      }
+    }
 
     return this.storeMemberRepository.findOne({
       where: { id: storeMemberDto.id },
-      relations: ['user'],
+      relations: ['user', 'services'],
     });
   }
 

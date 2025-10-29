@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { Category } from '../category.entity';
 import { ServiceDto } from './service.dto';
 import { Service } from './service.entity';
 
@@ -25,8 +26,10 @@ export class ServiceService {
     return this.serviceRepository.findOne({ where: { id } });
   }
 
-  async update(service: ServiceDto): Promise<void> {
+  async update(service: ServiceDto): Promise<Service> {
     await this.serviceRepository.update(service.id, service);
+    const updatedService = await this.findOne(service.id);
+    return { ...updatedService, category: service.category as Category };
   }
 
   async delete(id: string): Promise<void> {
