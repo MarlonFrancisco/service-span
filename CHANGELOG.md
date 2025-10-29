@@ -1,3 +1,15 @@
+## 0.5.0 (2025-10-29)
+
+### Feat
+
+- **api/partner**: align partner services with professional linking
+- **web/partner**: refactor services module and link professionals
+
+### Refactor
+
+- **api/partner**: added category and service module, and finish crud on store module
+- **web/partner**: improves on service and stores module on partner context
+
 ## 0.4.0 (2025-10-26)
 
 ### Feat
