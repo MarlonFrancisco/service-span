@@ -1,3 +1,4 @@
+import { IService } from './service.types';
 import { IStore } from './stores.types';
 
 export type TProfessionalRole = 'owner' | 'manager' | 'professional';
@@ -19,4 +20,5 @@ export interface IProfessional {
   user: IUser;
   createdAt: Date;
   store?: IStore;
+  services?: IService[];
 }

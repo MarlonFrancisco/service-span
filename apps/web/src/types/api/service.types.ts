@@ -3,7 +3,7 @@ export interface ICategory {
   name: string;
   description: string;
   color: string;
-  services?: IService[];
+  services: IService[];
 }
 
 export interface IService {

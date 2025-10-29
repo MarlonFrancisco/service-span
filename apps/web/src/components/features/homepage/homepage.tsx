@@ -4,13 +4,14 @@ import { Footer, Header } from '@/components/layout';
 import { useSearch } from '@/store';
 import {
   Badge,
-  Button,
   Input,
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
+  ShinyButton,
+  TextAnimate,
   useIsMobile,
 } from '@repo/ui';
 import { MapPin, Search, Sparkles } from 'lucide-react';
@@ -55,15 +56,18 @@ export const Homepage = () => {
                 className="font-display text-5xl font-medium tracking-tight text-balance text-neutral-950 sm:text-7xl mb-8"
                 id="service-snap-title"
               >
-                ServiceSnap.
+                <TextAnimate animation="slideLeft" by="character">
+                  ServiceSnap.
+                </TextAnimate>
               </h1>
-              <p
-                className="text-lg text-neutral-600 mb-12 max-w-2xl mx-auto text-balance"
-                id="service-snap-description"
+              <TextAnimate
+                animation="slideLeft"
+                by="character"
+                className="text-lg text-neutral-600 mb-12 max-w-xl mx-auto"
               >
                 Encontre e agende com os melhores profissionais perto de você.
                 Simples, rápido e confiável.
-              </p>
+              </TextAnimate>
 
               {/* Search Bar */}
               <div
@@ -94,7 +98,7 @@ export const Homepage = () => {
                         onValueChange={setSelectedLocation}
                       >
                         <SelectTrigger
-                          className="border-0 bg-gray-50 h-14 rounded-xl focus:bg-white transition-colors"
+                          className="border-0 bg-gray-50 h-14 rounded-xl focus:bg-white transition-colors w-full"
                           size="lg"
                         >
                           <MapPin className="h-4 w-4 mr-2 text-gray-400" />
@@ -109,13 +113,13 @@ export const Homepage = () => {
                       </Select>
                     </div>
                     <div className="hidden md:block md:col-span-2">
-                      <Button
+                      <ShinyButton
                         onClick={handleSearch}
-                        className="w-full h-14 bg-black hover:bg-gray-800 text-white rounded-xl font-medium transition-all hover:scale-105"
+                        className="w-full h-full"
                       >
                         <Search className="h-5 w-5 mr-2" />
                         Buscar
-                      </Button>
+                      </ShinyButton>
                     </div>
                   </div>
                 </div>

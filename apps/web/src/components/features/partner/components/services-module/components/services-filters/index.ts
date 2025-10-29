@@ -1,4 +1,1 @@
-export {
-  ServicesFiltersDesktop,
-  ServicesFiltersMobile,
-} from './services-filters';
+export { ServicesFilters } from './services-filters';

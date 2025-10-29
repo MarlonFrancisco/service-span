@@ -1,6 +1,7 @@
 import {
   Alert,
   AlertDescription,
+  Badge,
   Button,
   Dialog,
   DialogContent,
@@ -14,29 +15,39 @@ import {
   DrawerTitle,
   FormField,
   Input,
+  Label,
   ScrollArea,
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-  useIsMobile,
 } from '@repo/ui';
 import {
   Briefcase,
   CheckCircle2,
   Edit,
   Mail,
+  Plus,
   Shield,
   UserPlus,
+  X,
 } from 'lucide-react';
 import { useAddProfessionalModal } from './add-professional-modal.hook';
 
 export const AddProfessionalModal = () => {
-  const { form, isAddProfessional, isEditing, handleSubmit, handleClose } =
-    useAddProfessionalModal();
-
-  const isMobile = useIsMobile();
+  const {
+    form,
+    isAddProfessional,
+    isEditing,
+    isMobile,
+    services,
+    selectedServices,
+    addService,
+    removeService,
+    handleSubmit,
+    handleClose,
+  } = useAddProfessionalModal();
 
   if (isMobile) {
     return (
@@ -140,6 +151,58 @@ export const AddProfessionalModal = () => {
                     <p className="text-xs text-gray-500 mt-1.5">
                       O usuário deve estar previamente cadastrado na plataforma
                     </p>
+
+                    <div className="mt-4 space-y-2">
+                      <Label className="text-xs text-gray-600">
+                        Serviços do profissional
+                      </Label>
+                      <Select onValueChange={addService} value="default">
+                        <SelectTrigger className="w-full h-9">
+                          <div className="flex items-center gap-2 text-gray-600">
+                            <Plus className="h-4 w-4" />
+                            <SelectValue placeholder="Adicionar serviço" />
+                          </div>
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="default" disabled>
+                            Selecionar serviço
+                          </SelectItem>
+                          {services.map((service) => (
+                            <SelectItem
+                              key={service.id}
+                              value={service.id}
+                              disabled={selectedServices.some(
+                                (s) => s.id === service.id,
+                              )}
+                            >
+                              {service.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+
+                      {selectedServices.length > 0 && (
+                        <div className="flex flex-wrap gap-2 pt-1">
+                          {selectedServices.map((service) => (
+                            <Badge
+                              key={service.id}
+                              variant="secondary"
+                              className="flex items-center gap-1 pr-1"
+                            >
+                              {service.name}
+                              <button
+                                type="button"
+                                onClick={() => removeService(service.id)}
+                                className="ml-1 inline-flex items-center justify-center rounded hover:bg-gray-200"
+                                aria-label={`Remover ${service.name}`}
+                              >
+                                <X className="h-3.5 w-3.5" />
+                              </button>
+                            </Badge>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </>
                 )}
               />
@@ -232,8 +295,8 @@ export const AddProfessionalModal = () => {
             </p>
 
             <FormField
-              name="role"
               control={form.control}
+              name="role"
               render={({ field }) => (
                 <Select {...field} onValueChange={field.onChange}>
                   <SelectTrigger className="w-full">
@@ -266,6 +329,58 @@ export const AddProfessionalModal = () => {
                 </Select>
               )}
             />
+
+            <div className="space-y-2">
+              <Label className="text-xs text-gray-600">
+                Serviços do profissional
+              </Label>
+              <Select onValueChange={addService} value="default">
+                <SelectTrigger className="w-full h-9">
+                  <div className="flex items-center gap-2 text-gray-600">
+                    <Plus className="h-4 w-4" />
+                    <SelectValue placeholder="Adicionar serviço" />
+                  </div>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="default" disabled>
+                    Selecionar serviço
+                  </SelectItem>
+                  {services.map((service) => (
+                    <SelectItem
+                      key={service.id}
+                      value={service.id}
+                      disabled={selectedServices.some(
+                        (s) => s.id === service.id,
+                      )}
+                    >
+                      {service.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              {selectedServices.length > 0 && (
+                <div className="flex flex-wrap gap-2 pt-1">
+                  {selectedServices.map((service) => (
+                    <Badge
+                      key={service.id}
+                      variant="secondary"
+                      className="flex items-center gap-1 pr-1"
+                    >
+                      {service.name}
+                      <button
+                        type="button"
+                        onClick={() => removeService(service.id)}
+                        className="ml-1 inline-flex items-center justify-center rounded hover:bg-gray-200"
+                        aria-label={`Remover ${service.name}`}
+                      >
+                        <X className="h-3.5 w-3.5" />
+                      </button>
+                    </Badge>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </ScrollArea>
 

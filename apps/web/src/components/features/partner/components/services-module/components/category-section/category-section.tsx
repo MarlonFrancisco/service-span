@@ -1,3 +1,4 @@
+import { ICategory } from '@/types/api/service.types';
 import {
   Badge,
   Button,
@@ -7,37 +8,19 @@ import {
 } from '@repo/ui';
 import { ChevronDown, ChevronRight, Folder, Package, Plus } from 'lucide-react';
 import { motion } from 'motion/react';
-import { Category, Service } from '../../services-module.hook';
+import { getColorBgClass, getColorClass } from '../../utils/colors';
 import { ServiceCard } from '../service-card';
+import { useCategorySection } from './category-section.hook';
 
-interface CategorySectionProps {
-  category: Category;
-  services: Service[];
-  isExpanded: boolean;
-  onToggleExpanded: () => void;
-  onQuickAdd: () => void;
-  onEditService: (service: Service) => void;
-  onDeleteService: (id: string) => void;
-  onToggleServiceStatus: (id: string) => void;
-  getColorClass: (color: string) => string;
-  getColorBgClass: (color: string) => string;
-}
-
-export function CategorySection({
-  category,
-  services,
-  isExpanded,
-  onToggleExpanded,
-  onQuickAdd,
-  onEditService,
-  onDeleteService,
-  onToggleServiceStatus,
-  getColorClass,
-  getColorBgClass,
-}: CategorySectionProps) {
-  const activeCount = services.filter((s) => s.isActive).length;
-  const inactiveCount = services.length - activeCount;
-  const isEmpty = services.length === 0;
+export function CategorySection({ category }: { category: ICategory }) {
+  const {
+    activeCount,
+    inactiveCount,
+    isEmpty,
+    isExpanded,
+    onToggleExpanded,
+    handleQuickAdd,
+  } = useCategorySection({ category });
 
   return (
     <motion.div
@@ -85,8 +68,8 @@ export function CategorySection({
                 {!isEmpty && (
                   <div className="flex items-center gap-3 text-xs">
                     <span className="text-gray-600">
-                      {services.length}{' '}
-                      {services.length === 1 ? 'serviço' : 'serviços'}
+                      {category.services.length}{' '}
+                      {category.services.length === 1 ? 'serviço' : 'serviços'}
                     </span>
                     {activeCount > 0 && (
                       <span className="text-green-700 flex items-center gap-1">
@@ -114,7 +97,7 @@ export function CategorySection({
                   variant="ghost"
                   onClick={(e) => {
                     e.stopPropagation();
-                    onQuickAdd();
+                    handleQuickAdd();
                   }}
                   className="h-8 px-2.5 text-xs text-gray-700 hover:text-gray-900 hover:bg-white/80 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity"
                 >
@@ -124,7 +107,7 @@ export function CategorySection({
 
                 {!isEmpty && (
                   <Badge variant="outline" className="text-xs bg-white/50">
-                    {services.length}
+                    {category.services.length}
                   </Badge>
                 )}
               </div>
@@ -142,7 +125,7 @@ export function CategorySection({
                   <Button
                     size="sm"
                     variant="outline"
-                    onClick={onQuickAdd}
+                    onClick={handleQuickAdd}
                     className="border-gray-300"
                   >
                     <Plus className="h-3.5 w-3.5 mr-1.5" />
@@ -153,13 +136,10 @@ export function CategorySection({
             ) : (
               <div className="px-3 sm:px-4 pb-4 pt-2">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                  {services.map((service) => (
+                  {category.services.map((service) => (
                     <ServiceCard
                       key={service.id}
-                      service={service}
-                      onEdit={onEditService}
-                      onDelete={onDeleteService}
-                      onToggleStatus={onToggleServiceStatus}
+                      service={{ ...service, category }}
                     />
                   ))}
                 </div>

@@ -67,9 +67,10 @@ export function ImageCarousel({
         {/* Main Image */}
         <div className={`relative bg-gray-200 ${getAspectRatioClass()}`}>
           <ImageWithFallback
-            src={images[currentIndex]}
+            src={images[currentIndex] || ''}
+            fill
+            sizes="(min-width: 728px) 320px, 150px"
             alt={`${alt} - Imagem ${currentIndex + 1}`}
-            className="w-full h-full object-cover"
           />
 
           {/* Navigation Arrows */}

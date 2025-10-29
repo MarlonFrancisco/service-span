@@ -1,15 +1,14 @@
+import { useServices } from '@/store';
 import { Card, CardContent } from '@repo/ui';
 import { CheckCircle2, Package } from 'lucide-react';
 
-interface ServicesStatsProps {
-  totalServices: number;
-  activeServices: number;
-}
+export function ServicesStats() {
+  const { services } = useServices();
 
-export function ServicesStats({
-  totalServices,
-  activeServices,
-}: ServicesStatsProps) {
+  const totalServices = services.length;
+
+  const activeServices = services.filter((s) => s.isActive).length;
+
   return (
     <div className="grid grid-cols-2 gap-3 sm:gap-4">
       <Card className="border border-gray-200 bg-white">

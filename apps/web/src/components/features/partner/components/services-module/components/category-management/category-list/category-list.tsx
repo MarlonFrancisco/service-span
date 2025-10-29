@@ -1,30 +1,17 @@
 import { Badge, Button, TabsContent } from '@repo/ui';
 import { Edit, Folder, Tags, Trash2 } from 'lucide-react';
 import { motion } from 'motion/react';
-import { Category, Service } from '../../services-module.hook';
+import { getColorClass } from '../../../utils/colors';
+import { useCategoryList } from './category-list.hook';
 
-interface CategoryListProps {
-  categories: Category[];
-  services: Service[];
-  onEdit: (category: Category) => void;
-  onDelete: (categoryId: string) => void;
-  getColorClass: (color: string) => string;
-}
+export function CategoryList() {
+  const { categories, handleEdit, handleDelete } = useCategoryList();
 
-export function CategoryList({
-  categories,
-  services,
-  onEdit,
-  onDelete,
-  getColorClass,
-}: CategoryListProps) {
   return (
     <TabsContent value="list" className="p-6 space-y-4 mt-0">
       <div className="space-y-3">
         {categories.map((category) => {
-          const serviceCount = services.filter(
-            (service) => service.category === category.name,
-          ).length;
+          const serviceCount = category.services.length;
 
           return (
             <motion.div
@@ -58,7 +45,7 @@ export function CategoryList({
                 <Button
                   size="sm"
                   variant="ghost"
-                  onClick={() => onEdit(category)}
+                  onClick={() => handleEdit(category)}
                   className="text-gray-600 hover:text-gray-900 hover:bg-gray-100 h-8 w-8 p-0"
                 >
                   <Edit className="h-3.5 w-3.5" />
@@ -66,7 +53,7 @@ export function CategoryList({
                 <Button
                   size="sm"
                   variant="ghost"
-                  onClick={() => onDelete(category.id)}
+                  onClick={() => handleDelete(category)}
                   disabled={serviceCount > 0}
                   className="text-gray-600 hover:text-red-600 hover:bg-red-50 disabled:opacity-50 h-8 w-8 p-0"
                 >

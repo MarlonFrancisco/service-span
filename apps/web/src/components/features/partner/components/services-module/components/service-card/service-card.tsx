@@ -1,34 +1,15 @@
 'use client';
+import { IService } from '@/types/api/service.types';
 import { Badge, Button, Card, CardContent, useIsMobile } from '@repo/ui';
 import { Clock, DollarSign, Edit, Trash2 } from 'lucide-react';
 import { motion } from 'motion/react';
+import { useServiceCard } from './service-card.hook';
 
-interface Service {
-  id: string;
-  name: string;
-  description: string;
-  duration: number;
-  price: number;
-  category: string;
-  isActive: boolean;
-  maxBookingsPerDay?: number;
-  tags?: string[];
-}
-
-interface ServiceCardProps {
-  service: Service;
-  onEdit: (service: Service) => void;
-  onDelete: (id: string) => void;
-  onToggleStatus: (id: string) => void;
-}
-
-export function ServiceCard({
-  service,
-  onEdit,
-  onDelete,
-  onToggleStatus,
-}: ServiceCardProps) {
+export function ServiceCard({ service }: { service: IService }) {
   const isMobile = useIsMobile();
+  const { handleEdit, handleDelete, handleToggleStatus } = useServiceCard({
+    service,
+  });
 
   return (
     <motion.div
@@ -51,7 +32,7 @@ export function ServiceCard({
               </h3>
               <div className="flex items-center gap-2 flex-wrap">
                 <Badge variant="outline" className="border-gray-300 text-xs">
-                  {service.category}
+                  {service.category?.name}
                 </Badge>
                 <Badge
                   className={
@@ -92,7 +73,7 @@ export function ServiceCard({
               <div className="grid grid-cols-2 gap-2">
                 <Button
                   variant="outline"
-                  onClick={() => onEdit(service)}
+                  onClick={handleEdit}
                   className="h-10 border-gray-300 text-gray-700 hover:bg-gray-50 justify-center"
                 >
                   <Edit className="h-4 w-4 mr-2" />
@@ -100,7 +81,7 @@ export function ServiceCard({
                 </Button>
                 <Button
                   variant="outline"
-                  onClick={() => onDelete(service.id)}
+                  onClick={handleDelete}
                   className="h-10 border-gray-300 text-red-600 hover:bg-red-50 hover:border-red-300 justify-center"
                 >
                   <Trash2 className="h-4 w-4 mr-2" />
@@ -114,7 +95,7 @@ export function ServiceCard({
                     ? 'bg-gray-900 hover:bg-gray-800 text-white'
                     : 'border-gray-300 hover:bg-gray-50'
                 }`}
-                onClick={() => onToggleStatus(service.id)}
+                onClick={handleToggleStatus}
               >
                 {service.isActive ? 'Desativar Serviço' : 'Ativar Serviço'}
               </Button>
@@ -125,7 +106,7 @@ export function ServiceCard({
               <Button
                 size="sm"
                 variant="ghost"
-                onClick={() => onEdit(service)}
+                onClick={handleEdit}
                 className="text-gray-600 hover:text-gray-900 hover:bg-gray-100 h-8 px-2"
               >
                 <Edit className="h-3.5 w-3.5" />
@@ -133,7 +114,7 @@ export function ServiceCard({
               <Button
                 size="sm"
                 variant="ghost"
-                onClick={() => onDelete(service.id)}
+                onClick={handleDelete}
                 className="text-gray-600 hover:text-red-600 hover:bg-red-50 h-8 px-2"
               >
                 <Trash2 className="h-3.5 w-3.5" />
@@ -148,7 +129,7 @@ export function ServiceCard({
                       ? 'bg-gray-900 hover:bg-gray-800 text-white'
                       : 'border-gray-300 hover:bg-gray-50'
                   }`}
-                  onClick={() => onToggleStatus(service.id)}
+                  onClick={handleToggleStatus}
                 >
                   {service.isActive ? 'Desativar' : 'Ativar'}
                 </Button>
