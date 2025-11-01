@@ -2,6 +2,35 @@ import { IAppointment } from './schedule.types';
 import { IService } from './service.types';
 import { IProfessional } from './users.types';
 
+export type TNotificationStatus = 'sent' | 'delivered' | 'failed' | 'pending';
+export type TNotificationType =
+  | 'booking'
+  | 'cancellation'
+  | 'reminder'
+  | 'system'
+  | 'marketing';
+
+export interface INotificationsHistory {
+  id: string;
+  type: TNotificationType;
+  title: string;
+  message: string;
+  timestamp: Date;
+  read: boolean;
+  recipient?: string;
+  status?: TNotificationStatus;
+}
+
+export interface INotificationsSettings {
+  id: string;
+  emailReminderEnabled: boolean;
+  emailReminderAdvanceHours: string;
+  emailReminderCustomMessage: string;
+  smsReminderEnabled: boolean;
+  smsReminderAdvanceHours: string;
+  smsReminderCustomMessage: string;
+}
+
 export interface IStoreGallery {
   id: string;
   url: string;
@@ -46,4 +75,6 @@ export interface IStore extends TWorkingHours {
   facebook?: string;
   schedules: IAppointment[];
   businessDays: TWorkingDays;
+  notificationsHistory: INotificationsHistory[];
+  notificationsSettings: INotificationsSettings;
 }

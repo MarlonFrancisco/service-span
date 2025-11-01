@@ -4,11 +4,10 @@ import { HttpClientService } from '../api/http-client.service';
 
 export class UsersService {
   static apiClient: HttpClientService = apiClient;
-  static headers?: HeadersInit;
 
-  static async getUser() {
+  static async getUser({ headers }: { headers?: HeadersInit } = {}) {
     return await this.apiClient.get<IUser>('/users/me', {
-      headers: this.headers,
+      headers,
     });
   }
 

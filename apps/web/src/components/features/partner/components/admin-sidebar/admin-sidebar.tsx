@@ -28,6 +28,7 @@ import {
 import {
   Activity,
   ArrowLeft,
+  AtSign,
   BellRing,
   Building2,
   Calendar,
@@ -37,6 +38,7 @@ import {
   CreditCard,
   DollarSign,
   LayoutDashboard,
+  Mail,
   Settings,
   Store,
   Users,
@@ -115,6 +117,27 @@ const menuSections = [
         id: 'notifications',
         label: 'Notificações',
         icon: BellRing,
+        hasSubmenu: true,
+        submenu: [
+          {
+            id: 'notifications-history',
+            url: '/partner/notifications/history',
+            label: 'Histórico',
+            icon: Clock,
+          },
+          {
+            id: 'notifications-email-settings',
+            url: '/partner/notifications/email-settings',
+            label: 'Configurar E-mail',
+            icon: AtSign,
+          },
+          {
+            id: 'notifications-sms-settings',
+            url: '/partner/notifications/sms-settings',
+            label: 'Configurar SMS',
+            icon: Mail,
+          },
+        ],
       },
       {
         id: 'plans',

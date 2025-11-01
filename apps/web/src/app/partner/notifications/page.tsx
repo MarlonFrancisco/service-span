@@ -1,5 +1,5 @@
-import { NotificationsModule } from '@/components/features/partner';
+import { redirect } from 'next/navigation';
 
 export default function PartnerNotificationsPage() {
-  return <NotificationsModule />;
+  redirect('/partner/notifications/history');
 }

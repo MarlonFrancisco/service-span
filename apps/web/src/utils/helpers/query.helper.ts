@@ -30,4 +30,10 @@ export const CACHE_QUERY_KEYS = {
   ],
   store: (storeId: string) => [`partner/stores/${storeId}`],
   categories: (storeId: string) => [`partner/categories/${storeId}`],
+  notificationsHistory: (storeId: string) => [
+    `partner/stores/${storeId}/notifications/history`,
+  ],
+  notificationsSettings: (storeId: string) => [
+    `partner/stores/${storeId}/notifications/settings`,
+  ],
 };

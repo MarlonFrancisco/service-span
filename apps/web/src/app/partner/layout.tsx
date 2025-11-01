@@ -1,6 +1,6 @@
 import { Partner } from '@/components/features/partner';
 import { StoreService } from '@/service/store';
-import { getQueryClient } from '@/utils/helpers/query.helper';
+import { CACHE_QUERY_KEYS, getQueryClient } from '@/utils/helpers/query.helper';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { cookies } from 'next/headers';
 import { ReactNode } from 'react';
@@ -20,8 +20,8 @@ export default async function PartnerLayout({ children }: PartnerLayoutProps) {
   };
 
   await queryClient.prefetchQuery({
-    queryKey: ['stores'],
-    queryFn: () => StoreService.getStores(),
+    queryKey: CACHE_QUERY_KEYS.stores(),
+    queryFn: () => StoreService.getAll(),
   });
 
   const dehydratedState = dehydrate(queryClient);

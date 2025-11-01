@@ -1,5 +1,6 @@
+import { NotificationsHistoryService } from '@/service/partner/notifications-history';
 import { StoreService } from '@/service/store';
-import { useServicesStore } from '@/store';
+import { useNotificationsStore, useServicesStore } from '@/store';
 import { usePartnerStore } from '@/store/partner';
 import { MODULE_CONFIG } from '@/utils/constants/partner.constants';
 import { CACHE_QUERY_KEYS } from '@/utils/helpers/query.helper';
@@ -27,12 +28,22 @@ export const usePartner = () => {
     enabled: !!stores[0]?.id,
   });
 
+  const { data: notificationsHistory = [] } = useQuery({
+    queryKey: CACHE_QUERY_KEYS.notificationsHistory(activeStore?.id ?? ''),
+    queryFn: () => NotificationsHistoryService.getAll(activeStore?.id ?? ''),
+    enabled: !!activeStore?.id,
+  });
+
   useEffect(() => {
-    if (activeStore && stores) {
+    if (activeStore) {
       usePartnerStore.setState({ activeStore, stores });
       useServicesStore.setState({ services: activeStore.services });
     }
   }, [activeStore, stores]);
+
+  useEffect(() => {
+    useNotificationsStore.setState({ notificationsHistory });
+  }, [notificationsHistory]);
 
   return {
     currentModule,

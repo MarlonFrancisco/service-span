@@ -44,4 +44,20 @@ export const MODULE_CONFIG = {
     description: 'Configure lembretes e comunicações automáticas',
     showStoreSelector: true,
   },
+  history: {
+    title: 'Histórico de Notificações',
+    description:
+      'Visualize e gerencie todas as notificações enviadas aos seus clientes',
+    showStoreSelector: true,
+  },
+  'email-settings': {
+    title: 'Configurações de E-mail',
+    description: 'Configure as notificações por e-mail',
+    showStoreSelector: true,
+  },
+  'sms-settings': {
+    title: 'Configurações de SMS',
+    description: 'Configure as notificações por SMS',
+    showStoreSelector: true,
+  },
 };
