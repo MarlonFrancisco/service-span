@@ -26,15 +26,23 @@ export class Schedule extends BaseEntity {
   })
   status: 'scheduled' | 'completed' | 'cancelled' | 'no-show';
 
-  @ManyToOne(() => StoreMember, (storeMember) => storeMember.schedules)
+  @ManyToOne(() => StoreMember, (storeMember) => storeMember.schedules, {
+    onDelete: 'CASCADE',
+  })
   storeMember: StoreMember;
 
-  @ManyToOne(() => Service, (service) => service.schedules)
+  @ManyToOne(() => Service, (service) => service.schedules, {
+    onDelete: 'CASCADE',
+  })
   service: Service;
 
-  @ManyToOne(() => User, (user) => user.schedules)
+  @ManyToOne(() => User, (user) => user.schedules, {
+    onDelete: 'CASCADE',
+  })
   user: User;
 
-  @ManyToOne(() => Store, (store) => store.schedules)
+  @ManyToOne(() => Store, (store) => store.schedules, {
+    onDelete: 'CASCADE',
+  })
   store: Store;
 }

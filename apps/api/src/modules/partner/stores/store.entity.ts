@@ -26,6 +26,30 @@ export class Store extends BaseEntity {
   @Column({ type: 'boolean', default: false, nullable: true })
   isDeleted: boolean;
 
+  // business hours
+  @Column({ type: 'char', length: 5, nullable: true })
+  openTime: string;
+
+  @Column({ type: 'char', length: 5, nullable: true })
+  closeTime: string;
+
+  @Column({ type: 'char', length: 5, nullable: true })
+  lunchStartTime: string;
+
+  @Column({ type: 'char', length: 5, nullable: true })
+  lunchEndTime: string;
+
+  @Column({ type: 'jsonb', nullable: true })
+  businessDays: {
+    monday: boolean;
+    tuesday: boolean;
+    wednesday: boolean;
+    thursday: boolean;
+    friday: boolean;
+    saturday: boolean;
+    sunday: boolean;
+  };
+
   // location
 
   @Column({ type: 'varchar', nullable: true })
@@ -56,6 +80,8 @@ export class Store extends BaseEntity {
 
   @Column({ type: 'varchar', nullable: true })
   facebook: string;
+
+  // relations
 
   @OneToMany(() => StoreMember, (storeMember) => storeMember.store)
   storeMembers: StoreMember[];

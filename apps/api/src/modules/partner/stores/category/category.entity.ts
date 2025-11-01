@@ -17,6 +17,8 @@ export class Category extends BaseEntity {
   @OneToMany(() => Service, (service) => service.category)
   services: Service[];
 
-  @ManyToOne(() => Store, (store) => store.categories)
+  @ManyToOne(() => Store, (store) => store.categories, {
+    onDelete: 'CASCADE',
+  })
   store: Store;
 }

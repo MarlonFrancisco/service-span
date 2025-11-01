@@ -13,12 +13,26 @@ export class StoresService {
 
   async create(storeDto: StoreDto): Promise<Store> {
     const store = this.storesRepository.create(storeDto);
-    return this.storesRepository.save(store);
+    const savedStore = await this.storesRepository.save(store);
+    return {
+      ...savedStore,
+      gallery: [],
+      storeMembers: [],
+      services: [],
+      schedules: [],
+    };
   }
 
   async findAll(userId: string): Promise<Store[]> {
     return this.storesRepository.find({
       where: { owner: { id: userId } },
+      relations: [
+        'gallery',
+        'storeMembers',
+        'storeMembers.user',
+        'storeMembers.services',
+        'services',
+      ],
     });
   }
 

@@ -58,7 +58,7 @@ export class StoreMemberService {
 
     return this.storeMemberRepository.findOne({
       where: { id: storeMember.id },
-      relations: ['user', 'services'],
+      relations: ['user', 'services', 'store'],
     });
   }
 
@@ -104,7 +104,7 @@ export class StoreMemberService {
 
     return this.storeMemberRepository.findOne({
       where: { id: storeMemberDto.id },
-      relations: ['user', 'services'],
+      relations: ['user', 'services', 'store', 'blockedTimes'],
     });
   }
 

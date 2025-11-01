@@ -29,10 +29,14 @@ export class Service extends BaseEntity {
   @Column({ type: 'boolean', nullable: true })
   isActive: boolean;
 
-  @ManyToOne(() => Store, (store) => store.services)
+  @ManyToOne(() => Store, (store) => store.services, {
+    onDelete: 'CASCADE',
+  })
   store: Store;
 
-  @ManyToOne(() => Category, (category) => category.services)
+  @ManyToOne(() => Category, (category) => category.services, {
+    onDelete: 'CASCADE',
+  })
   category: Category;
 
   @ManyToMany(() => StoreMember, (storeMember) => storeMember.services)

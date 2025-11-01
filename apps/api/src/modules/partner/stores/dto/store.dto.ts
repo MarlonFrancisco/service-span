@@ -19,6 +19,20 @@ export class StoreDto {
   storeMembers?: User[];
   gallery?: Gallery[];
 
+  openTime: string;
+  closeTime: string;
+  lunchStartTime: string;
+  lunchEndTime: string;
+  businessDays: {
+    monday: boolean;
+    tuesday: boolean;
+    wednesday: boolean;
+    thursday: boolean;
+    friday: boolean;
+    saturday: boolean;
+    sunday: boolean;
+  };
+
   constructor(data: Partial<StoreDto>) {
     this.name = data.name;
     this.description = data.description;
@@ -36,5 +50,10 @@ export class StoreDto {
     this.storeMembers = data.storeMembers;
     this.gallery = data.gallery;
     this.owner = data.owner;
+    this.openTime = data.openTime;
+    this.closeTime = data.closeTime;
+    this.lunchStartTime = data.lunchStartTime;
+    this.lunchEndTime = data.lunchEndTime;
+    this.businessDays = data.businessDays;
   }
 }
