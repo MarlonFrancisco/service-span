@@ -1,3 +1,5 @@
+import { IAppointment } from './schedule.types';
+import { IService } from './service.types';
 import { IProfessional } from './users.types';
 
 export interface IStoreGallery {
@@ -20,9 +22,10 @@ export interface IStore {
   amenities: string[];
   gallery: IStoreGallery[];
   storeMembers: IProfessional[];
-
+  services: IService[];
   email?: string;
   website?: string;
   instagram?: string;
   facebook?: string;
+  schedules: IAppointment[];
 }

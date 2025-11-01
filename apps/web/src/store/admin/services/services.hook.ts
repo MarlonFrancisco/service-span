@@ -1,6 +1,6 @@
 import { CategoryService } from '@/service/partner/category';
 import { ServiceService } from '@/service/partner/service';
-import { usePartner } from '@/store/partner';
+import { usePartnerStore } from '@/store/partner';
 import { ICategory, IService } from '@/types/api/service.types';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useMemo } from 'react';
@@ -10,13 +10,13 @@ import { useServicesStore } from './services.store';
 export const useServices = () => {
   const store = useServicesStore();
 
-  const { activeStore } = usePartner();
+  const activeStore = usePartnerStore((state) => state.activeStore);
 
   const queryClient = useQueryClient();
 
   const { data: categories = [] } = useQuery({
     queryKey: ['partner/categories'],
-    queryFn: () => CategoryService.getAll(activeStore!.id),
+    queryFn: () => CategoryService.getAll(activeStore.id),
     enabled: !!activeStore?.id,
   });
 

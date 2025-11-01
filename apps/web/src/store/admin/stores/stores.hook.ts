@@ -78,7 +78,6 @@ export const useStoresAdmin = () => {
     mutationFn: (data: { storeId: string; imageId: string }) =>
       GalleryService.update(data.storeId, data.imageId),
     onSuccess: (data) => {
-      console.log(data);
       queryClient.setQueryData(['stores'], (old: IStore[]) =>
         old.map((s) =>
           s.id === data.store?.id

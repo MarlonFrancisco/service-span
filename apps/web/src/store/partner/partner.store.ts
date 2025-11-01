@@ -1,16 +1,15 @@
 import { create } from 'zustand';
+import { INITIAL_STORE } from '../admin/stores/stores.constants';
 import {
   setActiveStoreAction,
   setIsMobileSidebarOpenAction,
 } from './partner.actions';
-import { MODULE_CONFIG } from './partner.constants';
-import type { IPartnerStore, TStore } from './partner.types';
+import type { IPartnerStore } from './partner.types';
 
 export const usePartnerStore = create<IPartnerStore>((set, get) => ({
-  activeStore: {} as TStore,
+  stores: [],
+  activeStore: INITIAL_STORE,
   isMobileSidebarOpen: false,
-  activeModule: null,
-  moduleConfig: MODULE_CONFIG,
   setActiveStore: setActiveStoreAction(set, get),
   setIsMobileSidebarOpen: setIsMobileSidebarOpenAction(set, get),
 }));

@@ -1,5 +1,5 @@
 'use client';
-import { usePartner, useServices } from '@/store';
+import { usePartnerStore, useServices } from '@/store';
 import { Button, Card, CardContent } from '@repo/ui';
 import { Package, Plus } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
@@ -19,7 +19,7 @@ export function ServicesModule() {
     setServiceModalParams,
   } = useServices();
 
-  const { activeStore } = usePartner();
+  const activeStore = usePartnerStore((state) => state.activeStore);
 
   return (
     <div className="space-y-6 pb-6 sm:pb-6 mb-20 sm:mb-0">

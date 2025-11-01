@@ -1,33 +1,18 @@
-export interface IAppointment {
-  id: string;
-  clientName: string;
-  clientPhone?: string;
-  clientEmail?: string;
-  service: string;
-  professional: string;
-  startTime: string;
-  endTime: string;
-  date: string;
-  status: 'scheduled' | 'completed' | 'cancelled' | 'no-show';
-  price: number;
-  notes?: string;
+import { IBlockedTime } from '@/types/api/blocked-times.types';
+import type { IAppointment } from '@/types/api/schedule.types';
+import type { IService } from '@/types/api/service.types';
+import type { IProfessional } from '@/types/api/users.types';
+
+export type TSelectedProfessionalId = 'all' | string;
+
+export interface TWorkingHours {
+  start: string;
+  end: string;
+  lunchStart: string;
+  lunchEnd: string;
 }
 
-export interface IProfessional {
-  id: string;
-  name: string;
-  specialty: string;
-  color: string;
-}
-
-export interface IScheduleService {
-  id: string;
-  name: string;
-  duration: number;
-  price: number;
-}
-
-export interface IWorkingDays {
+export interface TWorkingDays {
   monday: boolean;
   tuesday: boolean;
   wednesday: boolean;
@@ -37,58 +22,51 @@ export interface IWorkingDays {
   sunday: boolean;
 }
 
-export interface IWorkingHours {
-  start: string;
-  end: string;
-  lunchStart: string;
-  lunchEnd: string;
-}
+export type TWorkingDayKey = keyof TWorkingDays;
 
-export interface IAppointmentFormData {
-  clientName: string;
-  clientPhone: string;
-  clientEmail: string;
-  service: string;
-  professional: string;
-  date: string;
-  startTime: string;
-  duration: string;
-  notes: string;
-}
+export type TBlockedSlots = IBlockedTime[];
 
-export interface IAgendaStore {
-  // State
-  appointments: IAppointment[];
-  professionals: IProfessional[];
-  services: IScheduleService[];
+export interface IAgendaState {
   currentWeek: number;
-  selectedProfessional: string;
-  selectedAppointment: IAppointment | null;
+  selectedProfessional: TSelectedProfessionalId;
+  selectedAppointment?: IAppointment;
+  detailsAppointment: IAppointment;
   isSettingsOpen: boolean;
   isAddAppointmentOpen: boolean;
   isFocusMode: boolean;
   isBlockMode: boolean;
-  blockedSlots: Set<string>;
-  workingDays: IWorkingDays;
-  workingHours: IWorkingHours;
-  appointmentForm: IAppointmentFormData;
-
-  // Actions
-  setCurrentWeek: (week: number) => void;
-  setSelectedProfessional: (professionalId: string) => void;
-  setSelectedAppointment: (appointment: IAppointment | null) => void;
-  setIsSettingsOpen: (isOpen: boolean) => void;
-  setIsAddAppointmentOpen: (isOpen: boolean) => void;
-  setIsFocusMode: (isFocus: boolean) => void;
-  setIsBlockMode: (isBlock: boolean) => void;
-  setAppointmentForm: (form: Partial<IAppointmentFormData>) => void;
-  setWorkingDays: (days: Partial<IWorkingDays>) => void;
-  setWorkingHours: (hours: Partial<IWorkingHours>) => void;
-  toggleBlockedSlot: (slotKey: string) => void;
-  resetAppointmentForm: () => void;
-
-  // Appointment CRUD
-  addAppointment: (appointment: Omit<IAppointment, 'id'>) => void;
-  updateAppointmentStatus: (id: string, status: IAppointment['status']) => void;
-  deleteAppointment: (id: string) => void;
+  blockedSlots: TBlockedSlots;
+  selectedDayIndex: number;
+  workingDays: TWorkingDays;
+  workingHours: TWorkingHours;
+  appointments: IAppointment[];
+  professionals: IProfessional[];
+  services: IService[];
+  days: string[];
+  workingDayKeys: readonly TWorkingDayKey[];
 }
+
+export interface IAgendaActions {
+  setCurrentWeek: (currentWeek: number) => void;
+  setSelectedProfessional: (professionalId: TSelectedProfessionalId) => void;
+  setIsSettingsOpen: (isOpen: boolean) => void;
+  setIsAddAppointmentOpen: ({
+    isAddAppointmentOpen,
+    selectedAppointment,
+  }: {
+    isAddAppointmentOpen: boolean;
+    selectedAppointment?: IAppointment;
+  }) => void;
+  setDetailsAppointment: (detailsAppointment?: IAppointment) => void;
+  setIsFocusMode: (isFocusMode: boolean) => void;
+  setIsBlockMode: (isBlockMode: boolean) => void;
+  toggleBlockedSlot: (slotKey: string) => void;
+  setSelectedDayIndex: (index: number) => void;
+  setWorkingDays: (workingDays: TWorkingDays) => void;
+  updateWorkingDays: (updater: (prev: TWorkingDays) => TWorkingDays) => void;
+  setWorkingHours: (workingHours: TWorkingHours) => void;
+  updateWorkingHours: (updater: (prev: TWorkingHours) => TWorkingHours) => void;
+  seedAppointments: (appointments: IAppointment[]) => void;
+}
+
+export type IAgendaStore = IAgendaState & IAgendaActions;

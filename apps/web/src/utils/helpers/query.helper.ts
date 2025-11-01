@@ -21,3 +21,12 @@ export const getQueryClient = () => {
     return window.browserQueryClient;
   }
 };
+
+export const CACHE_QUERY_KEYS = {
+  stores: () => ['partner/stores'],
+  schedules: (storeId: string) => [`partner/schedules/${storeId}`],
+  blockedTimes: (storeId: string) => [
+    `partner/schedules/blocked-times/${storeId}`,
+  ],
+  store: (storeId: string) => [`partner/stores/${storeId}`],
+};

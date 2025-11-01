@@ -1,5 +1,5 @@
 'use client';
-import { usePartner } from '@/store';
+import { usePartnerStore } from '@/store/partner';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -14,18 +14,20 @@ import {
 } from '@repo/ui';
 import type { ReactNode } from 'react';
 import { AdminSidebar, StoreSelector } from './components';
+import { usePartner } from './partner.hook';
 
 type TPartnerProps = {
   children: ReactNode;
 };
 
 export function Partner({ children }: TPartnerProps) {
-  const {
-    isMobileSidebarOpen,
-    currentModule,
-    showStoreSelector,
-    setIsMobileSidebarOpen,
-  } = usePartner();
+  const { currentModule, showStoreSelector } = usePartner();
+  const isMobileSidebarOpen = usePartnerStore(
+    (state) => state.isMobileSidebarOpen,
+  );
+  const setIsMobileSidebarOpen = usePartnerStore(
+    (state) => state.setIsMobileSidebarOpen,
+  );
 
   return (
     <SidebarProvider>

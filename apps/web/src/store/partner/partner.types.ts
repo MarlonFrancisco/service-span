@@ -11,17 +11,10 @@ export type TModuleId =
   | 'plans'
   | 'notifications';
 
-export type TModuleConfig = {
-  title: string;
-  description: string;
-  showStoreSelector?: boolean;
-};
-
 export interface IPartnerStore {
   activeStore: IStore;
+  stores: IStore[];
   isMobileSidebarOpen: boolean;
-  activeModule: TModuleId | null;
-  moduleConfig: Record<TModuleId, TModuleConfig>;
 
   // Actions
   setActiveStore: (store: IStore) => Promise<void>;

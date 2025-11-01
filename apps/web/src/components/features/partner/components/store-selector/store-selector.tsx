@@ -1,12 +1,14 @@
 'use client';
-import { usePartner } from '@/store';
+import { usePartnerStore } from '@/store/partner';
 import { Button } from '@repo/ui';
 import { Check, ChevronDown, MapPin } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { useState } from 'react';
 
 export function StoreSelector() {
-  const { stores, activeStore, setActiveStore } = usePartner();
+  const stores = usePartnerStore((state) => state.stores);
+  const activeStore = usePartnerStore((state) => state.activeStore);
+  const setActiveStore = usePartnerStore((state) => state.setActiveStore);
   const [isOpen, setIsOpen] = useState(false);
 
   return (

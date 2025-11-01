@@ -1,103 +1,70 @@
+import { toast } from 'sonner';
 import { create } from 'zustand';
 import {
+  AGENDA_DAYS,
+  AGENDA_WORKING_DAY_KEYS,
   INITIAL_APPOINTMENT_FORM,
   INITIAL_WORKING_DAYS,
   INITIAL_WORKING_HOURS,
-  MOCK_APPOINTMENTS,
-  MOCK_PROFESSIONALS,
-  MOCK_SERVICES,
 } from './agenda.constants';
-import type {
-  IAgendaStore,
-  IAppointment,
-  IAppointmentFormData,
-  IWorkingDays,
-  IWorkingHours,
-} from './agenda.types';
+import type { IAgendaStore } from './agenda.types';
 
 export const useAgendaStore = create<IAgendaStore>((set) => ({
-  // State
-  appointments: MOCK_APPOINTMENTS,
-  professionals: MOCK_PROFESSIONALS,
-  services: MOCK_SERVICES,
   currentWeek: 0,
   selectedProfessional: 'all',
-  selectedAppointment: null,
+  selectedAppointment: undefined,
+  detailsAppointment: INITIAL_APPOINTMENT_FORM,
   isSettingsOpen: false,
   isAddAppointmentOpen: false,
   isFocusMode: false,
   isBlockMode: false,
-  blockedSlots: new Set<string>(),
+  blockedSlots: {},
+  selectedDayIndex: 0,
   workingDays: INITIAL_WORKING_DAYS,
   workingHours: INITIAL_WORKING_HOURS,
-  appointmentForm: INITIAL_APPOINTMENT_FORM,
+  appointments: [],
+  professionals: [],
+  services: [],
+  days: AGENDA_DAYS,
+  workingDayKeys: AGENDA_WORKING_DAY_KEYS,
 
-  // Actions
-  setCurrentWeek: (week: number) => set({ currentWeek: week }),
-  setSelectedProfessional: (professionalId: string) =>
-    set({ selectedProfessional: professionalId }),
-  setSelectedAppointment: (appointment: IAppointment | null) =>
-    set({ selectedAppointment: appointment }),
-  setIsSettingsOpen: (isOpen: boolean) => set({ isSettingsOpen: isOpen }),
-  setIsAddAppointmentOpen: (isOpen: boolean) =>
-    set({ isAddAppointmentOpen: isOpen }),
-  setIsFocusMode: (isFocus: boolean) => set({ isFocusMode: isFocus }),
-  setIsBlockMode: (isBlock: boolean) => set({ isBlockMode: isBlock }),
+  setCurrentWeek: (currentWeek) => set({ currentWeek }),
+  setSelectedProfessional: (selectedProfessional) =>
+    set({ selectedProfessional }),
+  setIsSettingsOpen: (isSettingsOpen) => set({ isSettingsOpen }),
+  setIsAddAppointmentOpen: ({ isAddAppointmentOpen, selectedAppointment }) =>
+    set({ isAddAppointmentOpen, selectedAppointment }),
+  setDetailsAppointment: (detailsAppointment = INITIAL_APPOINTMENT_FORM) =>
+    set({ detailsAppointment }),
+  setIsFocusMode: (isFocusMode) => set({ isFocusMode }),
+  setIsBlockMode: (isBlockMode) => set({ isBlockMode }),
 
-  setAppointmentForm: (form: Partial<IAppointmentFormData>) => {
-    set((state) => ({
-      appointmentForm: { ...state.appointmentForm, ...form },
-    }));
-  },
-
-  setWorkingDays: (days: Partial<IWorkingDays>) => {
-    set((state) => ({
-      workingDays: { ...state.workingDays, ...days },
-    }));
-  },
-
-  setWorkingHours: (hours: Partial<IWorkingHours>) => {
-    set((state) => ({
-      workingHours: { ...state.workingHours, ...hours },
-    }));
-  },
-
-  toggleBlockedSlot: (slotKey: string) => {
+  toggleBlockedSlot: (slotKey) => {
     set((state) => {
-      const newSet = new Set(state.blockedSlots);
-      if (newSet.has(slotKey)) {
-        newSet.delete(slotKey);
+      const blockedSlots = { ...state.blockedSlots };
+      const isBlocked = Boolean(blockedSlots[slotKey]);
+
+      if (isBlocked) {
+        delete blockedSlots[slotKey];
+        toast.success('Horário desbloqueado');
       } else {
-        newSet.add(slotKey);
+        blockedSlots[slotKey] = true;
+        toast.success('Horário bloqueado');
       }
-      return { blockedSlots: newSet };
+
+      return { blockedSlots };
     });
   },
 
-  resetAppointmentForm: () =>
-    set({ appointmentForm: INITIAL_APPOINTMENT_FORM }),
+  setSelectedDayIndex: (selectedDayIndex) => set({ selectedDayIndex }),
 
-  // Appointment CRUD
-  addAppointment: (appointment: Omit<IAppointment, 'id'>) => {
-    set((state) => ({
-      appointments: [
-        ...state.appointments,
-        { ...appointment, id: String(Date.now()) },
-      ],
-    }));
-  },
+  setWorkingDays: (workingDays) => set({ workingDays }),
+  updateWorkingDays: (updater) =>
+    set((state) => ({ workingDays: updater(state.workingDays) })),
 
-  updateAppointmentStatus: (id: string, status: IAppointment['status']) => {
-    set((state) => ({
-      appointments: state.appointments.map((apt) =>
-        apt.id === id ? { ...apt, status } : apt,
-      ),
-    }));
-  },
+  setWorkingHours: (workingHours) => set({ workingHours }),
+  updateWorkingHours: (updater) =>
+    set((state) => ({ workingHours: updater(state.workingHours) })),
 
-  deleteAppointment: (id: string) => {
-    set((state) => ({
-      appointments: state.appointments.filter((apt) => apt.id !== id),
-    }));
-  },
+  seedAppointments: (appointments) => set({ appointments }),
 }));

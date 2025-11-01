@@ -18,6 +18,8 @@ export const INITIAL_STORE: IStore = {
   facebook: '',
   gallery: [],
   storeMembers: [],
+  services: [],
+  schedules: [],
 };
 
 export const INITIAL_PROFESSIONAL: IProfessional = {

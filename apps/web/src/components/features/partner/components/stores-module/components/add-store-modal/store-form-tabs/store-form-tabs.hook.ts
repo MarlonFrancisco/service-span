@@ -28,7 +28,6 @@ export const useStoreFormTabs = () => {
   }, [store, form, isEditingStore]);
 
   const handleSubmit = useCallback(() => {
-    console.log(form.formState.errors);
     form.handleSubmit(
       (data) => {
         if (isEditingStore) {
