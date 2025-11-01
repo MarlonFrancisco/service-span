@@ -1,3 +1,13 @@
+## 0.6.0 (2025-11-01)
+
+### Feat
+
+- **api/partner**: add blocked-time and schedule modules with nested routes structure
+
+### Refactor
+
+- **web/partner**: refactor agenda module with improved grid view and responsive components
+
 ## 0.5.0 (2025-10-29)
 
 ### Feat
