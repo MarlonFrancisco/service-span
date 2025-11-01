@@ -1,7 +1,8 @@
-import { Column, Entity, ManyToMany, ManyToOne } from 'typeorm';
-import { BaseEntity } from '../../../database/base.entity';
-import { StoreMember } from '../../stores/store-member/store-member.entity';
-import { Store } from '../../stores/store.entity';
+import { Column, Entity, ManyToMany, ManyToOne, OneToMany } from 'typeorm';
+import { BaseEntity } from '../../../../database';
+import { Schedule } from '../../schedule/schedule.entity';
+import { StoreMember } from '../../store-member/store-member.entity';
+import { Store } from '../../store.entity';
 import { Category } from '../category.entity';
 
 @Entity('services')
@@ -36,4 +37,7 @@ export class Service extends BaseEntity {
 
   @ManyToMany(() => StoreMember, (storeMember) => storeMember.services)
   storeMembers: StoreMember[];
+
+  @OneToMany(() => Schedule, (schedule) => schedule.service)
+  schedules: Schedule[];
 }

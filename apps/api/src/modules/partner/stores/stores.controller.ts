@@ -9,13 +9,11 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { CurrentUser } from 'src/modules/auth/decorators/current-user.decorator';
-import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { StoreDto } from './dto/store.dto';
 import { StoreOwnerGuard } from './guards';
 import { StoresService } from './stores.services';
 
 @Controller('partner/stores')
-@UseGuards(JwtAuthGuard)
 export class StoresController {
   constructor(private readonly storesService: StoresService) {}
 

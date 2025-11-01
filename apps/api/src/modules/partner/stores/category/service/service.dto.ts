@@ -1,4 +1,4 @@
-import type { Store } from '../../stores/store.entity';
+import type { Store } from '../../store.entity';
 import type { Category } from '../category.entity';
 
 export class ServiceDto {

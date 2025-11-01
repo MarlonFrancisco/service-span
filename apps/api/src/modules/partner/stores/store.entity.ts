@@ -1,9 +1,10 @@
 import { User } from 'src/modules/users/user.entity';
 import { Column, Entity, Index, ManyToOne, OneToMany } from 'typeorm';
 import { BaseEntity } from '../../database';
-import { Category } from '../category/category.entity';
-import { Service } from '../category/service/service.entity';
+import { Category } from './category/category.entity';
+import { Service } from './category/service/service.entity';
 import { Gallery } from './gallery/gallery.entity';
+import { Schedule } from './schedule/schedule.entity';
 import { StoreMember } from './store-member/store-member.entity';
 
 @Entity('stores')
@@ -68,15 +69,10 @@ export class Store extends BaseEntity {
   @OneToMany(() => Gallery, (gallery) => gallery.store)
   gallery: Gallery[];
 
-  @ManyToOne(() => User, (user) => user.stores)
+  @ManyToOne(() => User, (user) => user.stores, { onDelete: 'CASCADE' })
   @Index(['owner'])
   owner: User;
 
-  get storeMembersCount(): number {
-    return this.storeMembers.length;
-  }
-
-  get galleryCount(): number {
-    return this.gallery.length;
-  }
+  @OneToMany(() => Schedule, (schedule) => schedule.store)
+  schedules: Schedule[];
 }

@@ -6,14 +6,11 @@ import {
   Param,
   Post,
   Put,
-  UseGuards,
 } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/modules/auth/guards/jwt-auth.guard';
 import { CategoryDto } from './category.dto';
 import { CategoryService } from './category.service';
 
 @Controller('partner/stores/:storeId/categories')
-@UseGuards(JwtAuthGuard)
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 

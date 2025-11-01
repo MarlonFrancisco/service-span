@@ -6,14 +6,11 @@ import {
   Param,
   Post,
   Put,
-  UseGuards,
 } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/modules/auth/guards/jwt-auth.guard';
-import { StoreMemberDto } from './store-member.dto';
+import { StoreMemberDto } from './dto/store-member.dto';
 import { StoreMemberService } from './store-member.service';
 
 @Controller('partner/stores/:storeId/members')
-@UseGuards(JwtAuthGuard)
 export class StoreMemberController {
   constructor(private readonly storeMemberService: StoreMemberService) {}
 

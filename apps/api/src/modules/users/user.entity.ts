@@ -1,5 +1,6 @@
 import { Column, Entity, Index, OneToMany } from 'typeorm';
 import { BaseEntity } from '../database/base.entity';
+import { Schedule } from '../partner/stores/schedule/schedule.entity';
 import { StoreMember } from '../partner/stores/store-member/store-member.entity';
 import { Store } from '../partner/stores/store.entity';
 import { Subscription } from '../subscription/subscription.entity';
@@ -49,4 +50,7 @@ export class User extends BaseEntity {
 
   @OneToMany(() => StoreMember, (storeMember) => storeMember.user)
   storeMembers: StoreMember[];
+
+  @OneToMany(() => Schedule, (schedule) => schedule.user)
+  schedules: Schedule[];
 }

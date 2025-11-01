@@ -6,14 +6,11 @@ import {
   Param,
   Post,
   Put,
-  UseGuards,
 } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/modules/auth/guards/jwt-auth.guard';
 import { ServiceDto } from './service.dto';
 import { ServiceService } from './service.service';
 
 @Controller('partner/stores/:storeId/categories/:categoryId/services')
-@UseGuards(JwtAuthGuard)
 export class ServiceController {
   constructor(private readonly serviceService: ServiceService) {}
 

@@ -1,6 +1,6 @@
 import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
-import { BaseEntity } from '../../database/base.entity';
-import { Store } from '../stores/store.entity';
+import { BaseEntity } from '../../../database';
+import { Store } from '../store.entity';
 import { Service } from './service/service.entity';
 
 @Entity('categories')

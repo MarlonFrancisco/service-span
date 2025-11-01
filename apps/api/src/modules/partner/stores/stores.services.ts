@@ -19,18 +19,21 @@ export class StoresService {
   async findAll(userId: string): Promise<Store[]> {
     return this.storesRepository.find({
       where: { owner: { id: userId } },
-      relations: [
-        'gallery',
-        'storeMembers',
-        'storeMembers.user',
-        'storeMembers.services',
-      ],
     });
   }
 
   async findOne(id: string, ownerId?: string): Promise<Store> {
     return this.storesRepository.findOne({
       where: { id, owner: { id: ownerId } },
+      relations: [
+        'gallery',
+        'storeMembers',
+        'storeMembers.user',
+        'storeMembers.services',
+        'storeMembers.blockedTimes',
+        'services',
+        'schedules',
+      ],
     });
   }
 

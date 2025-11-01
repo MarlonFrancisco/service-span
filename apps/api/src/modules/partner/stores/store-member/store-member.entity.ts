@@ -5,11 +5,14 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
+  OneToMany,
 } from 'typeorm';
 import { BaseEntity } from '../../../database';
 import { User } from '../../../users/user.entity';
-import { Service } from '../../category/service/service.entity';
+import { Service } from '../category/service/service.entity';
+import { Schedule } from '../schedule/schedule.entity';
 import { Store } from '../store.entity';
+import { BlockedTime } from './blocked-time/blocked-time.entity';
 
 @Entity('store_members')
 @Index(['user', 'store'], { unique: true })
@@ -48,4 +51,10 @@ export class StoreMember extends BaseEntity {
     },
   })
   services: Service[];
+
+  @OneToMany(() => Schedule, (schedule) => schedule.storeMember)
+  schedules: Schedule[];
+
+  @OneToMany(() => BlockedTime, (blockedTime) => blockedTime.storeMember)
+  blockedTimes: BlockedTime[];
 }
