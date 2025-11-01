@@ -98,6 +98,41 @@ export const storeFormSchema = z.object({
       }),
     )
     .default([]),
+
+  openTime: z.string().regex(/^\d{2}:\d{2}$/, 'Formato deve ser HH:MM'),
+  closeTime: z.string().regex(/^\d{2}:\d{2}$/, 'Formato deve ser HH:MM'),
+  lunchStartTime: z
+    .string()
+    .regex(/^\d{2}:\d{2}$/, 'Formato deve ser HH:MM')
+    .optional()
+    .or(z.literal('')),
+  lunchEndTime: z
+    .string()
+    .regex(/^\d{2}:\d{2}$/, 'Formato deve ser HH:MM')
+    .optional()
+    .or(z.literal('')),
+
+  businessDays: z
+    .object({
+      monday: z.boolean().default(false),
+      tuesday: z.boolean().default(false),
+      wednesday: z.boolean().default(false),
+      thursday: z.boolean().default(false),
+      friday: z.boolean().default(false),
+      saturday: z.boolean().default(false),
+      sunday: z.boolean().default(false),
+    })
+    .default({
+      monday: false,
+      tuesday: false,
+      wednesday: false,
+      thursday: false,
+      friday: false,
+      saturday: false,
+      sunday: false,
+    }),
+
+  blockedTimes: z.array(z.any()).optional(),
 });
 
 // Type inference do schema

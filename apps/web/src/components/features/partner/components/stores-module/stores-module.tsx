@@ -1,5 +1,5 @@
 'use client';
-import { useStoresAdmin } from '@/store';
+import { usePartnerStore, useStoresStore } from '@/store';
 import { Button } from '@repo/ui';
 import { Plus } from 'lucide-react';
 import { AddStoreModal } from './components/add-store-modal';
@@ -9,7 +9,8 @@ import { StoreCard, StoreCardSkeleton } from './components/store-card';
 import { StoreDetailsDrawer } from './components/store-details-drawer';
 
 export const StoresModule = () => {
-  const { stores, isLoading, setIsAddModalOpen } = useStoresAdmin();
+  const { stores } = usePartnerStore();
+  const { setIsAddModalOpen } = useStoresStore();
 
   return (
     <div className="space-y-6 pb-6">
@@ -37,7 +38,7 @@ export const StoresModule = () => {
 
       {/* Stores List */}
       <div className="space-y-4">
-        {isLoading ? (
+        {false ? (
           <div className="flex flex-col gap-4">
             <StoreCardSkeleton />
             <StoreCardSkeleton />

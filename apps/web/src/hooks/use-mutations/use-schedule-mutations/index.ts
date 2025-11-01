@@ -1,1 +1,1 @@
-export * from './use-schedule-mutations';
+export * from './use-schedule-mutations.hook';

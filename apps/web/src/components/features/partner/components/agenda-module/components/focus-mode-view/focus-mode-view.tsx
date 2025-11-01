@@ -16,7 +16,6 @@ import {
   Lock,
   Minimize2,
   Plus,
-  Settings,
   Unlock,
   User,
 } from 'lucide-react';
@@ -41,7 +40,6 @@ export function FocusModeView() {
     setIsFocusMode,
     setSelectedProfessional,
     setSelectedDayIndex,
-    handleOpenSettings,
     handleOpenAddAppointment,
   } = useFocusModeView();
 
@@ -172,15 +170,6 @@ export function FocusModeView() {
                     <Unlock className="mr-2 h-4 w-4" />
                   )}
                   {isBlockMode ? 'Bloqueio Ativo' : 'Bloquear'}
-                </Button>
-
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleOpenSettings}
-                  className="h-9 border-gray-300 px-3"
-                >
-                  <Settings className="h-4 w-4" />
                 </Button>
               </div>
             </div>

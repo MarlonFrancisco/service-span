@@ -1,4 +1,4 @@
-import { useStoresAdmin } from '@/store';
+import { useStoresStore } from '@/store';
 import {
   Dialog,
   DialogContent,
@@ -16,8 +16,8 @@ import { StoreFormTabs } from './store-form-tabs';
 
 export const AddStoreModal = () => {
   const isMobile = useIsMobile();
-  const { store, isEditingStore, isAddModalOpen, setIsAddModalOpen } =
-    useStoresAdmin();
+  const { store, isAddModalOpen, setIsAddModalOpen } = useStoresStore();
+  const isEditingStore = !!store.id;
 
   if (isMobile) {
     return (

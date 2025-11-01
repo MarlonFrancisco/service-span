@@ -8,4 +8,3 @@ export { useDashboard } from './dashboard';
 export { useNotifications } from './notifications';
 export { usePlans } from './plans';
 export { useServices } from './services';
-export { useStoresAdmin } from './stores';

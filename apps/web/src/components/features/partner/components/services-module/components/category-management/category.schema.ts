@@ -16,6 +16,8 @@ export const categoryFormSchema = z.object({
   name: z.string().min(1, 'Nome é obrigatório'),
   description: z.string().min(1, 'Descrição é obrigatória'),
   color: z.enum(AVAILABLE_COLORS),
+
+  tabValue: z.enum(['list', 'add', 'edit']).optional(),
 });
 
 export type TCategoryFormData = z.infer<typeof categoryFormSchema>;

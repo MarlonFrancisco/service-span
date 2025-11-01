@@ -1,4 +1,4 @@
-import { useServices } from '@/store';
+import { useServicesStore } from '@/store';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useIsMobile } from '@repo/ui';
 import { useEffect } from 'react';
@@ -6,7 +6,13 @@ import { useForm } from 'react-hook-form';
 import { serviceFormSchema, TServiceFormData } from './service-form.schema';
 
 export const useServiceForm = () => {
-  const { service, isServiceModalOpen, setServiceModalParams } = useServices();
+  const service = useServicesStore((state) => state.service);
+  const isServiceModalOpen = useServicesStore(
+    (state) => state.isServiceModalOpen,
+  );
+  const setServiceModalParams = useServicesStore(
+    (state) => state.setServiceModalParams,
+  );
   const isMobile = useIsMobile();
 
   const form = useForm<TServiceFormData>({

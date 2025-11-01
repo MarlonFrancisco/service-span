@@ -1,10 +1,13 @@
-import { useServices } from '@/store';
+import { useServicesStore } from '@/store';
 import { INITIAL_SERVICE } from '@/store/admin/services/services.constants';
 import { ICategory } from '@/types/api/service.types';
 import { useState } from 'react';
 
 export const useCategorySection = ({ category }: { category: ICategory }) => {
-  const { setServiceModalParams } = useServices();
+  const setServiceModalParams = useServicesStore(
+    (state) => state.setServiceModalParams,
+  );
+
   const [isExpanded, setIsExpanded] = useState(false);
 
   const onToggleExpanded = () => {

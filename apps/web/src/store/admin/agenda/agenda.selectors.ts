@@ -1,19 +1,28 @@
+import { IPartnerStore } from '@/store/partner';
+import { TWorkingHours } from '@/types/api/stores.types';
 import { generateTimeSlots, getWeekDates } from './agenda.helpers';
 import type { IAgendaStore } from './agenda.types';
 
 const timeSlotsCache = new Map<string, string[]>();
 
-const serializeWorkingHours = (workingHours: IAgendaStore['workingHours']) =>
-  `${workingHours.start}-${workingHours.end}-${workingHours.lunchStart}-${workingHours.lunchEnd}`;
+const serializeWorkingHours = (workingHours: TWorkingHours) =>
+  `${workingHours.openTime}-${workingHours.closeTime}-${workingHours.lunchStartTime}-${workingHours.lunchEndTime}`;
 
-export const selectTimeSlots = (state: IAgendaStore) => {
-  const key = serializeWorkingHours(state.workingHours);
+export const selectTimeSlots = (state: IPartnerStore) => {
+  const workingHours = {
+    openTime: state.activeStore.openTime,
+    closeTime: state.activeStore.closeTime,
+    lunchStartTime: state.activeStore.lunchStartTime,
+    lunchEndTime: state.activeStore.lunchEndTime,
+  };
+
+  const key = serializeWorkingHours(workingHours);
 
   if (timeSlotsCache.has(key)) {
     return timeSlotsCache.get(key)!;
   }
 
-  const slots = generateTimeSlots(state.workingHours);
+  const slots = generateTimeSlots(workingHours);
   timeSlotsCache.set(key, slots);
   return slots;
 };

@@ -1,4 +1,3 @@
-import { fadeInUpAnimation } from '@/utils/animations/common.animation';
 import { Button } from '@repo/ui';
 import { motion } from 'motion/react';
 
@@ -6,10 +5,7 @@ export const CTA = () => {
   return (
     <section className="py-24 px-6">
       <div className="max-w-6xl mx-auto">
-        <motion.div
-          className="cta-section -mx-6 md:rounded-4xl bg-neutral-950 px-6 py-20 sm:mx-0 sm:py-32 md:px-12"
-          {...fadeInUpAnimation}
-        >
+        <motion.div className="cta-section -mx-6 md:rounded-4xl bg-neutral-950 px-6 py-20 sm:mx-0 sm:py-32 md:px-12">
           <div className="mx-auto max-w-4xl">
             <div className="max-w-xl">
               <div className="text-left">

@@ -32,15 +32,17 @@ export function CategoryManagementModal() {
     handleClose,
     handleSubmit,
   } = useCategoryManagement();
-
+  const tab = form.watch('tabValue');
   const isEditing = !!category.id;
 
   const content = (
     <FormProvider {...form}>
       <Tabs
-        defaultValue="list"
         className="flex-1 flex flex-col overflow-hidden"
-        value={isEditing ? 'edit' : undefined}
+        value={tab}
+        onValueChange={(value) =>
+          form.setValue('tabValue', value as 'list' | 'add' | 'edit')
+        }
       >
         <div className="px-6 pt-4 pb-0 border-b border-gray-200 shrink-0 overflow-x-auto scrollbar-hide bg-white">
           <TabsList className="inline-flex bg-gray-100 p-1.5 rounded-lg h-12">

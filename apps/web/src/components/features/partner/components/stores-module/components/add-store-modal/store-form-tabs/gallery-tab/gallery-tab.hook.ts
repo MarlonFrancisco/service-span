@@ -1,10 +1,10 @@
-import { useStoresAdmin } from '@/store';
+import { useStoreMutations } from '@/hooks/use-mutations/use-store-mutations/use-store-mutations.hook';
 import { IStoreGallery } from '@/types/api/stores.types';
 import { useFormContext } from 'react-hook-form';
 import { TStoreFormSchema } from '../store-form.schema';
 
 export const useGalleryTab = () => {
-  const { createImage, deleteImage, updateMainImage } = useStoresAdmin();
+  const { createImage, deleteImage, updateMainImage } = useStoreMutations();
   const form = useFormContext<TStoreFormSchema>();
 
   const gallery = form.watch('gallery');

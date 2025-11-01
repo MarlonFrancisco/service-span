@@ -1,4 +1,4 @@
-import { useStoresAdmin } from '@/store/admin/stores/stores.hook';
+import { useStoresStore } from '@/store/admin/stores';
 import {
   Button,
   Empty,
@@ -11,7 +11,7 @@ import {
 import { Plus, Store } from 'lucide-react';
 
 export const EmptyStoreList = () => {
-  const { setIsAddModalOpen } = useStoresAdmin();
+  const { setIsAddModalOpen } = useStoresStore();
 
   return (
     <Empty className="border-3 border-dashed">

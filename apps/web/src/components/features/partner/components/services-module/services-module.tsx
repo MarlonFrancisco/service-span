@@ -1,5 +1,5 @@
 'use client';
-import { usePartnerStore, useServices } from '@/store';
+import { usePartnerStore } from '@/store';
 import { Button, Card, CardContent } from '@repo/ui';
 import { Package, Plus } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
@@ -9,6 +9,7 @@ import { ServiceCard } from './components/service-card';
 import { ServiceFormModal } from './components/service-form';
 import { ServicesFilters } from './components/services-filters';
 import { ServicesStats } from './components/services-stats';
+import { useServicesModule } from './services-module.hook';
 
 export function ServicesModule() {
   const {
@@ -17,7 +18,7 @@ export function ServicesModule() {
     searchQuery,
     filterCategory,
     setServiceModalParams,
-  } = useServices();
+  } = useServicesModule();
 
   const activeStore = usePartnerStore((state) => state.activeStore);
 

@@ -1,4 +1,4 @@
-import { useServices } from '@/store/admin/services/services.hook';
+import { useServicesStore } from '@/store';
 import {
   Button,
   Input,
@@ -22,7 +22,7 @@ export function ServicesFilters() {
     setFilterCategory,
     setCategoryModalParams,
     setServiceModalParams,
-  } = useServices();
+  } = useServicesStore();
 
   if (isMobile) {
     return (

@@ -22,6 +22,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+  Spinner,
 } from '@repo/ui';
 import {
   Briefcase,
@@ -43,6 +44,7 @@ export const AddProfessionalModal = () => {
     isMobile,
     services,
     selectedServices,
+    isLoading,
     addService,
     removeService,
     handleSubmit,
@@ -220,7 +222,7 @@ export const AddProfessionalModal = () => {
               </Button>
               <Button
                 onClick={handleSubmit}
-                disabled={!form.formState.isDirty}
+                disabled={!form.formState.isDirty || isLoading}
                 className="bg-gray-900 hover:bg-gray-800 text-white min-h-[48px]"
               >
                 <CheckCircle2 className="h-4 w-4 mr-2" />
@@ -395,11 +397,20 @@ export const AddProfessionalModal = () => {
             </Button>
             <Button
               onClick={handleSubmit}
-              disabled={!form.formState.isDirty}
+              disabled={!form.formState.isDirty || isLoading}
               className="bg-gray-900 hover:bg-gray-800 text-white w-full sm:w-auto min-h-[44px]"
             >
-              <CheckCircle2 className="h-4 w-4 mr-2" />
-              {isEditing ? 'Salvar Alterações' : 'Adicionar Colaborador'}
+              {isLoading ? (
+                <>
+                  <Spinner />
+                  Salvando...
+                </>
+              ) : (
+                <>
+                  <CheckCircle2 className="h-4 w-4 mr-2" />
+                  {isEditing ? 'Salvar Alterações' : 'Adicionar Colaborador'}
+                </>
+              )}
             </Button>
           </div>
         </div>

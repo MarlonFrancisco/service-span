@@ -1,8 +1,14 @@
-import { useServices } from '@/store';
+import { useServicesMutations } from '@/hooks/use-mutations/use-services-mutations/use-services-mutations.hook';
+import { usePartnerStore, useServicesStore } from '@/store';
 import { IService } from '@/types/api/service.types';
 
 export const useServiceCard = ({ service }: { service: IService }) => {
-  const { setServiceModalParams, deleteService, updateService } = useServices();
+  const { setServiceModalParams } = useServicesStore();
+  const activeStore = usePartnerStore((state) => state.activeStore);
+
+  const { deleteService, updateService } = useServicesMutations({
+    storeId: activeStore.id,
+  });
 
   const handleEdit = () => {
     setServiceModalParams({ isOpen: true, service });

@@ -1,4 +1,5 @@
 import { StoreService } from '@/service/store';
+import { useServicesStore } from '@/store';
 import { usePartnerStore } from '@/store/partner';
 import { MODULE_CONFIG } from '@/utils/constants/partner.constants';
 import { CACHE_QUERY_KEYS } from '@/utils/helpers/query.helper';
@@ -29,6 +30,7 @@ export const usePartner = () => {
   useEffect(() => {
     if (activeStore && stores) {
       usePartnerStore.setState({ activeStore, stores });
+      useServicesStore.setState({ services: activeStore.services });
     }
   }, [activeStore, stores]);
 

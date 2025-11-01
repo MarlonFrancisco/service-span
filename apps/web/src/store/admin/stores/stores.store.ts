@@ -7,7 +7,7 @@ import {
 import { INITIAL_PROFESSIONAL, INITIAL_STORE } from './stores.constants';
 import type { IStoresStore } from './stores.types';
 
-export const useStoresAdminStore = create<IStoresStore>((set, get) => {
+export const useStoresStore = create<IStoresStore>((set, get) => {
   return {
     // State
     store: INITIAL_STORE,

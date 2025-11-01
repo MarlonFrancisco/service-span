@@ -36,3 +36,20 @@ export const setServiceModalParamsAction: TStoreAction<
       service: service || INITIAL_SERVICE,
     });
   };
+
+export const setServicesAction: TStoreAction<IServicesStore, IService[]> =
+  (set) => async (services) => {
+    set({ services });
+  };
+
+export const setFilteredServicesAction: TStoreAction<
+  IServicesStore,
+  IService[]
+> = (set) => async (filteredServices) => {
+  set({ filteredServices });
+};
+
+export const setCategoriesAction: TStoreAction<IServicesStore, ICategory[]> =
+  (set) => async (categories) => {
+    set({ categories });
+  };

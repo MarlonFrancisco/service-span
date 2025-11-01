@@ -20,6 +20,19 @@ export const INITIAL_STORE: IStore = {
   storeMembers: [],
   services: [],
   schedules: [],
+  openTime: '09:00',
+  closeTime: '18:00',
+  lunchStartTime: '12:00',
+  lunchEndTime: '13:00',
+  businessDays: {
+    monday: false,
+    tuesday: false,
+    wednesday: false,
+    thursday: false,
+    friday: false,
+    saturday: false,
+    sunday: false,
+  },
 };
 
 export const INITIAL_PROFESSIONAL: IProfessional = {
@@ -36,6 +49,8 @@ export const INITIAL_PROFESSIONAL: IProfessional = {
   role: 'professional',
   createdAt: new Date(),
   isActive: true,
+  blockedTimes: [],
+  services: [],
 };
 
 export const MOCK_STORES: IStore[] = [
@@ -77,6 +92,21 @@ export const MOCK_STORES: IStore[] = [
         isMain: false,
       },
     ],
+    services: [],
+    schedules: [],
+    businessDays: {
+      monday: false,
+      tuesday: false,
+      wednesday: false,
+      thursday: false,
+      friday: false,
+      saturday: false,
+      sunday: false,
+    },
+    openTime: '09:00',
+    closeTime: '18:00',
+    lunchStartTime: '12:00',
+    lunchEndTime: '13:00',
   },
   {
     id: '2',
@@ -111,6 +141,21 @@ export const MOCK_STORES: IStore[] = [
       },
     ],
     storeMembers: [],
+    services: [],
+    schedules: [],
+    businessDays: {
+      monday: false,
+      tuesday: false,
+      wednesday: false,
+      thursday: false,
+      friday: false,
+      saturday: false,
+      sunday: false,
+    },
+    openTime: '09:00',
+    closeTime: '18:00',
+    lunchStartTime: '12:00',
+    lunchEndTime: '13:00',
   },
   {
     id: '3',
@@ -145,5 +190,20 @@ export const MOCK_STORES: IStore[] = [
       },
     ],
     storeMembers: [],
+    services: [],
+    schedules: [],
+    businessDays: {
+      monday: false,
+      tuesday: false,
+      wednesday: false,
+      thursday: false,
+      friday: false,
+      saturday: false,
+      sunday: false,
+    },
+    openTime: '09:00',
+    closeTime: '18:00',
+    lunchStartTime: '12:00',
+    lunchEndTime: '13:00',
   },
 ];

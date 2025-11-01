@@ -23,7 +23,6 @@ export function useAgendaToolbar() {
   const professionals = usePartnerStore(
     (state) => state.activeStore.storeMembers,
   );
-  const setIsSettingsOpen = useAgendaStore((state) => state.setIsSettingsOpen);
   const setIsAddAppointmentOpen = useAgendaStore(
     (state) => state.setIsAddAppointmentOpen,
   );
@@ -60,10 +59,6 @@ export function useAgendaToolbar() {
     setIsFocusMode(true);
   }, [setIsFocusMode]);
 
-  const handleOpenSettings = useCallback(() => {
-    setIsSettingsOpen(true);
-  }, [setIsSettingsOpen]);
-
   const handleOpenAddAppointment = useCallback(() => {
     setIsAddAppointmentOpen({ isAddAppointmentOpen: true });
   }, [setIsAddAppointmentOpen]);
@@ -89,7 +84,6 @@ export function useAgendaToolbar() {
     handleToday,
     handleToggleBlockMode,
     handleEnterFocusMode,
-    handleOpenSettings,
     handleOpenAddAppointment,
     handleProfessionalChange,
   };

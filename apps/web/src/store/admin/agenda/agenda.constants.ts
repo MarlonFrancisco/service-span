@@ -12,6 +12,7 @@ export const AGENDA_PROFESSIONALS: IProfessional[] = [
     id: '1',
     role: 'professional',
     isActive: true,
+    blockedTimes: [],
     user: {
       id: '1',
       firstName: 'Maria',
@@ -27,6 +28,7 @@ export const AGENDA_PROFESSIONALS: IProfessional[] = [
     id: '2',
     role: 'professional',
     isActive: true,
+    blockedTimes: [],
     user: {
       id: '2',
       firstName: 'João',
@@ -42,6 +44,7 @@ export const AGENDA_PROFESSIONALS: IProfessional[] = [
     id: '3',
     role: 'professional',
     isActive: true,
+    blockedTimes: [],
     user: {
       id: '3',
       firstName: 'Ana',
@@ -119,20 +122,20 @@ export const AGENDA_WORKING_DAY_KEYS: readonly TWorkingDayKey[] = [
 ] as const;
 
 export const INITIAL_WORKING_DAYS: TWorkingDays = {
-  monday: true,
-  tuesday: true,
-  wednesday: true,
-  thursday: true,
-  friday: true,
-  saturday: true,
+  monday: false,
+  tuesday: false,
+  wednesday: false,
+  thursday: false,
+  friday: false,
+  saturday: false,
   sunday: false,
 };
 
 export const INITIAL_WORKING_HOURS: TWorkingHours = {
-  start: '09:00',
-  end: '18:00',
-  lunchStart: '12:00',
-  lunchEnd: '13:00',
+  openTime: '09:00',
+  closeTime: '18:00',
+  lunchStartTime: '12:00',
+  lunchEndTime: '13:00',
 };
 
 export const INITIAL_APPOINTMENT_FORM: IAppointment = {
@@ -165,6 +168,7 @@ export const INITIAL_APPOINTMENT_FORM: IAppointment = {
     role: 'professional',
     isActive: true,
     createdAt: new Date(),
+    blockedTimes: [],
     user: {
       id: '',
       email: '',
@@ -202,6 +206,7 @@ export const INITIAL_APPOINTMENTS: IAppointment[] = [
       role: 'professional',
       isActive: true,
       createdAt: new Date(),
+      blockedTimes: [],
       user: {
         id: '1',
         email: 'maria@email.com',

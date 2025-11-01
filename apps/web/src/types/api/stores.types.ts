@@ -9,7 +9,24 @@ export interface IStoreGallery {
   store?: IStore;
 }
 
-export interface IStore {
+export interface TWorkingHours {
+  openTime: string;
+  closeTime: string;
+  lunchStartTime: string;
+  lunchEndTime: string;
+}
+
+export interface TWorkingDays {
+  monday: boolean;
+  tuesday: boolean;
+  wednesday: boolean;
+  thursday: boolean;
+  friday: boolean;
+  saturday: boolean;
+  sunday: boolean;
+}
+
+export interface IStore extends TWorkingHours {
   id: string;
   name: string;
   description: string;
@@ -28,4 +45,5 @@ export interface IStore {
   instagram?: string;
   facebook?: string;
   schedules: IAppointment[];
+  businessDays: TWorkingDays;
 }

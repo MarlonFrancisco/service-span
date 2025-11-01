@@ -1,8 +1,9 @@
 import { Button, Spinner, Tabs, TabsList, TabsTrigger } from '@repo/ui';
-import { CheckCircle2, Images, Users } from 'lucide-react';
+import { CheckCircle2, Clock, Images, Users } from 'lucide-react';
 import { FormProvider } from 'react-hook-form';
 import { AddProfessionalModal } from '../../add-professional-modal';
 import { BasicInfoTab } from './basic-info-tab';
+import { BusinessHoursTab } from './business-hours-tab/business-hours-tab';
 import { ContactTab } from './contact-tab';
 import { GalleryTab } from './gallery-tab';
 import { ProfessionalTab } from './professionals-tab/professional-tab';
@@ -35,6 +36,13 @@ export const StoreFormTabs = () => {
                 Contato & Redes
               </TabsTrigger>
               <TabsTrigger
+                value="hours"
+                className="px-4 sm:px-6 h-9 data-[state=active]:bg-white data-[state=active]:shadow-sm text-xs sm:text-sm"
+              >
+                <Clock className="h-4 w-4 mr-2" />
+                Horários
+              </TabsTrigger>
+              <TabsTrigger
                 value="gallery"
                 disabled={!isEditingStore}
                 className="px-4 sm:px-6 h-9 data-[state=active]:bg-white data-[state=active]:shadow-sm text-xs sm:text-sm"
@@ -59,6 +67,8 @@ export const StoreFormTabs = () => {
               <BasicInfoTab />
 
               <ContactTab />
+
+              <BusinessHoursTab />
 
               <GalleryTab />
 

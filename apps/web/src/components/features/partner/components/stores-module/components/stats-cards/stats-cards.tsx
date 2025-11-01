@@ -1,13 +1,20 @@
-import { useStoresAdmin } from '@/store';
+import { usePartnerStore } from '@/store';
 import { Card, CardContent } from '@repo/ui';
 import { Building2, CheckCircle2 } from 'lucide-react';
 import { motion } from 'motion/react';
+import { useMemo } from 'react';
 import { StatsCardsSkeleton } from './stats-cards.skeleton';
 
 export const StatsCards = () => {
-  const { totalStores, activeStores, isLoading } = useStoresAdmin();
+  const { stores } = usePartnerStore();
 
-  if (isLoading) return <StatsCardsSkeleton />;
+  const totalStores = useMemo(() => stores.length, [stores]);
+  const activeStores = useMemo(
+    () => stores.filter((s) => s.isActive).length,
+    [stores],
+  );
+
+  if (false) return <StatsCardsSkeleton />;
 
   return (
     <div className="grid grid-cols-2 gap-3 sm:gap-4">

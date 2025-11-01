@@ -29,4 +29,5 @@ export const CACHE_QUERY_KEYS = {
     `partner/schedules/blocked-times/${storeId}`,
   ],
   store: (storeId: string) => [`partner/stores/${storeId}`],
+  categories: (storeId: string) => [`partner/categories/${storeId}`],
 };

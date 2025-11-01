@@ -7,7 +7,7 @@ export const serviceFormSchema = z.object({
   duration: z.number().min(1, 'Duração é obrigatória'),
   price: z.number().min(1, 'Preço é obrigatório'),
   category: z.object({
-    id: z.string().min(1, 'Categoria é obrigatória'),
+    id: z.string('Categoria é obrigatória').min(1, 'Categoria é obrigatória'),
   }),
   isActive: z.boolean(),
 });

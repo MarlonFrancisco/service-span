@@ -1,9 +1,12 @@
 import { create } from 'zustand';
 import {
+  setCategoriesAction,
   setCategoryModalParamsAction,
   setFilterCategoryAction,
+  setFilteredServicesAction,
   setSearchQueryAction,
   setServiceModalParamsAction,
+  setServicesAction,
 } from './services.actions';
 import { INITIAL_CATEGORY, INITIAL_SERVICE } from './services.constants';
 import type { IServicesStore } from './services.types';
@@ -13,6 +16,9 @@ export const useServicesStore = create<IServicesStore>((set, get) => ({
   isCategoryModalOpen: false,
   category: INITIAL_CATEGORY,
   service: INITIAL_SERVICE,
+  services: [],
+  filteredServices: [],
+  categories: [],
   searchQuery: '',
   filterCategory: 'all',
   isServiceModalOpen: false,
@@ -22,4 +28,7 @@ export const useServicesStore = create<IServicesStore>((set, get) => ({
   setSearchQuery: setSearchQueryAction(set, get),
   setFilterCategory: setFilterCategoryAction(set, get),
   setServiceModalParams: setServiceModalParamsAction(set, get),
+  setServices: setServicesAction(set, get),
+  setFilteredServices: setFilteredServicesAction(set, get),
+  setCategories: setCategoriesAction(set, get),
 }));

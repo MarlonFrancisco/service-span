@@ -1,9 +1,9 @@
-import { useServices } from '@/store';
+import { useServicesStore } from '@/store';
 import { Card, CardContent } from '@repo/ui';
 import { CheckCircle2, Package } from 'lucide-react';
 
 export function ServicesStats() {
-  const { services } = useServices();
+  const { services } = useServicesStore();
 
   const totalServices = services.length;
 

@@ -1,28 +1,42 @@
-import { useServices } from '@/store';
+import { useServicesMutations } from '@/hooks';
+import { usePartnerStore, useServicesStore } from '@/store';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { categoryFormSchema, TCategoryFormData } from './category.schema';
 export const useCategoryManagement = () => {
+  const isCategoryModalOpen = useServicesStore(
+    (state) => state.isCategoryModalOpen,
+  );
+  const category = useServicesStore((state) => state.category);
+  const setCategoryModalParams = useServicesStore(
+    (state) => state.setCategoryModalParams,
+  );
+  const activeStore = usePartnerStore((state) => state.activeStore);
+
   const {
-    isCategoryModalOpen,
-    category,
-    setCategoryModalParams,
-    createCategory,
     updateCategory,
+    createCategory,
     isCreatingCategory,
     isUpdatingCategory,
-  } = useServices();
+  } = useServicesMutations({
+    storeId: activeStore.id,
+  });
 
   const form = useForm<TCategoryFormData>({
     resolver: zodResolver(categoryFormSchema),
-    defaultValues: {},
+    defaultValues: {
+      tabValue: 'list',
+    },
   });
 
   useEffect(() => {
     if (category) {
-      form.reset(category);
+      form.reset({
+        ...category,
+        tabValue: form.getValues('tabValue'),
+      });
     }
   }, [category, form]);
 
@@ -31,6 +45,14 @@ export const useCategoryManagement = () => {
   };
 
   const handleSubmit = () => {
+    const tabValue = form.getValues('tabValue');
+
+    if (tabValue === 'list') {
+      form.setValue('tabValue', 'add');
+
+      return;
+    }
+
     form.handleSubmit(
       (data) => {
         const onSettled = () => {

@@ -1,4 +1,5 @@
-import { selectTimeSlots, useAgendaStore } from '@/store/admin/agenda';
+import { usePartnerStore } from '@/store';
+import { selectTimeSlots } from '@/store/admin/agenda';
 import {
   Button,
   Dialog,
@@ -39,7 +40,7 @@ export function AddAppointmentResponsive() {
     handleSubmit,
   } = useAddAppointment();
 
-  const timeSlots = useAgendaStore(selectTimeSlots);
+  const timeSlots = usePartnerStore(selectTimeSlots);
 
   const content = (
     <FormProvider {...form}>

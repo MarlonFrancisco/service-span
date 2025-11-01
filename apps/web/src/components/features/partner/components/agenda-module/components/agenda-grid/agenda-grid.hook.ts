@@ -35,19 +35,18 @@ export const useAgendaGrid = () => {
   const days = useAgendaStore((state) => state.days);
   const weekDates = useAgendaStore(selectWeekDates);
   const workingDayKeys = useAgendaStore((state) => state.workingDayKeys);
-  const workingDays = useAgendaStore((state) => state.workingDays);
-  const timeSlots = useAgendaStore(selectTimeSlots);
+  const timeSlots = usePartnerStore(selectTimeSlots);
   const selectedProfessionalId = useAgendaStore(
     (state) => state.selectedProfessional,
   );
   const appointments = useAgendaStore((state) => state.appointments);
-  const blockedSlotsMap = useAgendaStore((state) => state.blockedSlots);
   const isBlockMode = useAgendaStore((state) => state.isBlockMode);
   const selectedDayIndex = useAgendaStore((state) => state.selectedDayIndex);
   const { activeStore } = usePartnerStore();
+  const workingDays = usePartnerStore(
+    (state) => state.activeStore.businessDays,
+  );
 
-  // Store actions
-  const toggleBlockedSlot = useAgendaStore((state) => state.toggleBlockedSlot);
   const setDetailsAppointment = useAgendaStore(
     (state) => state.setDetailsAppointment,
   );
@@ -58,12 +57,6 @@ export const useAgendaGrid = () => {
   const { createBlockedTime, deleteBlockedTime } = useBlockedTimeMutations({
     storeId: activeStore?.id,
   });
-
-  // Computed values
-  const blockedSlots = useMemo(
-    () => new Set(Object.keys(blockedSlotsMap)),
-    [blockedSlotsMap],
-  );
 
   const filteredProfessionals = useMemo(() => {
     if (selectedProfessionalId === 'all') {
@@ -277,7 +270,6 @@ export const useAgendaGrid = () => {
     timeSlots,
     selectedProfessionalId,
     appointments,
-    blockedSlots,
     isBlockMode,
     selectedDayIndex,
 
@@ -291,7 +283,6 @@ export const useAgendaGrid = () => {
     handleSlotClick,
     setDetailsAppointment,
     setIsAddAppointmentOpen,
-    toggleBlockedSlot,
     getDayAppointmentsForCalendar,
     handleQuickAdd,
     handleAppointmentClick,

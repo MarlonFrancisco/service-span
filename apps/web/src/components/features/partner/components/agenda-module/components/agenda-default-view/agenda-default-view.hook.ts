@@ -1,3 +1,4 @@
+import { usePartnerStore } from '@/store';
 import {
   INITIAL_APPOINTMENT_FORM,
   selectWeekDates,
@@ -10,13 +11,16 @@ export function useAgendaDefaultView() {
   const days = useAgendaStore((state) => state.days);
   const weekDates = useAgendaStore(selectWeekDates);
   const workingDayKeys = useAgendaStore((state) => state.workingDayKeys);
-  const workingDays = useAgendaStore((state) => state.workingDays);
   const appointments = useAgendaStore((state) => state.appointments);
   const professionals = useAgendaStore((state) => state.professionals);
   const selectedProfessionalId = useAgendaStore(
     (state) => state.selectedProfessional,
   );
   const isBlockMode = useAgendaStore((state) => state.isBlockMode);
+  const workingDays = usePartnerStore(
+    (state) => state.activeStore.businessDays,
+  );
+
   const setIsAddAppointmentOpen = useAgendaStore(
     (state) => state.setIsAddAppointmentOpen,
   );

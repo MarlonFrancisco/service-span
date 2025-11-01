@@ -1,4 +1,5 @@
-import { useStoresAdmin } from '@/store';
+import { useStoreMutations } from '@/hooks/use-mutations/use-store-mutations/use-store-mutations.hook';
+import { useStoresStore } from '@/store';
 import {
   Badge,
   Button,
@@ -27,9 +28,9 @@ export const StoreDetailsDrawer = () => {
     store,
     isViewDetailsStoreOpen,
     setViewDetailsStore,
-    deleteStore,
-    setIsEditingStoreOpen,
-  } = useStoresAdmin();
+    setIsAddModalOpen,
+  } = useStoresStore();
+  const { deleteStore } = useStoreMutations();
 
   if (!store?.id) return null;
 
@@ -82,7 +83,7 @@ export const StoreDetailsDrawer = () => {
                 <Phone className="h-4 w-4 text-gray-600 shrink-0" />
                 <div className="min-w-0 flex-1">
                   <p className="text-xs text-gray-500 mb-0.5">Telefone</p>
-                  <p className="text-sm text-gray-900">{store.phone}</p>
+                  <p className="text-sm text-gray-900">{store.telephone}</p>
                 </div>
               </div>
 
@@ -170,7 +171,7 @@ export const StoreDetailsDrawer = () => {
             <Button
               variant="outline"
               onClick={() => {
-                setIsEditingStoreOpen({ isOpen: true, store });
+                setIsAddModalOpen({ isOpen: true, store });
               }}
               className="min-h-[48px]"
             >

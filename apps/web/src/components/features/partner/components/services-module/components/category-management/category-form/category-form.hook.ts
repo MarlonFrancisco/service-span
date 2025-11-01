@@ -1,9 +1,9 @@
-import { useServices } from '@/store';
+import { useServicesStore } from '@/store';
 import { useFormContext } from 'react-hook-form';
 import { TCategoryFormData } from '../category.schema';
 
 export const useCategoryForm = () => {
-  const { category } = useServices();
+  const category = useServicesStore((state) => state.category);
   const form = useFormContext<TCategoryFormData>();
 
   const isEditing = !!category.id;

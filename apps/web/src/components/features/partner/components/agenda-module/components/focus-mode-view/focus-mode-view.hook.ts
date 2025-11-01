@@ -25,11 +25,9 @@ export function useFocusModeView() {
   );
   const weekDates = useAgendaStore(selectWeekDates);
   const appointments = useAgendaStore((state) => state.appointments);
-  const toggleBlockedSlot = useAgendaStore((state) => state.toggleBlockedSlot);
   const setIsAddAppointmentOpen = useAgendaStore(
     (state) => state.setIsAddAppointmentOpen,
   );
-  const setIsSettingsOpen = useAgendaStore((state) => state.setIsSettingsOpen);
   const selectedDate = weekDates[selectedDayIndex] ?? weekDates[0];
   const monthYear = useMemo(
     () => formatMonthYear(selectedDate),
@@ -88,10 +86,6 @@ export function useFocusModeView() {
     [setIsAddAppointmentOpen, professionals],
   );
 
-  const handleOpenSettings = useCallback(() => {
-    setIsSettingsOpen(true);
-  }, [setIsSettingsOpen]);
-
   const handleOpenAddAppointment = useCallback(() => {
     setIsAddAppointmentOpen({ isAddAppointmentOpen: true });
   }, [setIsAddAppointmentOpen]);
@@ -110,10 +104,8 @@ export function useFocusModeView() {
     setIsFocusMode,
     setSelectedProfessional,
     setSelectedDayIndex,
-    toggleBlockedSlot,
     getDayAppointmentsForCalendar,
     handleQuickAdd,
-    handleOpenSettings,
     handleOpenAddAppointment,
   };
 }

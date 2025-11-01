@@ -3,14 +3,16 @@ import type { TWorkingHours } from './agenda.types';
 
 export const generateTimeSlots = (workingHours: TWorkingHours): string[] => {
   const slots: string[] = [];
-  const [startHour = 0, startMin = 0] = workingHours.start
+  const [startHour = 0, startMin = 0] = workingHours.openTime
     .split(':')
     .map(Number);
-  const [endHour = 0, endMin = 0] = workingHours.end.split(':').map(Number);
-  const [lunchStartHour = 0, lunchStartMin = 0] = workingHours.lunchStart
+  const [endHour = 0, endMin = 0] = workingHours.closeTime
     .split(':')
     .map(Number);
-  const [lunchEndHour = 0, lunchEndMin = 0] = workingHours.lunchEnd
+  const [lunchStartHour = 0, lunchStartMin = 0] = workingHours.lunchStartTime
+    .split(':')
+    .map(Number);
+  const [lunchEndHour = 0, lunchEndMin = 0] = workingHours.lunchEndTime
     .split(':')
     .map(Number);
 

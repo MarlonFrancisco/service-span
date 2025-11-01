@@ -1,5 +1,5 @@
-import { useStoresAdmin } from '@/store';
-import { useServices } from '@/store/admin/services/services.hook';
+import { useStoreMutations } from '@/hooks/use-mutations/use-store-mutations/use-store-mutations.hook';
+import { useServicesStore, useStoresStore } from '@/store';
 import { IUser } from '@/types/api';
 import { IService } from '@/types/api/service.types';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -14,13 +14,14 @@ import {
 } from './add-professional.schema';
 
 export const useAddProfessionalModal = () => {
+  const { isAddProfessional, professional, setIsAddProfessional } =
+    useStoresStore();
   const {
-    isAddProfessional,
-    professional,
-    setIsAddProfessional,
     createStoreMember,
     updateStoreMember,
-  } = useStoresAdmin();
+    isCreatingStoreMember,
+    isUpdatingStoreMember,
+  } = useStoreMutations();
 
   const storeForm = useFormContext<TStoreFormSchema>();
 
@@ -42,7 +43,7 @@ export const useAddProfessionalModal = () => {
   }, [professional, form]);
 
   const isMobile = useIsMobile();
-  const { services } = useServices();
+  const services = useServicesStore((state) => state.services);
 
   const selectedServices = form.watch('services') || [];
 
@@ -67,36 +68,38 @@ export const useAddProfessionalModal = () => {
   const handleSubmit = useCallback(() => {
     const asyncFn = async () => {
       const data = form.getValues();
-      if (data.id) {
-        const professional = await updateStoreMember({
+
+      const fn = isEditing ? updateStoreMember : createStoreMember;
+
+      fn(
+        {
           storeId: storeForm.getValues('id')!,
           professional: {
-            id: data.id!,
-            role: data.role,
-            services: data.services as IService[],
-          },
-        });
-        storeForm.setValue('storeMembers', [
-          ...storeForm
-            .getValues('storeMembers')
-            .map((p) => (p.id === professional.id ? professional : p)),
-        ]);
-      } else {
-        const professional = await createStoreMember({
-          storeId: storeForm.getValues('id')!,
-          professional: {
+            id: data.id || undefined,
             role: data.role,
             user: {
               email: data.user.email,
             } as IUser,
             services: data.services as IService[],
           },
-        });
-        storeForm.setValue('storeMembers', [
-          ...storeForm.getValues('storeMembers'),
-          professional,
-        ]);
-      }
+        },
+        {
+          onSuccess: (professional) => {
+            console.log('oi');
+            const oldProfessionals = storeForm.getValues('storeMembers');
+
+            const professionals = isEditing
+              ? oldProfessionals.map((p) =>
+                  p.id === professional.id ? professional : p,
+                )
+              : [...oldProfessionals, professional];
+
+            storeForm.setValue('storeMembers', professionals);
+
+            setIsAddProfessional({ isOpen: false });
+          },
+        },
+      );
     };
 
     form.handleSubmit(asyncFn, (errors) => {
@@ -105,7 +108,14 @@ export const useAddProfessionalModal = () => {
         toast.error(firstError);
       }
     })();
-  }, [form, storeForm, createStoreMember, updateStoreMember]);
+  }, [
+    form,
+    storeForm,
+    createStoreMember,
+    updateStoreMember,
+    isEditing,
+    setIsAddProfessional,
+  ]);
 
   const handleClose = useCallback(() => {
     setIsAddProfessional({ isOpen: false });
@@ -119,6 +129,7 @@ export const useAddProfessionalModal = () => {
     isMobile,
     services,
     selectedServices,
+    isLoading: isCreatingStoreMember || isUpdatingStoreMember,
     addService,
     removeService,
     handleSubmit,
