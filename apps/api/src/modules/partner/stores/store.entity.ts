@@ -1,9 +1,11 @@
 import { User } from 'src/modules/users/user.entity';
-import { Column, Entity, Index, ManyToOne, OneToMany } from 'typeorm';
+import { Column, Entity, Index, ManyToOne, OneToMany, OneToOne } from 'typeorm';
 import { BaseEntity } from '../../database';
 import { Category } from './category/category.entity';
 import { Service } from './category/service/service.entity';
 import { Gallery } from './gallery/gallery.entity';
+import { NotificationsHistory } from './notifications/history/history.entity';
+import { NotificationsSettings } from './notifications/settings/settings.entity';
 import { Schedule } from './schedule/schedule.entity';
 import { StoreMember } from './store-member/store-member.entity';
 
@@ -101,4 +103,16 @@ export class Store extends BaseEntity {
 
   @OneToMany(() => Schedule, (schedule) => schedule.store)
   schedules: Schedule[];
+
+  @OneToMany(
+    () => NotificationsHistory,
+    (notificationsHistory) => notificationsHistory.store,
+  )
+  notificationsHistory: NotificationsHistory[];
+
+  @OneToOne(
+    () => NotificationsSettings,
+    (notificationsSettings) => notificationsSettings.store,
+  )
+  notificationsSettings: NotificationsSettings;
 }

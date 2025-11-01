@@ -4,11 +4,12 @@ import { AuthModule } from 'src/modules/auth';
 import { CategoryModule } from './category';
 import { GalleryModule } from './gallery';
 import { StoreAccessGuard, StoreOwnerGuard, StoreRoleGuard } from './guards';
+import { NotificationsModule } from './notifications/notifications.module';
+import { ScheduleModule } from './schedule';
 import { StoreMemberModule } from './store-member/store-member.module';
 import { Store } from './store.entity';
 import { StoresController } from './stores.controller';
 import { StoresService } from './stores.services';
-import { ScheduleModule } from './schedule';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { ScheduleModule } from './schedule';
     GalleryModule,
     CategoryModule,
     ScheduleModule,
+    NotificationsModule,
   ],
   controllers: [StoresController],
   providers: [StoresService, StoreAccessGuard, StoreOwnerGuard, StoreRoleGuard],
