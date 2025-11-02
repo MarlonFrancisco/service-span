@@ -29,6 +29,17 @@ export class Store extends BaseEntity {
   @Column({ type: 'boolean', default: false, nullable: true })
   isDeleted: boolean;
 
+  // goals
+
+  @Column({ type: 'int', default: 0 })
+  weeklyGoal: number;
+
+  @Column({ type: 'int', default: 0 })
+  monthlyGoal: number;
+
+  @Column({ type: 'int', default: 0 })
+  quarterlyGoal: number;
+
   // business hours
   @Column({ type: 'char', length: 5, nullable: true })
   openTime: string;

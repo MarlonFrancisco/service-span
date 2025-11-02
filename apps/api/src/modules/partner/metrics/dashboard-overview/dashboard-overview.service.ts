@@ -6,7 +6,7 @@ import { Schedule } from '../../stores/schedule/schedule.entity';
 import { Store } from '../../stores/store.entity';
 import { DashboardOverviewDto } from './dto/dashboard-overview.dto';
 
-type PeriodType = 'today' | 'week' | 'month';
+type PeriodType = 'today' | 'week' | 'month' | 'quarter';
 
 interface DateRange {
   start: Date;
@@ -112,19 +112,11 @@ export class DashboardOverviewService {
     );
     const topServices = this.calculateTopServices(currentSchedules);
 
-    // Calcular meta (assumindo meta de R$ 4500 por padrão)
-    const weeklyGoal = {
-      current: Math.round(weeklyRevenue.value),
-      target: 4500,
-      percentage: Math.round((weeklyRevenue.value / 4500) * 100),
-    };
-
     return {
       weeklyRevenue,
       occupationRate,
       averageTicket,
       averageRating,
-      weeklyGoal,
       newCustomers,
       recurringCustomers,
       cancellationRate,
@@ -209,9 +201,7 @@ export class DashboardOverviewService {
     const completedCurrent = currentSchedules.filter(
       (s) => s.status === 'completed',
     );
-    const completedPrev = prevSchedules.filter(
-      (s) => s.status === 'completed',
-    );
+    const completedPrev = prevSchedules.filter((s) => s.status === 'completed');
 
     const currentRevenue = completedCurrent.reduce((sum, schedule) => {
       return sum + (schedule.service?.price || 0);

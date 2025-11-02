@@ -184,18 +184,7 @@ Guia de referência com todas as métricas utilizadas nos dashboards do módulo 
 
 ### Métricas Categóricas
 
-#### 8. Métodos de Pagamento
-
-- **Tipo:** Percentual de participação
-- **Formato:** XX% (sem decimais)
-- **Categorias:**
-  - PIX
-  - Cartão
-  - Dinheiro
-  - Outros
-- **Descrição:** Distribuição percentual dos métodos de pagamento utilizados
-
-#### 9. Receita por Categoria de Serviço
+#### 8. Receita por Categoria de Serviço
 
 - **Tipo:** Categórico
 - **Categorias:** Cabelo, Barba, Estética, Combo
@@ -204,7 +193,7 @@ Guia de referência com todas as métricas utilizadas nos dashboards do módulo 
   - Crescimento vs período anterior (%)
 - **Descrição:** Receita e crescimento por tipo de serviço
 
-#### 10. Top 5 Serviços por Receita
+#### 9. Top 5 Serviços por Receita
 
 - **Tipo:** Ranking
 - **Métricas por serviço:**
@@ -215,7 +204,7 @@ Guia de referência com todas as métricas utilizadas nos dashboards do módulo 
   - Crescimento vs período anterior (%)
 - **Descrição:** Ranking dos serviços mais rentáveis
 
-#### 11. Horários Mais Rentáveis
+#### 10. Horários Mais Rentáveis
 
 - **Tipo:** Temporal
 - **Dimensões:** Horário (9h, 10h, 11h, 14h, 15h, 16h, 17h, 18h)

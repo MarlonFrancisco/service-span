@@ -30,12 +30,6 @@ export class DashboardOverviewDto {
   };
 
   // Métricas Secundárias (5-10)
-  weeklyGoal: {
-    current: number;
-    target: number;
-    percentage: number;
-  };
-
   newCustomers: number;
 
   recurringCustomers: number;

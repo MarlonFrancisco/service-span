@@ -19,6 +19,10 @@ export class StoreDto {
   storeMembers?: User[];
   gallery?: Gallery[];
 
+  weeklyGoal: number;
+  monthlyGoal: number;
+  quarterlyGoal: number;
+
   openTime: string;
   closeTime: string;
   lunchStartTime: string;
@@ -55,5 +59,8 @@ export class StoreDto {
     this.lunchStartTime = data.lunchStartTime;
     this.lunchEndTime = data.lunchEndTime;
     this.businessDays = data.businessDays;
+    this.weeklyGoal = data.weeklyGoal;
+    this.monthlyGoal = data.monthlyGoal;
+    this.quarterlyGoal = data.quarterlyGoal;
   }
 }
