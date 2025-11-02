@@ -2,9 +2,11 @@ import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { DashboardOverviewService } from './dashboard-overview/dashboard-overview.service';
 import { DashboardSalesService } from './dashboard-sales/dashboard-sales.service';
+import { DashboardOperationalService } from './dashboard-operational/dashboard-operational.service';
 
 type OverviewPeriodType = 'today' | 'week' | 'month';
 type SalesPeriodType = 'week' | 'month' | 'quarter';
+type OperationalPeriodType = 'week' | 'month' | 'quarter';
 
 @Controller('partner/stores/:storeId/metrics')
 @UseGuards(JwtAuthGuard)
@@ -12,6 +14,7 @@ export class MetricsController {
   constructor(
     private readonly dashboardOverviewService: DashboardOverviewService,
     private readonly dashboardSalesService: DashboardSalesService,
+    private readonly dashboardOperationalService: DashboardOperationalService,
   ) {}
 
   /**
@@ -51,6 +54,27 @@ export class MetricsController {
     const normalizedPeriod = validPeriods.includes(period) ? period : 'month';
 
     return this.dashboardSalesService.getDashboardSales(
+      storeId,
+      normalizedPeriod,
+    );
+  }
+
+  /**
+   * GET /partner/stores/:storeId/metrics/operational?period=month
+   * Dashboard 3 - Operacional com todas as métricas de operação
+   * @param storeId - ID da loja
+   * @param period - Período para análise: 'week' (esta semana), 'month' (este mês), 'quarter' (este trimestre). Padrão: 'month'
+   */
+  @Get('operational')
+  async getDashboardOperational(
+    @Param('storeId') storeId: string,
+    @Query('period') period: OperationalPeriodType = 'month',
+  ) {
+    // Validar período
+    const validPeriods: OperationalPeriodType[] = ['week', 'month', 'quarter'];
+    const normalizedPeriod = validPeriods.includes(period) ? period : 'month';
+
+    return this.dashboardOperationalService.getOperationalMetrics(
       storeId,
       normalizedPeriod,
     );
