@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
-import type { useAgendaGrid } from '../../agenda-grid.hook';
 import { formatDateBR, isToday } from '../../agenda-grid.helpers';
+import type { useAgendaGrid } from '../../agenda-grid.hook';
 import type { TDayViewData } from '../../agenda-grid.types';
 
 /**
@@ -47,13 +47,7 @@ export const useAgendaGridMobileView = (
       dayKey,
       label: days[gridHook.selectedDayIndex],
     };
-  }, [
-    weekDates,
-    workingDayKeys,
-    workingDays,
-    days,
-    gridHook.selectedDayIndex,
-  ]);
+  }, [weekDates, workingDayKeys, workingDays, days, gridHook.selectedDayIndex]);
 
   return {
     dayViewData,

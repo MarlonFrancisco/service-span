@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { StorageModule } from 'src/modules/storage/storage.module';
+import { StorageModule } from '../../../storage/storage.module';
 import { GalleryController } from './gallery.controller';
 import { Gallery } from './gallery.entity';
 import { GalleryService } from './gallery.service';

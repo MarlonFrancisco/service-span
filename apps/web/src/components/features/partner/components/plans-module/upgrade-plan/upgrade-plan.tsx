@@ -90,7 +90,9 @@ export function UpgradePlan() {
                         ? 'bg-black hover:bg-gray-800 text-white'
                         : 'bg-gray-100 hover:bg-gray-200 text-gray-900'
                   }`}
-                  onClick={() => !isCurrentPlan && handleSelectPlan(plan.id)}
+                  onClick={() =>
+                    !isCurrentPlan && handleSelectPlan(plan.priceId)
+                  }
                   disabled={isCurrentPlan}
                 >
                   {isCurrentPlan

@@ -1,21 +1,25 @@
 export { AgendaGrid } from './agenda-grid';
-export { useAgendaGrid, useAgendaGridMain, useIsMobile } from './agenda-grid.hook';
-export { STATUS_CONFIG, GRID_CONSTANTS, BREAKPOINTS, CONTAINER_HEIGHTS } from './agenda-grid.constants';
 export {
-  isToday,
-  getProfessionalFullName,
-  formatDateBR,
+  BREAKPOINTS,
+  CONTAINER_HEIGHTS,
+  GRID_CONSTANTS,
+  STATUS_CONFIG,
+} from './agenda-grid.constants';
+export {
   dateToISOString,
-  generateSlotKey,
+  formatDateBR,
+  getProfessionalFullName,
+  isToday,
 } from './agenda-grid.helpers';
+export { useAgendaGrid } from './agenda-grid.hook';
 export type {
   TAgendaGridConfig,
+  TAgendaGridHookConfig,
+  TDayViewData,
+  TDesktopViewConfig,
+  TMobileViewConfig,
+  TSelectedProfessionalData,
   TSlotClickHandler,
   TSlotContext,
-  TDayViewData,
-  TAgendaGridHookConfig,
-  TMobileViewConfig,
-  TDesktopViewConfig,
-  TSelectedProfessionalData,
   TSlotRenderContext,
 } from './agenda-grid.types';

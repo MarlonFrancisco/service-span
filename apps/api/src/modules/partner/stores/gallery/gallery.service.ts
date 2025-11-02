@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import sharp from 'sharp';
-import { StorageService } from 'src/modules/storage/storage.service';
 import { Repository, UpdateResult } from 'typeorm';
+import { StorageService } from '../../../storage/storage.service';
 import { Store } from '../store.entity';
 import { GalleryDto } from './dto/gallery.dto';
 import { Gallery } from './gallery.entity';

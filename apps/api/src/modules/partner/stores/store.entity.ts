@@ -1,6 +1,6 @@
-import { User } from 'src/modules/users/user.entity';
 import { Column, Entity, Index, ManyToOne, OneToMany, OneToOne } from 'typeorm';
 import { BaseEntity } from '../../database';
+import { User } from '../../users/user.entity';
 import { Category } from './category/category.entity';
 import { Service } from './category/service/service.entity';
 import { Gallery } from './gallery/gallery.entity';

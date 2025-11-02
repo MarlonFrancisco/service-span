@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthModule } from 'src/modules/auth';
+import { AuthModule } from '../../auth';
 import { CategoryModule } from './category';
 import { GalleryModule } from './gallery';
 import { StoreAccessGuard, StoreOwnerGuard, StoreRoleGuard } from './guards';

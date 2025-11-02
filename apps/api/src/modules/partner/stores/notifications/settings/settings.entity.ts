@@ -1,5 +1,5 @@
-import { BaseEntity } from 'src/modules/database';
 import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
+import { BaseEntity } from '../../../../database';
 import { Store } from '../../store.entity';
 
 @Entity('notifications_settings')
