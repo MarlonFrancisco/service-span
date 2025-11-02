@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import type { JwtPayload } from '../auth/auth.service';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -8,6 +8,12 @@ import type { IWebhookPayload } from './subscription.types';
 @Controller('subscription')
 export class SubscriptionController {
   constructor(private readonly subscriptionService: SubscriptionService) {}
+
+  @Get('current-plan')
+  @UseGuards(JwtAuthGuard)
+  async getCurrentPlan(@CurrentUser() user: JwtPayload) {
+    return this.subscriptionService.getCurrentPlan(user.sub);
+  }
 
   @Post()
   @UseGuards(JwtAuthGuard)

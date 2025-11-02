@@ -59,4 +59,11 @@ export class StoresService {
   async delete(id: string): Promise<void> {
     await this.storesRepository.delete(id);
   }
+
+  async getActiveStores(userId: string): Promise<Store[]> {
+    return this.storesRepository.find({
+      where: { owner: { id: userId } },
+      relations: ['storeMembers'],
+    });
+  }
 }

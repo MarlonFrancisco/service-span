@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Between, Repository } from 'typeorm';
 import { UsersService } from '../../../users/users.service';
 import { ScheduleDto } from './dto/schedule.dto';
 import { Schedule } from './schedule.entity';
@@ -53,5 +53,26 @@ export class ScheduleService {
 
   async delete(id: string): Promise<void> {
     await this.scheduleRepository.delete(id);
+  }
+
+  async getSchedulesByMonth(
+    storeOwnerId: string,
+    day: number,
+    month: number,
+    year: number,
+  ): Promise<Schedule[]> {
+    return this.scheduleRepository.find({
+      where: {
+        date: Between(
+          new Date(year, month, day),
+          new Date(year, month + 1, day),
+        ),
+        store: {
+          owner: {
+            id: storeOwnerId,
+          },
+        },
+      },
+    });
   }
 }
