@@ -1,5 +1,5 @@
-import { PlansModule } from '@/components/features/partner';
+import { redirect } from 'next/navigation';
 
 export default function PartnerPlansPage() {
-  return <PlansModule />;
+  redirect('/partner/plans/me');
 }

@@ -23,6 +23,8 @@ export const getQueryClient = () => {
 };
 
 export const CACHE_QUERY_KEYS = {
+  plans: () => ['plans'],
+  currentPlan: () => ['subscription/current-plan'],
   stores: () => ['partner/stores'],
   schedules: (storeId: string) => [`partner/schedules/${storeId}`],
   blockedTimes: (storeId: string) => [

@@ -1,7 +1,7 @@
-import { usePlansStore } from '@/store/admin/plans/plans.store';
+import { usePlansQuery } from '@/hooks/use-query/use-plans-query';
 
 export const usePricing = () => {
-  const { plans } = usePlansStore();
+  const { plans, isPendingPlans } = usePlansQuery();
 
-  return { plans };
+  return { plans, isPendingPlans };
 };

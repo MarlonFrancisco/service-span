@@ -1,3 +1,4 @@
+import { IMySubscription } from '@/types/api/payment.types';
 import { apiClient } from '../api';
 
 export class SubscriptionService {
@@ -7,5 +8,11 @@ export class SubscriptionService {
     return await this.apiClient.post<{ url: string }>('/subscription', {
       priceId,
     });
+  }
+
+  static async getCurrentPlan() {
+    return await this.apiClient.get<IMySubscription>(
+      '/subscription/current-plan',
+    );
   }
 }

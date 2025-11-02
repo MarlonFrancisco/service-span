@@ -7,14 +7,13 @@ import { CACHE_QUERY_KEYS } from '@/utils/helpers/query.helper';
 import { useQuery } from '@tanstack/react-query';
 import { usePathname } from 'next/navigation';
 import { useEffect } from 'react';
-import { TModuleId } from './partner.types';
 
 export const usePartner = () => {
   const pathname = usePathname();
 
   const currentModule =
-    MODULE_CONFIG[pathname.split('/').pop() as TModuleId] ||
-    MODULE_CONFIG.dashboard;
+    MODULE_CONFIG[pathname as keyof typeof MODULE_CONFIG] ||
+    MODULE_CONFIG['/partner/dashboard'];
   const showStoreSelector = currentModule?.showStoreSelector;
 
   const { data: stores = [] } = useQuery({
