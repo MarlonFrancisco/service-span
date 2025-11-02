@@ -6,7 +6,6 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-  Progress,
   ToggleGroup,
   ToggleGroupItem,
 } from '@repo/ui';
@@ -19,7 +18,6 @@ import {
   RefreshCw,
   Star,
   Target,
-  TrendingUp,
   UserPlus,
   Users,
   XCircle,
@@ -42,6 +40,7 @@ import {
 
 import { useMetricsQuery } from '@/hooks/use-query/use-metrics-query/use-metrics-query.hook';
 import { usePartnerStore } from '@/store/partner/partner.store';
+import { GeneralMetricsSkeleton } from './general-metrics.skeleton';
 type PeriodFilter = 'today' | 'week' | 'month';
 
 export function GeneralMetricsModule() {
@@ -57,11 +56,7 @@ export function GeneralMetricsModule() {
 
   // Loading state
   if (isPendingOverview || !overview) {
-    return (
-      <div className="flex items-center justify-center h-96">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900" />
-      </div>
-    );
+    return <GeneralMetricsSkeleton />;
   }
 
   // Cores para os serviços
@@ -201,50 +196,6 @@ export function GeneralMetricsModule() {
           </Button>
         </div>
       </div>
-
-      {/* Goal Progress Card */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-      >
-        <Card className="shadow-lg bg-gradient-to-br from-gray-900 to-gray-800 text-white border-0">
-          <CardContent className="p-4 sm:p-5 md:p-6">
-            <div className="flex items-start justify-between mb-3 sm:mb-4">
-              <div className="flex-1 min-w-0">
-                <p className="text-white/70 text-xs mb-1 sm:mb-1.5">
-                  Meta {periodFilter === 'today' ? 'Diária' : periodFilter === 'week' ? 'Semanal' : 'Mensal'}
-                </p>
-                <div className="flex flex-wrap items-baseline gap-x-2">
-                  <p className="text-2xl sm:text-3xl">
-                    R${' '}
-                    {Math.round(overview.weeklyGoal.current).toLocaleString()}
-                  </p>
-                  <span className="text-sm text-white/60">
-                    / R$ {overview.weeklyGoal.target.toLocaleString()}
-                  </span>
-                </div>
-              </div>
-              <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl bg-white/10 flex items-center justify-center flex-shrink-0 ml-2 sm:ml-3">
-                <Target className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
-              </div>
-            </div>
-            <Progress
-              value={overview.weeklyGoal.percentage}
-              className="h-2 bg-white/20 mb-2.5 sm:mb-3"
-            />
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <p className="text-xs text-white/70">
-                {overview.weeklyGoal.percentage}% concluído
-              </p>
-              <Badge className="bg-green-500/20 text-green-300 border-green-500/30 text-xs">
-                <TrendingUp className="w-3 h-3 mr-1" />
-                No caminho certo
-              </Badge>
-            </div>
-          </CardContent>
-        </Card>
-      </motion.div>
 
       {/* Quick Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -423,7 +374,7 @@ export function GeneralMetricsModule() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.25 }}
         >
-          <Card className="shadow-sm border-0">
+          <Card className="shadow-sm border-0 h-full">
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <div>

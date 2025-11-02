@@ -7,10 +7,12 @@ export const useMetricsQuery = ({
   storeId,
   period = 'week',
   includeOverview = false,
+  includeSales = false,
 }: {
   storeId?: string;
   period?: PeriodType;
   includeOverview?: boolean;
+  includeSales?: boolean;
 }) => {
   const {
     data: overview,
@@ -22,5 +24,22 @@ export const useMetricsQuery = ({
     enabled: !!storeId && includeOverview,
   });
 
-  return { overview, isPendingOverview, overviewRefetch };
+  const {
+    data: sales,
+    refetch: salesRefetch,
+    isPending: isPendingSales,
+  } = useQuery({
+    queryKey: CACHE_QUERY_KEYS.metricsSales(storeId || '', period),
+    queryFn: () => MetricsService.getSales(storeId || '', period),
+    enabled: !!storeId && includeSales,
+  });
+
+  return {
+    overview,
+    isPendingOverview,
+    overviewRefetch,
+    sales,
+    isPendingSales,
+    salesRefetch,
+  };
 };

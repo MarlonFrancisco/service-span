@@ -1,7 +1,8 @@
 'use client';
+import { useMetricsQuery } from '@/hooks/use-query/use-metrics-query';
+import { usePartnerStore } from '@/store';
 import {
   Badge,
-  Button,
   Card,
   CardContent,
   CardHeader,
@@ -15,7 +16,6 @@ import {
   Clock,
   CreditCard,
   DollarSign,
-  Download,
   Receipt,
   Sparkles,
   Target,
@@ -29,156 +29,25 @@ import {
   Bar,
   BarChart,
   CartesianGrid,
-  Cell,
   Line,
-  Pie,
-  PieChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
 } from 'recharts';
+import { SalesRevenueMetricsSkeleton } from './sales-revenue-metrics.skeleton';
 
 type PeriodFilter = 'week' | 'month' | 'quarter';
-
-const revenueData = [
-  { month: 'Jan', revenue: 45000, bookings: 320, target: 48000 },
-  { month: 'Fev', revenue: 52000, bookings: 380, target: 50000 },
-  { month: 'Mar', revenue: 48000, bookings: 350, target: 50000 },
-  { month: 'Abr', revenue: 61000, bookings: 420, target: 55000 },
-  { month: 'Mai', revenue: 55000, bookings: 390, target: 58000 },
-  { month: 'Jun', revenue: 67000, bookings: 460, target: 60000 },
-];
-
-const weeklyRevenuePattern = [
-  { day: 'Seg', revenue: 7800, avgTicket: 85, bookings: 92 },
-  { day: 'Ter', revenue: 9200, avgTicket: 89, bookings: 103 },
-  { day: 'Qua', revenue: 8100, avgTicket: 82, bookings: 99 },
-  { day: 'Qui', revenue: 10500, avgTicket: 95, bookings: 110 },
-  { day: 'Sex', revenue: 14200, avgTicket: 102, bookings: 139 },
-  { day: 'Sáb', revenue: 18900, avgTicket: 108, bookings: 175 },
-  { day: 'Dom', revenue: 11300, avgTicket: 98, bookings: 115 },
-];
-
-const conversionData = [
-  { day: 'Seg', visits: 120, bookings: 45, rate: 37.5 },
-  { day: 'Ter', visits: 150, bookings: 58, rate: 38.7 },
-  { day: 'Qua', visits: 130, bookings: 52, rate: 40.0 },
-  { day: 'Qui', visits: 180, bookings: 72, rate: 40.0 },
-  { day: 'Sex', visits: 210, bookings: 95, rate: 45.2 },
-  { day: 'Sáb', visits: 280, bookings: 140, rate: 50.0 },
-  { day: 'Dom', visits: 190, bookings: 85, rate: 44.7 },
-];
-
-const paymentMethods = [
-  { name: 'PIX', value: 42, color: '#000000' },
-  { name: 'Cartão', value: 38, color: '#4b5563' },
-  { name: 'Dinheiro', value: 15, color: '#9ca3af' },
-  { name: 'Outros', value: 5, color: '#d1d5db' },
-];
-
-const serviceCategories = [
-  { category: 'Cabelo', revenue: 28400, growth: 12.5 },
-  { category: 'Barba', revenue: 15200, growth: 8.3 },
-  { category: 'Estética', revenue: 18900, growth: -3.2 },
-  { category: 'Combo', revenue: 4500, growth: 22.1 },
-];
-
-const topServices = [
-  {
-    name: 'Corte Masculino Premium',
-    revenue: 12400,
-    bookings: 85,
-    percentage: 18.4,
-    trend: 12,
-    growth: 15.2,
-  },
-  {
-    name: 'Coloração Completa',
-    revenue: 9800,
-    bookings: 42,
-    percentage: 14.5,
-    trend: 8,
-    growth: 8.7,
-  },
-  {
-    name: 'Barba & Cabelo',
-    revenue: 8600,
-    bookings: 98,
-    percentage: 12.8,
-    trend: -2,
-    growth: -2.3,
-  },
-  {
-    name: 'Escova Progressiva',
-    revenue: 7200,
-    bookings: 24,
-    percentage: 10.7,
-    trend: 18,
-    growth: 22.1,
-  },
-  {
-    name: 'Hidratação Capilar',
-    revenue: 6100,
-    bookings: 67,
-    percentage: 9.0,
-    trend: 5,
-    growth: 5.8,
-  },
-];
-
-const peakHours = [
-  { hour: '9h', revenue: 2400, utilization: 45 },
-  { hour: '10h', revenue: 4200, utilization: 68 },
-  { hour: '11h', revenue: 5800, utilization: 82 },
-  { hour: '14h', revenue: 7200, utilization: 95 },
-  { hour: '15h', revenue: 8100, utilization: 98 },
-  { hour: '16h', revenue: 7800, utilization: 92 },
-  { hour: '17h', revenue: 6500, utilization: 85 },
-  { hour: '18h', revenue: 5200, utilization: 72 },
-];
 
 export function SalesRevenueMetricsModule() {
   const [periodFilter, setPeriodFilter] = useState<PeriodFilter>('month');
 
-  const stats = [
-    {
-      label: 'Receita do Mês',
-      value: 'R$ 67.450',
-      icon: DollarSign,
-      trend: '+22.4%',
-      trendUp: true,
-      comparison: 'vs mês anterior',
-      detail: '+R$ 12.350',
-    },
-    {
-      label: 'Ticket Médio',
-      value: 'R$ 146',
-      icon: Receipt,
-      trend: '+8.2%',
-      trendUp: true,
-      comparison: 'vs mês anterior',
-      detail: '+R$ 11',
-    },
-    {
-      label: 'Taxa de Conversão',
-      value: '45.8%',
-      icon: CreditCard,
-      trend: '+3.1%',
-      trendUp: true,
-      comparison: 'vs mês anterior',
-      detail: '+1.4 p.p.',
-    },
-    {
-      label: 'Receita/Hora',
-      value: 'R$ 285',
-      icon: Clock,
-      trend: '+15.3%',
-      trendUp: true,
-      comparison: 'vs mês anterior',
-      detail: 'Produtividade',
-    },
-  ];
+  const activeStore = usePartnerStore((state) => state.activeStore);
+  const { sales, isPendingSales } = useMetricsQuery({
+    storeId: activeStore?.id,
+    period: periodFilter,
+    includeSales: true,
+  });
 
   const periodLabels = {
     week: 'Esta Semana',
@@ -193,6 +62,60 @@ export function SalesRevenueMetricsModule() {
     return `${index + 1}º`;
   };
 
+  const getComparisonText = () => {
+    const textMap = {
+      week: 'vs semana passada',
+      month: 'vs mês anterior',
+      quarter: 'vs trimestre anterior',
+    };
+    return textMap[periodFilter];
+  };
+
+  // Loading state
+  if (isPendingSales || !sales) {
+    return <SalesRevenueMetricsSkeleton />;
+  }
+
+  // Stats dinâmicos baseados nos dados reais
+  const stats = [
+    {
+      label: 'Receita',
+      value: `R$ ${sales.revenue.value.toLocaleString()}`,
+      icon: DollarSign,
+      trend: `${sales.revenue.percentageChange > 0 ? '+' : ''}${sales.revenue.percentageChange}%`,
+      trendUp: sales.revenue.percentageChange > 0,
+      comparison: getComparisonText(),
+      detail: `${sales.revenue.percentageChange > 0 ? '+' : ''}R$ ${sales.revenue.absoluteChange.toLocaleString()}`,
+    },
+    {
+      label: 'Ticket Médio',
+      value: `R$ ${sales.averageTicket.value.toLocaleString()}`,
+      icon: Receipt,
+      trend: `${sales.averageTicket.percentageChange > 0 ? '+' : ''}${sales.averageTicket.percentageChange}%`,
+      trendUp: sales.averageTicket.percentageChange > 0,
+      comparison: getComparisonText(),
+      detail: `${sales.averageTicket.percentageChange > 0 ? '+' : ''}R$ ${sales.averageTicket.absoluteChange.toLocaleString()}`,
+    },
+    {
+      label: 'Taxa de Conversão',
+      value: `${sales.conversionRate.value}%`,
+      icon: CreditCard,
+      trend: `${sales.conversionRate.percentageChange > 0 ? '+' : ''}${sales.conversionRate.percentageChange}%`,
+      trendUp: sales.conversionRate.percentageChange > 0,
+      comparison: getComparisonText(),
+      detail: `${sales.conversionRate.variationInPoints > 0 ? '+' : ''}${sales.conversionRate.variationInPoints} p.p.`,
+    },
+    {
+      label: 'Receita/Hora',
+      value: `R$ ${sales.revenuePerHour.value.toLocaleString()}`,
+      icon: Clock,
+      trend: `${sales.revenuePerHour.percentageChange > 0 ? '+' : ''}${sales.revenuePerHour.percentageChange}%`,
+      trendUp: sales.revenuePerHour.percentageChange > 0,
+      comparison: getComparisonText(),
+      detail: 'Produtividade',
+    },
+  ];
+
   return (
     <div className="space-y-6">
       {/* Header with Period Filter */}
@@ -200,10 +123,23 @@ export function SalesRevenueMetricsModule() {
         <div>
           <p className="text-xs text-gray-500 mb-1">Performance de Vendas</p>
           <div className="flex items-baseline gap-2">
-            <h2 className="text-gray-900">R$ 67.450</h2>
-            <Badge className="bg-green-50 text-green-700 border-green-200">
-              <TrendingUp className="w-3 h-3 mr-1" />
-              +22.4%
+            <h2 className="text-gray-900">
+              R$ {sales.revenue.value.toLocaleString()}
+            </h2>
+            <Badge
+              className={`${
+                sales.revenue.percentageChange > 0
+                  ? 'bg-green-50 text-green-700 border-green-200'
+                  : 'bg-red-50 text-red-700 border-red-200'
+              }`}
+            >
+              {sales.revenue.percentageChange > 0 ? (
+                <TrendingUp className="w-3 h-3 mr-1" />
+              ) : (
+                <ArrowDownRight className="w-3 h-3 mr-1" />
+              )}
+              {sales.revenue.percentageChange > 0 ? '+' : ''}
+              {sales.revenue.percentageChange}%
             </Badge>
           </div>
         </div>
@@ -225,16 +161,10 @@ export function SalesRevenueMetricsModule() {
               </button>
             ))}
           </div>
-
-          {/* Export Button */}
-          <Button variant="outline" size="sm" className="shrink-0 min-h-[36px]">
-            <Download className="h-4 w-4 sm:mr-2" />
-            <span className="hidden sm:inline">Exportar</span>
-          </Button>
         </div>
       </div>
 
-      {/* Monthly Goal Progress */}
+      {/* Goal Progress Card */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -245,24 +175,33 @@ export function SalesRevenueMetricsModule() {
             <div className="flex items-start justify-between mb-3 sm:mb-4">
               <div className="flex-1 min-w-0">
                 <p className="text-white/70 text-xs mb-1 sm:mb-1.5">
-                  Meta de Receita - Junho
+                  Meta de {periodLabels[periodFilter].toLowerCase()}
                 </p>
                 <div className="flex flex-wrap items-baseline gap-x-2">
-                  <p className="text-2xl sm:text-3xl">R$ 67.000</p>
-                  <span className="text-sm text-white/60">/ R$ 75.000</span>
+                  <p className="text-2xl sm:text-3xl">
+                    R$ {sales.goal.current.toLocaleString()}
+                  </p>
+                  <span className="text-sm text-white/60">
+                    / R$ {sales.goal.target.toLocaleString()}
+                  </span>
                 </div>
               </div>
               <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl bg-white/10 flex items-center justify-center flex-shrink-0 ml-2 sm:ml-3">
                 <Target className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
               </div>
             </div>
-            <Progress value={89.3} className="h-2 bg-white/20 mb-2.5 sm:mb-3" />
+            <Progress
+              value={sales.goal.percentage}
+              className="h-2 bg-white/20 mb-2.5 sm:mb-3"
+            />
             <div className="flex flex-wrap items-center justify-between gap-2">
               <p className="text-xs text-white/70">
-                89.3% concluído - faltam R$ 8.000
+                {sales.goal.percentage}% concluído - faltam R${' '}
+                {sales.goal.remaining.toLocaleString()}
               </p>
               <Badge className="bg-yellow-500/20 text-yellow-300 border-yellow-500/30 text-xs">
-                <Sparkles className="w-3 h-3 mr-1" />5 dias restantes
+                <Sparkles className="w-3 h-3 mr-1" />
+                {sales.goal.daysRemaining} dias restantes
               </Badge>
             </div>
           </CardContent>
@@ -286,7 +225,11 @@ export function SalesRevenueMetricsModule() {
                   </div>
                   <Badge
                     variant="outline"
-                    className={`text-xs ${stat.trendUp ? 'text-green-700 border-green-200 bg-green-50' : 'text-red-700 border-red-200 bg-red-50'}`}
+                    className={`text-xs ${
+                      stat.trendUp
+                        ? 'text-green-700 border-green-200 bg-green-50'
+                        : 'text-red-700 border-red-200 bg-red-50'
+                    }`}
                   >
                     {stat.trendUp ? (
                       <ArrowUpRight className="w-3 h-3 inline mr-0.5" />
@@ -324,10 +267,12 @@ export function SalesRevenueMetricsModule() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm text-gray-900 mb-1">
-                    Sábado é seu dia mais rentável
+                    Dia mais rentável: {sales.insights.mostProfitableDay.day}
                   </p>
                   <p className="text-xs text-gray-500">
-                    R$ 18.900 em média. Considere aumentar a equipe aos sábados.
+                    R${' '}
+                    {sales.insights.mostProfitableDay.averageRevenue.toLocaleString()}{' '}
+                    em média
                   </p>
                 </div>
               </div>
@@ -341,12 +286,16 @@ export function SalesRevenueMetricsModule() {
                   <AlertCircle className="h-4 w-4 text-yellow-600" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm text-gray-900 mb-1">
-                    Oportunidade em Estética
-                  </p>
-                  <p className="text-xs text-gray-500">
-                    Receita -3.2% vs mês anterior. Revisar estratégia de preços.
-                  </p>
+                  <p className="text-sm text-gray-900 mb-1">Oportunidades</p>
+                  {sales.insights.opportunities.length > 0 ? (
+                    <p className="text-xs text-gray-500">
+                      {sales.insights.opportunities[0]}
+                    </p>
+                  ) : (
+                    <p className="text-xs text-gray-500">
+                      Todas as categorias estão bem distribuídas
+                    </p>
+                  )}
                 </div>
               </div>
             </CardContent>
@@ -359,8 +308,9 @@ export function SalesRevenueMetricsModule() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.25 }}
+        className="flex gap-4 flex-col md:flex-row"
       >
-        <Card className="shadow-sm border-0">
+        <Card className="shadow-sm border-0 flex-1">
           <CardHeader className="pb-3">
             <div className="flex items-start justify-between">
               <div>
@@ -368,7 +318,7 @@ export function SalesRevenueMetricsModule() {
                   Evolução de Receita
                 </CardTitle>
                 <p className="text-xs text-gray-500 mt-1">
-                  Receita mensal vs meta nos últimos 6 meses
+                  Receita vs meta nos últimos 6 meses
                 </p>
               </div>
               <div className="flex items-center gap-2 text-xs">
@@ -387,7 +337,7 @@ export function SalesRevenueMetricsModule() {
             <div className="w-full h-[250px] sm:h-[300px]">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart
-                  data={revenueData}
+                  data={sales.revenueEvolution}
                   margin={{ top: 10, right: 5, left: -15, bottom: 0 }}
                 >
                   <defs>
@@ -438,7 +388,7 @@ export function SalesRevenueMetricsModule() {
                     formatter={(value: any, name: string) => {
                       if (name === 'revenue')
                         return [`R$ ${value.toLocaleString()}`, 'Receita'];
-                      if (name === 'target')
+                      if (name === 'goal')
                         return [`R$ ${value.toLocaleString()}`, 'Meta'];
                       return [value, 'Agendamentos'];
                     }}
@@ -454,163 +404,82 @@ export function SalesRevenueMetricsModule() {
                   />
                   <Line
                     type="monotone"
-                    dataKey="target"
+                    dataKey="goal"
                     stroke="#9ca3af"
                     strokeWidth={2}
                     strokeDasharray="5 5"
                     dot={false}
-                    name="target"
+                    name="goal"
                   />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
           </CardContent>
         </Card>
+
+        <Card className="shadow-sm border-0 flex-1">
+          <CardHeader className="pb-3">
+            <div>
+              <CardTitle className="text-base text-gray-900">
+                Receita por Dia da Semana
+              </CardTitle>
+              <p className="text-xs text-gray-500 mt-1">
+                Padrão médio de faturamento
+              </p>
+            </div>
+          </CardHeader>
+          <CardContent className="px-3 sm:px-6">
+            <div className="w-full h-[250px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart
+                  data={sales.revenueByDayOfWeek}
+                  margin={{ top: 10, right: 5, left: -15, bottom: 0 }}
+                >
+                  <CartesianGrid
+                    strokeDasharray="3 3"
+                    stroke="#f5f5f5"
+                    vertical={false}
+                  />
+                  <XAxis
+                    dataKey="day"
+                    stroke="#9ca3af"
+                    fontSize={11}
+                    tickLine={false}
+                    axisLine={false}
+                  />
+                  <YAxis
+                    stroke="#9ca3af"
+                    fontSize={10}
+                    tickLine={false}
+                    axisLine={false}
+                    width={50}
+                    tickFormatter={(value) => `R$ ${value / 1000}k`}
+                  />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: 'white',
+                      border: '1px solid #e5e7eb',
+                      borderRadius: '10px',
+                      padding: '8px 12px',
+                      fontSize: '12px',
+                      boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
+                    }}
+                    formatter={(value: any) => [
+                      `R$ ${value.toLocaleString()}`,
+                      'Receita',
+                    ]}
+                  />
+                  <Bar
+                    dataKey="averageRevenue"
+                    fill="#000000"
+                    radius={[6, 6, 0, 0]}
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
       </motion.div>
-
-      {/* Weekly Pattern & Payment Methods */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.3 }}
-        >
-          <Card className="shadow-sm border-0">
-            <CardHeader className="pb-3">
-              <div>
-                <CardTitle className="text-base text-gray-900">
-                  Receita por Dia da Semana
-                </CardTitle>
-                <p className="text-xs text-gray-500 mt-1">
-                  Padrão médio semanal de faturamento
-                </p>
-              </div>
-            </CardHeader>
-            <CardContent className="px-3 sm:px-6">
-              <div className="w-full h-[250px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart
-                    data={weeklyRevenuePattern}
-                    margin={{ top: 10, right: 5, left: -15, bottom: 0 }}
-                  >
-                    <CartesianGrid
-                      strokeDasharray="3 3"
-                      stroke="#f5f5f5"
-                      vertical={false}
-                    />
-                    <XAxis
-                      dataKey="day"
-                      stroke="#9ca3af"
-                      fontSize={11}
-                      tickLine={false}
-                      axisLine={false}
-                    />
-                    <YAxis
-                      stroke="#9ca3af"
-                      fontSize={10}
-                      tickLine={false}
-                      axisLine={false}
-                      width={50}
-                      tickFormatter={(value) => `R$ ${value / 1000}k`}
-                    />
-                    <Tooltip
-                      contentStyle={{
-                        backgroundColor: 'white',
-                        border: '1px solid #e5e7eb',
-                        borderRadius: '10px',
-                        padding: '8px 12px',
-                        fontSize: '12px',
-                        boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
-                      }}
-                      formatter={(value: any) => [
-                        `R$ ${value.toLocaleString()}`,
-                        'Receita',
-                      ]}
-                    />
-                    <Bar
-                      dataKey="revenue"
-                      fill="#000000"
-                      radius={[6, 6, 0, 0]}
-                    />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.35 }}
-        >
-          <Card className="shadow-sm border-0">
-            <CardHeader className="pb-3">
-              <div>
-                <CardTitle className="text-base text-gray-900">
-                  Métodos de Pagamento
-                </CardTitle>
-                <p className="text-xs text-gray-500 mt-1">
-                  Distribuição de pagamentos recebidos
-                </p>
-              </div>
-            </CardHeader>
-            <CardContent className="px-3 sm:px-6">
-              <div className="w-full h-[160px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={paymentMethods}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={40}
-                      outerRadius={60}
-                      paddingAngle={3}
-                      dataKey="value"
-                    >
-                      {paymentMethods.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Pie>
-                    <Tooltip
-                      contentStyle={{
-                        backgroundColor: 'white',
-                        border: '1px solid #e5e7eb',
-                        borderRadius: '10px',
-                        padding: '8px 12px',
-                        fontSize: '12px',
-                        boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
-                      }}
-                      formatter={(value: any) => [`${value}%`, 'Participação']}
-                    />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-
-              {/* Legend */}
-              <div className="grid grid-cols-2 gap-2 mt-4">
-                {paymentMethods.map((method, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between text-xs"
-                  >
-                    <div className="flex items-center gap-2">
-                      <div
-                        className="w-3 h-3 rounded-full"
-                        style={{ backgroundColor: method.color }}
-                      />
-                      <span className="text-gray-700">{method.name}</span>
-                    </div>
-                    <span className="text-gray-900 font-medium">
-                      {method.value}%
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-      </div>
 
       {/* Service Categories Performance */}
       <motion.div
@@ -631,23 +500,33 @@ export function SalesRevenueMetricsModule() {
           </CardHeader>
           <CardContent className="px-4 sm:px-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {serviceCategories.map((category, index) => (
-                <div key={index} className="space-y-2">
+              {sales.revenueByCategory.map((category) => (
+                <div key={category.id} className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <p className="text-sm text-gray-900">{category.category}</p>
+                    <p className="text-sm text-gray-900">{category.name}</p>
                     <Badge
                       variant="outline"
-                      className={`text-xs ${category.growth >= 0 ? 'text-green-700 border-green-200 bg-green-50' : 'text-red-700 border-red-200 bg-red-50'}`}
+                      className={`text-xs ${
+                        category.growthPercentage >= 0
+                          ? 'text-green-700 border-green-200 bg-green-50'
+                          : 'text-red-700 border-red-200 bg-red-50'
+                      }`}
                     >
-                      {category.growth >= 0 ? '+' : ''}
-                      {category.growth}%
+                      {category.growthPercentage >= 0 ? '+' : ''}
+                      {category.growthPercentage}%
                     </Badge>
                   </div>
                   <p className="text-lg text-gray-900">
                     R$ {category.revenue.toLocaleString()}
                   </p>
                   <Progress
-                    value={(category.revenue / 28400) * 100}
+                    value={
+                      (category.revenue /
+                        Math.max(
+                          ...sales.revenueByCategory.map((c) => c.revenue),
+                        )) *
+                      100
+                    }
                     className="h-1.5"
                   />
                 </div>
@@ -677,8 +556,8 @@ export function SalesRevenueMetricsModule() {
             </CardHeader>
             <CardContent className="px-3 sm:px-6">
               <div className="space-y-4">
-                {topServices.map((service, index) => (
-                  <div key={index} className="space-y-2">
+                {sales.topServices.map((service, index) => (
+                  <div key={service.id} className="space-y-2">
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex items-start gap-2 flex-1 min-w-0">
                         <span className="text-lg shrink-0 mt-0.5">
@@ -689,7 +568,7 @@ export function SalesRevenueMetricsModule() {
                             {service.name}
                           </p>
                           <p className="text-xs text-gray-500">
-                            {service.bookings} agendamentos
+                            {service.appointments} agendamentos
                           </p>
                         </div>
                       </div>
@@ -699,17 +578,23 @@ export function SalesRevenueMetricsModule() {
                         </p>
                         <Badge
                           variant="outline"
-                          className={`text-xs mt-0.5 ${service.growth >= 0 ? 'text-green-700 border-green-200 bg-green-50' : 'text-red-700 border-red-200 bg-red-50'}`}
+                          className={`text-xs mt-0.5 ${
+                            service.growthPercentage >= 0
+                              ? 'text-green-700 border-green-200 bg-green-50'
+                              : 'text-red-700 border-red-200 bg-red-50'
+                          }`}
                         >
-                          {service.growth >= 0 ? '+' : ''}
-                          {service.growth}%
+                          {service.growthPercentage >= 0 ? '+' : ''}
+                          {service.growthPercentage}%
                         </Badge>
                       </div>
                     </div>
                     <div className="w-full bg-gray-100 rounded-full h-1.5">
                       <div
                         className="bg-gray-900 h-1.5 rounded-full transition-all"
-                        style={{ width: `${service.percentage * 5}%` }}
+                        style={{
+                          width: `${Math.min(service.percentageOfTotal * 5, 100)}%`,
+                        }}
                       />
                     </div>
                   </div>
@@ -737,7 +622,7 @@ export function SalesRevenueMetricsModule() {
             </CardHeader>
             <CardContent className="px-3 sm:px-6">
               <div className="space-y-3">
-                {peakHours.slice(0, 6).map((hour, index) => (
+                {sales.profitableHours.slice(0, 6).map((hour, index) => (
                   <div key={index} className="space-y-1.5">
                     <div className="flex items-center justify-between text-sm">
                       <div className="flex items-center gap-2">
@@ -751,18 +636,18 @@ export function SalesRevenueMetricsModule() {
                         <Badge
                           variant="outline"
                           className={`text-xs ${
-                            hour.utilization >= 90
+                            hour.utilizationRate >= 90
                               ? 'text-green-700 border-green-200 bg-green-50'
-                              : hour.utilization >= 70
+                              : hour.utilizationRate >= 70
                                 ? 'text-yellow-700 border-yellow-200 bg-yellow-50'
                                 : 'text-gray-700 border-gray-200 bg-gray-50'
                           }`}
                         >
-                          {hour.utilization}%
+                          {hour.utilizationRate}%
                         </Badge>
                       </div>
                     </div>
-                    <Progress value={hour.utilization} className="h-1" />
+                    <Progress value={hour.utilizationRate} className="h-1" />
                   </div>
                 ))}
               </div>
