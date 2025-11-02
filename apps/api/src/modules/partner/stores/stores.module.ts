@@ -5,6 +5,7 @@ import { CategoryModule } from './category';
 import { GalleryModule } from './gallery';
 import { StoreAccessGuard, StoreOwnerGuard, StoreRoleGuard } from './guards';
 import { NotificationsModule } from './notifications/notifications.module';
+import { ReviewModule } from './review';
 import { ScheduleModule } from './schedule';
 import { StoreMemberModule } from './store-member/store-member.module';
 import { Store } from './store.entity';
@@ -20,6 +21,7 @@ import { StoresService } from './stores.services';
     CategoryModule,
     ScheduleModule,
     NotificationsModule,
+    ReviewModule,
   ],
   controllers: [StoresController],
   providers: [StoresService, StoreAccessGuard, StoreOwnerGuard, StoreRoleGuard],

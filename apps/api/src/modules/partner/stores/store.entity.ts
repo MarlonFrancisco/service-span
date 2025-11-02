@@ -6,6 +6,7 @@ import { Service } from './category/service/service.entity';
 import { Gallery } from './gallery/gallery.entity';
 import { NotificationsHistory } from './notifications/history/history.entity';
 import { NotificationsSettings } from './notifications/settings/settings.entity';
+import { Review } from './review/review.entity';
 import { Schedule } from './schedule/schedule.entity';
 import { StoreMember } from './store-member/store-member.entity';
 
@@ -115,4 +116,7 @@ export class Store extends BaseEntity {
     (notificationsSettings) => notificationsSettings.store,
   )
   notificationsSettings: NotificationsSettings;
+
+  @OneToMany(() => Review, (review) => review.store)
+  reviews: Review[];
 }

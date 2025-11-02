@@ -1,5 +1,6 @@
 import { Column, Entity, Index, OneToMany } from 'typeorm';
 import { BaseEntity } from '../database/base.entity';
+import { Review } from '../partner/stores/review/review.entity';
 import { Schedule } from '../partner/stores/schedule/schedule.entity';
 import { StoreMember } from '../partner/stores/store-member/store-member.entity';
 import { Store } from '../partner/stores/store.entity';
@@ -12,6 +13,9 @@ export class User extends BaseEntity {
 
   @Column({ type: 'varchar', nullable: true, unique: true, length: 20 })
   telephone: string;
+
+  @Column({ type: 'date', nullable: true })
+  birthDate: Date;
 
   @Column({ name: 'first_name', type: 'varchar', nullable: true, length: 60 })
   firstName: string;
@@ -53,4 +57,7 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Schedule, (schedule) => schedule.user)
   schedules: Schedule[];
+
+  @OneToMany(() => Review, (review) => review.user)
+  reviews: Review[];
 }
