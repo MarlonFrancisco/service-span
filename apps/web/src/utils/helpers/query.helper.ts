@@ -38,4 +38,8 @@ export const CACHE_QUERY_KEYS = {
   notificationsSettings: (storeId: string) => [
     `partner/stores/${storeId}/notifications/settings`,
   ],
+  metricsOverview: (storeId: string, period: string = 'week') => [
+    `partner/stores/${storeId}/metrics/overview`,
+    { period },
+  ],
 };

@@ -9,8 +9,14 @@ import { useUpgradePlan } from './upgrade-plan.hook';
 import { UpgradePlanSkeleton } from './upgrade-plan.skeleton';
 
 export function UpgradePlan() {
-  const { plans, benefits, currentPlan, handleSelectPlan, isPendingPlans } =
-    useUpgradePlan();
+  const {
+    plans,
+    benefits,
+    currentPlan,
+    isPendingPlans,
+    isCreatingSubscription,
+    handleSelectPlan,
+  } = useUpgradePlan();
 
   if (isPendingPlans) {
     return <UpgradePlanSkeleton />;
@@ -93,7 +99,7 @@ export function UpgradePlan() {
                   onClick={() =>
                     !isCurrentPlan && handleSelectPlan(plan.priceId)
                   }
-                  disabled={isCurrentPlan}
+                  disabled={isCurrentPlan || isCreatingSubscription}
                 >
                   {isCurrentPlan
                     ? 'Seu plano atual'

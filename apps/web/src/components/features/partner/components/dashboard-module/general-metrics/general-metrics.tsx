@@ -15,7 +15,6 @@ import {
   ArrowUpRight,
   Award,
   DollarSign,
-  Download,
   Percent,
   RefreshCw,
   Star,
@@ -41,115 +40,115 @@ import {
   YAxis,
 } from 'recharts';
 
-type PeriodFilter = 'today' | 'week' | 'month' | 'custom';
+import { useMetricsQuery } from '@/hooks/use-query/use-metrics-query/use-metrics-query.hook';
+import { usePartnerStore } from '@/store/partner/partner.store';
+type PeriodFilter = 'today' | 'week' | 'month';
 
 export function GeneralMetricsModule() {
   const [periodFilter, setPeriodFilter] = useState<PeriodFilter>('week');
   const [isRefreshing, setIsRefreshing] = useState(false);
 
-  // Mock data for the selected store
-  const storeMetrics = {
-    todayAppointments: 8,
-    weeklyRevenue: 3250,
-    monthlyTotal: 147,
-    averageRating: 4.7,
-    pendingBookings: 3,
-    completedToday: 5,
-    totalCustomers: 342,
-    growthRate: 18,
-    occupationRate: 68,
-    cancellationRate: 4.2,
-    avgTicket: 85,
-    noShowRate: 2.1,
-    newCustomers: 28,
-    returningCustomers: 89,
-    conversionRate: 72,
-    peakHours: '14h - 18h',
-    goalProgress: 73,
-    goalTarget: 'R$ 4.500',
+  const activeStore = usePartnerStore((state) => state.activeStore);
+  const { overview, isPendingOverview, overviewRefetch } = useMetricsQuery({
+    storeId: activeStore?.id,
+    period: periodFilter,
+    includeOverview: true,
+  });
+
+  // Loading state
+  if (isPendingOverview || !overview) {
+    return (
+      <div className="flex items-center justify-center h-96">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900" />
+      </div>
+    );
+  }
+
+  // Cores para os serviços
+  const serviceColors = ['#000000', '#4b5563', '#6b7280', '#9ca3af', '#d1d5db'];
+
+  const topServices = overview.topServices.map((service, index) => ({
+    ...service,
+    color: serviceColors[index] || '#d1d5db',
+  }));
+
+  const performanceData = overview.appointmentsByDay;
+
+  // Obter texto de comparação baseado no período
+  const getComparisonText = () => {
+    switch (periodFilter) {
+      case 'today':
+        return 'vs ontem';
+      case 'week':
+        return 'vs semana passada';
+      case 'month':
+        return 'vs mês passado';
+      default:
+        return 'vs período anterior';
+    }
   };
 
-  const performanceData = [
-    { day: 'Seg', appointments: 12, revenue: 580, completed: 11, cancelled: 1 },
-    { day: 'Ter', appointments: 15, revenue: 720, completed: 14, cancelled: 1 },
-    { day: 'Qua', appointments: 10, revenue: 490, completed: 9, cancelled: 1 },
-    { day: 'Qui', appointments: 18, revenue: 850, completed: 17, cancelled: 1 },
-    {
-      day: 'Sex',
-      appointments: 22,
-      revenue: 1050,
-      completed: 21,
-      cancelled: 1,
-    },
-    {
-      day: 'Sáb',
-      appointments: 28,
-      revenue: 1340,
-      completed: 26,
-      cancelled: 2,
-    },
-    { day: 'Dom', appointments: 14, revenue: 670, completed: 13, cancelled: 1 },
-  ];
+  // Obter texto de subtítulo baseado no período
+  const getSubtitleText = () => {
+    switch (periodFilter) {
+      case 'today':
+        return 'hoje';
+      case 'week':
+        return 'esta semana';
+      case 'month':
+        return 'este mês';
+      default:
+        return 'período atual';
+    }
+  };
 
-  const topServices = [
-    { name: 'Corte', bookings: 45, revenue: 2250, color: '#000000' },
-    { name: 'Barba', bookings: 32, revenue: 1280, color: '#4b5563' },
-    { name: 'Escova', bookings: 28, revenue: 1680, color: '#6b7280' },
-    { name: 'Manicure', bookings: 22, revenue: 880, color: '#9ca3af' },
-    { name: 'Outros', bookings: 20, revenue: 900, color: '#d1d5db' },
-  ];
+  const comparisonText = getComparisonText();
+  const subtitleText = getSubtitleText();
 
   const stats = [
     {
-      label: 'Receita Semanal',
-      value: `R$ ${storeMetrics.weeklyRevenue.toLocaleString()}`,
-      subValue: 'vs semana anterior',
+      label: 'Receita',
+      value: `R$ ${Math.round(overview.weeklyRevenue.value).toLocaleString()}`,
+      subValue: `vs período anterior`,
       icon: DollarSign,
-      trend: `+${storeMetrics.growthRate}%`,
-      trendUp: true,
-      comparison: '+R$ 480',
+      trend: `${overview.weeklyRevenue.percentageChange >= 0 ? '+' : ''}${overview.weeklyRevenue.percentageChange}%`,
+      trendUp: overview.weeklyRevenue.percentageChange >= 0,
+      comparison: `${overview.weeklyRevenue.absoluteChange >= 0 ? '+' : ''}R$ ${Math.abs(overview.weeklyRevenue.absoluteChange).toLocaleString()}`,
     },
     {
       label: 'Taxa de Ocupação',
-      value: `${storeMetrics.occupationRate}%`,
+      value: `${overview.occupationRate.value}%`,
       subValue: 'dos horários preenchidos',
       icon: Percent,
-      trend: '+5%',
-      trendUp: true,
-      comparison: 'vs semana passada',
+      trend: `${overview.occupationRate.percentageChange >= 0 ? '+' : ''}${overview.occupationRate.percentageChange}%`,
+      trendUp: overview.occupationRate.percentageChange >= 0,
+      comparison: comparisonText,
     },
     {
       label: 'Ticket Médio',
-      value: `R$ ${storeMetrics.avgTicket}`,
+      value: `R$ ${overview.averageTicket.value}`,
       subValue: 'por agendamento',
       icon: Target,
-      trend: '+R$ 8',
-      trendUp: true,
-      comparison: 'vs semana passada',
+      trend: `${overview.averageTicket.absoluteChange >= 0 ? '+' : ''}R$ ${Math.abs(overview.averageTicket.absoluteChange)}`,
+      trendUp: overview.averageTicket.absoluteChange >= 0,
+      comparison: comparisonText,
     },
     {
       label: 'Avaliação Média',
-      value: storeMetrics.averageRating.toFixed(1),
-      subValue: '23 avaliações esta semana',
+      value: overview.averageRating.value.toFixed(1),
+      subValue: `${overview.averageRating.reviewCount} avaliações ${subtitleText}`,
       icon: Star,
-      trend: '+0.2',
-      trendUp: true,
-      comparison: 'mantendo excelência',
-    },
-  ];
-
-  const quickActions = [
-    {
-      label: 'Exportar Relatório',
-      icon: Download,
-      variant: 'outline' as const,
-      onClick: () => console.log('Exportar'),
+      trend: `${overview.averageRating.value >= overview.averageRating.previousValue ? '+' : '-'}${Math.abs(overview.averageRating.value - overview.averageRating.previousValue).toFixed(1)}`,
+      trendUp:
+        overview.averageRating.value >= overview.averageRating.previousValue,
+      comparison: comparisonText,
     },
   ];
 
   const handleRefresh = () => {
+    overviewRefetch();
     setIsRefreshing(true);
-    setTimeout(() => setIsRefreshing(false), 1000);
+    setTimeout(() => setIsRefreshing(false), 2000);
   };
 
   const periodLabels = {
@@ -203,26 +202,6 @@ export function GeneralMetricsModule() {
         </div>
       </div>
 
-      {/* Quick Actions - Mobile Friendly */}
-      <div className="flex flex-wrap gap-2 sm:hidden">
-        {quickActions.map((action) => {
-          const Icon = action.icon;
-          return (
-            <Button
-              key={action.label}
-              variant={action.variant}
-              size="sm"
-              onClick={action.onClick}
-              className="flex-1 min-w-[120px] min-h-[44px] touch-manipulation"
-              aria-label={action.label}
-            >
-              <Icon className="h-4 w-4 mr-2" />
-              {action.label}
-            </Button>
-          );
-        })}
-      </div>
-
       {/* Goal Progress Card */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
@@ -234,14 +213,15 @@ export function GeneralMetricsModule() {
             <div className="flex items-start justify-between mb-3 sm:mb-4">
               <div className="flex-1 min-w-0">
                 <p className="text-white/70 text-xs mb-1 sm:mb-1.5">
-                  Meta Semanal
+                  Meta {periodFilter === 'today' ? 'Diária' : periodFilter === 'week' ? 'Semanal' : 'Mensal'}
                 </p>
                 <div className="flex flex-wrap items-baseline gap-x-2">
                   <p className="text-2xl sm:text-3xl">
-                    R$ {storeMetrics.weeklyRevenue.toLocaleString()}
+                    R${' '}
+                    {Math.round(overview.weeklyGoal.current).toLocaleString()}
                   </p>
                   <span className="text-sm text-white/60">
-                    / {storeMetrics.goalTarget}
+                    / R$ {overview.weeklyGoal.target.toLocaleString()}
                   </span>
                 </div>
               </div>
@@ -250,12 +230,12 @@ export function GeneralMetricsModule() {
               </div>
             </div>
             <Progress
-              value={storeMetrics.goalProgress}
+              value={overview.weeklyGoal.percentage}
               className="h-2 bg-white/20 mb-2.5 sm:mb-3"
             />
             <div className="flex flex-wrap items-center justify-between gap-2">
               <p className="text-xs text-white/70">
-                {storeMetrics.goalProgress}% concluído
+                {overview.weeklyGoal.percentage}% concluído
               </p>
               <Badge className="bg-green-500/20 text-green-300 border-green-500/30 text-xs">
                 <TrendingUp className="w-3 h-3 mr-1" />
@@ -323,22 +303,6 @@ export function GeneralMetricsModule() {
                     Agendamentos & Receita
                   </CardTitle>
                   <p className="text-xs text-gray-500 mt-1">Últimos 7 dias</p>
-                </div>
-                <div className="hidden sm:flex items-center gap-2">
-                  {quickActions.map((action) => {
-                    const Icon = action.icon;
-                    return (
-                      <Button
-                        key={action.label}
-                        variant={action.variant}
-                        size="sm"
-                        onClick={action.onClick}
-                      >
-                        <Icon className="h-4 w-4 sm:mr-2" />
-                        <span className="hidden sm:inline">{action.label}</span>
-                      </Button>
-                    );
-                  })}
                 </div>
               </div>
             </CardHeader>
@@ -542,7 +506,7 @@ export function GeneralMetricsModule() {
                 </div>
               </div>
               <p className="text-xl sm:text-2xl text-gray-900 mb-1">
-                {storeMetrics.newCustomers}
+                {overview.newCustomers}
               </p>
               <p className="text-xs text-gray-500">Novos Clientes</p>
             </CardContent>
@@ -562,7 +526,7 @@ export function GeneralMetricsModule() {
                 </div>
               </div>
               <p className="text-xl sm:text-2xl text-gray-900 mb-1">
-                {storeMetrics.returningCustomers}
+                {overview.recurringCustomers}
               </p>
               <p className="text-xs text-gray-500">Clientes Recorrentes</p>
             </CardContent>
@@ -582,7 +546,7 @@ export function GeneralMetricsModule() {
                 </div>
               </div>
               <p className="text-xl sm:text-2xl text-gray-900 mb-1">
-                {storeMetrics.cancellationRate}%
+                {overview.cancellationRate.value}%
               </p>
               <p className="text-xs text-gray-500">Taxa de Cancelamento</p>
             </CardContent>
@@ -602,7 +566,7 @@ export function GeneralMetricsModule() {
                 </div>
               </div>
               <p className="text-xl sm:text-2xl text-gray-900 mb-1">
-                {storeMetrics.conversionRate}%
+                {overview.conversionRate.value}%
               </p>
               <p className="text-xs text-gray-500">Taxa de Conversão</p>
             </CardContent>
