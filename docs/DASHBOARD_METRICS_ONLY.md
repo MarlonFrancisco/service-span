@@ -230,7 +230,7 @@ Guia de referência com todas as métricas utilizadas nos dashboards do módulo 
 
 - **Tipo:** Percentual
 - **Formato:** XX.X% (1 casa decimal)
-- **Comparação:** vs semana anterior (%)
+- **Comparação:** vs semana/mes/trimestre(filtro) anterior (%)
 - **Descrição:** Percentual médio de capacidade utilizada
 - **Contexto:** Média de ocupação durante o período
 
@@ -238,7 +238,7 @@ Guia de referência com todas as métricas utilizadas nos dashboards do módulo 
 
 - **Tipo:** Tempo (minutos)
 - **Formato:** XX min
-- **Comparação:** vs semana anterior (minutos)
+- **Comparação:** vs semana/mes/trimestre(filtro) anterior (minutos)
 - **Descrição:** Tempo médio de atendimento
 - **Contexto:** Otimização de tempo vs período anterior
 
@@ -246,7 +246,7 @@ Guia de referência com todas as métricas utilizadas nos dashboards do módulo 
 
 - **Tipo:** Percentual
 - **Formato:** XX.X% (1 casa decimal)
-- **Comparação:** vs semana anterior (%)
+- **Comparação:** vs semana/mes/trimestre(filtro) anterior (%)
 - **Contexto:** Número de profissionais ativos vs total
 - **Descrição:** Métrica de eficiência geral da equipe
 
@@ -254,7 +254,7 @@ Guia de referência com todas as métricas utilizadas nos dashboards do módulo 
 
 - **Tipo:** Percentual
 - **Formato:** XX.X% (1 casa decimal)
-- **Comparação:** vs semana anterior (%)
+- **Comparação:** vs semana/mes/trimestre(filtro) anterior (%)
 - **Contexto:** Taxa de no-show (%)
 - **Descrição:** Percentual de agendamentos realizados no horário
 
@@ -276,8 +276,8 @@ Guia de referência com todas as métricas utilizadas nos dashboards do módulo 
 - **Tipo:** Distribuição percentual
 - **Status:**
   - Concluídos (%)
-  - Confirmados (%)
-  - Aguardando (%)
+  - Agendados (%)
+  - Não compareceu (%)
   - Cancelados (%)
 - **Métricas:** Quantidade e percentual por status
 - **Descrição:** Distribuição atual dos agendamentos por status
@@ -313,11 +313,12 @@ Guia de referência com todas as métricas utilizadas nos dashboards do módulo 
 
 - **Tipo:** Matriz temporal
 - **Dimensões:**
-  - **Linhas:** Horários (8h, 9h, 10h, 11h, 14h, 15h, 16h, 17h, 18h)
+  - **Linhas:** Horários (8h, 9h, 10h, 11h, 14h, 15h, 16h, 17h, 18h) (integrado com os horarios de funcionamento da store)
   - **Colunas:** Dias da semana (Seg, Ter, Qua, Qui, Sex, Sáb, Dom)
 - **Métrica:** Taxa de ocupação (%)
 - **Níveis de ocupação:**
-  - 0-50%
+  - 0-20%
+  - 20-50%
   - 50-70%
   - 70-90%
   - 90-100%
@@ -353,6 +354,92 @@ Guia de referência com todas as métricas utilizadas nos dashboards do módulo 
 ## Dashboard 4: Clientes
 
 **Rota:** `/partner/dashboard/customers`
+
+### Visão Geral da Interface e Métricas Utilizadas
+
+**Métricas do Header:**
+
+- Base de Clientes (valor total)
+- Comparação percentual vs mês anterior
+
+**Métricas dos Alertas/Oportunidades:**
+
+- Quantidade de aniversariantes no período
+- Potencial de receita com campanha de aniversário (R$)
+- Quantidade de clientes em alto risco de churn
+- LTV total em risco (R$)
+
+**Métricas Principais (4 Cards):**
+
+1. Base de Clientes
+
+   - Valor: número total
+   - Comparação: percentual vs mês anterior
+   - Detalhe: quantidade de novos clientes
+
+2. Taxa de Retenção
+
+   - Valor: percentual
+   - Comparação: percentual vs mês anterior
+   - Detalhe: classificação qualitativa
+
+3. LTV Médio
+
+   - Valor: moeda (R$)
+   - Comparação: percentual vs mês anterior
+   - Detalhe: CAC (Custo de Aquisição por Cliente) em R$
+
+4. NPS Score
+   - Valor: decimal (0-5)
+   - Comparação: variação decimal vs mês anterior
+   - Detalhe: quantidade de avaliações
+
+**Métricas do Modo Visão Geral (overview):**
+
+- Evolução de Clientes (últimos 6 meses):
+  - Novos clientes por mês (quantidade)
+  - Clientes recorrentes por mês (quantidade)
+  - Churn por mês (quantidade)
+- Lifetime Value por Segmento:
+  - LTV médio por segmento (R$)
+  - Quantidade de clientes por segmento
+  - Visitas médias por mês por segmento
+  - Taxa de retenção por segmento (%)
+- Top 5 Clientes VIP:
+  - Nome do cliente
+  - Número de visitas
+  - Valor total gasto (R$)
+  - Data da última visita (tempo relativo)
+
+**Métricas do Modo Segmentação (segments):**
+
+- Segmentação RFM:
+  - Score RFM por segmento (Champions, Loyal, At Risk, Lost)
+  - Quantidade de clientes por segmento
+  - Receita total por segmento (R$)
+- Preferências por Segmento:
+  - Percentual de preferência por tipo de serviço (Corte, Barba, Coloração) por segmento
+- Aniversariantes do Mês:
+  - Nome do cliente
+  - Data do aniversário
+  - Segmento do cliente
+  - Valor médio gasto (R$)
+
+**Métricas do Modo Churn Risk (churn):**
+
+- Clientes em Risco de Churn:
+  - Nome do cliente
+  - Score de risco (0-100%)
+  - Última visita (tempo relativo)
+  - Frequência média histórica
+  - LTV total (R$)
+  - Razão do risco (texto descritivo)
+- Evolução de Churn:
+  - Quantidade de churn por mês (últimos 6 meses)
+  - Total de clientes por mês
+  - Taxa atual de churn (%)
+  - Média de churn dos últimos 6 meses (quantidade de clientes/mês)
+  - Potencial LTV em risco (R$)
 
 ### Métricas Principais
 
@@ -401,36 +488,9 @@ Guia de referência com todas as métricas utilizadas nos dashboards do módulo 
   - Total de clientes
 - **Descrição:** Evolução mensal da base de clientes com separação entre novos, recorrentes e churn
 
-### Métricas de Aquisição
-
-#### 6. Canais de Aquisição
-
-- **Tipo:** Categórico
-- **Dimensões:** Nome do canal
-- **Métricas por canal:**
-  - Número de clientes
-  - Participação percentual (%)
-  - CAC - Custo de Aquisição por Cliente (R$)
-- **Canais:** Indicação, Redes Sociais, Google/Busca, Marketing Local, Outros
-- **Descrição:** Performance e custo de aquisição por canal de origem
-
 ### Métricas de Retenção
 
-#### 7. Funil de Retenção
-
-- **Tipo:** Funil de conversão
-- **Etapas:**
-  - Primeira Visita
-  - Segunda Visita
-  - Cliente Regular
-  - Cliente Frequente
-  - Cliente VIP
-- **Métricas por etapa:**
-  - Número de clientes
-  - Percentual de conversão (%)
-- **Descrição:** Jornada de conversão de cliente novo até VIP
-
-#### 8. Lifetime Value por Segmento
+#### 6. Lifetime Value por Segmento
 
 - **Tipo:** Categórico
 - **Dimensões:** Segmento de cliente
@@ -455,32 +515,7 @@ Guia de referência com todas as métricas utilizadas nos dashboards do módulo 
   - Número de visitas
   - Valor total gasto (R$)
   - Data da última visita
-  - Status (ativo/inativo)
-  - Nível de risco (baixo/médio/alto)
 - **Descrição:** Clientes com maior valor gerado
-
-### Métricas de Jornada
-
-#### 10. Frequência Média
-
-- **Tipo:** Decimal
-- **Formato:** X.X visitas/mês (1 casa decimal)
-- **Comparação:** vs período anterior (variação)
-- **Descrição:** Média de visitas por cliente ao mês
-
-#### 11. Tempo até Retorno
-
-- **Tipo:** Tempo (dias)
-- **Formato:** XX dias
-- **Comparação:** vs período anterior (dias)
-- **Descrição:** Tempo médio entre visitas consecutivas
-
-#### 12. Taxa de Indicação
-
-- **Tipo:** Percentual
-- **Formato:** XX% (sem decimais)
-- **Comparação:** vs período anterior (%)
-- **Descrição:** Percentual de clientes que indicaram novos clientes
 
 ### Métricas de Segmentação RFM
 

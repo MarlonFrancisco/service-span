@@ -46,4 +46,12 @@ export const CACHE_QUERY_KEYS = {
     `partner/stores/${storeId}/metrics/sales`,
     { period },
   ],
+  metricsOperational: (storeId: string, period: string = 'month') => [
+    `partner/stores/${storeId}/metrics/operational`,
+    { period },
+  ],
+  metricsCustomers: (storeId: string, period: string = 'month') => [
+    `partner/stores/${storeId}/metrics/customers`,
+    { period },
+  ],
 };

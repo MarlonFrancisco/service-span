@@ -1,4 +1,6 @@
 'use client';
+import { useMetricsQuery } from '@/hooks/use-query/use-metrics-query';
+import { usePartnerStore } from '@/store/partner/partner.store';
 import {
   Badge,
   Card,
@@ -37,261 +39,151 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
+import { OperationalMetricsSkeleton } from './operational-metrics.skeleton';
 
-const utilizationData = [
-  { day: 'Seg', capacity: 100, used: 87, idle: 13, revenue: 7800 },
-  { day: 'Ter', capacity: 100, used: 92, idle: 8, revenue: 9200 },
-  { day: 'Qua', capacity: 100, used: 78, idle: 22, revenue: 8100 },
-  { day: 'Qui', capacity: 100, used: 94, idle: 6, revenue: 10500 },
-  { day: 'Sex', capacity: 100, used: 98, idle: 2, revenue: 14200 },
-  { day: 'Sáb', capacity: 100, used: 100, idle: 0, revenue: 18900 },
-  { day: 'Dom', capacity: 100, used: 65, idle: 35, revenue: 11300 },
-];
-
-const statusData = [
-  { name: 'Concluídos', value: 234, color: '#10b981', percentage: 52.7 },
-  { name: 'Confirmados', value: 156, color: '#000000', percentage: 35.1 },
-  { name: 'Aguardando', value: 42, color: '#f59e0b', percentage: 9.5 },
-  { name: 'Cancelados', value: 12, color: '#ef4444', percentage: 2.7 },
-];
-
-const professionals = [
-  {
-    name: 'Ana Silva',
-    bookings: 42,
-    rating: 4.9,
-    revenue: 6200,
-    efficiency: 95,
-    onTime: 98,
-    avgDuration: 45,
-    utilizationRate: 92,
-  },
-  {
-    name: 'Carlos Santos',
-    bookings: 38,
-    rating: 4.8,
-    revenue: 5800,
-    efficiency: 89,
-    onTime: 95,
-    avgDuration: 48,
-    utilizationRate: 85,
-  },
-  {
-    name: 'Maria Costa',
-    bookings: 35,
-    rating: 4.9,
-    revenue: 5400,
-    efficiency: 92,
-    onTime: 97,
-    avgDuration: 46,
-    utilizationRate: 88,
-  },
-  {
-    name: 'João Oliveira',
-    bookings: 32,
-    rating: 4.7,
-    revenue: 4900,
-    efficiency: 85,
-    onTime: 92,
-    avgDuration: 50,
-    utilizationRate: 78,
-  },
-  {
-    name: 'Paula Lima',
-    bookings: 28,
-    rating: 4.8,
-    revenue: 4200,
-    efficiency: 88,
-    onTime: 96,
-    avgDuration: 47,
-    utilizationRate: 72,
-  },
-];
-
-const peakHours = [
-  {
-    period: 'Manhã (8h-12h)',
-    bookings: 142,
-    percentage: 28,
-    trend: '+12%',
-    trendUp: true,
-  },
-  {
-    period: 'Tarde (12h-18h)',
-    bookings: 278,
-    percentage: 56,
-    trend: '+8%',
-    trendUp: true,
-  },
-  {
-    period: 'Noite (18h-22h)',
-    bookings: 80,
-    percentage: 16,
-    trend: '-5%',
-    trendUp: false,
-  },
-];
-
-// Heatmap data - occupancy by hour and day
-const heatmapData = [
-  { hour: '8h', seg: 45, ter: 52, qua: 38, qui: 58, sex: 68, sab: 85, dom: 30 },
-  { hour: '9h', seg: 58, ter: 65, qua: 48, qui: 72, sex: 82, sab: 95, dom: 42 },
-  {
-    hour: '10h',
-    seg: 72,
-    ter: 78,
-    qua: 65,
-    qui: 85,
-    sex: 92,
-    sab: 100,
-    dom: 55,
-  },
-  {
-    hour: '11h',
-    seg: 85,
-    ter: 88,
-    qua: 75,
-    qui: 95,
-    sex: 98,
-    sab: 100,
-    dom: 68,
-  },
-  {
-    hour: '14h',
-    seg: 92,
-    ter: 95,
-    qua: 82,
-    qui: 98,
-    sex: 100,
-    sab: 100,
-    dom: 75,
-  },
-  {
-    hour: '15h',
-    seg: 95,
-    ter: 98,
-    qua: 88,
-    qui: 100,
-    sex: 100,
-    sab: 100,
-    dom: 82,
-  },
-  {
-    hour: '16h',
-    seg: 88,
-    ter: 92,
-    qua: 78,
-    qui: 95,
-    sex: 98,
-    sab: 100,
-    dom: 72,
-  },
-  {
-    hour: '17h',
-    seg: 78,
-    ter: 85,
-    qua: 68,
-    qui: 88,
-    sex: 92,
-    sab: 95,
-    dom: 65,
-  },
-  {
-    hour: '18h',
-    seg: 65,
-    ter: 72,
-    qua: 55,
-    qui: 75,
-    sex: 85,
-    sab: 88,
-    dom: 52,
-  },
-];
-
-const serviceDurationAvg = [
-  { service: 'Corte', avgTime: 35, planned: 30, variance: 5 },
-  { service: 'Barba', avgTime: 22, planned: 20, variance: 2 },
-  { service: 'Coloração', avgTime: 95, planned: 90, variance: 5 },
-  { service: 'Escova', avgTime: 48, planned: 45, variance: 3 },
-  { service: 'Hidratação', avgTime: 62, planned: 60, variance: 2 },
-];
-
-const idleTimeOpportunities = [
-  {
-    day: 'Domingo',
-    period: 'Manhã (8h-12h)',
-    idleSlots: 28,
-    potentialRevenue: 2800,
-  },
-  {
-    day: 'Quarta',
-    period: 'Tarde (14h-16h)',
-    idleSlots: 18,
-    potentialRevenue: 1800,
-  },
-  {
-    day: 'Segunda',
-    period: 'Manhã (8h-10h)',
-    idleSlots: 15,
-    potentialRevenue: 1500,
-  },
-];
+type PeriodFilter = 'week' | 'month' | 'quarter';
 
 export function OperationalMetricsModule() {
   const [selectedView, setSelectedView] = useState<
     'overview' | 'heatmap' | 'efficiency'
   >('overview');
+  const [periodFilter, setPeriodFilter] = useState<PeriodFilter>('month');
+
+  const activeStore = usePartnerStore((state) => state.activeStore);
+  const { operational, isPendingOperational } = useMetricsQuery({
+    storeId: activeStore?.id,
+    period: periodFilter,
+    includeOperational: true,
+  });
+
+  // Loading state
+  if (isPendingOperational || !operational) {
+    return <OperationalMetricsSkeleton />;
+  }
+
+  // Preparar dados para visualizações
+  const utilizationData = operational.dailyCapacityUtilization.map((item) => ({
+    day: item.day,
+    capacity: item.totalCapacity,
+    used: item.usedCapacity,
+    idle: item.emptyCapacity,
+    revenue: item.revenue,
+  }));
 
   const totalUsed = utilizationData.reduce((sum, day) => sum + day.used, 0);
-  const avgUtilization = (
-    (totalUsed / (utilizationData.length * 100)) *
-    100
-  ).toFixed(1);
+  const avgUtilization = (totalUsed / (utilizationData.length * 100)) * 100;
 
   const totalIdle = utilizationData.reduce((sum, day) => sum + day.idle, 0);
-  const idlePercentage = (
-    (totalIdle / (utilizationData.length * 100)) *
-    100
-  ).toFixed(1);
+  const idlePercentage = (totalIdle / (utilizationData.length * 100)) * 100;
+
+  // Status data com mapeamento
+  const statusData = operational.appointmentStatus.map((item) => ({
+    name:
+      item.status === 'completed'
+        ? 'Concluídos'
+        : item.status === 'scheduled'
+          ? 'Agendados'
+          : item.status === 'no-show'
+            ? 'Não Compareceu'
+            : 'Cancelados',
+    value: item.quantity,
+    color:
+      item.status === 'completed'
+        ? '#10b981'
+        : item.status === 'scheduled'
+          ? '#000000'
+          : item.status === 'no-show'
+            ? '#f59e0b'
+            : '#ef4444',
+    percentage: item.percentage,
+  }));
 
   const stats = [
     {
       label: 'Taxa de Ocupação',
-      value: `${avgUtilization}%`,
+      value: `${operational.occupancyRate.value}%`,
       icon: Activity,
-      trend: '+5.2%',
-      trendUp: true,
-      comparison: 'vs semana anterior',
-      detail: 'Excelente utilização',
+      trend: `${operational.occupancyRate.percentageChange > 0 ? '+' : ''}${operational.occupancyRate.percentageChange}%`,
+      trendUp: operational.occupancyRate.percentageChange > 0,
+      comparison: 'vs período anterior',
+      detail: `Anterior: ${operational.occupancyRate.previousValue}%`,
     },
     {
       label: 'Tempo Médio',
-      value: '48min',
+      value: `${operational.averageTime.value}min`,
       icon: Clock,
-      trend: '-2min',
-      trendUp: true,
-      comparison: 'vs semana anterior',
-      detail: 'Otimização +4%',
+      trend: `${operational.averageTime.percentageChange > 0 ? '+' : ''}${operational.averageTime.percentageChange}%`,
+      trendUp: operational.averageTime.percentageChange > 0,
+      comparison: 'vs período anterior',
+      detail: `Anterior: ${operational.averageTime.previousValue}min`,
     },
     {
       label: 'Eficiência da Equipe',
-      value: '89.8%',
+      value: `${operational.teamEfficiency.value}%`,
       icon: Zap,
-      trend: '+3.5%',
-      trendUp: true,
-      comparison: 'vs semana anterior',
-      detail: '12/14 profissionais',
+      trend: `${operational.teamEfficiency.percentageChange > 0 ? '+' : ''}${operational.teamEfficiency.percentageChange}%`,
+      trendUp: operational.teamEfficiency.percentageChange > 0,
+      comparison: 'vs período anterior',
+      detail: `Anterior: ${operational.teamEfficiency.previousValue}%`,
     },
     {
       label: 'Taxa de Pontualidade',
-      value: '95.8%',
+      value: `${operational.punctualityRate.value}%`,
       icon: UserCheck,
-      trend: '+1.2%',
-      trendUp: true,
-      comparison: 'vs semana anterior',
-      detail: 'No-show: 3.2%',
+      trend: `${operational.punctualityRate.percentageChange > 0 ? '+' : ''}${operational.punctualityRate.percentageChange}%`,
+      trendUp: operational.punctualityRate.percentageChange > 0,
+      comparison: 'vs período anterior',
+      detail: `No-show: ${operational.punctualityRate.noShowRate}%`,
     },
   ];
+
+  // Peak hours from period distribution
+  const peakHours = operational.periodDistribution.map((item) => ({
+    period: item.label,
+    bookings: item.appointmentCount,
+    percentage: item.percentage,
+    trend: `${item.trend > 0 ? '+' : ''}${item.trend}%`,
+    trendUp: item.trend > 0,
+  }));
+
+  // Heatmap data com remapeamento
+  const heatmapData = operational.occupancyHeatMap.hours.map((hour, idx) => {
+    const dayData: Record<string, number> = { hour };
+    const shortDays = ['seg', 'ter', 'qua', 'qui', 'sex', 'sab', 'dom'];
+    operational.occupancyHeatMap.data.forEach((dayRow, dayIdx) => {
+      dayData[shortDays[dayIdx]] = dayRow.values[idx] || 0;
+    });
+    return dayData;
+  });
+
+  // Service duration
+  const serviceDurationAvg = operational.serviceDuration.map((item) => ({
+    service: item.name,
+    avgTime: item.averageRealTime,
+    planned: item.plannedTime,
+    variance: item.variation,
+  }));
+
+  // Idle time opportunities
+  const idleTimeOpportunities = operational.idleTimeOpportunities.map(
+    (item) => ({
+      day: item.dayAndPeriod,
+      idleSlots: item.emptyHours,
+      potentialRevenue: item.potentialRevenue,
+    }),
+  );
+
+  // Professionals - map API data to component data
+  const professionals = operational.professionalPerformance.map((prof) => ({
+    name: prof.name,
+    bookings: prof.appointmentCount,
+    rating: prof.averageRating,
+    revenue: prof.revenue,
+    efficiency: prof.efficiency,
+    onTime: prof.punctualityRate,
+    avgDuration: prof.averageAttendanceTime,
+    utilizationRate: prof.utilizationRate,
+  }));
 
   const getMedalEmoji = (index: number) => {
     if (index === 0) return '🥇';
@@ -304,6 +196,8 @@ export function OperationalMetricsModule() {
     if (value >= 90) return '#10b981'; // green
     if (value >= 70) return '#f59e0b'; // yellow
     if (value >= 50) return '#6b7280'; // gray
+    if (value >= 30) return '#aaafbc'; // gray-300
+    if (value >= 10) return '#c1c4cb'; // gray-200
     return '#e5e7eb'; // light gray
   };
 
@@ -314,30 +208,63 @@ export function OperationalMetricsModule() {
         <div>
           <p className="text-xs text-gray-500 mb-1">Eficiência Operacional</p>
           <div className="flex items-baseline gap-2">
-            <h2 className="text-gray-900">{avgUtilization}% Ocupação</h2>
-            <Badge className="bg-green-50 text-green-700 border-green-200">
-              <TrendingUp className="w-3 h-3 mr-1" />
-              +5.2%
+            <h2 className="text-gray-900">
+              {avgUtilization?.toFixed(1)}% Ocupação
+            </h2>
+            <Badge
+              className={`${
+                operational.occupancyRate.percentageChange > 0
+                  ? 'bg-green-50 text-green-700 border-green-200'
+                  : 'bg-red-50 text-red-700 border-red-200'
+              }`}
+            >
+              {operational.occupancyRate.percentageChange > 0 ? (
+                <TrendingUp className="w-3 h-3 mr-1" />
+              ) : (
+                <TrendingDown className="w-3 h-3 mr-1" />
+              )}
+              {operational.occupancyRate.percentageChange > 0 ? '+' : ''}
+              {operational.occupancyRate.percentageChange}%
             </Badge>
           </div>
         </div>
 
-        <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-1 w-full sm:w-auto">
-          {(['overview', 'heatmap', 'efficiency'] as const).map((view) => (
-            <button
-              key={view}
-              onClick={() => setSelectedView(view)}
-              className={`px-3 py-2 text-xs rounded-md transition-all touch-manipulation min-h-[36px] flex-1 sm:flex-initial ${
-                selectedView === view
-                  ? 'bg-white text-gray-900 shadow-sm'
-                  : 'text-gray-600 hover:text-gray-900 active:bg-gray-200'
-              }`}
-            >
-              {view === 'overview' && 'Visão Geral'}
-              {view === 'heatmap' && 'Mapa de Calor'}
-              {view === 'efficiency' && 'Eficiência'}
-            </button>
-          ))}
+        <div className="flex items-center gap-2 w-full sm:w-auto">
+          <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-1 flex-1 sm:flex-initial">
+            {(['week', 'month', 'quarter'] as const).map((view) => (
+              <button
+                key={view}
+                onClick={() => setPeriodFilter(view as PeriodFilter)}
+                className={`px-3 py-2 text-xs rounded-md transition-all touch-manipulation min-h-[36px] flex-1 sm:flex-initial ${
+                  periodFilter === view
+                    ? 'bg-white text-gray-900 shadow-sm'
+                    : 'text-gray-600 hover:text-gray-900 active:bg-gray-200'
+                }`}
+              >
+                {view === 'week' && 'Esta Semana'}
+                {view === 'month' && 'Este Mês'}
+                {view === 'quarter' && 'Trimestre'}
+              </button>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-1 flex-1 sm:flex-initial">
+            {(['overview', 'heatmap', 'efficiency'] as const).map((view) => (
+              <button
+                key={view}
+                onClick={() => setSelectedView(view)}
+                className={`px-3 py-2 text-xs rounded-md transition-all touch-manipulation min-h-[36px] flex-1 sm:flex-initial ${
+                  selectedView === view
+                    ? 'bg-white text-gray-900 shadow-sm'
+                    : 'text-gray-600 hover:text-gray-900 active:bg-gray-200'
+                }`}
+              >
+                {view === 'overview' && 'Visão Geral'}
+                {view === 'heatmap' && 'Mapa de Calor'}
+                {view === 'efficiency' && 'Eficiência'}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -348,6 +275,7 @@ export function OperationalMetricsModule() {
         transition={{ duration: 0.3 }}
       >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Highest Occupancy Day */}
           <Card className="shadow-sm border-l-4 border-l-green-500 border-y-0 border-r-0">
             <CardContent className="p-4">
               <div className="flex items-start gap-3">
@@ -356,16 +284,22 @@ export function OperationalMetricsModule() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm text-gray-900 mb-1">
-                    Sábado com 100% de ocupação
+                    {(() => {
+                      const maxDay = utilizationData.reduce((prev, current) =>
+                        prev.used > current.used ? prev : current,
+                      );
+                      return `${maxDay.day} com ${maxDay.used}% de ocupação`;
+                    })()}
                   </p>
                   <p className="text-xs text-gray-500">
-                    Considere aumentar equipe ou ampliar horários aos sábados.
+                    Considere aumentar equipe ou ampliar horários.
                   </p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
+          {/* Idle Opportunities */}
           <Card className="shadow-sm border-l-4 border-l-yellow-500 border-y-0 border-r-0">
             <CardContent className="p-4">
               <div className="flex items-start gap-3">
@@ -374,10 +308,15 @@ export function OperationalMetricsModule() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm text-gray-900 mb-1">
-                    Potencial de R$ 6.100 em horários ociosos
+                    Potencial de R${' '}
+                    {idleTimeOpportunities
+                      .reduce((sum, opp) => sum + opp.potentialRevenue, 0)
+                      .toLocaleString()}{' '}
+                    em horários ociosos
                   </p>
                   <p className="text-xs text-gray-500">
-                    Domingo manhã e quarta-feira tarde têm baixa ocupação.
+                    {idleTimeOpportunities.length} períodos com baixa ocupação
+                    identificados.
                   </p>
                 </div>
               </div>
@@ -447,7 +386,7 @@ export function OperationalMetricsModule() {
                     </p>
                   </div>
                   <Badge variant="outline" className="text-xs">
-                    {idlePercentage}% ocioso
+                    {idlePercentage?.toFixed(1)}% ocioso
                   </Badge>
                 </div>
               </CardHeader>
@@ -757,11 +696,28 @@ export function OperationalMetricsModule() {
               {/* Legend */}
               <div className="flex items-center justify-end gap-4 mb-4 text-xs">
                 <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2">
+                    <div
+                      className="w-4 h-4 rounded"
+                      style={{ backgroundColor: '#e5e7eb' }}
+                    />
+                    <span className="text-gray-600">0-10%</span>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    {' '}
+                    <div
+                      className="w-4 h-4 rounded"
+                      style={{ backgroundColor: '#c1c4cb' }}
+                    />
+                    <span className="text-gray-600">10-30%</span>{' '}
+                  </div>
+
                   <div
                     className="w-4 h-4 rounded"
-                    style={{ backgroundColor: '#e5e7eb' }}
+                    style={{ backgroundColor: '#aaafbc' }}
                   />
-                  <span className="text-gray-600">0-50%</span>
+                  <span className="text-gray-600">30-50%</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div
@@ -834,10 +790,12 @@ export function OperationalMetricsModule() {
                           key={day}
                           className="aspect-square rounded-lg flex items-center justify-center text-xs font-medium text-white transition-all hover:scale-105"
                           style={{
-                            backgroundColor: getOccupancyColor(row[day]),
+                            backgroundColor: getOccupancyColor(
+                              (row[day] as number) || 0,
+                            ),
                           }}
                         >
-                          {row[day]}%
+                          {(row[day] as number) || 0}%
                         </div>
                       ))}
                     </div>
@@ -866,9 +824,7 @@ export function OperationalMetricsModule() {
                       className="flex items-center justify-between p-2 bg-white rounded-lg"
                     >
                       <div>
-                        <p className="text-sm text-gray-900">
-                          {opp.day} - {opp.period}
-                        </p>
+                        <p className="text-sm text-gray-900">{opp.day}</p>
                         <p className="text-xs text-gray-500">
                           {opp.idleSlots} horários vazios
                         </p>
@@ -934,7 +890,7 @@ export function OperationalMetricsModule() {
                             {prof.name}
                           </p>
                           <p className="text-xs text-gray-500">
-                            {prof.bookings} agendamentos • ⭐ {prof.rating}
+                            {prof.bookings} agendamentos
                           </p>
                         </div>
                       </div>

@@ -1,5 +1,7 @@
 import { apiClient } from '@/service/api';
 import {
+  IDashboardCustomers,
+  IDashboardOperational,
   IDashboardOverview,
   IDashboardSales,
   PeriodType,
@@ -17,6 +19,18 @@ export class MetricsService {
   static async getSales(storeId: string, period: PeriodType = 'month') {
     return await this.apiClient.get<IDashboardSales>(
       `/partner/stores/${storeId}/metrics/sales?period=${period}`,
+    );
+  }
+
+  static async getOperational(storeId: string, period: PeriodType = 'month') {
+    return await this.apiClient.get<IDashboardOperational>(
+      `/partner/stores/${storeId}/metrics/operational?period=${period}`,
+    );
+  }
+
+  static async getCustomers(storeId: string, period: PeriodType = 'month') {
+    return await this.apiClient.get<IDashboardCustomers>(
+      `/partner/stores/${storeId}/metrics/customers?period=${period}`,
     );
   }
 }

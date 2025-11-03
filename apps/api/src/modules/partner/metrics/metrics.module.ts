@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { DashboardOverviewModule } from './dashboard-overview/dashboard-overview.module';
 import { DashboardSalesModule } from './dashboard-sales/dashboard-sales.module';
 import { DashboardOperationalModule } from './dashboard-operational/dashboard-operational.module';
+import { DashboardCustomersModule } from './dashboard-customers/dashboard-customers.module';
 import { MetricsController } from './metrics.controller';
 
 @Module({
@@ -9,6 +10,7 @@ import { MetricsController } from './metrics.controller';
     DashboardOverviewModule,
     DashboardSalesModule,
     DashboardOperationalModule,
+    DashboardCustomersModule,
   ],
   controllers: [MetricsController],
 })

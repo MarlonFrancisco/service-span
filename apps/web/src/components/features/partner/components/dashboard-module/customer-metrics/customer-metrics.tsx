@@ -12,7 +12,6 @@ import {
   AlertTriangle,
   ArrowDownRight,
   ArrowUpRight,
-  Calendar,
   Crown,
   DollarSign,
   Filter,
@@ -20,18 +19,15 @@ import {
   Heart,
   Mail,
   MessageSquare,
-  Repeat,
   Send,
   Sparkles,
   Star,
   Target,
   TrendingDown,
   TrendingUp,
-  UserPlus,
   Users,
 } from 'lucide-react';
 import { motion } from 'motion/react';
-import { useState } from 'react';
 import {
   Area,
   AreaChart,
@@ -49,253 +45,35 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
+import { useCustomerMetrics } from './customer-metrics.hook';
+import { CustomerMetricsSkeleton } from './customer-metrics.skeleton';
 
 type ViewMode = 'overview' | 'segments' | 'churn';
 
-const retentionData = [
-  { month: 'Jan', new: 45, returning: 120, churn: 12, total: 165 },
-  { month: 'Fev', new: 52, returning: 135, churn: 8, total: 187 },
-  { month: 'Mar', new: 48, returning: 142, churn: 15, total: 190 },
-  { month: 'Abr', new: 61, returning: 158, churn: 10, total: 219 },
-  { month: 'Mai', new: 55, returning: 165, churn: 9, total: 220 },
-  { month: 'Jun', new: 67, returning: 178, churn: 7, total: 245 },
-];
-
-const lifetimeValueData = [
-  { segment: 'VIPs', ltv: 2400, customers: 42, avgVisits: 24, retention: 98 },
-  {
-    segment: 'Frequentes',
-    ltv: 1200,
-    customers: 156,
-    avgVisits: 12,
-    retention: 92,
-  },
-  {
-    segment: 'Regulares',
-    ltv: 650,
-    customers: 287,
-    avgVisits: 6,
-    retention: 78,
-  },
-  {
-    segment: 'Ocasionais',
-    ltv: 280,
-    customers: 198,
-    avgVisits: 2,
-    retention: 45,
-  },
-  { segment: 'Novos', ltv: 145, customers: 67, avgVisits: 1, retention: 35 },
-];
-
-const topCustomers = [
-  {
-    name: 'Mariana Santos',
-    visits: 24,
-    spent: 3600,
-    lastVisit: 'Há 2 dias',
-    status: 'active',
-    riskLevel: 'low',
-  },
-  {
-    name: 'Roberto Costa',
-    visits: 22,
-    spent: 3200,
-    lastVisit: 'Há 1 dia',
-    status: 'active',
-    riskLevel: 'low',
-  },
-  {
-    name: 'Julia Ferreira',
-    visits: 20,
-    spent: 2900,
-    lastVisit: 'Hoje',
-    status: 'active',
-    riskLevel: 'low',
-  },
-  {
-    name: 'Pedro Alves',
-    visits: 19,
-    spent: 2700,
-    lastVisit: 'Há 3 dias',
-    status: 'active',
-    riskLevel: 'low',
-  },
-  {
-    name: 'Carla Souza',
-    visits: 18,
-    spent: 2500,
-    lastVisit: 'Há 1 semana',
-    status: 'active',
-    riskLevel: 'medium',
-  },
-];
-
-const churnRiskCustomers = [
-  {
-    name: 'Lucas Martins',
-    lastVisit: 'Há 45 dias',
-    avgFrequency: 15,
-    spent: 1800,
-    riskScore: 85,
-    reason: 'Inatividade prolongada',
-  },
-  {
-    name: 'Amanda Silva',
-    lastVisit: 'Há 38 dias',
-    avgFrequency: 12,
-    spent: 1500,
-    riskScore: 78,
-    reason: 'Padrão irregular',
-  },
-  {
-    name: 'Rafael Souza',
-    lastVisit: 'Há 32 dias',
-    avgFrequency: 18,
-    spent: 2100,
-    riskScore: 72,
-    reason: 'Redução de gastos',
-  },
-  {
-    name: 'Beatriz Lima',
-    lastVisit: 'Há 28 dias',
-    avgFrequency: 10,
-    spent: 1200,
-    riskScore: 68,
-    reason: 'Mudança de região',
-  },
-];
-
-const journeyMetrics = [
-  {
-    metric: 'Frequência Média',
-    value: '2.8 visitas/mês',
-    icon: Repeat,
-    change: '+0.4',
-    trendUp: true,
-  },
-  {
-    metric: 'Tempo até Retorno',
-    value: '12 dias',
-    icon: Calendar,
-    change: '-2 dias',
-    trendUp: true,
-  },
-  {
-    metric: 'Taxa de Indicação',
-    value: '23%',
-    icon: UserPlus,
-    change: '+5%',
-    trendUp: true,
-  },
-];
-
-const retentionFunnel = [
-  { stage: 'Primeira Visita', value: 250, percentage: 100 },
-  { stage: 'Segunda Visita', value: 180, percentage: 72 },
-  { stage: 'Cliente Regular', value: 120, percentage: 48 },
-  { stage: 'Cliente Frequente', value: 85, percentage: 34 },
-  { stage: 'Cliente VIP', value: 42, percentage: 17 },
-];
-
-const acquisitionChannels = [
-  { name: 'Indicação', customers: 428, percentage: 34.3, cac: 12 },
-  { name: 'Redes Sociais', customers: 387, percentage: 31.0, cac: 45 },
-  { name: 'Google/Busca', customers: 274, percentage: 22.0, cac: 68 },
-  { name: 'Marketing Local', customers: 98, percentage: 7.9, cac: 92 },
-  { name: 'Outros', customers: 60, percentage: 4.8, cac: 35 },
-];
-
-const servicePreferences = [
-  { segment: 'VIPs', corte: 85, barba: 72, coloracao: 45, outros: 28 },
-  { segment: 'Frequentes', corte: 95, barba: 68, coloracao: 38, outros: 22 },
-  { segment: 'Regulares', corte: 78, barba: 45, coloracao: 25, outros: 15 },
-];
-
-const birthdayOpportunities = [
-  { name: 'Ana Costa', date: '22 Jun', segment: 'VIP', avgSpent: 180 },
-  { name: 'Carlos Ramos', date: '24 Jun', segment: 'Frequente', avgSpent: 120 },
-  { name: 'Marina Dias', date: '26 Jun', segment: 'VIP', avgSpent: 210 },
-  { name: 'Felipe Cruz', date: '28 Jun', segment: 'Regular', avgSpent: 95 },
-];
-
-const rfmSegments = [
-  {
-    segment: 'Champions',
-    score: '555',
-    customers: 42,
-    revenue: 100800,
-    color: '#10b981',
-  },
-  {
-    segment: 'Loyal',
-    score: '445',
-    customers: 98,
-    revenue: 88200,
-    color: '#34d399',
-  },
-  {
-    segment: 'At Risk',
-    score: '244',
-    customers: 67,
-    revenue: 40200,
-    color: '#f59e0b',
-  },
-  {
-    segment: 'Lost',
-    score: '111',
-    customers: 28,
-    revenue: 7840,
-    color: '#ef4444',
-  },
-];
-
 export function CustomerMetricsModule() {
-  const [viewMode, setViewMode] = useState<ViewMode>('overview');
+  const {
+    viewMode,
+    setViewMode,
+    period,
+    setPeriod,
+    periodLabels,
+    stats,
+    retentionData,
+    lifetimeValueData,
+    topCustomers,
+    rfmSegments,
+    birthdayOpportunities,
+    churnRiskCustomers,
+    servicePreferences,
+    getRiskColor,
+    isLoading,
+    customers,
+    alerts,
+  } = useCustomerMetrics();
 
-  const stats = [
-    {
-      label: 'Base de Clientes',
-      value: '1.247',
-      icon: Users,
-      trend: '+12.4%',
-      trendUp: true,
-      comparison: 'vs mês anterior',
-      detail: '+138 novos',
-    },
-    {
-      label: 'Taxa de Retenção',
-      value: '87.3%',
-      icon: Heart,
-      trend: '+3.2%',
-      trendUp: true,
-      comparison: 'vs mês anterior',
-      detail: 'Excelente',
-    },
-    {
-      label: 'LTV Médio',
-      value: 'R$ 892',
-      icon: DollarSign,
-      trend: '+15.8%',
-      trendUp: true,
-      comparison: 'vs mês anterior',
-      detail: 'CAC: R$ 54',
-    },
-    {
-      label: 'NPS Score',
-      value: '4.8',
-      icon: Star,
-      trend: '+0.2',
-      trendUp: true,
-      comparison: 'vs mês anterior',
-      detail: '894 avaliações',
-    },
-  ];
-
-  const getRiskColor = (score: number) => {
-    if (score >= 80) return 'bg-red-50 text-red-700 border-red-200';
-    if (score >= 65) return 'bg-orange-50 text-orange-700 border-orange-200';
-    return 'bg-yellow-50 text-yellow-700 border-yellow-200';
-  };
+  if (isLoading || !customers) {
+    return <CustomerMetricsSkeleton />;
+  }
 
   return (
     <div className="space-y-6">
@@ -304,15 +82,46 @@ export function CustomerMetricsModule() {
         <div>
           <p className="text-xs text-gray-500 mb-1">Base de Clientes</p>
           <div className="flex items-baseline gap-2">
-            <h2 className="text-gray-900">1.247 Clientes</h2>
-            <Badge className="bg-green-50 text-green-700 border-green-200">
-              <TrendingUp className="w-3 h-3 mr-1" />
-              +12.4%
+            <h2 className="text-gray-900">
+              {customers?.customerBase?.value || 0} Clientes
+            </h2>
+            <Badge
+              className={
+                (customers?.customerBase?.percentageChange || 0) >= 0
+                  ? 'bg-green-50 text-green-700 border-green-200'
+                  : 'bg-red-50 text-red-700 border-red-200'
+              }
+            >
+              {(customers?.customerBase?.percentageChange || 0) >= 0 ? (
+                <TrendingUp className="w-3 h-3 mr-1" />
+              ) : (
+                <TrendingDown className="w-3 h-3 mr-1" />
+              )}
+              {(customers?.customerBase?.percentageChange || 0) >= 0 ? '+' : ''}
+              {customers?.customerBase?.percentageChange || 0}%
             </Badge>
           </div>
         </div>
 
         <div className="flex items-center gap-2 w-full sm:w-auto">
+          {/* Period Filter */}
+          <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-1">
+            {(['week', 'month', 'quarter'] as const).map((p) => (
+              <button
+                key={p}
+                onClick={() => setPeriod(p)}
+                className={`px-2 sm:px-3 py-1.5 sm:py-2 text-xs rounded-md transition-all touch-manipulation min-h-[36px] ${
+                  period === p
+                    ? 'bg-white text-gray-900 shadow-sm'
+                    : 'text-gray-600 hover:text-gray-900 active:bg-gray-200'
+                }`}
+              >
+                {periodLabels[p]}
+              </button>
+            ))}
+          </div>
+
+          {/* View Mode Toggle */}
           <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-1 flex-1 sm:flex-initial">
             {(['overview', 'segments', 'churn'] as ViewMode[]).map((view) => (
               <button
@@ -344,48 +153,57 @@ export function CustomerMetricsModule() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Card className="shadow-sm border-l-4 border-l-purple-500 border-y-0 border-r-0">
-            <CardContent className="p-4">
-              <div className="flex items-start gap-3">
-                <div className="w-9 h-9 rounded-lg bg-purple-50 flex items-center justify-center shrink-0">
-                  <Gift className="h-4 w-4 text-purple-600" />
+        <div className="flex gap-4">
+          {alerts!.birthdayCustomers.quantity > 0 && (
+            <Card className="shadow-sm border-l-4 border-l-purple-500 border-y-0 border-r-0 flex-1">
+              <CardContent className="p-4">
+                <div className="flex items-start gap-3">
+                  <div className="w-9 h-9 rounded-lg bg-purple-50 flex items-center justify-center shrink-0">
+                    <Gift className="h-4 w-4 text-purple-600" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm text-gray-900 mb-1">
+                      {alerts?.birthdayCustomers?.quantity || 0} aniversariantes
+                      esta semana
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      Potencial de R${' '}
+                      {alerts?.birthdayCustomers?.potentialRevenue || 0} em
+                      vendas com campanha de aniversário.
+                    </p>
+                  </div>
+                  <Button size="sm" variant="ghost" className="shrink-0">
+                    <Send className="h-3.5 w-3.5" />
+                  </Button>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm text-gray-900 mb-1">
-                    4 aniversariantes esta semana
-                  </p>
-                  <p className="text-xs text-gray-500">
-                    Potencial de R$ 605 em vendas com campanha de aniversário.
-                  </p>
-                </div>
-                <Button size="sm" variant="ghost" className="shrink-0">
-                  <Send className="h-3.5 w-3.5" />
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          )}
 
-          <Card className="shadow-sm border-l-4 border-l-red-500 border-y-0 border-r-0">
-            <CardContent className="p-4">
-              <div className="flex items-start gap-3">
-                <div className="w-9 h-9 rounded-lg bg-red-50 flex items-center justify-center shrink-0">
-                  <AlertTriangle className="h-4 w-4 text-red-600" />
+          {alerts!.churnRisk.quantity > 0 && (
+            <Card className="shadow-sm border-l-4 border-l-red-500 border-y-0 border-r-0 flex-1">
+              <CardContent className="p-4">
+                <div className="flex items-start gap-3">
+                  <div className="w-9 h-9 rounded-lg bg-red-50 flex items-center justify-center shrink-0">
+                    <AlertTriangle className="h-4 w-4 text-red-600" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm text-gray-900 mb-1">
+                      {alerts?.churnRisk?.quantity || 0} clientes em alto risco
+                      de churn
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      Representam R$ {alerts?.churnRisk?.ltvAtRisk || 0} em LTV.
+                      Ação de reativação recomendada.
+                    </p>
+                  </div>
+                  <Button size="sm" variant="ghost" className="shrink-0">
+                    <Send className="h-3.5 w-3.5" />
+                  </Button>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm text-gray-900 mb-1">
-                    4 clientes em alto risco de churn
-                  </p>
-                  <p className="text-xs text-gray-500">
-                    Representam R$ 6.600 em LTV. Ação de reativação recomendada.
-                  </p>
-                </div>
-                <Button size="sm" variant="ghost" className="shrink-0">
-                  <Send className="h-3.5 w-3.5" />
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          )}
         </div>
       </motion.div>
 
@@ -402,7 +220,18 @@ export function CustomerMetricsModule() {
               <CardContent className="p-4 sm:p-5">
                 <div className="flex items-start justify-between mb-3 sm:mb-4">
                   <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gray-100 flex items-center justify-center group-hover:bg-gray-900 transition-colors">
-                    <stat.icon className="h-5 w-5 text-gray-600 group-hover:text-white transition-colors" />
+                    {stat.icon === 'Users' && (
+                      <Users className="h-5 w-5 text-gray-600 group-hover:text-white transition-colors" />
+                    )}
+                    {stat.icon === 'Heart' && (
+                      <Heart className="h-5 w-5 text-gray-600 group-hover:text-white transition-colors" />
+                    )}
+                    {stat.icon === 'DollarSign' && (
+                      <DollarSign className="h-5 w-5 text-gray-600 group-hover:text-white transition-colors" />
+                    )}
+                    {stat.icon === 'Star' && (
+                      <Star className="h-5 w-5 text-gray-600 group-hover:text-white transition-colors" />
+                    )}
                   </div>
                   <Badge
                     variant="outline"
@@ -538,7 +367,7 @@ export function CustomerMetricsModule() {
                           fontSize: '12px',
                           boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
                         }}
-                        formatter={(value: any, name: string) => {
+                        formatter={(value: number, name: string) => {
                           if (name === 'new') return [value, 'Novos'];
                           if (name === 'returning')
                             return [value, 'Recorrentes'];
@@ -578,104 +407,6 @@ export function CustomerMetricsModule() {
               </CardContent>
             </Card>
           </motion.div>
-
-          {/* Acquisition & Retention Funnel */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: 0.25 }}
-            >
-              <Card className="shadow-sm border-0">
-                <CardHeader className="pb-3">
-                  <div>
-                    <CardTitle className="text-base text-gray-900">
-                      Canais de Aquisição
-                    </CardTitle>
-                    <p className="text-xs text-gray-500 mt-1">
-                      Performance e CAC por canal
-                    </p>
-                  </div>
-                </CardHeader>
-                <CardContent className="px-3 sm:px-6">
-                  <div className="space-y-4">
-                    {acquisitionChannels.map((channel, index) => (
-                      <div key={index} className="space-y-2">
-                        <div className="flex items-center justify-between">
-                          <div className="flex-1 min-w-0">
-                            <p className="text-sm text-gray-900">
-                              {channel.name}
-                            </p>
-                            <p className="text-xs text-gray-500">
-                              {channel.customers} clientes
-                            </p>
-                          </div>
-                          <div className="text-right">
-                            <p className="text-sm text-gray-900">
-                              {channel.percentage}%
-                            </p>
-                            <p className="text-xs text-gray-400">
-                              CAC: R$ {channel.cac}
-                            </p>
-                          </div>
-                        </div>
-                        <Progress
-                          value={channel.percentage}
-                          className="h-1.5"
-                        />
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: 0.3 }}
-            >
-              <Card className="shadow-sm border-0">
-                <CardHeader className="pb-3">
-                  <div>
-                    <CardTitle className="text-base text-gray-900">
-                      Funil de Retenção
-                    </CardTitle>
-                    <p className="text-xs text-gray-500 mt-1">
-                      Jornada até cliente VIP
-                    </p>
-                  </div>
-                </CardHeader>
-                <CardContent className="px-3 sm:px-6">
-                  <div className="space-y-3">
-                    {retentionFunnel.map((stage, index) => (
-                      <div key={index} className="space-y-2">
-                        <div className="flex items-center justify-between">
-                          <p className="text-sm text-gray-900">{stage.stage}</p>
-                          <div className="flex items-center gap-2">
-                            <span className="text-sm text-gray-900">
-                              {stage.value}
-                            </span>
-                            <Badge variant="outline" className="text-xs">
-                              {stage.percentage}%
-                            </Badge>
-                          </div>
-                        </div>
-                        <Progress value={stage.percentage} className="h-2" />
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-100">
-                    <p className="text-xs text-blue-900">
-                      <Sparkles className="w-3.5 h-3.5 inline mr-1" />
-                      17% dos novos clientes se tornam VIPs em 6 meses
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          </div>
 
           {/* LTV & Top Customers */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -825,60 +556,6 @@ export function CustomerMetricsModule() {
               </Card>
             </motion.div>
           </div>
-
-          {/* Customer Journey Metrics */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.45 }}
-          >
-            <Card className="shadow-sm border-0">
-              <CardHeader className="pb-3">
-                <div>
-                  <CardTitle className="text-base text-gray-900">
-                    Métricas de Jornada do Cliente
-                  </CardTitle>
-                  <p className="text-xs text-gray-500 mt-1">
-                    Análise do comportamento e engajamento
-                  </p>
-                </div>
-              </CardHeader>
-              <CardContent className="px-3 sm:px-6">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {journeyMetrics.map((item, index) => {
-                    const Icon = item.icon;
-                    return (
-                      <div
-                        key={index}
-                        className="p-4 bg-gray-50 rounded-xl border border-gray-100"
-                      >
-                        <div className="flex items-center justify-between mb-3">
-                          <p className="text-sm text-gray-500">{item.metric}</p>
-                          <div className="w-8 h-8 rounded-lg bg-gray-900 flex items-center justify-center">
-                            <Icon className="h-4 w-4 text-white" />
-                          </div>
-                        </div>
-                        <h4 className="text-2xl text-gray-900 mb-2">
-                          {item.value}
-                        </h4>
-                        <Badge
-                          variant="outline"
-                          className={`text-xs ${item.trendUp ? 'text-green-700 border-green-200 bg-green-50' : 'text-red-700 border-red-200 bg-red-50'}`}
-                        >
-                          {item.trendUp ? (
-                            <TrendingUp className="w-3 h-3 inline mr-0.5" />
-                          ) : (
-                            <TrendingDown className="w-3 h-3 inline mr-0.5" />
-                          )}
-                          {item.change}
-                        </Badge>
-                      </div>
-                    );
-                  })}
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
         </>
       )}
 
@@ -1323,7 +1000,7 @@ export function CustomerMetricsModule() {
                           fontSize: '12px',
                           boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
                         }}
-                        formatter={(value: any, name: string) => {
+                        formatter={(value: number, name: string) => {
                           if (name === 'churn') return [value, 'Churn'];
                           if (name === 'total') return [value, 'Total'];
                           return [value, name];

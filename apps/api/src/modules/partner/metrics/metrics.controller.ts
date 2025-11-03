@@ -3,10 +3,12 @@ import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { DashboardOverviewService } from './dashboard-overview/dashboard-overview.service';
 import { DashboardSalesService } from './dashboard-sales/dashboard-sales.service';
 import { DashboardOperationalService } from './dashboard-operational/dashboard-operational.service';
+import { DashboardCustomersService } from './dashboard-customers/dashboard-customers.service';
 
 type OverviewPeriodType = 'today' | 'week' | 'month';
 type SalesPeriodType = 'week' | 'month' | 'quarter';
 type OperationalPeriodType = 'week' | 'month' | 'quarter';
+type CustomersPeriodType = 'week' | 'month' | 'quarter';
 
 @Controller('partner/stores/:storeId/metrics')
 @UseGuards(JwtAuthGuard)
@@ -15,6 +17,7 @@ export class MetricsController {
     private readonly dashboardOverviewService: DashboardOverviewService,
     private readonly dashboardSalesService: DashboardSalesService,
     private readonly dashboardOperationalService: DashboardOperationalService,
+    private readonly dashboardCustomersService: DashboardCustomersService,
   ) {}
 
   /**
@@ -75,6 +78,27 @@ export class MetricsController {
     const normalizedPeriod = validPeriods.includes(period) ? period : 'month';
 
     return this.dashboardOperationalService.getOperationalMetrics(
+      storeId,
+      normalizedPeriod,
+    );
+  }
+
+  /**
+   * GET /partner/stores/:storeId/metrics/customers?period=month
+   * Dashboard 4 - Clientes com todas as métricas de clientes, retenção, LTV e churn
+   * @param storeId - ID da loja
+   * @param period - Período para análise: 'week' (esta semana), 'month' (este mês), 'quarter' (este trimestre). Padrão: 'month'
+   */
+  @Get('customers')
+  async getDashboardCustomers(
+    @Param('storeId') storeId: string,
+    @Query('period') period: CustomersPeriodType = 'month',
+  ) {
+    // Validar período
+    const validPeriods: CustomersPeriodType[] = ['week', 'month', 'quarter'];
+    const normalizedPeriod = validPeriods.includes(period) ? period : 'month';
+
+    return this.dashboardCustomersService.getDashboardCustomers(
       storeId,
       normalizedPeriod,
     );

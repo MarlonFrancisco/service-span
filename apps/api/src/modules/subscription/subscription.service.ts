@@ -74,7 +74,6 @@ export class SubscriptionService {
 
       nextBillingDate.setMonth(currentDate.getMonth() + 1);
 
-      console.log(schedules);
       const activeStores = await this.storesService.getActiveStores(userId);
 
       const schedulesLength = schedules.length || 0;

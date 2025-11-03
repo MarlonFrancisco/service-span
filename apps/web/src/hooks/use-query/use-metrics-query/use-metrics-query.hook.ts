@@ -8,11 +8,15 @@ export const useMetricsQuery = ({
   period = 'week',
   includeOverview = false,
   includeSales = false,
+  includeOperational = false,
+  includeCustomers = false,
 }: {
   storeId?: string;
   period?: PeriodType;
   includeOverview?: boolean;
   includeSales?: boolean;
+  includeOperational?: boolean;
+  includeCustomers?: boolean;
 }) => {
   const {
     data: overview,
@@ -34,6 +38,26 @@ export const useMetricsQuery = ({
     enabled: !!storeId && includeSales,
   });
 
+  const {
+    data: operational,
+    refetch: operationalRefetch,
+    isPending: isPendingOperational,
+  } = useQuery({
+    queryKey: CACHE_QUERY_KEYS.metricsOperational(storeId || '', period),
+    queryFn: () => MetricsService.getOperational(storeId || '', period),
+    enabled: !!storeId && includeOperational,
+  });
+
+  const {
+    data: customers,
+    refetch: customersRefetch,
+    isPending: isPendingCustomers,
+  } = useQuery({
+    queryKey: CACHE_QUERY_KEYS.metricsCustomers(storeId || '', period),
+    queryFn: () => MetricsService.getCustomers(storeId || '', period),
+    enabled: !!storeId && includeCustomers,
+  });
+
   return {
     overview,
     isPendingOverview,
@@ -41,5 +65,11 @@ export const useMetricsQuery = ({
     sales,
     isPendingSales,
     salesRefetch,
+    operational,
+    isPendingOperational,
+    operationalRefetch,
+    customers,
+    isPendingCustomers,
+    customersRefetch,
   };
 };
