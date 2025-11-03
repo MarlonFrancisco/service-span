@@ -84,6 +84,7 @@ export function SalesRevenueMetricsModule() {
       icon: DollarSign,
       trend: `${sales.revenue.percentageChange > 0 ? '+' : ''}${sales.revenue.percentageChange}%`,
       trendUp: sales.revenue.percentageChange > 0,
+      trendNeutral: sales.revenue.percentageChange === 0,
       comparison: getComparisonText(),
       detail: `${sales.revenue.percentageChange > 0 ? '+' : ''}R$ ${sales.revenue.absoluteChange.toLocaleString()}`,
     },
@@ -93,6 +94,7 @@ export function SalesRevenueMetricsModule() {
       icon: Receipt,
       trend: `${sales.averageTicket.percentageChange > 0 ? '+' : ''}${sales.averageTicket.percentageChange}%`,
       trendUp: sales.averageTicket.percentageChange > 0,
+      trendNeutral: sales.averageTicket.percentageChange === 0,
       comparison: getComparisonText(),
       detail: `${sales.averageTicket.percentageChange > 0 ? '+' : ''}R$ ${sales.averageTicket.absoluteChange.toLocaleString()}`,
     },
@@ -102,6 +104,7 @@ export function SalesRevenueMetricsModule() {
       icon: CreditCard,
       trend: `${sales.conversionRate.percentageChange > 0 ? '+' : ''}${sales.conversionRate.percentageChange}%`,
       trendUp: sales.conversionRate.percentageChange > 0,
+      trendNeutral: sales.conversionRate.percentageChange === 0,
       comparison: getComparisonText(),
       detail: `${sales.conversionRate.variationInPoints > 0 ? '+' : ''}${sales.conversionRate.variationInPoints} p.p.`,
     },
@@ -111,6 +114,7 @@ export function SalesRevenueMetricsModule() {
       icon: Clock,
       trend: `${sales.revenuePerHour.percentageChange > 0 ? '+' : ''}${sales.revenuePerHour.percentageChange}%`,
       trendUp: sales.revenuePerHour.percentageChange > 0,
+      trendNeutral: sales.revenuePerHour.percentageChange === 0,
       comparison: getComparisonText(),
       detail: 'Produtividade',
     },
@@ -128,12 +132,16 @@ export function SalesRevenueMetricsModule() {
             </h2>
             <Badge
               className={`${
-                sales.revenue.percentageChange > 0
-                  ? 'bg-green-50 text-green-700 border-green-200'
-                  : 'bg-red-50 text-red-700 border-red-200'
+                sales.revenue.percentageChange === 0
+                  ? 'bg-gray-50 text-gray-700 border-gray-200'
+                  : sales.revenue.percentageChange > 0
+                    ? 'bg-green-50 text-green-700 border-green-200'
+                    : 'bg-red-50 text-red-700 border-red-200'
               }`}
             >
-              {sales.revenue.percentageChange > 0 ? (
+              {sales.revenue.percentageChange === 0 ? (
+                <span className="mr-1">—</span>
+              ) : sales.revenue.percentageChange > 0 ? (
                 <TrendingUp className="w-3 h-3 mr-1" />
               ) : (
                 <ArrowDownRight className="w-3 h-3 mr-1" />
@@ -226,12 +234,16 @@ export function SalesRevenueMetricsModule() {
                   <Badge
                     variant="outline"
                     className={`text-xs ${
-                      stat.trendUp
-                        ? 'text-green-700 border-green-200 bg-green-50'
-                        : 'text-red-700 border-red-200 bg-red-50'
+                      stat.trendNeutral
+                        ? 'text-gray-700 border-gray-200 bg-gray-50'
+                        : stat.trendUp
+                          ? 'text-green-700 border-green-200 bg-green-50'
+                          : 'text-red-700 border-red-200 bg-red-50'
                     }`}
                   >
-                    {stat.trendUp ? (
+                    {stat.trendNeutral ? (
+                      <span className="inline mr-0.5">—</span>
+                    ) : stat.trendUp ? (
                       <ArrowUpRight className="w-3 h-3 inline mr-0.5" />
                     ) : (
                       <ArrowDownRight className="w-3 h-3 inline mr-0.5" />

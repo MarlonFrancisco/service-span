@@ -64,7 +64,6 @@ export const useAddAppointment = () => {
     (state) => state.activeStore,
   );
 
-  console.log(services);
   const { createAppointment, isCreatingAppointment } =
     useAddAppointmentMutations();
 

@@ -106,8 +106,9 @@ export function GeneralMetricsModule() {
       value: `R$ ${Math.round(overview.weeklyRevenue.value).toLocaleString()}`,
       subValue: `vs período anterior`,
       icon: DollarSign,
-      trend: `${overview.weeklyRevenue.percentageChange >= 0 ? '+' : ''}${overview.weeklyRevenue.percentageChange}%`,
-      trendUp: overview.weeklyRevenue.percentageChange >= 0,
+      trend: `${overview.weeklyRevenue.percentageChange > 0 ? '+' : ''}${overview.weeklyRevenue.percentageChange}%`,
+      trendUp: overview.weeklyRevenue.percentageChange > 0,
+      trendNeutral: overview.weeklyRevenue.percentageChange === 0,
       comparison: `${overview.weeklyRevenue.absoluteChange >= 0 ? '+' : ''}R$ ${Math.abs(overview.weeklyRevenue.absoluteChange).toLocaleString()}`,
     },
     {
@@ -115,8 +116,9 @@ export function GeneralMetricsModule() {
       value: `${overview.occupationRate.value}%`,
       subValue: 'dos horários preenchidos',
       icon: Percent,
-      trend: `${overview.occupationRate.percentageChange >= 0 ? '+' : ''}${overview.occupationRate.percentageChange}%`,
-      trendUp: overview.occupationRate.percentageChange >= 0,
+      trend: `${overview.occupationRate.percentageChange > 0 ? '+' : ''}${overview.occupationRate.percentageChange}%`,
+      trendUp: overview.occupationRate.percentageChange > 0,
+      trendNeutral: overview.occupationRate.percentageChange === 0,
       comparison: comparisonText,
     },
     {
@@ -124,8 +126,9 @@ export function GeneralMetricsModule() {
       value: `R$ ${overview.averageTicket.value}`,
       subValue: 'por agendamento',
       icon: Target,
-      trend: `${overview.averageTicket.absoluteChange >= 0 ? '+' : ''}R$ ${Math.abs(overview.averageTicket.absoluteChange)}`,
-      trendUp: overview.averageTicket.absoluteChange >= 0,
+      trend: `${overview.averageTicket.absoluteChange > 0 ? '+' : ''}R$ ${Math.abs(overview.averageTicket.absoluteChange)}`,
+      trendUp: overview.averageTicket.absoluteChange > 0,
+      trendNeutral: overview.averageTicket.absoluteChange === 0,
       comparison: comparisonText,
     },
     {
@@ -133,9 +136,9 @@ export function GeneralMetricsModule() {
       value: overview.averageRating.value.toFixed(1),
       subValue: `${overview.averageRating.reviewCount} avaliações ${subtitleText}`,
       icon: Star,
-      trend: `${overview.averageRating.value >= overview.averageRating.previousValue ? '+' : '-'}${Math.abs(overview.averageRating.value - overview.averageRating.previousValue).toFixed(1)}`,
-      trendUp:
-        overview.averageRating.value >= overview.averageRating.previousValue,
+      trend: `${overview.averageRating.value > overview.averageRating.previousValue ? '+' : overview.averageRating.value === overview.averageRating.previousValue ? '' : '-'}${overview.averageRating.value === overview.averageRating.previousValue ? '0.0' : Math.abs(overview.averageRating.value - overview.averageRating.previousValue).toFixed(1)}`,
+      trendUp: overview.averageRating.value > overview.averageRating.previousValue,
+      trendNeutral: overview.averageRating.value === overview.averageRating.previousValue,
       comparison: comparisonText,
     },
   ];
@@ -214,9 +217,17 @@ export function GeneralMetricsModule() {
                   </div>
                   <Badge
                     variant="outline"
-                    className={`text-xs ${stat.trendUp ? 'text-green-700 border-green-200 bg-green-50' : 'text-red-700 border-red-200 bg-red-50'}`}
+                    className={`text-xs ${
+                      stat.trendNeutral
+                        ? 'text-gray-700 border-gray-200 bg-gray-50'
+                        : stat.trendUp
+                          ? 'text-green-700 border-green-200 bg-green-50'
+                          : 'text-red-700 border-red-200 bg-red-50'
+                    }`}
                   >
-                    {stat.trendUp ? (
+                    {stat.trendNeutral ? (
+                      <span className="inline mr-0.5">—</span>
+                    ) : stat.trendUp ? (
                       <ArrowUpRight className="w-3 h-3 inline mr-0.5" />
                     ) : (
                       <ArrowDownRight className="w-3 h-3 inline mr-0.5" />

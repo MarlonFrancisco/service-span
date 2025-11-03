@@ -85,7 +85,6 @@ export const useAddProfessionalModal = () => {
         },
         {
           onSuccess: (professional) => {
-            console.log('oi');
             const oldProfessionals = storeForm.getValues('storeMembers');
 
             const professionals = isEditing

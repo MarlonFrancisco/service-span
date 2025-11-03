@@ -105,6 +105,7 @@ export function OperationalMetricsModule() {
       icon: Activity,
       trend: `${operational.occupancyRate.percentageChange > 0 ? '+' : ''}${operational.occupancyRate.percentageChange}%`,
       trendUp: operational.occupancyRate.percentageChange > 0,
+      trendNeutral: operational.occupancyRate.percentageChange === 0,
       comparison: 'vs período anterior',
       detail: `Anterior: ${operational.occupancyRate.previousValue}%`,
     },
@@ -114,6 +115,7 @@ export function OperationalMetricsModule() {
       icon: Clock,
       trend: `${operational.averageTime.percentageChange > 0 ? '+' : ''}${operational.averageTime.percentageChange}%`,
       trendUp: operational.averageTime.percentageChange > 0,
+      trendNeutral: operational.averageTime.percentageChange === 0,
       comparison: 'vs período anterior',
       detail: `Anterior: ${operational.averageTime.previousValue}min`,
     },
@@ -123,6 +125,7 @@ export function OperationalMetricsModule() {
       icon: Zap,
       trend: `${operational.teamEfficiency.percentageChange > 0 ? '+' : ''}${operational.teamEfficiency.percentageChange}%`,
       trendUp: operational.teamEfficiency.percentageChange > 0,
+      trendNeutral: operational.teamEfficiency.percentageChange === 0,
       comparison: 'vs período anterior',
       detail: `Anterior: ${operational.teamEfficiency.previousValue}%`,
     },
@@ -132,6 +135,7 @@ export function OperationalMetricsModule() {
       icon: UserCheck,
       trend: `${operational.punctualityRate.percentageChange > 0 ? '+' : ''}${operational.punctualityRate.percentageChange}%`,
       trendUp: operational.punctualityRate.percentageChange > 0,
+      trendNeutral: operational.punctualityRate.percentageChange === 0,
       comparison: 'vs período anterior',
       detail: `No-show: ${operational.punctualityRate.noShowRate}%`,
     },
@@ -144,6 +148,7 @@ export function OperationalMetricsModule() {
     percentage: item.percentage,
     trend: `${item.trend > 0 ? '+' : ''}${item.trend}%`,
     trendUp: item.trend > 0,
+    trendNeutral: item.trend === 0,
   }));
 
   // Heatmap data com remapeamento
@@ -342,9 +347,17 @@ export function OperationalMetricsModule() {
                   </div>
                   <Badge
                     variant="outline"
-                    className={`text-xs ${stat.trendUp ? 'text-green-700 border-green-200 bg-green-50' : 'text-red-700 border-red-200 bg-red-50'}`}
+                    className={`text-xs ${
+                      stat.trendNeutral
+                        ? 'text-gray-700 border-gray-200 bg-gray-50'
+                        : stat.trendUp
+                          ? 'text-green-700 border-green-200 bg-green-50'
+                          : 'text-red-700 border-red-200 bg-red-50'
+                    }`}
                   >
-                    {stat.trendUp ? (
+                    {stat.trendNeutral ? (
+                      <span className="inline mr-0.5">—</span>
+                    ) : stat.trendUp ? (
                       <ArrowUpRight className="w-3 h-3 inline mr-0.5" />
                     ) : (
                       <ArrowDownRight className="w-3 h-3 inline mr-0.5" />
@@ -649,12 +662,16 @@ export function OperationalMetricsModule() {
                         <Badge
                           variant="outline"
                           className={`text-xs ${
-                            slot.trendUp
-                              ? 'text-green-700 border-green-200 bg-green-50'
-                              : 'text-red-700 border-red-200 bg-red-50'
+                            slot.trendNeutral
+                              ? 'text-gray-700 border-gray-200 bg-gray-50'
+                              : slot.trendUp
+                                ? 'text-green-700 border-green-200 bg-green-50'
+                                : 'text-red-700 border-red-200 bg-red-50'
                           }`}
                         >
-                          {slot.trendUp ? (
+                          {slot.trendNeutral ? (
+                            <span className="inline mr-0.5">—</span>
+                          ) : slot.trendUp ? (
                             <TrendingUp className="w-3 h-3 inline mr-0.5" />
                           ) : (
                             <TrendingDown className="w-3 h-3 inline mr-0.5" />

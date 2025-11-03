@@ -244,114 +244,66 @@ export interface IDashboardOperational {
  * Corresponde ao DashboardCustomersDto do backend
  */
 export interface IDashboardCustomers {
-  // Métricas do Header
+  // 1. Base de Clientes
   customerBase: {
-    value: number;
-    previousValue: number;
-    percentageChange: number;
-  };
-
-  // Métricas dos Alertas/Oportunidades
-  alerts: {
-    birthdayCustomers: {
-      quantity: number;
-      potentialRevenue: number;
-    };
-    churnRisk: {
-      quantity: number;
-      ltvAtRisk: number;
+    value: number; // Total de clientes únicos
+    comparison: {
+      percentageChange: number; // vs mês anterior (%)
+      newCustomers: number; // Variação: Quantidade de novos clientes
     };
   };
 
-  // Métricas Principais (4 Cards)
+  // 2. Taxa de Retenção
   retentionRate: {
-    value: number; // percentual
-    previousValue: number;
-    percentageChange: number;
-    classification: string; // "Excelente", "Boa", "Regular", "Ruim"
+    value: number; // XX.X% (1 casa decimal)
+    comparison: {
+      percentageChange: number; // vs mês anterior (%)
+    };
+    context: string; // Classificação (ex: Excelente, Bom, etc.)
   };
 
+  // 3. LTV Médio (Lifetime Value)
   averageLTV: {
-    value: number; // R$
-    previousValue: number;
-    percentageChange: number;
-    cac: number; // Custo de Aquisição por Cliente em R$
+    value: number; // R$ XXX (sem decimais)
+    comparison: {
+      percentageChange: number; // vs mês anterior (%)
+    };
+    cac: number; // CAC (Custo de Aquisição por Cliente) em R$
   };
 
+  // 4. NPS Score
   npsScore: {
-    value: number; // 0-5
-    previousValue: number;
-    absoluteChange: number;
-    reviewCount: number;
+    value: number; // X.X (1 casa decimal, 0-5)
+    comparison: {
+      absoluteChange: number; // vs mês anterior
+    };
+    reviewCount: number; // Número de avaliações coletadas
   };
 
-  // Métricas do Modo Visão Geral (overview)
+  // 5. Evolução de Clientes (Últimos 6 meses)
   customerEvolution: Array<{
-    month: string;
-    newCustomers: number;
-    recurringCustomers: number;
-    churn: number;
+    month: string; // Jan, Fev, Mar, Abr, Mai, Jun, etc.
+    newCustomers: number; // Novos clientes (quantidade)
+    recurringCustomers: number; // Clientes recorrentes (quantidade)
+    churn: number; // Churn (quantidade)
+    totalCustomers: number; // Total de clientes
   }>;
 
+  // 6. Lifetime Value por Segmento
   ltvBySegment: Array<{
-    segment: string;
-    averageLTV: number;
-    customerCount: number;
-    averageMonthlyVisits: number;
-    retentionRate: number; // percentual
+    segment: 'VIPs' | 'Frequentes' | 'Regulares' | 'Ocasionais' | 'Novos';
+    averageLTV: number; // LTV médio (R$)
+    customerCount: number; // Número de clientes
+    averageMonthlyVisits: number; // Visitas médias por mês
+    retentionRate: number; // Taxa de retenção (%)
   }>;
 
+  // 9. Top 5 Clientes VIP
   topVIPCustomers: Array<{
-    id: string;
-    name: string;
-    visitCount: number;
-    totalSpent: number;
-    lastVisit: string; // ISO date
+    customerId: string;
+    customerName: string;
+    visits: number; // Número de visitas
+    totalSpent: number; // Valor total gasto (R$)
+    lastVisit: Date; // Data da última visita
   }>;
-
-  // Métricas do Modo Segmentação (segments)
-  rfmSegmentation: Array<{
-    segment: 'Champions' | 'Loyal' | 'At Risk' | 'Lost';
-    rfmScore: string;
-    customerCount: number;
-    totalRevenue: number;
-  }>;
-
-  preferencesBySegment: Array<{
-    segment: string;
-    preferences: Array<{
-      serviceType: string;
-      percentage: number;
-    }>;
-  }>;
-
-  monthlyBirthdays: Array<{
-    id: string;
-    name: string;
-    birthday: string; // ISO date
-    segment: string;
-    averageSpent: number;
-  }>;
-
-  // Métricas do Modo Churn Risk (churn)
-  customersAtRisk: Array<{
-    id: string;
-    name: string;
-    riskScore: number; // 0-100%
-    lastVisit: string; // ISO date
-    averageFrequency: string; // "1x por semana", "2x por mês"
-    totalLTV: number;
-    riskReason: string;
-  }>;
-
-  churnEvolution: {
-    monthlyData: Array<{
-      month: string;
-      churnCount: number;
-      totalCustomers: number;
-    }>;
-    currentChurnRate: number; // percentual
-    averageChurnRate: number; // média dos últimos 6 meses
-    potentialLTVAtRisk: number;
-  };
 }
