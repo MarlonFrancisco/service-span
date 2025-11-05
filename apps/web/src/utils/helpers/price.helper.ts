@@ -13,7 +13,7 @@ export const formatPrice = (
   return new Intl.NumberFormat(locale, {
     style: 'currency',
     currency,
-  }).format(value / 100);
+  }).format(value);
 };
 
 /**

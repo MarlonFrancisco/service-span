@@ -1,227 +1,202 @@
-import { useSearch } from '@/store/search/search.hook';
-import { isSearchPage } from '@/utils/helpers/search.helper';
-import {
-  Button,
-  Calendar,
-  cn,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@repo/ui';
-import { Filter, MapPin, Search } from 'lucide-react';
-import { usePathname } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
-import { FiltersModal } from './filters-modal';
+'use client';
+
+import useSearchStore from '@/store/search/search.store';
+import { Search, Sparkles } from 'lucide-react';
+import { AnimatePresence, motion } from 'motion/react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
+
+const AI_SUGGESTIONS = [
+  'Buscar serviços com IA...',
+  'Encontre manicure, cabelo e mais...',
+  'Descubra serviços próximos...',
+  'Busca inteligente de beleza...',
+];
 
 export const SearchBar = () => {
-  const {
-    searchFilters,
-    hasActiveFilters,
-    activeFiltersCount,
-    setSearchFilters,
-    setIsMobileSearchOpen,
-  } = useSearch();
+  const params = useSearchParams();
+  const setIsMobileSearchOpen = useSearchStore(
+    (state) => state.setIsMobileSearchOpen,
+  );
+  const [query, setQuery] = useState(params.get('query') || '');
+  const [isFocused, setIsFocused] = useState(false);
+  const [placeholderIndex, setPlaceholderIndex] = useState(0);
 
-  const [showLocationSuggestions, setShowLocationSuggestions] = useState(false);
-  const [showServiceSuggestions, setShowServiceSuggestions] = useState(false);
+  const router = useRouter();
 
-  const locationRef = useRef<HTMLInputElement>(null);
-  const serviceRef = useRef<HTMLInputElement>(null);
+  // Rotate placeholder suggestions
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPlaceholderIndex((prev) => (prev + 1) % AI_SUGGESTIONS.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
 
-  const pathname = usePathname();
-  const isSearchPageHelper = isSearchPage(pathname);
-
-  const locationSuggestions = [
-    'São Paulo, SP',
-    'Rio de Janeiro, RJ',
-    'Belo Horizonte, MG',
-    'Porto Alegre, RS',
-    'Curitiba, PR',
-    'Salvador, BA',
-  ];
-
-  const serviceSuggestions = [
-    'Corte de cabelo',
-    'Manicure',
-    'Massagem relaxante',
-    'Limpeza de pele',
-    'Sobrancelha',
-    'Barboterapia',
-    'Depilação',
-    'Tratamento facial',
-  ];
-
-  const handleSearch = () => {};
-
-  const handleLocationSelect = (location: string) => {
-    setSearchFilters({ ...searchFilters, location });
-    setShowLocationSuggestions(false);
-  };
-
-  const handleServiceSelect = (service: string) => {
-    setSearchFilters({ ...searchFilters, query: service });
-    setShowServiceSuggestions(false);
-  };
-
-  const handleDateSelect = (date: Date | undefined) => {
-    if (date) {
-      setSearchFilters({
-        ...searchFilters,
-        date,
-      });
+  const handleSearch = (e?: React.FormEvent) => {
+    e?.preventDefault();
+    if (query.trim()) {
+      router.push(`/booking?${new URLSearchParams({ query }).toString()}`);
     }
   };
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        locationRef.current &&
-        !locationRef.current.contains(event.target as Node)
-      ) {
-        setShowLocationSuggestions(false);
-      }
-      if (
-        serviceRef.current &&
-        !serviceRef.current.contains(event.target as Node)
-      ) {
-        setShowServiceSuggestions(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && query.trim()) {
+      handleSearch();
+    }
+  };
 
   return (
-    <div className="w-full lg:w-auto mr-6 lg:mx-12 relative flex">
-      <div className="hidden md:flex w-full bg-white border border-gray-200 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300">
-        <div className="flex items-center">
-          {/* Where */}
-          <div className="flex-1 px-5 py-3 relative" ref={locationRef}>
-            <div className="text-xs font-semibold text-gray-900 mb-1">Onde</div>
-            <input
-              type="text"
-              placeholder="Buscar destinos"
-              value={searchFilters.location}
-              onChange={(e) => {
-                setSearchFilters({
-                  ...searchFilters,
-                  location: e.target.value,
-                });
-                setShowLocationSuggestions(true);
-              }}
-              onFocus={() => setShowLocationSuggestions(true)}
-              className="w-full text-sm text-gray-700 placeholder-gray-400 border-none outline-none bg-transparent"
-            />
-
-            {/* Location Suggestions */}
-            {showLocationSuggestions && (
-              <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-lg z-50">
-                {locationSuggestions
-                  .filter((location) =>
-                    location
-                      .toLowerCase()
-                      .includes(searchFilters.location?.toLowerCase() || ''),
-                  )
-                  .map((location, index) => (
-                    <button
-                      key={index}
-                      onClick={() => handleLocationSelect(location)}
-                      className="w-full px-4 py-3 text-left text-sm hover:bg-gray-50 first:rounded-t-xl last:rounded-b-xl flex items-center gap-3"
-                    >
-                      <MapPin className="w-4 h-4 text-gray-400" />
-                      {location}
-                    </button>
-                  ))}
-              </div>
-            )}
-          </div>
-
-          {/* Divider */}
-          <div className="w-px h-6 bg-gray-200"></div>
-
-          {/* What */}
-          <div className="flex-1 px-5 py-3 relative" ref={serviceRef}>
-            <div className="text-xs font-semibold text-gray-900 mb-1">
-              O que
-            </div>
-            <input
-              type="text"
-              placeholder="Tipo de serviço"
-              value={searchFilters.query}
-              onChange={(e) => {
-                setSearchFilters({
-                  ...searchFilters,
-                  query: e.target.value,
-                });
-                setShowServiceSuggestions(true);
-              }}
-              onFocus={() => setShowServiceSuggestions(true)}
-              className="w-full text-sm text-gray-700 placeholder-gray-400 border-none outline-none bg-transparent"
-            />
-
-            {/* Service Suggestions */}
-            {showServiceSuggestions && (
-              <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-lg z-50">
-                {serviceSuggestions
-                  .filter((service) =>
-                    service
-                      .toLowerCase()
-                      .includes(searchFilters.query?.toLowerCase() || ''),
-                  )
-                  .map((service, index) => (
-                    <button
-                      key={index}
-                      onClick={() => handleServiceSelect(service)}
-                      className="w-full px-4 py-3 text-left text-sm hover:bg-gray-50 first:rounded-t-xl last:rounded-b-xl"
-                    >
-                      {service}
-                    </button>
-                  ))}
-              </div>
-            )}
-          </div>
-
-          {/* Divider */}
-          <div className="w-px h-6 bg-gray-200"></div>
-
-          {/* When */}
-          <div className="flex-1 px-5 py-3">
-            <div className="text-xs font-semibold text-gray-900 mb-1">
-              Quando
-            </div>
-            <Popover>
-              <PopoverTrigger asChild>
-                <button className="w-full text-left text-sm text-gray-700 hover:text-gray-900 transition-colors">
-                  {searchFilters.date
-                    ? searchFilters.date.toLocaleDateString('pt-BR')
-                    : 'Adicionar datas'}
-                </button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  mode="single"
-                  selected={searchFilters.date}
-                  onSelect={handleDateSelect}
-                  disabled={(date) => date < new Date()}
-                  initialFocus
-                />
-              </PopoverContent>
-            </Popover>
-          </div>
-
-          {/* Search Button */}
-          <div className="pr-2">
-            <Button
-              onClick={handleSearch}
-              className="w-12 h-12 rounded-full bg-black hover:bg-gray-800 p-0 shadow-lg transition-all hover:scale-105"
+    <div className="w-full relative flex mx-12 max-w-xl">
+      {/* Desktop AI-Powered Search */}
+      <div className="hidden md:block w-full relative group">
+        {/* Animated gradient border effect */}
+        <AnimatePresence>
+          {isFocused && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 0.4, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.3, ease: 'easeOut' }}
+              className="absolute -inset-[2px] bg-gradient-to-r from-violet-400 via-purple-400 to-pink-400 rounded-2xl blur-sm"
             >
-              <Search className="w-5 h-5 text-white" />
-            </Button>
+              <motion.div
+                animate={{
+                  opacity: [0.4, 0.6, 0.4],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                }}
+                className="absolute inset-0 bg-gradient-to-r from-violet-400 via-purple-400 to-pink-400 rounded-2xl"
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <motion.div
+          animate={{
+            borderColor: isFocused ? 'rgb(167 139 250)' : 'rgb(229 231 235)',
+            boxShadow: isFocused
+              ? '0 4px 12px -2px rgba(167, 139, 250, 0.15), 0 2px 4px -1px rgba(167, 139, 250, 0.1)'
+              : '0 1px 2px 0 rgb(0 0 0 / 0.05)',
+          }}
+          whileHover={{
+            borderColor: isFocused ? 'rgb(167 139 250)' : 'rgb(209 213 219)',
+            boxShadow: isFocused
+              ? '0 4px 12px -2px rgba(167, 139, 250, 0.15), 0 2px 4px -1px rgba(167, 139, 250, 0.1)'
+              : '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
+          }}
+          transition={{ duration: 0.3, ease: 'easeOut' }}
+          className="w-full relative bg-white rounded-2xl border-2"
+        >
+          {/* Shimmer effect overlay */}
+          <AnimatePresence>
+            {isFocused && (
+              <div className="absolute inset-0 overflow-hidden rounded-2xl">
+                <motion.div
+                  initial={{ x: '-100%' }}
+                  animate={{ x: '200%' }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: 'easeInOut',
+                  }}
+                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent"
+                />
+              </div>
+            )}
+          </AnimatePresence>
+
+          <div className="w-full relative flex items-center gap-3 px-5 py-3">
+            {/* Search Icon with animation */}
+            <motion.div
+              animate={{
+                scale: isFocused ? 1.1 : 1,
+                color: isFocused ? 'rgb(139 92 246)' : 'rgb(156 163 175)',
+              }}
+              transition={{ duration: 0.3, ease: 'easeOut' }}
+            >
+              <Search className="h-5 w-5 flex-shrink-0" />
+            </motion.div>
+
+            {/* Input */}
+            <input
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onKeyDown={handleKeyDown}
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setIsFocused(false)}
+              placeholder={AI_SUGGESTIONS[placeholderIndex]}
+              className="flex-1 bg-transparent outline-none text-gray-900 placeholder:text-gray-400 text-sm min-w-0"
+            />
+
+            {/* AI Badge - Animated */}
+            <motion.div
+              animate={{
+                background: isFocused
+                  ? 'linear-gradient(to right, rgb(139 92 246), rgb(147 51 234))'
+                  : 'rgb(243 244 246)',
+              }}
+              whileHover={{
+                background: isFocused
+                  ? 'linear-gradient(to right, rgb(139 92 246), rgb(147 51 234))'
+                  : 'rgb(229 231 235)',
+              }}
+              transition={{ duration: 0.3, ease: 'easeOut' }}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg flex-shrink-0"
+              style={{
+                boxShadow: isFocused
+                  ? '0 2px 4px -1px rgba(139, 92, 246, 0.2)'
+                  : 'none',
+              }}
+            >
+              <motion.div
+                animate={{
+                  scale: isFocused ? [1, 1.2, 1] : 1,
+                  rotate: isFocused ? [0, 5, -5, 0] : 0,
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: isFocused ? Infinity : 0,
+                  ease: 'easeInOut',
+                }}
+              >
+                <Sparkles
+                  className="h-3.5 w-3.5"
+                  style={{
+                    color: isFocused ? 'white' : 'rgb(107 114 128)',
+                  }}
+                />
+              </motion.div>
+              <motion.span
+                animate={{
+                  color: isFocused ? 'white' : 'rgb(75 85 99)',
+                }}
+                className="text-xs font-medium hidden sm:inline"
+              >
+                IA
+              </motion.span>
+            </motion.div>
           </div>
-        </div>
+
+          {/* Bottom glow effect when focused */}
+          <AnimatePresence>
+            {isFocused && (
+              <motion.div
+                initial={{ opacity: 0, scaleX: 0.5 }}
+                animate={{ opacity: 0.6, scaleX: 1 }}
+                exit={{ opacity: 0, scaleX: 0.5 }}
+                transition={{ duration: 0.3, ease: 'easeOut' }}
+                className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-3/4 h-1 bg-gradient-to-r from-transparent via-violet-300 to-transparent blur-sm"
+              />
+            )}
+          </AnimatePresence>
+        </motion.div>
       </div>
 
+      {/* Mobile Search Button */}
       <div className="md:hidden flex-1 flex-row flex items-center gap-6">
         <button
           onClick={() => setIsMobileSearchOpen(true)}
@@ -231,48 +206,14 @@ export const SearchBar = () => {
             <Search className="w-4 h-4 text-gray-400 flex-shrink-0" />
             <div className="text-left flex-1 min-w-0">
               <div className="text-sm font-medium text-gray-900">
-                {searchFilters.location ||
-                searchFilters.query ||
-                searchFilters.date
-                  ? 'Buscar'
-                  : 'Para onde?'}
+                {query ? 'Buscar' : 'Para onde?'}
               </div>
               <div className="text-xs text-gray-500 line-clamp-2">
-                {searchFilters.location || 'Qualquer lugar'} •{' '}
-                {searchFilters.query || 'Qualquer serviço'} •{' '}
-                {searchFilters.date?.toLocaleDateString('pt-BR') ||
-                  'Qualquer data'}
+                {query || 'Qualquer serviço'}
               </div>
             </div>
-            {activeFiltersCount > 0 && (
-              <div className="flex-shrink-0 w-5 h-5 bg-gray-900 text-white rounded-full flex items-center justify-center text-xs font-medium">
-                {activeFiltersCount}
-              </div>
-            )}
           </div>
         </button>
-      </div>
-
-      <div
-        className={cn(
-          'ml-6 flex items-center',
-          !isSearchPageHelper && 'hidden',
-        )}
-      >
-        <FiltersModal onClearFilters={() => {}}>
-          <Button
-            variant="outline"
-            className={`flex items-center gap-2 border-gray-300 hover:border-gray-400 rounded-2xl px-6 py-4 h-14 font-medium transition-all hover:shadow-lg ${hasActiveFilters ? 'border-blue-500 text-blue-600' : ''}`}
-          >
-            <Filter className="h-4 w-4" />
-            <span className="hidden lg:inline">Filtros</span>
-            {hasActiveFilters && (
-              <span className="ml-1 bg-blue-100 text-blue-600 text-xs px-1.5 py-0.5 rounded-full">
-                ●
-              </span>
-            )}
-          </Button>
-        </FiltersModal>
       </div>
     </div>
   );

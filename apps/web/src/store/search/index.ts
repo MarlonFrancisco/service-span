@@ -1,1 +1,2 @@
-export * from './search.hook';
+export * from './search.store';
+export * from './search.types';

@@ -3,6 +3,16 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export const middleware = async (req: NextRequest) => {
   try {
+    if (req.url.includes('/booking')) {
+      const query = req.nextUrl.searchParams.get('query');
+
+      if (!query) {
+        return NextResponse.redirect(new URL('/', req.url));
+      }
+
+      return NextResponse.next();
+    }
+
     if (!req.url.includes('partner')) {
       return NextResponse.next();
     }

@@ -1,5 +1,5 @@
 'use client';
-import { useSearch } from '@/store';
+import useSearchStore from '@/store/search/search.store';
 import { Button, Sheet, SheetContent } from '@repo/ui';
 import { Search, X } from 'lucide-react';
 import { motion } from 'motion/react';
@@ -11,12 +11,12 @@ import { QueryField } from './components/query-field';
 import { useMobileSearchOverlay } from './mobile-search-overlay.hook';
 
 export const MobileSearchOverlay = () => {
-  const {
-    searchFilters,
-    isMobileSearchOpen,
-    setIsMobileSearchOpen,
-    setSearchFilters,
-  } = useSearch();
+  const isMobileSearchOpen = useSearchStore(
+    (state) => state.isMobileSearchOpen,
+  );
+  const setIsMobileSearchOpen = useSearchStore(
+    (state) => state.setIsMobileSearchOpen,
+  );
 
   const {
     activeField,
@@ -24,6 +24,8 @@ export const MobileSearchOverlay = () => {
     filteredLocationSuggestions,
     filteredQuerySuggestions,
     popularQueries,
+    searchFilters,
+    setSearchFilters,
     setActiveField,
     clearField,
     handleLocationSelect,

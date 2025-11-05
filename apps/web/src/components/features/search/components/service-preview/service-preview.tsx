@@ -1,5 +1,6 @@
 'use client';
 
+import { formatBusinessHours } from '@/utils/helpers/business-hours.helper';
 import { Badge, Button, Card, Separator } from '@repo/ui';
 import { Calendar, Clock, MapPin, Phone, Star } from 'lucide-react';
 import type { Service } from '../../search.types';
@@ -25,24 +26,18 @@ export function ServicePreview({
     );
   }
 
-  // Use images array if available, otherwise fallback to single imageUrl
-  const allImages =
-    service.images && service.images.length > 0
-      ? service.images
-      : [service.imageUrl];
-
   return (
     <Card className="h-fit border-gray-200 shadow-lg pt-0">
       <div className="space-y-6">
         {/* Header com carousel de imagens */}
         <div className="space-y-4">
           <ImageCarousel
-            images={allImages}
+            images={service.images}
             alt={service.name}
-            className="w-full h-56 rounded-b-none!"
-            showCounter={allImages.length > 1}
-            showFullscreenButton={allImages.length > 1}
-            aspectRatio="auto"
+            className="w-full rounded-b-none!"
+            showCounter={service.images.length > 1}
+            showFullscreenButton={service.images.length > 1}
+            aspectRatio={4 / 2}
           />
 
           <div className="space-y-2 px-6">
@@ -52,8 +47,6 @@ export function ServicePreview({
               </h3>
               <Badge className="bg-black text-white">{service.price}</Badge>
             </div>
-
-            <p className="text-gray-600">{service.category}</p>
 
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-1">
@@ -71,7 +64,7 @@ export function ServicePreview({
 
         {/* Descrição */}
         <div className="space-y-2 px-6">
-          <h4 className="font-semibold text-gray-900">Sobre o Serviço</h4>
+          <h4 className="font-semibold text-gray-900">Sobre a loja</h4>
           <p className="text-gray-600 leading-relaxed">{service.description}</p>
         </div>
 
@@ -89,12 +82,21 @@ export function ServicePreview({
 
             <div className="flex items-start gap-3 text-sm">
               <MapPin className="h-4 w-4 text-gray-500 mt-0.5" />
-              <span>{service.address}</span>
+              <span>
+                {service.address}, {service.city} - {service.state}
+              </span>
+              <span>{service.zipCode}</span>
             </div>
 
             <div className="flex items-center gap-3 text-sm">
               <Clock className="h-4 w-4 text-gray-500" />
-              <span>Seg-Sex: 9h às 18h | Sáb: 9h às 15h</span>
+              <span>
+                {formatBusinessHours(
+                  service.openTime,
+                  service.closeTime,
+                  service.businessDays,
+                )}
+              </span>
             </div>
           </div>
         </div>
@@ -106,40 +108,30 @@ export function ServicePreview({
           <h4 className="font-semibold text-gray-900">Avaliações Recentes</h4>
 
           <div className="space-y-3">
-            <div className="p-3 bg-gray-50 rounded-lg">
-              <div className="flex items-center gap-2 mb-1">
-                <div className="flex">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <Star
-                      key={i}
-                      className="h-3 w-3 fill-yellow-400 text-yellow-400"
-                    />
-                  ))}
+            {service.reviews?.slice(0, 3).map((review) => (
+              <div key={review.id} className="p-3 bg-gray-50 rounded-lg">
+                <div className="flex items-center gap-2 mb-1">
+                  <div className="flex">
+                    {Array.from({ length: review.rating }).map((_, i) => (
+                      <Star
+                        key={i}
+                        className="h-3 w-3 fill-yellow-400 text-yellow-400"
+                      />
+                    ))}
+                  </div>
                 </div>
-                <span className="text-xs text-gray-500">Ana Paula</span>
+                <span className="text-xs text-gray-500">Usuário Anônimo</span>
+                <p className="text-xs text-gray-600">{review.comment}</p>
               </div>
-              <p className="text-xs text-gray-600">
-                "Excelente atendimento! Profissionais muito qualificados."
-              </p>
-            </div>
+            ))}
 
-            <div className="p-3 bg-gray-50 rounded-lg">
-              <div className="flex items-center gap-2 mb-1">
-                <div className="flex">
-                  {Array.from({ length: 4 }).map((_, i) => (
-                    <Star
-                      key={i}
-                      className="h-3 w-3 fill-yellow-400 text-yellow-400"
-                    />
-                  ))}
-                  <Star className="h-3 w-3 text-gray-300" />
-                </div>
-                <span className="text-xs text-gray-500">Carlos Silva</span>
+            {!service.reviews?.length && (
+              <div className="p-3 bg-gray-50 rounded-lg">
+                <span className="text-xs text-gray-500">
+                  Nenhuma avaliação encontrada para esta loja
+                </span>
               </div>
-              <p className="text-xs text-gray-600">
-                "Ótimo custo-benefício. Recomendo!"
-              </p>
-            </div>
+            )}
           </div>
         </div>
 

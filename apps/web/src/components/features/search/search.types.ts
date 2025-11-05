@@ -1,18 +1,36 @@
 export interface Service {
   id: string;
   name: string;
-  category: string;
   rating: number;
   reviewCount: number;
   location: string;
   price: string;
-  imageUrl: string;
-  images?: string[];
+  images: string[];
   description: string;
   phone: string;
   address: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  openTime: string;
+  closeTime: string;
+  businessDays: {
+    monday: boolean;
+    tuesday: boolean;
+    wednesday: boolean;
+    thursday: boolean;
+    friday: boolean;
+    saturday: boolean;
+    sunday: boolean;
+  };
   isFavorite?: boolean;
-  nextSlot?: string;
+  services?: Array<{
+    id: string;
+    name: string;
+    description: string;
+    price: number | string;
+  }>;
+  reviews?: Array<{ id: string; rating: number; comment: string }>;
 }
 
 export type UserType = 'customer' | 'provider' | null;

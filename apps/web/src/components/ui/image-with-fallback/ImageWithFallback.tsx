@@ -1,3 +1,4 @@
+'use client';
 import Image, { ImageProps } from 'next/image';
 import { useState } from 'react';
 
@@ -9,11 +10,16 @@ export function ImageWithFallback(
 ) {
   const [didError, setDidError] = useState(false);
 
-  const handleError = () => {
+  const handleError = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    console.log(e);
     setDidError(true);
   };
 
   const { src, alt, style, className, useFallback, ...rest } = props;
+
+  const imageSrc = src?.includes('https')
+    ? src
+    : `${process.env.NEXT_PUBLIC_CDN_URL}/stores/${src}`;
 
   return didError || useFallback ? (
     <div
@@ -31,12 +37,13 @@ export function ImageWithFallback(
     </div>
   ) : (
     <Image
-      src={src}
+      src={imageSrc}
       alt={alt}
       className={className}
       style={style}
       {...rest}
       onError={handleError}
+      loading="lazy"
     />
   );
 }

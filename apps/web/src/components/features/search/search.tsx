@@ -1,3 +1,4 @@
+'use client';
 import { Footer } from '@/components/layout';
 import { Header } from '@/components/layout/header/header';
 import { useRouter } from 'next/navigation';

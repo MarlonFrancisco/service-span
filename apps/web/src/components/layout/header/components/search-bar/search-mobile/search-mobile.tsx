@@ -1,15 +1,14 @@
-import { useSearch } from '@/store';
-import { Button } from '@repo/ui';
-import { Filter, Search } from 'lucide-react';
-import { FiltersModal } from '../filters-modal';
+import useSearchStore from '@/store/search/search.store';
+import { Search } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
 
 export const SearchMobile = () => {
-  const {
-    searchFilters,
-    activeFiltersCount,
-    hasActiveFilters,
-    setIsMobileSearchOpen,
-  } = useSearch();
+  const setIsMobileSearchOpen = useSearchStore(
+    (state) => state.setIsMobileSearchOpen,
+  );
+
+  const searchParams = useSearchParams();
+  const query = searchParams.get('query');
 
   return (
     <div className="md:hidden flex-1 flex-row flex items-center gap-6 mr-6">
@@ -21,41 +20,14 @@ export const SearchMobile = () => {
           <Search className="w-4 h-4 text-gray-400 flex-shrink-0" />
           <div className="text-left flex-1 min-w-0">
             <div className="text-sm font-medium text-gray-900">
-              {searchFilters.location ||
-              searchFilters.query ||
-              searchFilters.date
-                ? 'Buscar'
-                : 'Para onde?'}
+              {query || 'Para onde?'}
             </div>
             <div className="text-xs text-gray-500 line-clamp-2">
-              {searchFilters.location || 'Qualquer lugar'} •{' '}
-              {searchFilters.query || 'Qualquer serviço'} •{' '}
-              {searchFilters.date?.toLocaleDateString('pt-BR') ||
-                'Qualquer data'}
+              {query ? query : 'Para onde?'}
             </div>
           </div>
-          {activeFiltersCount > 0 && (
-            <div className="flex-shrink-0 w-5 h-5 bg-gray-900 text-white rounded-full flex items-center justify-center text-xs font-medium">
-              {activeFiltersCount}
-            </div>
-          )}
         </div>
       </button>
-
-      <FiltersModal onClearFilters={() => {}}>
-        <Button
-          variant="outline"
-          className={`flex items-center gap-2 border-gray-300 hover:border-gray-400 rounded-2xl px-6 py-4 h-14 font-medium transition-all hover:shadow-lg ${hasActiveFilters ? 'border-blue-500 text-blue-600' : ''}`}
-        >
-          <Filter className="h-4 w-4" />
-          <span className="hidden lg:inline">Filtros</span>
-          {hasActiveFilters && (
-            <span className="ml-1 bg-blue-100 text-blue-600 text-xs px-1.5 py-0.5 rounded-full">
-              ●
-            </span>
-          )}
-        </Button>
-      </FiltersModal>
     </div>
   );
 };

@@ -1,22 +1,31 @@
-import { useSearch } from '@/store';
+import useSearchStore from '@/store/search/search.store';
 import { buildSearchUrl } from '@/utils/helpers/search.helper';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type {
   TSearchField,
   TUseMobileSearchOverlayConfig,
-  TUseMobileSearchOverlayReturn,
 } from './mobile-search-overlay.types';
 
 export const useMobileSearchOverlay = (
   _config: TUseMobileSearchOverlayConfig = {},
-): TUseMobileSearchOverlayReturn => {
-  const { searchFilters, setSearchFilters, setIsMobileSearchOpen } =
-    useSearch();
+) => {
+  const setIsMobileSearchOpen = useSearchStore(
+    (state) => state.setIsMobileSearchOpen,
+  );
 
   const [showLocationSuggestions, setShowLocationSuggestions] = useState(false);
   const [showQuerySuggestions, setShowQuerySuggestions] = useState(false);
   const [activeField, setActiveField] = useState<TSearchField>(null);
+  const [searchFilters, setSearchFilters] = useState<{
+    location: string;
+    query: string;
+    date?: Date;
+  }>({
+    location: '',
+    query: '',
+    date: undefined,
+  });
 
   const locationRef = useRef<HTMLInputElement>(null);
   const queryRef = useRef<HTMLInputElement>(null);
@@ -192,6 +201,7 @@ export const useMobileSearchOverlay = (
     showLocationSuggestions,
     showQuerySuggestions,
     activeFiltersCount,
+    searchFilters,
 
     // Suggestions data
     locationSuggestions,
@@ -208,5 +218,6 @@ export const useMobileSearchOverlay = (
     handleDateSelect,
     handleSearch,
     clearAllFilters,
+    setSearchFilters,
   };
 };

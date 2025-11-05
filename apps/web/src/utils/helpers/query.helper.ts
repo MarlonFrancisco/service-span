@@ -54,4 +54,5 @@ export const CACHE_QUERY_KEYS = {
     `partner/stores/${storeId}/metrics/customers`,
     { period },
   ],
+  search: (query: string) => ['search', { query }],
 };

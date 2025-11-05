@@ -1,7 +1,7 @@
 import { ImageWithFallback } from '@/components/ui/image-with-fallback';
 import { IStoreGallery } from '@/types/api/stores.types';
 import { Badge, Button, Card } from '@repo/ui';
-import { Camera, ImageIcon, Star, Upload, X } from 'lucide-react';
+import { AlertCircle, Camera, ImageIcon, Star, Upload, X } from 'lucide-react';
 import { useRef, useState } from 'react';
 
 interface MultiImageUploadProps {
@@ -10,12 +10,16 @@ interface MultiImageUploadProps {
   onChangeMain: (image: IStoreGallery) => void;
   onDelete: (imageId: string) => void;
   maxImages?: number;
+  maxFileSize?: number; // em bytes
   className?: string;
 }
+
+const DEFAULT_MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
 export function MultiImageUpload({
   images,
   maxImages = 5,
+  maxFileSize = DEFAULT_MAX_FILE_SIZE,
   className = '',
   onChange,
   onChangeMain,
@@ -23,17 +27,33 @@ export function MultiImageUpload({
 }: MultiImageUploadProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [dragActive, setDragActive] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleFileSelect = (files: FileList | null) => {
     if (!files) return;
 
+    setError(null);
     const remainingSlots = maxImages - images.length;
     const filesToProcess = Math.min(files.length, remainingSlots);
     const filesLoaded = [];
+    let hasError = false;
 
     for (let i = 0; i < filesToProcess; i++) {
       const file = files[i]!;
-      if (file && file.type.startsWith('image/')) {
+
+      if (!file.type.startsWith('image/')) {
+        setError('Um ou mais arquivos não são imagens válidas');
+        hasError = true;
+        continue;
+      }
+
+      if (file.size > maxFileSize) {
+        setError(`Arquivo muito grande. Máximo: ${Math.round(maxFileSize / 1024 / 1024)}MB`);
+        hasError = true;
+        continue;
+      }
+
+      if (!hasError) {
         const filePromise = new Promise<IStoreGallery>((resolve, reject) => {
           const fileReader = new FileReader();
 
@@ -57,9 +77,11 @@ export function MultiImageUpload({
       }
     }
 
-    Promise.all(filesLoaded).then((images) => {
-      onChange(images);
-    });
+    if (filesLoaded.length > 0) {
+      Promise.all(filesLoaded).then((images) => {
+        onChange(images);
+      });
+    }
   };
 
   const handleDrop = (e: React.DragEvent) => {
@@ -92,6 +114,14 @@ export function MultiImageUpload({
 
   return (
     <div className={`space-y-5 ${className}`}>
+      {/* Error Message */}
+      {error && (
+        <div className="flex gap-3 p-3 bg-red-50 border border-red-200 rounded-lg">
+          <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+          <p className="text-sm text-red-700">{error}</p>
+        </div>
+      )}
+
       {/* Upload Area */}
       {images.length < maxImages && (
         <div
@@ -124,6 +154,9 @@ export function MultiImageUpload({
               <p className="text-xs text-gray-600">
                 Arraste e solte ou clique para selecionar • {images.length}/
                 {maxImages} fotos
+              </p>
+              <p className="text-xs text-gray-500 mt-1">
+                Máximo de {Math.round(maxFileSize / 1024 / 1024)}MB por arquivo
               </p>
             </div>
 
