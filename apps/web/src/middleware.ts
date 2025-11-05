@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export const middleware = async (req: NextRequest) => {
   try {
-    if (req.url.includes('/booking')) {
+    if (req.nextUrl.pathname === '/booking') {
       const query = req.nextUrl.searchParams.get('query');
 
       if (!query) {

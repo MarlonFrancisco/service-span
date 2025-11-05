@@ -1,0 +1,731 @@
+[
+  {
+    "name": "Salão de Beleza Premium",
+    "description": "Salão completo com serviços de cabelo, unhas e estética facial",
+    "amenities": ["WiFi", "Estacionamento", "Café", "Ar condicionado"],
+    "address": "Rua das Flores, 123",
+    "city": "São Paulo",
+    "state": "SP",
+    "zipCode": "01234-567",
+    "telephone": "(11) 98765-4321",
+    "email": "contato@salaopremium.com.br",
+    "website": "www.salaopremium.com.br",
+    "instagram": "@salaopremium",
+    "facebook": "SalaoPremium",
+    "openTime": "09:00",
+    "closeTime": "19:00",
+    "lunchStartTime": "12:00",
+    "lunchEndTime": "13:00",
+    "businessDays": { "monday": true, "tuesday": true, "wednesday": true, "thursday": true, "friday": true, "saturday": true, "sunday": false },
+    "weeklyGoal": 5000,
+    "monthlyGoal": 20000,
+    "quarterlyGoal": 60000,
+    "isActive": true,
+    "categories": [
+      {
+        "name": "Cabelos",
+        "description": "Serviços de corte e coloração",
+        "color": "#FF69B4",
+        "services": [
+          { "name": "Corte Feminino", "description": "Corte moderno e personalizado", "duration": 45, "price": 80.00, "isActive": true },
+          { "name": "Coloração", "description": "Tintura e coloração dos cabelos", "duration": 120, "price": 150.00, "isActive": true },
+          { "name": "Escova Progressiva", "description": "Tratamento alisante", "duration": 180, "price": 250.00, "isActive": true }
+        ]
+      },
+      {
+        "name": "Unhas",
+        "description": "Manicure e Pedicure",
+        "color": "#FFB6C1",
+        "services": [
+          { "name": "Manicure Clássica", "description": "Unhas bem cuidadas", "duration": 45, "price": 45.00, "isActive": true },
+          { "name": "Pedicure com Design", "description": "Pedicure com decoração", "duration": 60, "price": 65.00, "isActive": true },
+          { "name": "Unhas de Gel", "description": "Manicure com gel", "duration": 90, "price": 120.00, "isActive": true }
+        ]
+      }
+    ],
+    "gallery": [
+      { "url": "https://images.unsplash.com/photo-1560066169-b2a7edb8b13f?w=500&q=80", "isMain": true },
+      { "url": "https://images.unsplash.com/photo-1605980776566-0486b3b684df?w=500&q=80", "isMain": false },
+      { "url": "https://images.unsplash.com/photo-1604654894610-df63bc536371?w=500&q=80", "isMain": false }
+    ],
+    "reviews": [
+      { "rating": 4.5, "comment": "Excelente atendimento, muito profissional!" },
+      { "rating": 5, "comment": "Adorei! Voltaria com certeza" },
+      { "rating": 4, "comment": "Bom serviço, ambiente agradável" }
+    ]
+  },
+  {
+    "name": "Studio de Massagem Relax",
+    "description": "Especializado em massagens terapêuticas e relaxamento holístico",
+    "amenities": ["WiFi", "Estacionamento", "Chá", "Música ambiente", "Sauna"],
+    "address": "Avenida Paulista, 456",
+    "city": "São Paulo",
+    "state": "SP",
+    "zipCode": "01311-100",
+    "telephone": "(11) 99876-5432",
+    "email": "contato@studiorelax.com.br",
+    "website": "www.studiorelax.com.br",
+    "instagram": "@studiorelax",
+    "facebook": "StudioRelax",
+    "openTime": "10:00",
+    "closeTime": "20:00",
+    "lunchStartTime": null,
+    "lunchEndTime": null,
+    "businessDays": { "monday": true, "tuesday": true, "wednesday": true, "thursday": true, "friday": true, "saturday": true, "sunday": true },
+    "weeklyGoal": 3000,
+    "monthlyGoal": 12000,
+    "quarterlyGoal": 36000,
+    "isActive": true,
+    "categories": [
+      {
+        "name": "Massagem",
+        "description": "Diferentes tipos de massagem",
+        "color": "#8B7355",
+        "services": [
+          { "name": "Massagem Sueca", "description": "Massagem relaxante completa", "duration": 60, "price": 120.00, "isActive": true },
+          { "name": "Massagem Tailandesa", "description": "Técnica oriental de massagem", "duration": 90, "price": 150.00, "isActive": true },
+          { "name": "Massagem Craniana", "description": "Massagem relaxante da cabeça", "duration": 30, "price": 60.00, "isActive": true }
+        ]
+      }
+    ],
+    "gallery": [
+      { "url": "https://images.unsplash.com/photo-1544161515-81aae3ff8556?w=500&q=80", "isMain": true },
+      { "url": "https://images.unsplash.com/photo-1576091160550-112173fac7ee?w=500&q=80", "isMain": false }
+    ],
+    "reviews": [
+      { "rating": 5, "comment": "Massagem relaxante incrível, profissional muito competente!" },
+      { "rating": 4.5, "comment": "Ambiente perfeito para relaxar" },
+      { "rating": 4.5, "comment": "Recomendo para todos!" }
+    ]
+  },
+  {
+    "name": "Academia Força Total",
+    "description": "Academia completa com musculação, cardio e treinamento funcional",
+    "amenities": ["WiFi", "Estacionamento gratuito", "Bebedouro", "Ar condicionado", "Vestiários"],
+    "address": "Rua do Comércio, 789",
+    "city": "São Paulo",
+    "state": "SP",
+    "zipCode": "02567-890",
+    "telephone": "(11) 97654-3210",
+    "email": "contato@forcatotal.com.br",
+    "website": "www.forcatotal.com.br",
+    "instagram": "@forcatotal",
+    "facebook": "ForçaTotal",
+    "openTime": "06:00",
+    "closeTime": "22:00",
+    "lunchStartTime": null,
+    "lunchEndTime": null,
+    "businessDays": { "monday": true, "tuesday": true, "wednesday": true, "thursday": true, "friday": true, "saturday": true, "sunday": true },
+    "weeklyGoal": 8000,
+    "monthlyGoal": 32000,
+    "quarterlyGoal": 96000,
+    "isActive": true,
+    "categories": [
+      {
+        "name": "Treinamento Personalizado",
+        "description": "Aulas com instrutor",
+        "color": "#FF4500",
+        "services": [
+          { "name": "PT Individual", "description": "Sessão de treinamento individual", "duration": 60, "price": 100.00, "isActive": true },
+          { "name": "Musculação com Instrutor", "description": "Aula de musculação", "duration": 60, "price": 80.00, "isActive": true }
+        ]
+      },
+      {
+        "name": "Aulas em Grupo",
+        "description": "Aulas coletivas variadas",
+        "color": "#32CD32",
+        "services": [
+          { "name": "Crossfit", "description": "Aula de crossfit", "duration": 60, "price": 50.00, "isActive": true },
+          { "name": "Yoga", "description": "Aula de yoga relaxante", "duration": 60, "price": 40.00, "isActive": true }
+        ]
+      }
+    ],
+    "gallery": [
+      { "url": "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=500", "isMain": true },
+      { "url": "https://images.unsplash.com/photo-1517836357463-d25ddfcbf042?w=500", "isMain": false }
+    ],
+    "reviews": [
+      { "rating": 4.5, "comment": "Academia de qualidade, ótimos instrutores!" },
+      { "rating": 4, "comment": "Equipamentos bem mantidos" },
+      { "rating": 5, "comment": "Ambiente motivador e amigável!" }
+    ]
+  },
+  {
+    "name": "Clínica de Estética Beauty",
+    "description": "Procedimentos estéticos avançados com tecnologia de ponta",
+    "amenities": ["WiFi", "Estacionamento", "Recepção climatizada", "Sala de espera confortável"],
+    "address": "Avenida Brasil, 1000",
+    "city": "Rio de Janeiro",
+    "state": "RJ",
+    "zipCode": "20000-000",
+    "telephone": "(21) 98765-4321",
+    "email": "contato@beautyestetica.com.br",
+    "website": "www.beautyestetica.com.br",
+    "instagram": "@beautyestetica",
+    "facebook": "BeautyEstética",
+    "openTime": "09:00",
+    "closeTime": "18:00",
+    "lunchStartTime": "12:00",
+    "lunchEndTime": "13:30",
+    "businessDays": { "monday": true, "tuesday": true, "wednesday": true, "thursday": true, "friday": true, "saturday": true, "sunday": false },
+    "weeklyGoal": 4000,
+    "monthlyGoal": 16000,
+    "quarterlyGoal": 48000,
+    "isActive": true,
+    "categories": [
+      {
+        "name": "Facial",
+        "description": "Tratamentos faciais",
+        "color": "#FFD700",
+        "services": [
+          { "name": "Limpeza de Pele", "description": "Limpeza profunda com extrações", "duration": 60, "price": 90.00, "isActive": true },
+          { "name": "Peeling Químico", "description": "Renovação de pele", "duration": 45, "price": 200.00, "isActive": true },
+          { "name": "Botox", "description": "Aplicação de botox", "duration": 30, "price": 500.00, "isActive": true }
+        ]
+      }
+    ],
+    "gallery": [
+      { "url": "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=500", "isMain": true },
+      { "url": "https://images.unsplash.com/photo-1583987212075-cd5af3b9e20f?w=500", "isMain": false }
+    ],
+    "reviews": [
+      { "rating": 5, "comment": "Profissionais experientes e resultados incríveis!" },
+      { "rating": 4.5, "comment": "Clínica moderna e aconchegante" },
+      { "rating": 5, "comment": "Melhor tratamento que já fiz!" }
+    ]
+  },
+  {
+    "name": "Barbearia Clássica",
+    "description": "Barbearia tradicional com barbeiros experientes e ambiente acolhedor",
+    "amenities": ["WiFi", "Bebidas quentes", "Revistas", "Água gelada"],
+    "address": "Rua 15 de Novembro, 234",
+    "city": "Belo Horizonte",
+    "state": "MG",
+    "zipCode": "30130-100",
+    "telephone": "(31) 99876-5432",
+    "email": "contato@barbearia.com.br",
+    "website": "www.barbearia.com.br",
+    "instagram": "@barbearia_classica",
+    "facebook": "BarbeariaClássica",
+    "openTime": "08:00",
+    "closeTime": "18:00",
+    "lunchStartTime": "12:00",
+    "lunchEndTime": "13:00",
+    "businessDays": { "monday": true, "tuesday": true, "wednesday": true, "thursday": true, "friday": true, "saturday": true, "sunday": false },
+    "weeklyGoal": 2000,
+    "monthlyGoal": 8000,
+    "quarterlyGoal": 24000,
+    "isActive": true,
+    "categories": [
+      {
+        "name": "Cortes",
+        "description": "Cortes variados",
+        "color": "#1C1C1C",
+        "services": [
+          { "name": "Corte Masculino", "description": "Corte clássico", "duration": 30, "price": 50.00, "isActive": true },
+          { "name": "Barba", "description": "Aparagem e design da barba", "duration": 30, "price": 40.00, "isActive": true }
+        ]
+      }
+    ],
+    "gallery": [
+      { "url": "https://images.unsplash.com/photo-1585747860715-cd4628902d4a?w=500", "isMain": true },
+      { "url": "https://images.unsplash.com/photo-1599912026505-3f9a4b8dd18f?w=500", "isMain": false }
+    ],
+    "reviews": [
+      { "rating": 4.5, "comment": "Barbeiros muito habilidosos, ótimo ambiente!" },
+      { "rating": 5, "comment": "Corte perfeito, voltarei com certeza" },
+      { "rating": 4, "comment": "Bom atendimento e preço justo" }
+    ]
+  },
+  {
+    "name": "Pet Shop Patas Felizes",
+    "description": "Banho, tosa e cuidados para seu pet",
+    "amenities": ["Estacionamento", "Ar condicionado", "Área de espera confortável"],
+    "address": "Avenida Central, 567",
+    "city": "Curitiba",
+    "state": "PR",
+    "zipCode": "80000-000",
+    "telephone": "(41) 99876-5432",
+    "email": "contato@patafelizes.com.br",
+    "website": "www.patafelizes.com.br",
+    "instagram": "@patafelizes",
+    "facebook": "PatasFelizes",
+    "openTime": "08:00",
+    "closeTime": "18:00",
+    "lunchStartTime": "12:00",
+    "lunchEndTime": "13:00",
+    "businessDays": { "monday": true, "tuesday": true, "wednesday": true, "thursday": true, "friday": true, "saturday": true, "sunday": false },
+    "weeklyGoal": 3000,
+    "monthlyGoal": 12000,
+    "quarterlyGoal": 36000,
+    "isActive": true,
+    "categories": [
+      {
+        "name": "Tosa",
+        "description": "Serviços de tosa",
+        "color": "#FF6347",
+        "services": [
+          { "name": "Tosa Simples", "description": "Tosa básica", "duration": 45, "price": 60.00, "isActive": true },
+          { "name": "Tosa Criativa", "description": "Design especial", "duration": 90, "price": 150.00, "isActive": true }
+        ]
+      }
+    ],
+    "gallery": [
+      { "url": "https://images.unsplash.com/photo-1587300411515-150663888b8b?w=500", "isMain": true }
+    ],
+    "reviews": [
+      { "rating": 4.5, "comment": "Meu pet saiu lindo! Muito carinhosos" },
+      { "rating": 5, "comment": "Tosa perfeita, meu cachorro amou!" },
+      { "rating": 4.5, "comment": "Profissionais cuidadosos com os animais" }
+    ]
+  },
+  {
+    "name": "Consultório Dentário Sorriso Perfeito",
+    "description": "Clínica odontológica com equipamento moderno",
+    "amenities": ["WiFi", "Estacionamento", "Recepção agradável", "Salas climatizadas"],
+    "address": "Rua da Saúde, 789",
+    "city": "Porto Alegre",
+    "state": "RS",
+    "zipCode": "90000-000",
+    "telephone": "(51) 99876-5432",
+    "email": "contato@sorrisperfetto.com.br",
+    "website": "www.sorrisperfetto.com.br",
+    "instagram": "@sorrisperfetto",
+    "facebook": "SorraisPerfetto",
+    "openTime": "08:00",
+    "closeTime": "17:00",
+    "lunchStartTime": "12:00",
+    "lunchEndTime": "13:00",
+    "businessDays": { "monday": true, "tuesday": true, "wednesday": true, "thursday": true, "friday": true, "saturday": false, "sunday": false },
+    "weeklyGoal": 4000,
+    "monthlyGoal": 16000,
+    "quarterlyGoal": 48000,
+    "isActive": true,
+    "categories": [
+      {
+        "name": "Limpeza",
+        "description": "Limpeza dental",
+        "color": "#FFFFFF",
+        "services": [
+          { "name": "Limpeza Completa", "description": "Limpeza profissional", "duration": 60, "price": 150.00, "isActive": true },
+          { "name": "Polimento", "description": "Polimento dos dentes", "duration": 30, "price": 80.00, "isActive": true }
+        ]
+      }
+    ],
+    "gallery": [
+      { "url": "https://images.unsplash.com/photo-1609840917342-a9f49cff7bfe?w=500", "isMain": true }
+    ],
+    "reviews": [
+      { "rating": 4.5, "comment": "Dentista muito atencioso, não dói!" },
+      { "rating": 5, "comment": "Melhor consultório da região!" },
+      { "rating": 4, "comment": "Limpeza perfeita, recomendo" }
+    ]
+  },
+  {
+    "name": "Spa e Wellness Center",
+    "description": "Centro de bem-estar com piscina aquecida e sauna",
+    "amenities": ["WiFi", "Piscina aquecida", "Sauna", "Hidromassagem", "Café"],
+    "address": "Rua do Lazer, 999",
+    "city": "Salvador",
+    "state": "BA",
+    "zipCode": "40000-000",
+    "telephone": "(71) 99876-5432",
+    "email": "contato@spawellness.com.br",
+    "website": "www.spawellness.com.br",
+    "instagram": "@spawellness",
+    "facebook": "SpaWellness",
+    "openTime": "08:00",
+    "closeTime": "20:00",
+    "lunchStartTime": null,
+    "lunchEndTime": null,
+    "businessDays": { "monday": true, "tuesday": true, "wednesday": true, "thursday": true, "friday": true, "saturday": true, "sunday": true },
+    "weeklyGoal": 6000,
+    "monthlyGoal": 24000,
+    "quarterlyGoal": 72000,
+    "isActive": true,
+    "categories": [
+      {
+        "name": "Piscina",
+        "description": "Acesso à piscina aquecida",
+        "color": "#00BFFF",
+        "services": [
+          { "name": "Dia Inteiro", "description": "Acesso completo ao dia", "duration": 480, "price": 100.00, "isActive": true },
+          { "name": "Aula de Natação", "description": "Aula com instrutor", "duration": 60, "price": 80.00, "isActive": true }
+        ]
+      }
+    ],
+    "gallery": [
+      { "url": "https://images.unsplash.com/photo-1576091160550-2173fac7ee6b?w=500", "isMain": true }
+    ]
+  },
+  {
+    "name": "Estúdio de Dança e Movimento",
+    "description": "Aulas de dança, pilates e ginástica",
+    "amenities": ["WiFi", "Ar condicionado", "Bebedouro", "Espelhos"],
+    "address": "Avenida da Dança, 111",
+    "city": "Brasília",
+    "state": "DF",
+    "zipCode": "70000-000",
+    "telephone": "(61) 99876-5432",
+    "email": "contato@dancamovimento.com.br",
+    "website": "www.dancamovimento.com.br",
+    "instagram": "@dancamovimento",
+    "facebook": "DançaMovimento",
+    "openTime": "09:00",
+    "closeTime": "20:00",
+    "lunchStartTime": null,
+    "lunchEndTime": null,
+    "businessDays": { "monday": true, "tuesday": true, "wednesday": true, "thursday": true, "friday": true, "saturday": true, "sunday": false },
+    "weeklyGoal": 3500,
+    "monthlyGoal": 14000,
+    "quarterlyGoal": 42000,
+    "isActive": true,
+    "categories": [
+      {
+        "name": "Dança",
+        "description": "Aulas de dança",
+        "color": "#FF1493",
+        "services": [
+          { "name": "Forró", "description": "Aula de dança de forró", "duration": 60, "price": 50.00, "isActive": true },
+          { "name": "Samba", "description": "Aula de samba", "duration": 60, "price": 50.00, "isActive": true }
+        ]
+      }
+    ],
+    "gallery": [
+      { "url": "https://images.unsplash.com/photo-1505224311124-1f5b1b6d4e16?w=500", "isMain": true }
+    ]
+  },
+  {
+    "name": "Espaço Yoga e Meditação",
+    "description": "Yoga, meditação e terapias holísticas",
+    "amenities": ["WiFi", "Ar condicionado", "Almofadas", "Incenso"],
+    "address": "Rua da Paz, 222",
+    "city": "Recife",
+    "state": "PE",
+    "zipCode": "50000-000",
+    "telephone": "(81) 99876-5432",
+    "email": "contato@espacoyoga.com.br",
+    "website": "www.espacoyoga.com.br",
+    "instagram": "@espacoyoga",
+    "facebook": "EspaçoYoga",
+    "openTime": "07:00",
+    "closeTime": "19:00",
+    "lunchStartTime": null,
+    "lunchEndTime": null,
+    "businessDays": { "monday": true, "tuesday": true, "wednesday": true, "thursday": true, "friday": true, "saturday": true, "sunday": false },
+    "weeklyGoal": 2500,
+    "monthlyGoal": 10000,
+    "quarterlyGoal": 30000,
+    "isActive": true,
+    "categories": [
+      {
+        "name": "Yoga",
+        "description": "Aulas de yoga",
+        "color": "#00CED1",
+        "services": [
+          { "name": "Hatha Yoga", "description": "Yoga clássica", "duration": 60, "price": 40.00, "isActive": true },
+          { "name": "Power Yoga", "description": "Yoga intensa", "duration": 60, "price": 50.00, "isActive": true }
+        ]
+      }
+    ],
+    "gallery": [
+      { "url": "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=500", "isMain": true }
+    ]
+  },
+  {
+    "name": "Studio de Fotografia Momento Único",
+    "description": "Foto e vídeo profissionais para eventos",
+    "amenities": ["WiFi", "Estúdio climatizado", "Cenários variados"],
+    "address": "Avenida da Fotografia, 333",
+    "city": "Fortaleza",
+    "state": "CE",
+    "zipCode": "60000-000",
+    "telephone": "(85) 99876-5432",
+    "email": "contato@momentounico.com.br",
+    "website": "www.momentounico.com.br",
+    "instagram": "@momentounico",
+    "facebook": "MomentoÚnico",
+    "openTime": "09:00",
+    "closeTime": "18:00",
+    "lunchStartTime": "12:00",
+    "lunchEndTime": "13:00",
+    "businessDays": { "monday": true, "tuesday": true, "wednesday": true, "thursday": true, "friday": true, "saturday": true, "sunday": false },
+    "weeklyGoal": 4000,
+    "monthlyGoal": 16000,
+    "quarterlyGoal": 48000,
+    "isActive": true,
+    "categories": [
+      {
+        "name": "Evento",
+        "description": "Fotos de eventos",
+        "color": "#FFD700",
+        "services": [
+          { "name": "Casamento", "description": "Cobertura completa de casamento", "duration": 480, "price": 2000.00, "isActive": true },
+          { "name": "Aniversário", "description": "Fotos de aniversário", "duration": 240, "price": 500.00, "isActive": true }
+        ]
+      }
+    ],
+    "gallery": [
+      { "url": "https://images.unsplash.com/photo-1502914240471-18efb8532371?w=500", "isMain": true }
+    ]
+  },
+  {
+    "name": "Escola de Música Harmonia",
+    "description": "Aulas de música e instrumentos variados",
+    "amenities": ["WiFi", "Salas isoladas", "Ar condicionado"],
+    "address": "Rua da Música, 444",
+    "city": "Manaus",
+    "state": "AM",
+    "zipCode": "69000-000",
+    "telephone": "(92) 99876-5432",
+    "email": "contato@harmonia.com.br",
+    "website": "www.harmonia.com.br",
+    "instagram": "@escolaharmonia",
+    "facebook": "EscolaHarmonia",
+    "openTime": "14:00",
+    "closeTime": "21:00",
+    "lunchStartTime": null,
+    "lunchEndTime": null,
+    "businessDays": { "monday": true, "tuesday": true, "wednesday": true, "thursday": true, "friday": true, "saturday": true, "sunday": false },
+    "weeklyGoal": 2000,
+    "monthlyGoal": 8000,
+    "quarterlyGoal": 24000,
+    "isActive": true,
+    "categories": [
+      {
+        "name": "Instrumentos",
+        "description": "Aulas de instrumentos",
+        "color": "#FF4500",
+        "services": [
+          { "name": "Violão", "description": "Aula de violão", "duration": 60, "price": 100.00, "isActive": true },
+          { "name": "Piano", "description": "Aula de piano", "duration": 60, "price": 120.00, "isActive": true }
+        ]
+      }
+    ],
+    "gallery": [
+      { "url": "https://images.unsplash.com/photo-1510915361894-db8b60106cb1?w=500", "isMain": true }
+    ]
+  },
+  {
+    "name": "Consultório Psicologia Equilibrio",
+    "description": "Atendimento psicológico e terapias diversas",
+    "amenities": ["WiFi", "Estacionamento", "Sala de espera confortável"],
+    "address": "Rua da Saúde Mental, 555",
+    "city": "Belém",
+    "state": "PA",
+    "zipCode": "66000-000",
+    "telephone": "(91) 99876-5432",
+    "email": "contato@equilibrio.com.br",
+    "website": "www.equilibrio.com.br",
+    "instagram": "@equilibrio",
+    "facebook": "Equilibrio",
+    "openTime": "08:00",
+    "closeTime": "17:00",
+    "lunchStartTime": "12:00",
+    "lunchEndTime": "13:00",
+    "businessDays": { "monday": true, "tuesday": true, "wednesday": true, "thursday": true, "friday": true, "saturday": false, "sunday": false },
+    "weeklyGoal": 3000,
+    "monthlyGoal": 12000,
+    "quarterlyGoal": 36000,
+    "isActive": true,
+    "categories": [
+      {
+        "name": "Terapia",
+        "description": "Atendimento terapêutico",
+        "color": "#9370DB",
+        "services": [
+          { "name": "Psicoterapia", "description": "Sessão de psicoterapia", "duration": 60, "price": 150.00, "isActive": true },
+          { "name": "Terapia Casal", "description": "Terapia para casais", "duration": 60, "price": 180.00, "isActive": true }
+        ]
+      }
+    ],
+    "gallery": [
+      { "url": "https://images.unsplash.com/photo-1573496358142-15882e990a86?w=500", "isMain": true }
+    ]
+  },
+  {
+    "name": "Sorveteria Gelado Feliz",
+    "description": "Sorvetes artesanais e naturais",
+    "amenities": ["WiFi", "Ar condicionado", "Mesas ao ar livre"],
+    "address": "Rua dos Doces, 666",
+    "city": "Goiânia",
+    "state": "GO",
+    "zipCode": "74000-000",
+    "telephone": "(62) 99876-5432",
+    "email": "contato@geladofeliz.com.br",
+    "website": "www.geladofeliz.com.br",
+    "instagram": "@geladofeliz",
+    "facebook": "GeladoFeliz",
+    "openTime": "10:00",
+    "closeTime": "22:00",
+    "lunchStartTime": null,
+    "lunchEndTime": null,
+    "businessDays": { "monday": true, "tuesday": true, "wednesday": true, "thursday": true, "friday": true, "saturday": true, "sunday": true },
+    "weeklyGoal": 2500,
+    "monthlyGoal": 10000,
+    "quarterlyGoal": 30000,
+    "isActive": true,
+    "categories": [
+      {
+        "name": "Sorvete",
+        "description": "Sorvetes variados",
+        "color": "#FFB6C1",
+        "services": [
+          { "name": "Sorvete Artesanal", "description": "Sorvete feito na hora", "duration": 5, "price": 15.00, "isActive": true },
+          { "name": "Açaí", "description": "Açaí com granola", "duration": 5, "price": 20.00, "isActive": true }
+        ]
+      }
+    ],
+    "gallery": [
+      { "url": "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=500", "isMain": true }
+    ]
+  },
+  {
+    "name": "Restaurante Sabores do Brasil",
+    "description": "Culinária brasileira autêntica",
+    "amenities": ["WiFi", "Estacionamento", "Ar condicionado", "Música ao vivo"],
+    "address": "Avenida Gastronômica, 777",
+    "city": "Campinas",
+    "state": "SP",
+    "zipCode": "13000-000",
+    "telephone": "(19) 99876-5432",
+    "email": "contato@saboresbrasil.com.br",
+    "website": "www.saboresbrasil.com.br",
+    "instagram": "@saboresbrasil",
+    "facebook": "SaboresBrasil",
+    "openTime": "11:00",
+    "closeTime": "23:00",
+    "lunchStartTime": null,
+    "lunchEndTime": null,
+    "businessDays": { "monday": true, "tuesday": true, "wednesday": true, "thursday": true, "friday": true, "saturday": true, "sunday": true },
+    "weeklyGoal": 5000,
+    "monthlyGoal": 20000,
+    "quarterlyGoal": 60000,
+    "isActive": true,
+    "categories": [
+      {
+        "name": "Pratos Principais",
+        "description": "Pratos principais variados",
+        "color": "#8B4513",
+        "services": [
+          { "name": "Feijoada Completa", "description": "Feijoada com acompanhamentos", "duration": 30, "price": 45.00, "isActive": true },
+          { "name": "Churrasco", "description": "Churrasco misto", "duration": 40, "price": 65.00, "isActive": true }
+        ]
+      }
+    ],
+    "gallery": [
+      { "url": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500", "isMain": true }
+    ]
+  },
+  {
+    "name": "Café com Livros",
+    "description": "Café literário com ambiente aconchegante",
+    "amenities": ["WiFi", "Biblioteca", "Ar condicionado", "Sofás confortáveis"],
+    "address": "Rua dos Livros, 888",
+    "city": "Santos",
+    "state": "SP",
+    "zipCode": "11000-000",
+    "telephone": "(13) 99876-5432",
+    "email": "contato@cafelivros.com.br",
+    "website": "www.cafelivros.com.br",
+    "instagram": "@cafelivros",
+    "facebook": "CaféLivros",
+    "openTime": "08:00",
+    "closeTime": "18:00",
+    "lunchStartTime": "12:00",
+    "lunchEndTime": "13:00",
+    "businessDays": { "monday": true, "tuesday": true, "wednesday": true, "thursday": true, "friday": true, "saturday": true, "sunday": false },
+    "weeklyGoal": 2000,
+    "monthlyGoal": 8000,
+    "quarterlyGoal": 24000,
+    "isActive": true,
+    "categories": [
+      {
+        "name": "Bebidas",
+        "description": "Bebidas quentes",
+        "color": "#8B4513",
+        "services": [
+          { "name": "Café Premium", "description": "Café coado na hora", "duration": 5, "price": 12.00, "isActive": true },
+          { "name": "Cappuccino", "description": "Cappuccino italiano", "duration": 10, "price": 15.00, "isActive": true }
+        ]
+      }
+    ],
+    "gallery": [
+      { "url": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500", "isMain": true }
+    ]
+  },
+  {
+    "name": "Personal Trainer Boot Camp",
+    "description": "Treinamento de alta intensidade ao ar livre",
+    "amenities": ["Área coberta", "Equipamentos variados", "Água"],
+    "address": "Parque Central, 999",
+    "city": "Guarulhos",
+    "state": "SP",
+    "zipCode": "07000-000",
+    "telephone": "(11) 99876-5432",
+    "email": "contato@bootcamp.com.br",
+    "website": "www.bootcamp.com.br",
+    "instagram": "@bootcamppt",
+    "facebook": "BootCampPT",
+    "openTime": "06:00",
+    "closeTime": "19:00",
+    "lunchStartTime": null,
+    "lunchEndTime": null,
+    "businessDays": { "monday": true, "tuesday": true, "wednesday": true, "thursday": true, "friday": true, "saturday": true, "sunday": false },
+    "weeklyGoal": 3500,
+    "monthlyGoal": 14000,
+    "quarterlyGoal": 42000,
+    "isActive": true,
+    "categories": [
+      {
+        "name": "Aulas",
+        "description": "Aulas em grupo",
+        "color": "#FF0000",
+        "services": [
+          { "name": "Boot Camp 30min", "description": "Aula intensa de 30 minutos", "duration": 30, "price": 40.00, "isActive": true },
+          { "name": "Boot Camp 60min", "description": "Aula intensa de 60 minutos", "duration": 60, "price": 60.00, "isActive": true }
+        ]
+      }
+    ],
+    "gallery": [
+      { "url": "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=500", "isMain": true }
+    ]
+  },
+  {
+    "name": "Loja de Roupas Moda Brasileira",
+    "description": "Roupas e acessórios de moda brasileira",
+    "amenities": ["WiFi", "Ar condicionado", "Provador espaçoso"],
+    "address": "Rua do Comércio, 1010",
+    "city": "Osasco",
+    "state": "SP",
+    "zipCode": "06000-000",
+    "telephone": "(11) 99876-5432",
+    "email": "contato@modabrasileira.com.br",
+    "website": "www.modabrasileira.com.br",
+    "instagram": "@modabrasileira",
+    "facebook": "ModaBrasileira",
+    "openTime": "10:00",
+    "closeTime": "19:00",
+    "lunchStartTime": "12:00",
+    "lunchEndTime": "13:00",
+    "businessDays": { "monday": true, "tuesday": true, "wednesday": true, "thursday": true, "friday": true, "saturday": true, "sunday": false },
+    "weeklyGoal": 3000,
+    "monthlyGoal": 12000,
+    "quarterlyGoal": 36000,
+    "isActive": true,
+    "categories": [
+      {
+        "name": "Roupas",
+        "description": "Coleção de roupas",
+        "color": "#FF69B4",
+        "services": [
+          { "name": "Consultoria de Moda", "description": "Consultoria para escolha de roupas", "duration": 60, "price": 100.00, "isActive": true },
+          { "name": "Ajuste de Roupas", "description": "Ajuste e costura de roupas", "duration": 45, "price": 50.00, "isActive": true }
+        ]
+      }
+    ],
+    "gallery": [
+      { "url": "https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=500", "isMain": true }
+    ]
+  }
+]

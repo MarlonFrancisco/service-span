@@ -68,12 +68,18 @@ importers:
       '@supabase/supabase-js':
         specifier: ^2.76.1
         version: 2.76.1
+      '@upstash/search':
+        specifier: ^0.1.6
+        version: 0.1.6
       '@vercel/node':
         specifier: ^5.4.0
         version: 5.4.0
       aws-sdk:
         specifier: ^2.1692.0
         version: 2.1692.0
+      dotenv:
+        specifier: ^16.4.5
+        version: 16.4.7
       google-auth-library:
         specifier: ^10.4.0
         version: 10.4.0
@@ -168,6 +174,9 @@ importers:
       '@tanstack/react-query-devtools':
         specifier: ^5.90.2
         version: 5.90.2(@tanstack/react-query@5.90.2)(react@19.1.1)
+      '@tanstack/react-virtual':
+        specifier: ^3.13.12
+        version: 3.13.12(react-dom@19.1.1)(react@19.1.1)
       animejs:
         specifier: ^4.2.0
         version: 4.2.0
@@ -3930,6 +3939,21 @@ packages:
       react: 19.1.1
     dev: false
 
+  /@tanstack/react-virtual@3.13.12(react-dom@19.1.1)(react@19.1.1):
+    resolution: {integrity: sha512-Gd13QdxPSukP8ZrkbgS2RwoZseTTbQPLnQEn7HY/rqtM+8Zt95f7xKC7N0EsKs7aoz0WzZ+fditZux+F8EzYxA==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+    dependencies:
+      '@tanstack/virtual-core': 3.13.12
+      react: 19.1.1
+      react-dom: 19.1.1(react@19.1.1)
+    dev: false
+
+  /@tanstack/virtual-core@3.13.12:
+    resolution: {integrity: sha512-1YBOJfRHV4sXUmWsFSf5rQor4Ss82G8dQWLRbnk3GA4jeP8hQt1hxXh0tmflpC0dz3VgEv/1+qwPyLeWkQuPFA==}
+    dev: false
+
   /@testing-library/dom@10.4.1:
     resolution: {integrity: sha512-o4PXJQidqJl82ckFaXUeoAW+XysPLauYI43Abki5hABd853iMhitooc6znOnczgbTYmEP6U6/y1ZyKAIsvMKGg==}
     engines: {node: '>=18'}
@@ -4416,6 +4440,16 @@ packages:
       '@typescript-eslint/types': 8.39.0
       eslint-visitor-keys: 4.2.1
     dev: true
+
+  /@upstash/search@0.1.6:
+    resolution: {integrity: sha512-L8bBnsL5i/pwVWnQPC+rM65nt6N57ULn0lV5BOZHpauwc3TNJnDDKLN4/rfTOKBhn4zVZD7QA9jdbi2WLerjoA==}
+    dependencies:
+      '@upstash/vector': 1.2.2
+    dev: false
+
+  /@upstash/vector@1.2.2:
+    resolution: {integrity: sha512-ptQ9xnxtKqmpNK52PCcHCszlPOLxIBfjsv7ty8RoF95pkjctS9rSjTQ3Pl9bx5VFbpDj+0dMXw88WLt6swDkgQ==}
+    dev: false
 
   /@vercel/build-utils@12.1.3:
     resolution: {integrity: sha512-bK6klHtVoPeaNoRbfURRLQThyyJ11tffzIGXgjneGmbABTe1jIojAcU2byAn4Z2Czp7pnIuyyIbdQQWd1IEcRA==}

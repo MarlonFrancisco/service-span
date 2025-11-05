@@ -1,5 +1,6 @@
 import type { INestApplication } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import { json } from 'express';
 import { AppModule } from './modules/app.module';
 
 let cachedApp: INestApplication | null = null;
@@ -14,6 +15,9 @@ export async function createApp(): Promise<INestApplication> {
   }
 
   const app = await NestFactory.create(AppModule);
+
+  // Aumenta o limite de payload para uploads de imagens (padrão: 100kb)
+  app.use(json({ limit: '5mb' }));
 
   app.getHttpAdapter().getInstance().set('trust proxy', true);
 

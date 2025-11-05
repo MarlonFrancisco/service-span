@@ -12,7 +12,10 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:e2e": "vitest run --config vitest.e2e.config.ts",
-    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\""
+    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\"",
+    "migrate:stores-to-search": "ts-node -O '{\"module\":\"commonjs\"}' src/scripts/migrate-stores-to-search.ts",
+    "seed:stores:json": "ts-node -O '{\"module\":\"commonjs\"}' src/scripts/seed-stores.ts",
+    "reset:db": "ts-node -O '{\"module\":\"commonjs\"}' src/scripts/reset-db.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.0",
@@ -23,8 +26,10 @@
     "@nestjs/platform-express": "^11.0.0",
     "@nestjs/typeorm": "^11.0.0",
     "@supabase/supabase-js": "^2.76.1",
+    "@upstash/search": "^0.1.6",
     "@vercel/node": "^5.4.0",
     "aws-sdk": "^2.1692.0",
+    "dotenv": "^16.4.5",
     "google-auth-library": "^10.4.0",
     "libphonenumber-js": "^1.12.24",
     "passport": "^0.7.0",

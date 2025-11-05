@@ -8,6 +8,7 @@ import { NotificationModule } from './notification';
 import { PartnerRoutesGuard } from './partner/guards';
 import { PartnerModule } from './partner/partner.module';
 import { PlansModule } from './plans';
+import { SearchModule } from './search';
 import { SubscriptionModule } from './subscription';
 import { UsersModule } from './users';
 
@@ -24,6 +25,7 @@ import { UsersModule } from './users';
     AuthModule,
     NotificationModule,
     PartnerModule,
+    SearchModule,
   ],
   providers: [
     {

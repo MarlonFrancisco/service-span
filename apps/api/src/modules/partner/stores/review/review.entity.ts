@@ -1,6 +1,6 @@
-import { BaseEntity } from 'src/modules/database';
-import { User } from 'src/modules/users/user.entity';
 import { Column, Entity, ManyToOne } from 'typeorm';
+import { BaseEntity } from '../../../database';
+import { User } from '../../../users/user.entity';
 import { Store } from '../store.entity';
 
 @Entity('reviews')
