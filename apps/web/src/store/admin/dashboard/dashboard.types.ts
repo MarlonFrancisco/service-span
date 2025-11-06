@@ -18,7 +18,7 @@ export interface IPerformanceData {
 export interface IRecentActivity {
   id: number;
   type: 'booking' | 'completion' | 'cancellation';
-  icon: React.ReactNode;
+  icon: React.ComponentType<any>;
   message: string;
   service: string;
   time: string;
