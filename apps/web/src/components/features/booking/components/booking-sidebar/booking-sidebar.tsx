@@ -1,72 +1,39 @@
 import { Badge, Card, Separator } from '@repo/ui';
 import { Calendar, Clock, MapPin, Phone, User } from 'lucide-react';
-import {
-  TBookingStep,
-  TProfessional,
-  TSelectedService,
-} from '../../booking.types';
+import { TBookingStep } from '../../booking.types';
+import { useBookingSidebar } from './booking-sidebar.hook';
 
 interface BookingSidebarProps {
-  businessName: string;
-  businessAddress: string;
-  businessPhone: string;
-  selectedServices: TSelectedService[];
-  selectedProfessional: TProfessional | null;
-  isAnyProfessional: boolean;
-  selectedDate: Date | undefined;
-  selectedTime: string | null;
   totalPrice: number;
   totalDuration: number;
   currentStep: TBookingStep;
 }
 
 export function BookingSidebar({
-  businessName,
-  businessAddress,
-  businessPhone,
-  selectedServices,
-  selectedProfessional,
-  isAnyProfessional,
-  selectedDate,
-  selectedTime,
   totalPrice,
   totalDuration,
   currentStep,
 }: BookingSidebarProps) {
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL',
-    }).format(price);
-  };
+  const { data, formatters, state } = useBookingSidebar(
+    totalPrice,
+    totalDuration,
+    currentStep,
+  );
 
-  const formatDuration = (minutes: number) => {
-    if (minutes < 60) {
-      return `${minutes}min`;
-    }
-    const hours = Math.floor(minutes / 60);
-    const remainingMinutes = minutes % 60;
-    return remainingMinutes > 0
-      ? `${hours}h ${remainingMinutes}min`
-      : `${hours}h`;
-  };
+  const {
+    businessName,
+    businessAddress,
+    businessPhone,
+    selectedServices,
+    selectedProfessional,
+    isAnyProfessional,
+    selectedDate,
+    selectedTime,
+  } = data;
 
-  const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat('pt-BR', {
-      weekday: 'short',
-      day: 'numeric',
-      month: 'short',
-    }).format(date);
-  };
-
-  const formatFullDate = (date: Date) => {
-    return new Intl.DateTimeFormat('pt-BR', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    }).format(date);
-  };
+  const { formatPrice, formatDuration, formatFullDate } = formatters;
+  const { showEmptyState, showProfessionalWarning, showDateTimeWarning } =
+    state;
 
   return (
     <div
@@ -123,7 +90,7 @@ export function BookingSidebar({
                         </div>
                         <div className="flex items-center gap-2">
                           <Badge variant="secondary" className="text-xs">
-                            {service.category}
+                            {service.category?.name}
                           </Badge>
                           <span className="text-xs text-gray-500">
                             {formatDuration(
@@ -160,11 +127,15 @@ export function BookingSidebar({
                 <p className="text-sm text-gray-900 ml-6">
                   {isAnyProfessional
                     ? 'Qualquer profissional'
-                    : selectedProfessional?.name}
+                    : selectedProfessional?.user.firstName +
+                      ' ' +
+                      selectedProfessional?.user.lastName}
                 </p>
                 {selectedProfessional && (
                   <p className="text-xs text-gray-500 ml-6">
-                    {selectedProfessional.specialties.join(' • ')}
+                    {selectedProfessional.services
+                      ?.map((s) => s.name)
+                      .join(' • ')}
                   </p>
                 )}
               </div>
@@ -214,32 +185,26 @@ export function BookingSidebar({
           </div>
 
           {/* Status do progresso */}
-          {selectedServices.length === 0 && (
+          {showEmptyState && (
             <div className="text-center py-6 text-gray-500">
               <Calendar className="h-8 w-8 mx-auto mb-2 text-gray-300" />
               <p className="text-sm">Selecione um serviço para começar</p>
             </div>
           )}
 
-          {selectedServices.length > 0 &&
-            !selectedProfessional &&
-            !isAnyProfessional &&
-            currentStep !== 'services' && (
-              <div className="text-center py-4 text-amber-600 bg-amber-50 rounded-lg">
-                <User className="h-6 w-6 mx-auto mb-1" />
-                <p className="text-sm">Escolha um profissional</p>
-              </div>
-            )}
+          {showProfessionalWarning && (
+            <div className="text-center py-4 text-amber-600 bg-amber-50 rounded-lg">
+              <User className="h-6 w-6 mx-auto mb-1" />
+              <p className="text-sm">Escolha um profissional</p>
+            </div>
+          )}
 
-          {(selectedProfessional || isAnyProfessional) &&
-            (!selectedDate || !selectedTime) &&
-            currentStep !== 'services' &&
-            currentStep !== 'professional' && (
-              <div className="text-center py-4 text-gray-600 bg-gray-100 rounded-lg">
-                <Clock className="h-6 w-6 mx-auto mb-1" />
-                <p className="text-sm">Selecione data e horário</p>
-              </div>
-            )}
+          {showDateTimeWarning && (
+            <div className="text-center py-4 text-gray-600 bg-gray-100 rounded-lg">
+              <Clock className="h-6 w-6 mx-auto mb-1" />
+              <p className="text-sm">Selecione data e horário</p>
+            </div>
+          )}
         </div>
       </Card>
     </div>

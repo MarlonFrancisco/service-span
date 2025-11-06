@@ -1,3 +1,5 @@
+'use client';
+
 import { NotificationsHistoryService } from '@/service/partner/notifications-history';
 import { StoreService } from '@/service/store';
 import { useNotificationsStore, useServicesStore } from '@/store';

@@ -1,3 +1,4 @@
+import { IReview } from '../reviews.types';
 import { IAppointment } from './schedule.types';
 import { IService } from './service.types';
 import { IProfessional } from './users.types';
@@ -66,6 +67,10 @@ export interface IStore extends TWorkingHours {
   telephone: string;
   isActive: boolean;
   amenities: string[];
+  openTime: string;
+  closeTime: string;
+  lunchStartTime: string;
+  lunchEndTime: string;
   gallery: IStoreGallery[];
   storeMembers: IProfessional[];
   services: IService[];
@@ -77,4 +82,5 @@ export interface IStore extends TWorkingHours {
   businessDays: TWorkingDays;
   notificationsHistory: INotificationsHistory[];
   notificationsSettings: INotificationsSettings;
+  reviews: IReview[];
 }

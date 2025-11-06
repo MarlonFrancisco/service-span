@@ -21,6 +21,5 @@ export const useSearchQuery = ({ query }: UseSearchQueryParams) => {
     searchResults: searchResults || [],
     isSearchLoading,
     searchError,
-    totalResults: searchResults?.length || 0,
   };
 };

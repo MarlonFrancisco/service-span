@@ -6,7 +6,7 @@ import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 export default async function PricingPage() {
   const queryClient = getQueryClient();
 
-  queryClient.prefetchQuery({
+  await queryClient.prefetchQuery({
     queryKey: ['plans'],
     queryFn: () => PlansService.getPlans(),
   });

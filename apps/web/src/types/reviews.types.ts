@@ -1,7 +1,7 @@
 export interface IReview {
   id: string;
   author: string;
-  rating: number;
+  rating: string;
   date: string;
   comment: string;
   avatar?: string;

@@ -1,46 +1,30 @@
 'use client';
 
+import useSearchStore from '@/store/search/search.store';
+import { IStoreSearchListItem } from '@/store/search/search.types';
 import { Badge, Button, Card } from '@repo/ui';
 import { MapPin, Star } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { ImageCarousel } from '../image-carousel';
 
 interface ServiceCardProps {
-  id: string;
-  name: string;
-  rating: number;
-  reviewCount: number;
-  location: string;
-  price: string;
-  images: string[];
+  store: IStoreSearchListItem;
   isSelected: boolean;
   onClick: () => void;
-  services?: Array<{
-    id: string;
-    name: string;
-    description: string;
-    price: number | string;
-  }>;
-  reviews?: Array<{ id: string; rating: number; comment: string }>;
 }
 
-export function ServiceCard({
-  name,
-  rating,
-  reviewCount,
-  location,
-  price,
-  images,
-  isSelected,
-  onClick,
-  services,
-  reviews,
-}: ServiceCardProps) {
+export function ServiceCard({ store, isSelected, onClick }: ServiceCardProps) {
   const router = useRouter();
+  const setSelectedStore = useSearchStore((state) => state.setSelectedStore);
+
+  const { name, rating, reviewCount, location, price, images, services } =
+    store;
+
   const allImages = images;
 
   const handleSchedule = () => {
-    router.push(`/booking/${name}`);
+    setSelectedStore(store);
+    router.push(`/booking/${store.id}`);
   };
 
   return (

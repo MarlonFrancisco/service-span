@@ -1,21 +1,17 @@
 'use client';
 
+import useSearchStore from '@/store/search/search.store';
 import { formatBusinessHours } from '@/utils/helpers/business-hours.helper';
 import { Badge, Button, Card, Separator } from '@repo/ui';
 import { Calendar, Clock, MapPin, Phone, Star } from 'lucide-react';
-import type { Service } from '../../search.types';
+import { useRouter } from 'next/navigation';
 import { ImageCarousel } from '../image-carousel';
 
-interface ServicePreviewProps {
-  service: Service | null;
-  onStartBooking?: (service: Service) => void;
-}
+export function ServicePreview() {
+  const selectedStore = useSearchStore((state) => state.selectedStore);
+  const router = useRouter();
 
-export function ServicePreview({
-  service,
-  onStartBooking,
-}: ServicePreviewProps) {
-  if (!service) {
+  if (!selectedStore) {
     return (
       <Card className="p-8 h-fit flex items-center justify-center border-gray-200">
         <div className="text-center text-gray-500">
@@ -32,29 +28,31 @@ export function ServicePreview({
         {/* Header com carousel de imagens */}
         <div className="space-y-4">
           <ImageCarousel
-            images={service.images}
-            alt={service.name}
+            images={selectedStore.images}
+            alt={selectedStore.name}
             className="w-full rounded-b-none!"
-            showCounter={service.images.length > 1}
-            showFullscreenButton={service.images.length > 1}
+            showCounter={selectedStore.images.length > 1}
+            showFullscreenButton={selectedStore.images.length > 1}
             aspectRatio={4 / 2}
           />
 
           <div className="space-y-2 px-6">
             <div className="flex items-start justify-between gap-2">
               <h3 className="text-xl font-semibold text-gray-900">
-                {service.name}
+                {selectedStore.name}
               </h3>
-              <Badge className="bg-black text-white">{service.price}</Badge>
+              <Badge className="bg-black text-white">
+                {selectedStore.price}
+              </Badge>
             </div>
 
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-1">
                 <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                <span>{service.rating}</span>
+                <span>{selectedStore.rating}</span>
               </div>
               <span className="text-sm text-gray-500">
-                ({service.reviewCount} avaliações)
+                ({selectedStore.reviewCount} avaliações)
               </span>
             </div>
           </div>
@@ -65,7 +63,9 @@ export function ServicePreview({
         {/* Descrição */}
         <div className="space-y-2 px-6">
           <h4 className="font-semibold text-gray-900">Sobre a loja</h4>
-          <p className="text-gray-600 leading-relaxed">{service.description}</p>
+          <p className="text-gray-600 leading-relaxed">
+            {selectedStore.description}
+          </p>
         </div>
 
         <Separator />
@@ -77,24 +77,25 @@ export function ServicePreview({
           <div className="space-y-2">
             <div className="flex items-center gap-3 text-sm">
               <Phone className="h-4 w-4 text-gray-500" />
-              <span>{service.phone}</span>
+              <span>{selectedStore.phone}</span>
             </div>
 
             <div className="flex items-start gap-3 text-sm">
               <MapPin className="h-4 w-4 text-gray-500 mt-0.5" />
               <span>
-                {service.address}, {service.city} - {service.state}
+                {selectedStore.address}, {selectedStore.city} -{' '}
+                {selectedStore.state}
               </span>
-              <span>{service.zipCode}</span>
+              <span>{selectedStore.zipCode}</span>
             </div>
 
             <div className="flex items-center gap-3 text-sm">
               <Clock className="h-4 w-4 text-gray-500" />
               <span>
                 {formatBusinessHours(
-                  service.openTime,
-                  service.closeTime,
-                  service.businessDays,
+                  selectedStore.openTime,
+                  selectedStore.closeTime,
+                  selectedStore.businessDays,
                 )}
               </span>
             </div>
@@ -108,7 +109,7 @@ export function ServicePreview({
           <h4 className="font-semibold text-gray-900">Avaliações Recentes</h4>
 
           <div className="space-y-3">
-            {service.reviews?.slice(0, 3).map((review) => (
+            {selectedStore.reviews?.slice(0, 3).map((review) => (
               <div key={review.id} className="p-3 bg-gray-50 rounded-lg">
                 <div className="flex items-center gap-2 mb-1">
                   <div className="flex">
@@ -125,7 +126,7 @@ export function ServicePreview({
               </div>
             ))}
 
-            {!service.reviews?.length && (
+            {!selectedStore.reviews?.length && (
               <div className="p-3 bg-gray-50 rounded-lg">
                 <span className="text-xs text-gray-500">
                   Nenhuma avaliação encontrada para esta loja
@@ -140,7 +141,7 @@ export function ServicePreview({
           <Button
             className="w-full bg-black hover:bg-gray-800 text-white py-4 rounded-xl"
             size="lg"
-            onClick={() => onStartBooking?.(service)}
+            onClick={() => router.push(`/booking/${selectedStore.id}`)}
           >
             <Calendar className="h-5 w-5 mr-2" />
             Ver Agenda e Agendar

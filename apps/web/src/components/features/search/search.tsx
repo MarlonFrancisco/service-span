@@ -1,20 +1,9 @@
 'use client';
 import { Footer } from '@/components/layout';
 import { Header } from '@/components/layout/header/header';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
 import { ResultsList, ServicePreview } from './components';
-import type { Service } from './search.types';
 
 export function SearchResults() {
-  const [selectedService, setSelectedService] = useState<Service | null>(null);
-  const router = useRouter();
-
-  const handleStartBooking = (service: Service) => {
-    // Navegar para a página de booking com o ID do serviço
-    router.push(`/booking/${service.id}`);
-  };
-
   return (
     <Header showSearchBar logoProps={{ className: 'hidden lg:block' }}>
       {/* Modern Layout */}
@@ -23,10 +12,7 @@ export function SearchResults() {
           {/* Results Column */}
           <div className="col-span-12 lg:col-span-7">
             <div className="fade-in">
-              <ResultsList
-                selectedServiceId={selectedService?.id || null}
-                onServiceSelect={setSelectedService}
-              />
+              <ResultsList />
             </div>
           </div>
 
@@ -34,10 +20,7 @@ export function SearchResults() {
           <div className="hidden lg:block col-span-5">
             <div className="sticky top-28">
               <div className="slide-up">
-                <ServicePreview
-                  service={selectedService}
-                  onStartBooking={handleStartBooking}
-                />
+                <ServicePreview />
               </div>
             </div>
           </div>

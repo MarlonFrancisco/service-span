@@ -1,67 +1,52 @@
+'use client';
+import { generateTimeSlots } from '@/store/admin/agenda/agenda.helpers';
 import { Button, Calendar as CalendarComponent, Card } from '@repo/ui';
 import { Calendar, Clock } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useState } from 'react';
-import {
-  IProfessional,
-  ISelectedService,
-  ITimeSlot,
-} from '../../booking.types';
+import { useFormContext } from 'react-hook-form';
+import { useGetStore } from '../../booking.hook';
+import { TBookingFormData } from '../../booking.schema';
+import { ITimeSlot } from '../../booking.types';
 import { DatePickerHorizontal } from './date-picker-horizontal';
 import { SkeletonTimeSlots } from './skeleton-time-slots';
 
-interface IDateTimeSelectionStepProps {
-  selectedServices: ISelectedService[];
-  selectedProfessional: IProfessional | null;
-  isAnyProfessional: boolean;
-  selectedDate: Date | undefined;
-  selectedTime: string | null;
-  onDateTimeChange: (date: Date | undefined, time: string | null) => void;
-  totalDuration: number;
-}
-
-export function DateTimeSelectionStep({
-  selectedServices,
-  selectedProfessional,
-  isAnyProfessional,
-  selectedDate,
-  selectedTime,
-  onDateTimeChange,
-}: IDateTimeSelectionStepProps) {
+export function DateTimeSelectionStep() {
+  const store = useGetStore();
+  const { watch, setValue } = useFormContext<TBookingFormData>();
+  const selectedServices = watch('selectedServices');
+  const selectedDate = watch('selectedDate');
+  const selectedTime = watch('selectedTime');
+  const selectedProfessional = watch('selectedProfessional');
   const [availableSlots, setAvailableSlots] = useState<ITimeSlot[]>([]);
   const [isLoadingSlots, setIsLoadingSlots] = useState(false);
 
-  // Mock data para disponibilidade
-  const generateMockSlots = (date: Date): ITimeSlot[] => {
+  const generateMockSlots = (): ITimeSlot[] => {
+    const selectedDateToIso = selectedDate?.toISOString().split('T')[0];
+
     const slots: ITimeSlot[] = [];
-    const dayOfWeek = date.getDay(); // 0 = domingo, 6 = sábado
 
-    // Horários básicos da semana
-    const weekdayHours = [
-      '09:00',
-      '10:00',
-      '11:00',
-      '14:00',
-      '15:00',
-      '16:00',
-      '17:00',
-    ];
-    const weekendHours = ['09:00', '10:00', '11:00', '12:00', '14:00', '15:00'];
-
-    const hours =
-      dayOfWeek === 0 || dayOfWeek === 6 ? weekendHours : weekdayHours;
+    const hours = generateTimeSlots({
+      openTime: store?.openTime || '',
+      closeTime: store?.closeTime || '',
+      lunchStartTime: store?.lunchStartTime || '',
+      lunchEndTime: store?.lunchEndTime || '',
+    });
 
     hours.forEach((time) => {
-      // Simular disponibilidade aleatória
-      const isAvailable = Math.random() > 0.3; // 70% de chance de estar disponível
+      const isBlockedTime = selectedProfessional?.blockedTimes?.some(
+        (blockedTime) =>
+          blockedTime.date === selectedDateToIso && blockedTime.time === time,
+      );
+
+      const isScheduledTime = selectedProfessional?.schedules?.some(
+        (schedule) =>
+          schedule.date === selectedDateToIso && schedule.time === time,
+      );
 
       slots.push({
         time,
-        available: isAvailable,
-        price: selectedServices.reduce(
-          (total, service) => total + service.price,
-          0,
-        ),
+        available: !isBlockedTime && !isScheduledTime,
       });
     });
 
@@ -69,26 +54,24 @@ export function DateTimeSelectionStep({
   };
 
   useEffect(() => {
-    if (selectedDate) {
-      setIsLoadingSlots(true);
+    if (!selectedDate) return;
 
-      // Simular carregamento da API
-      setTimeout(() => {
-        const slots = generateMockSlots(selectedDate);
-        setAvailableSlots(slots);
-        setIsLoadingSlots(false);
-      }, 500);
-    } else {
-      setAvailableSlots([]);
-    }
-  }, [selectedDate, selectedProfessional, isAnyProfessional]);
+    setIsLoadingSlots(true);
+
+    setTimeout(() => {
+      const slots = generateMockSlots();
+      setAvailableSlots(slots);
+      setIsLoadingSlots(false);
+    }, 500);
+  }, [selectedDate]);
 
   const handleDateSelect = (date: Date | undefined) => {
-    onDateTimeChange(date, null); // Reset time when date changes
+    setValue('selectedDate', date);
+    setValue('selectedTime', null);
   };
 
   const handleTimeSelect = (time: string) => {
-    onDateTimeChange(selectedDate, time);
+    setValue('selectedTime', time);
   };
 
   const formatDate = (date: Date) => {
@@ -107,7 +90,6 @@ export function DateTimeSelectionStep({
     }).format(price);
   };
 
-  // Desabilitar datas no passado e domingos (exemplo)
   const isDateDisabled = (date: Date) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -127,7 +109,6 @@ export function DateTimeSelectionStep({
         </p>
       </div>
 
-      {/* Mobile Date Picker Horizontal */}
       <div className="md:hidden space-y-4">
         <Card className="p-5 bg-white shadow-card">
           <div className="flex items-center gap-2 mb-4">
@@ -136,13 +117,12 @@ export function DateTimeSelectionStep({
           </div>
 
           <DatePickerHorizontal
-            selected={selectedDate}
+            selected={selectedDate || undefined}
             onSelect={handleDateSelect}
             disabled={isDateDisabled}
           />
         </Card>
 
-        {/* Mobile Time Slots */}
         <Card className="p-5 border-gray-200">
           <div className="flex items-center gap-2 mb-4">
             <Clock className="h-5 w-5 text-gray-600" />
@@ -223,9 +203,7 @@ export function DateTimeSelectionStep({
         </Card>
       </div>
 
-      {/* Desktop Date and Time Grid */}
       <div className="hidden md:grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Calendário */}
         <Card className="p-5 border-gray-200">
           <div className="flex items-center gap-2 mb-4">
             <Calendar className="h-5 w-5 text-gray-600" />
@@ -234,14 +212,13 @@ export function DateTimeSelectionStep({
 
           <CalendarComponent
             mode="single"
-            selected={selectedDate}
+            selected={selectedDate || undefined}
             onSelect={handleDateSelect}
             disabled={isDateDisabled}
             className="rounded-md border-0 w-full"
           />
         </Card>
 
-        {/* Horários */}
         <Card className="p-5 border-gray-200">
           <div className="flex items-center gap-2 mb-4">
             <Clock className="h-5 w-5 text-gray-600" />
@@ -305,11 +282,6 @@ export function DateTimeSelectionStep({
                           }`}
                         >
                           <span className="font-medium">{slot.time}</span>
-                          {slot.available && slot.price && (
-                            <span className="text-xs opacity-80">
-                              {formatPrice(slot.price)}
-                            </span>
-                          )}
                         </Button>
                       </motion.div>
                     ))}

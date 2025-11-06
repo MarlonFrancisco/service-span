@@ -2,19 +2,22 @@ import { SearchResults } from '@/components/features/search';
 import { SearchService } from '@/service/search';
 import { CACHE_QUERY_KEYS, getQueryClient } from '@/utils/helpers/query.helper';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
-import { headers } from 'next/headers';
 
-export default async function SearchPage() {
+type SearchPageProps = {
+  searchParams: Promise<{ query?: string }>;
+};
+
+export default async function SearchPage({ searchParams }: SearchPageProps) {
   const queryClient = getQueryClient();
+  const params = await searchParams;
+  const query = params.query;
 
-  const headersList = await headers();
-
-  const query = headersList.get('query');
-
-  await queryClient.prefetchQuery({
-    queryKey: CACHE_QUERY_KEYS.search(query!),
-    queryFn: () => SearchService.searchStores(query!),
-  });
+  if (query) {
+    await queryClient.prefetchQuery({
+      queryKey: CACHE_QUERY_KEYS.search(query),
+      queryFn: () => SearchService.searchStores(query),
+    });
+  }
 
   const dehydratedState = dehydrate(queryClient);
 

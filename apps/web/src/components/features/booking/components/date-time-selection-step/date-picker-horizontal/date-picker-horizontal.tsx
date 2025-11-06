@@ -1,3 +1,4 @@
+'use client';
 import { Button, cn } from '@repo/ui/index';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';

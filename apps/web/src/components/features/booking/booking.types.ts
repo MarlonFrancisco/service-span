@@ -4,19 +4,6 @@ export type TBookingStep =
   | 'datetime'
   | 'checkout';
 
-export interface IService {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  duration: number;
-  category: string;
-}
-
-export interface ISelectedService extends IService {
-  quantity: number;
-}
-
 export interface IProfessional {
   id: string;
   name: string;

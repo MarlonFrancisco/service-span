@@ -1,61 +1,29 @@
+'use client';
+import { IProfessional } from '@/types/api';
 import { Card } from '@repo/ui';
 import { Check, Info, User } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { IProfessional, ISelectedService } from '../../booking.types';
+import { useFormContext } from 'react-hook-form';
+import { useGetStore } from '../../booking.hook';
+import { TBookingFormData } from '../../booking.schema';
 
 interface IProfessionalSelectionStepProps {
-  selectedServices: ISelectedService[];
-  selectedProfessional: IProfessional | null;
-  isAnyProfessional: boolean;
-  onProfessionalChange: (
-    professional: IProfessional | null,
-    isAny: boolean,
-  ) => void;
   onValidationError: (error: string | null) => void;
 }
 
 export function ProfessionalSelectionStep({
-  selectedServices,
-  selectedProfessional,
-  isAnyProfessional,
-  onProfessionalChange,
   onValidationError,
 }: IProfessionalSelectionStepProps) {
-  // Mock data - substituir por dados reais
-  const mockProfessionals: IProfessional[] = [
-    {
-      id: '1',
-      name: 'Carlos Silva',
-      avatar: 'https://via.placeholder.com/150',
-      rating: 4.5,
-      specialties: ['Cortes Masculinos', 'Barba'],
-      availableServices: ['1', '2', '3'], // IDs dos serviços que pode realizar
-    },
-    {
-      id: '2',
-      name: 'Ana Costa',
-      avatar: 'https://via.placeholder.com/150',
-      rating: 4.5,
-      specialties: ['Cabelo Feminino', 'Tratamentos'],
-      availableServices: ['1', '4', '5', '6'],
-    },
-    {
-      id: '3',
-      name: 'João Pereira',
-      avatar: 'https://via.placeholder.com/150',
-      rating: 4.5,
-      specialties: ['Estética Masculina'],
-      availableServices: ['1', '2', '3'],
-    },
-    {
-      id: '4',
-      name: 'Maria Santos',
-      avatar: 'https://via.placeholder.com/150',
-      rating: 4.5,
-      specialties: ['Tratamentos Capilares'],
-      availableServices: ['4', '5', '6'],
-    },
-  ];
+  const stores = useGetStore();
+  console.log('stores', stores);
+  const { watch, setValue } = useFormContext<TBookingFormData>();
+  const selectedServices = watch('selectedServices');
+  const selectedProfessional = watch('selectedProfessional');
+  const isAnyProfessional = watch('isAnyProfessional');
+
+  const professionals = stores?.storeMembers?.filter(
+    (member) => member.role === 'professional',
+  );
 
   const [compatibilityStatus, setCompatibilityStatus] = useState<{
     canUseAny: boolean;
@@ -63,7 +31,7 @@ export function ProfessionalSelectionStep({
     hasIncompatibleCombination: boolean;
   }>({
     canUseAny: true,
-    availableProfessionals: mockProfessionals,
+    availableProfessionals: professionals || [],
     hasIncompatibleCombination: false,
   });
 
@@ -75,7 +43,7 @@ export function ProfessionalSelectionStep({
     if (selectedServices.length === 0) {
       setCompatibilityStatus({
         canUseAny: true,
-        availableProfessionals: mockProfessionals,
+        availableProfessionals: professionals || [],
         hasIncompatibleCombination: false,
       });
       onValidationError(null);
@@ -85,21 +53,22 @@ export function ProfessionalSelectionStep({
     const selectedServiceIds = selectedServices.map((s) => s.id);
 
     // Verificar quais profissionais podem realizar TODOS os serviços selecionados
-    const professionalsWhoCanDoAll = mockProfessionals.filter((professional) =>
+    const professionalsWhoCanDoAll = professionals?.filter((professional) =>
       selectedServiceIds.every((serviceId) =>
-        professional.availableServices.includes(serviceId),
+        professional.services?.some((service) => service.id === serviceId),
       ),
     );
 
     // Verificar quais profissionais podem realizar PELO MENOS UM dos serviços
-    const professionalsWhoCanDoSome = mockProfessionals.filter((professional) =>
-      selectedServiceIds.some((serviceId) =>
-        professional.availableServices.includes(serviceId),
-      ),
-    );
+    const professionalsWhoCanDoSome =
+      professionals?.filter((professional) =>
+        selectedServiceIds.some((serviceId) =>
+          professional.services?.some((service) => service.id === serviceId),
+        ),
+      ) || [];
 
-    const canUseAny = professionalsWhoCanDoAll.length > 0;
-    const hasIncompatibleCombination = professionalsWhoCanDoSome.length === 0;
+    const canUseAny = professionalsWhoCanDoAll!.length > 0;
+    const hasIncompatibleCombination = professionalsWhoCanDoSome!.length === 0;
 
     setCompatibilityStatus({
       canUseAny,
@@ -120,35 +89,39 @@ export function ProfessionalSelectionStep({
 
     // Reset da seleção se não for mais válida
     if (isAnyProfessional && !canUseAny) {
-      onProfessionalChange(null, false);
+      setValue('selectedProfessional', null);
+      setValue('isAnyProfessional', false);
     } else if (
       selectedProfessional &&
       !professionalsWhoCanDoSome.find((p) => p.id === selectedProfessional.id)
     ) {
-      onProfessionalChange(null, false);
+      setValue('selectedProfessional', null);
+      setValue('isAnyProfessional', false);
     }
   };
 
   const handleAnyProfessionalSelect = () => {
     if (compatibilityStatus.canUseAny) {
-      onProfessionalChange(null, true);
+      setValue('selectedProfessional', null);
+      setValue('isAnyProfessional', true);
     }
   };
 
   const handleProfessionalSelect = (professional: IProfessional) => {
-    onProfessionalChange(professional, false);
+    setValue('selectedProfessional', professional);
+    setValue('isAnyProfessional', false);
   };
 
   const canProfessionalDoAllServices = (professional: IProfessional) => {
     const selectedServiceIds = selectedServices.map((s) => s.id);
     return selectedServiceIds.every((serviceId) =>
-      professional.availableServices.includes(serviceId),
+      professional.services?.some((service) => service.id === serviceId),
     );
   };
 
   const getServicesForProfessional = (professional: IProfessional) => {
     return selectedServices.filter((service) =>
-      professional.availableServices.includes(service.id),
+      professional.services?.some((s) => s.id === service.id),
     );
   };
 
@@ -274,7 +247,10 @@ export function ProfessionalSelectionStep({
 
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
-                      <h4 className="text-[#1a2b4c]">{professional.name}</h4>
+                      <h4 className="text-[#1a2b4c]">
+                        {professional.user.firstName}{' '}
+                        {professional.user.lastName}
+                      </h4>
                       {!canDoAll && (
                         <span className="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">
                           Parcial
@@ -283,7 +259,7 @@ export function ProfessionalSelectionStep({
                     </div>
 
                     <p className="text-sm text-gray-600 mb-2">
-                      {professional.specialties.join(' • ')}
+                      {professional.services?.map((s) => s.name).join(' • ')}
                     </p>
 
                     {!canDoAll && (

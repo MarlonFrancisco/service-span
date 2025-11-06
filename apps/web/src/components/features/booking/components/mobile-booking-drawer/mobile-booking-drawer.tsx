@@ -1,3 +1,4 @@
+import useSearchStore from '@/store/search/search.store';
 import {
   Badge,
   Drawer,
@@ -9,31 +10,30 @@ import {
   Separator,
 } from '@repo/ui';
 import { Calendar, ChevronUp, Clock, MapPin, User } from 'lucide-react';
-import { TProfessional, TSelectedService } from '../../booking.types';
+import { useFormContext } from 'react-hook-form';
+import { TBookingFormData } from '../../booking.schema';
 
 interface MobileBookingDrawerProps {
-  businessName: string;
-  businessAddress: string;
-  selectedServices: TSelectedService[];
-  selectedProfessional: TProfessional | null;
-  isAnyProfessional: boolean;
-  selectedDate: Date | undefined;
-  selectedTime: string | null;
   totalPrice: number;
   totalDuration: number;
 }
 
 export function MobileBookingDrawer({
-  businessName,
-  businessAddress,
-  selectedServices,
-  selectedProfessional,
-  isAnyProfessional,
-  selectedDate,
-  selectedTime,
   totalPrice,
   totalDuration,
 }: MobileBookingDrawerProps) {
+  const { watch } = useFormContext<TBookingFormData>();
+  const selectedServices = watch('selectedServices');
+  const selectedProfessional = watch('selectedProfessional');
+  const isAnyProfessional = watch('isAnyProfessional');
+  const selectedDate = watch('selectedDate');
+  const selectedTime = watch('selectedTime');
+
+  const selectedStore = useSearchStore((state) => state.selectedStore);
+  const businessName = selectedStore?.name || '';
+  const businessAddress = selectedStore
+    ? `${selectedStore.address}, ${selectedStore.city} - ${selectedStore.state}`
+    : '';
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
@@ -114,7 +114,7 @@ export function MobileBookingDrawer({
                   </div>
                   <div className="flex items-center gap-2 mt-1 flex-wrap">
                     <Badge variant="secondary" className="text-xs">
-                      {service.category}
+                      {service.category?.name}
                     </Badge>
                     <span className="text-xs text-gray-500">
                       {formatDuration(service.duration * service.quantity)}
@@ -149,11 +149,15 @@ export function MobileBookingDrawer({
                 <p className="text-gray-900 ml-6">
                   {isAnyProfessional
                     ? 'Qualquer profissional'
-                    : selectedProfessional?.name}
+                    : selectedProfessional?.user.firstName +
+                      ' ' +
+                      selectedProfessional?.user.lastName}
                 </p>
                 {selectedProfessional && (
                   <p className="text-xs text-gray-500 ml-6">
-                    {selectedProfessional.specialties.join(' • ')}
+                    {selectedProfessional.services
+                      ?.map((s) => s.name)
+                      .join(' • ')}
                   </p>
                 )}
               </div>

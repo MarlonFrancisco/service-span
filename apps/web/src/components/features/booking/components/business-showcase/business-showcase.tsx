@@ -3,6 +3,7 @@
 import { ImageGallery } from '@/components/layout/image-gallery';
 import { ReviewsModal } from '@/components/layout/reviews-modal';
 import { useReviews } from '@/store';
+import { formatBusinessHours } from '@/utils/helpers/business-hours.helper';
 import {
   Badge,
   Button,
@@ -15,34 +16,36 @@ import {
 import { Clock, Heart, Images, MapPinIcon, Share, Star } from 'lucide-react';
 import Image from 'next/image';
 import { useBusinessShowcase } from './business-showcase.hook';
-import type { TBusinessShowcaseConfig } from './business-showcase.types';
 
-const OPENING_HOURS = 'Seg-Sex: 9h-19h | Sáb: 9h-17h';
-const AMENITIES = [
-  'Wi-Fi gratuito',
-  'Estacionamento',
-  'Ar condicionado',
-  'Acessível',
-];
+export function BusinessShowcase() {
+  const { toggleReviewsModalAction } = useReviews();
 
-export function BusinessShowcase({
-  businessName,
-  businessAddress,
-  rating = 0,
-  reviewCount = 0,
-  category,
-  description,
-  images,
-}: TBusinessShowcaseConfig) {
   const {
-    displayImages,
+    data,
     showAllPhotos,
     selectedImageIndex,
     handleImageClick,
     handleShare,
     handleCloseGallery,
-  } = useBusinessShowcase({ images });
-  const { toggleReviewsModalAction } = useReviews();
+    handleSave,
+  } = useBusinessShowcase();
+
+  if (!data) {
+    return null;
+  }
+
+  const {
+    businessName,
+    businessAddress,
+    images,
+    averageRating,
+    reviewCount,
+    description,
+    amenities,
+    openTime,
+    closeTime,
+    businessDays,
+  } = data;
 
   return (
     <div>
@@ -60,7 +63,7 @@ export function BusinessShowcase({
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => handleShare()}
+                onClick={handleShare}
                 className="flex items-center gap-2 rounded-lg border-gray-300 hover:bg-gray-50"
               >
                 <Share className="h-4 w-4" />
@@ -71,6 +74,7 @@ export function BusinessShowcase({
             <Button
               variant="outline"
               size="sm"
+              onClick={handleSave}
               className="flex items-center gap-2 rounded-lg border-gray-300 hover:bg-gray-50"
             >
               <Heart className="h-4 w-4" />
@@ -86,7 +90,7 @@ export function BusinessShowcase({
             {/* Main Image - Left Side */}
             <div className="col-span-2 relative group cursor-pointer overflow-hidden">
               <Image
-                src={displayImages[0] || ''}
+                src={images[0] || ''}
                 width={600}
                 height={500}
                 alt={businessName}
@@ -97,7 +101,7 @@ export function BusinessShowcase({
 
             {/* Right Side Grid */}
             <div className="col-span-2 grid grid-cols-2 gap-1">
-              {displayImages.slice(1, 5).map((image, index) => (
+              {images.slice(1, 5).map((image: string, index: number) => (
                 <div
                   key={index}
                   className="relative group cursor-pointer overflow-hidden"
@@ -125,7 +129,7 @@ export function BusinessShowcase({
               }}
             >
               <CarouselContent>
-                {images.map((image, index) => (
+                {images.map((image: string, index: number) => (
                   <CarouselItem key={index}>
                     <div className="relative h-64">
                       <Image
@@ -184,16 +188,13 @@ export function BusinessShowcase({
           {/* Left Column - Main Info */}
           <div className="lg:col-span-2">
             <div className="mb-4 md:mb-6">
-              <h2 className="text-lg md:text-xl text-[#1a2b4c] mb-3 md:mb-4">
-                {category} em {businessAddress.split(',')[0]}
-              </h2>
               <p className="text-gray-600 mb-4">{description}</p>
 
               {/* Amenities - Above Reviews */}
-              {AMENITIES.length > 0 && (
+              {amenities.length > 0 && (
                 <div className="mb-4 pb-4 border-b border-gray-200">
                   <div className="flex flex-wrap gap-2">
-                    {AMENITIES.map((amenity, index) => (
+                    {amenities.map((amenity: string, index: number) => (
                       <Badge
                         key={index}
                         variant="outline"
@@ -209,7 +210,7 @@ export function BusinessShowcase({
               {/* Reviews */}
               <div className="flex items-center gap-1 text-sm">
                 <Star className="h-4 w-4 fill-black text-black" />
-                <span className="font-medium">{rating}</span>
+                <span className="font-medium">{averageRating.toFixed(1)}</span>
                 <span>·</span>
                 <button
                   onClick={() => toggleReviewsModalAction(true)}
@@ -228,8 +229,9 @@ export function BusinessShowcase({
                 <Clock className="h-4 w-4 text-[#20b2aa]" />
                 <h3 className="text-[#1a2b4c]">Horário de Funcionamento</h3>
               </div>
-              <p className="text-sm text-gray-600">{OPENING_HOURS}</p>
-
+              <p className="text-sm text-gray-600">
+                {formatBusinessHours(openTime, closeTime, businessDays)}
+              </p>
               <div className="flex items-start gap-2 mt-4 pt-4 border-t border-gray-200">
                 <MapPinIcon className="h-4 w-4 text-gray-500 mt-0.5 flex-shrink-0" />
                 <p className="text-sm text-gray-600">{businessAddress}</p>

@@ -1,78 +1,35 @@
+'use client';
+import { ICategory, IService } from '@/types/api/service.types';
 import { Badge, Button } from '@repo/ui';
 import { Check, Minus, Plus } from 'lucide-react';
 import { useState } from 'react';
+import { useFormContext } from 'react-hook-form';
 import { toast } from 'sonner';
-import { ISelectedService, IService } from '../../booking.types';
+import { useGetStore } from '../../booking.hook';
+import { TBookingFormData } from '../../booking.schema';
+export function ServiceSelectionStep() {
+  const store = useGetStore();
+  const [selectedCategory, setSelectedCategory] = useState<
+    ICategory | undefined
+  >(undefined);
+  const { watch, setValue } = useFormContext<TBookingFormData>();
+  const selectedServices = watch('selectedServices');
 
-interface ServiceSelectionStepProps {
-  selectedServices: ISelectedService[];
-  onServicesChange: (services: ISelectedService[]) => void;
-}
-
-export function ServiceSelectionStep({
-  selectedServices,
-  onServicesChange,
-}: ServiceSelectionStepProps) {
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-
-  // Mock data - substituir por dados reais
-  const mockServices: IService[] = [
-    {
-      id: '1',
-      name: 'Corte de Cabelo Masculino',
-      description: 'Corte moderno e estiloso',
-      duration: 45,
-      price: 45.0,
-      category: 'Cabelo',
-    },
-    {
-      id: '2',
-      name: 'Barba Completa',
-      description: 'Aparar e modelar a barba',
-      duration: 30,
-      price: 25.0,
-      category: 'Barba',
-    },
-    {
-      id: '3',
-      name: 'Sobrancelha',
-      description: 'Limpeza e design de sobrancelhas',
-      duration: 20,
-      price: 15.0,
-      category: 'Estética',
-    },
-    {
-      id: '4',
-      name: 'Relaxamento',
-      description: 'Procedimento químico para alisar',
-      duration: 120,
-      price: 80.0,
-      category: 'Cabelo',
-    },
-    {
-      id: '5',
-      name: 'Tratamento Capilar',
-      description: 'Hidratação profunda',
-      duration: 60,
-      price: 35.0,
-      category: 'Tratamento',
-    },
-    {
-      id: '6',
-      name: 'Escova Progressiva',
-      description: 'Alisamento temporário',
-      duration: 180,
-      price: 120.0,
-      category: 'Cabelo',
-    },
-  ];
+  const services = store?.services || [];
 
   const categories = Array.from(
-    new Set(mockServices.map((service) => service.category)),
+    new Map(
+      services
+        .filter((service) => service.category)
+        .map((service) => [service.category!.id, service.category!]),
+    ).values(),
   );
+
   const filteredServices = selectedCategory
-    ? mockServices.filter((service) => service.category === selectedCategory)
-    : mockServices;
+    ? services.filter(
+        (service) => service.category?.id === selectedCategory?.id,
+      )
+    : services;
 
   const getServiceQuantity = (serviceId: string) => {
     const service = selectedServices.find((s) => s.id === serviceId);
@@ -93,27 +50,27 @@ export function ServiceSelectionStep({
       // Remove service if quantity is 0 or less
       if (existingServiceIndex !== -1) {
         const newServices = selectedServices.filter((s) => s.id !== service.id);
-        onServicesChange(newServices);
+        setValue('selectedServices', newServices);
         toast.info(`${service.name} removido`);
       }
     } else {
       if (existingServiceIndex !== -1) {
         // Update existing service quantity
         const newServices = [...selectedServices];
-        (newServices[existingServiceIndex] as ISelectedService).quantity =
-          newQuantity;
-        onServicesChange(newServices);
+        newServices[existingServiceIndex]!.quantity = newQuantity;
+        setValue('selectedServices', newServices);
 
         if (newQuantity > oldQuantity) {
           toast.success(`Quantidade atualizada`);
         }
       } else {
         // Add new service
-        const newService: ISelectedService = {
+        const newService = {
           ...service,
           quantity: newQuantity,
         };
-        onServicesChange([...selectedServices, newService]);
+
+        setValue('selectedServices', [...selectedServices, newService]);
         toast.success(`${service.name} adicionado`);
       }
     }
@@ -159,11 +116,11 @@ export function ServiceSelectionStep({
         <h3 className="text-sm text-gray-700">Filtrar por categoria:</h3>
         <div className="flex flex-wrap gap-2">
           <Button
-            variant={selectedCategory === null ? 'default' : 'outline'}
+            variant={selectedCategory ? 'outline' : 'default'}
             size="sm"
-            onClick={() => setSelectedCategory(null)}
+            onClick={() => setSelectedCategory(undefined)}
             className={
-              selectedCategory === null
+              !selectedCategory
                 ? 'bg-black hover:bg-gray-800 text-white'
                 : 'border-gray-300 text-gray-700 hover:bg-gray-50'
             }
@@ -172,17 +129,19 @@ export function ServiceSelectionStep({
           </Button>
           {categories.map((category) => (
             <Button
-              key={category}
-              variant={selectedCategory === category ? 'default' : 'outline'}
+              key={category.id}
+              variant={
+                selectedCategory?.id === category.id ? 'default' : 'outline'
+              }
               size="sm"
               onClick={() => setSelectedCategory(category)}
               className={
-                selectedCategory === category
+                selectedCategory?.id === category.id
                   ? 'bg-black hover:bg-gray-800 text-white'
                   : 'border-gray-300 text-gray-700 hover:bg-gray-50'
               }
             >
-              {category}
+              {category.name}
             </Button>
           ))}
         </div>
@@ -223,7 +182,7 @@ export function ServiceSelectionStep({
                       variant="secondary"
                       className="bg-gray-100 text-gray-700 text-xs"
                     >
-                      {service.category}
+                      {service.category?.name}
                     </Badge>
                     <span className="text-xs sm:text-sm text-gray-500">
                       {formatDuration(service.duration)}

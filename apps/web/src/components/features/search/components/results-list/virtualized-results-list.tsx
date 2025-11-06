@@ -1,25 +1,25 @@
 'use client';
 
+import useSearchStore from '@/store/search/search.store';
+import { IStoreSearchListItem } from '@/store/search/search.types';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { useRef } from 'react';
-import type { Service } from '../../search.types';
 import { ServiceCard } from '../service-card';
 
 interface VirtualizedResultsListProps {
-  services: Service[];
-  selectedServiceId: string | null;
-  onServiceSelect: (service: Service) => void;
+  stores: IStoreSearchListItem[];
 }
 
 export function VirtualizedResultsList({
-  services,
-  selectedServiceId,
-  onServiceSelect,
+  stores,
 }: VirtualizedResultsListProps) {
   const parentRef = useRef<HTMLDivElement>(null);
 
+  const selectedStore = useSearchStore((state) => state.selectedStore);
+  const setSelectedStore = useSearchStore((state) => state.setSelectedStore);
+
   const virtualizer = useVirtualizer({
-    count: services.length,
+    count: stores.length,
     getScrollElement: () => parentRef.current,
     estimateSize: () => 380,
     gap: 0,
@@ -35,7 +35,7 @@ export function VirtualizedResultsList({
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-2xl font-semibold text-gray-900">
-            {services.length} serviços encontrados
+            {stores.length} serviços encontrados
           </h2>
           <p className="text-gray-600 mt-1">
             Profissionais verificados próximos a você
@@ -56,8 +56,8 @@ export function VirtualizedResultsList({
           }}
         >
           {virtualItems.map((virtualItem) => {
-            const service = services[virtualItem.index];
-            if (!service) return null;
+            const store = stores[virtualItem.index];
+            if (!store) return null;
 
             return (
               <div
@@ -74,10 +74,9 @@ export function VirtualizedResultsList({
                 }}
               >
                 <ServiceCard
-                  {...service}
-                  images={service.images}
-                  isSelected={selectedServiceId === service.id}
-                  onClick={() => onServiceSelect(service)}
+                  store={store}
+                  isSelected={selectedStore?.id === store.id}
+                  onClick={() => setSelectedStore(store)}
                 />
               </div>
             );

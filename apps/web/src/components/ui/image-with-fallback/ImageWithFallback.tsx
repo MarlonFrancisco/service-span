@@ -11,7 +11,6 @@ export function ImageWithFallback(
   const [didError, setDidError] = useState(false);
 
   const handleError = (e: React.SyntheticEvent<HTMLImageElement>) => {
-    console.log(e);
     setDidError(true);
   };
 

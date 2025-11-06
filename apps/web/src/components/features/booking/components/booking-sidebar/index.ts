@@ -1,2 +1,2 @@
 export { BookingSidebar } from './booking-sidebar';
-export type { Professional, SelectedService } from './booking-sidebar';
+export { useBookingSidebar } from './booking-sidebar.hook';

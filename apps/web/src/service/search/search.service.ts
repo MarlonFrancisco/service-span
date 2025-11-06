@@ -1,5 +1,5 @@
+import type { ISearchResult } from '../../types/api/search.types';
 import { apiClient } from '../api';
-import type { ISearchResult } from './search.types';
 
 export class SearchService {
   static apiClient = apiClient;

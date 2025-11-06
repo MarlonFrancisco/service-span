@@ -1,7 +1,7 @@
-export { SearchService } from './search.service';
 export type {
-  ISearchResult,
   ISearchResponse,
+  ISearchResult,
   IStoreSearchContent,
   IStoreSearchMetadata,
-} from './search.types';
+} from '../../types/api/search.types';
+export { SearchService } from './search.service';
