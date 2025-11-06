@@ -28,6 +28,35 @@ interface MockReview {
   comment: string;
 }
 
+interface MockBlockedTime {
+  date: string;
+  time: string;
+  isRecurring?: boolean;
+  dayOfWeek?: number;
+}
+
+interface MockStoreMember {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  role: 'owner' | 'manager' | 'professional';
+  isActive: boolean;
+  serviceNames?: string[];
+  blockedTimes?: MockBlockedTime[];
+}
+
+interface MockSchedule {
+  date: string;
+  startTime: string;
+  endTime: string;
+  status: 'scheduled' | 'completed' | 'cancelled' | 'no-show';
+  storeMemberEmail: string;
+  serviceName: string;
+  customerEmail: string;
+  notes?: string;
+}
+
 interface MockStore {
   name: string;
   description: string;
@@ -53,6 +82,8 @@ interface MockStore {
   categories: MockCategory[];
   gallery: MockGallery[];
   reviews: MockReview[];
+  storeMembers?: MockStoreMember[];
+  schedules?: MockSchedule[];
 }
 
 async function seedStoresSimple() {
@@ -81,6 +112,9 @@ async function seedStoresSimple() {
     let totalServices = 0;
     let totalGalleryImages = 0;
     let totalReviews = 0;
+    let totalStoreMembers = 0;
+    let totalBlockedTimes = 0;
+    let totalSchedules = 0;
 
     // Seed data
     for (let i = 0; i < storesData.length; i++) {
@@ -231,6 +265,151 @@ async function seedStoresSimple() {
         totalReviews++;
       }
 
+      // Create store members
+      for (const mockMember of mockStore.storeMembers || []) {
+        // Create or find professional user
+        const memberEmail = mockMember.email;
+        const memberUser = await connection.query(
+          'SELECT id FROM users WHERE email = $1',
+          [memberEmail],
+        );
+
+        let memberId: string;
+
+        if (memberUser.length === 0) {
+          const result = await connection.query(
+            `INSERT INTO users (id, email, telephone, first_name, last_name, accepted_terms, created_at, updated_at)
+             VALUES (gen_random_uuid(), $1, $2, $3, $4, true, NOW(), NOW())
+             RETURNING id`,
+            [memberEmail, mockMember.phone, mockMember.name.split(' ')[0], mockMember.name.split(' ')[1] || ''],
+          );
+          memberId = result[0].id;
+        } else {
+          memberId = memberUser[0].id;
+        }
+
+        // Create store member
+        const memberResult = await connection.query(
+          `INSERT INTO store_members (id, "userId", "storeId", role, "isActive", "isDeleted", created_at, updated_at)
+           VALUES (gen_random_uuid(), $1, $2, $3, $4, false, NOW(), NOW())
+           RETURNING id`,
+          [memberId, storeId, mockMember.role, mockMember.isActive],
+        );
+
+        const storeMemberId = memberResult[0].id;
+        totalStoreMembers++;
+
+        // Create service assignments for this member
+        for (const serviceName of mockMember.serviceNames || []) {
+          const serviceResult = await connection.query(
+            `SELECT id FROM services WHERE name = $1 AND "storeId" = $2`,
+            [serviceName, storeId],
+          );
+
+          if (serviceResult.length === 0) {
+            console.warn(`⚠️  Service "${serviceName}" not found for member "${mockMember.name}" in store "${mockStore.name}"`);
+            continue;
+          }
+
+          const serviceId = serviceResult[0].id;
+
+          // Create junction table entry
+          await connection.query(
+            `INSERT INTO store_members_services (store_member_id, service_id)
+             VALUES ($1, $2)
+             ON CONFLICT DO NOTHING`,
+            [storeMemberId, serviceId],
+          );
+        }
+
+        // Create blocked times for this member
+        for (const blockedTime of mockMember.blockedTimes || []) {
+          await connection.query(
+            `INSERT INTO blocked_times (id, "storeMemberId", date, time, "isRecurring", "dayOfWeek", created_at, updated_at)
+             VALUES (gen_random_uuid(), $1, $2, $3, $4, $5, NOW(), NOW())`,
+            [
+              storeMemberId,
+              blockedTime.date,
+              blockedTime.time,
+              blockedTime.isRecurring || false,
+              blockedTime.dayOfWeek || null,
+            ],
+          );
+
+          totalBlockedTimes++;
+        }
+      }
+
+      // Create schedules
+      for (const mockSchedule of mockStore.schedules || []) {
+        // Find service by name
+        const serviceResult = await connection.query(
+          'SELECT id FROM services WHERE name = $1 AND "storeId" = $2',
+          [mockSchedule.serviceName, storeId],
+        );
+
+        if (serviceResult.length === 0) {
+          console.warn(`⚠️  Service "${mockSchedule.serviceName}" not found in store "${mockStore.name}", skipping schedule`);
+          continue;
+        }
+
+        const serviceId = serviceResult[0].id;
+
+        // Find or create store member by email
+        const storeMemberResult = await connection.query(
+          `SELECT sm.id FROM store_members sm
+           JOIN users u ON sm."userId" = u.id
+           WHERE u.email = $1 AND sm."storeId" = $2`,
+          [mockSchedule.storeMemberEmail, storeId],
+        );
+
+        if (storeMemberResult.length === 0) {
+          console.warn(`⚠️  Store member with email "${mockSchedule.storeMemberEmail}" not found in store "${mockStore.name}", skipping schedule`);
+          continue;
+        }
+
+        const storeMemberId = storeMemberResult[0].id;
+
+        // Find or create customer user
+        let customerResult = await connection.query(
+          'SELECT id FROM users WHERE email = $1',
+          [mockSchedule.customerEmail],
+        );
+
+        let customerId: string;
+
+        if (customerResult.length === 0) {
+          const result = await connection.query(
+            `INSERT INTO users (id, email, first_name, last_name, accepted_terms, created_at, updated_at)
+             VALUES (gen_random_uuid(), $1, 'Customer', 'Test', true, NOW(), NOW())
+             RETURNING id`,
+            [mockSchedule.customerEmail],
+          );
+          customerId = result[0].id;
+        } else {
+          customerId = customerResult[0].id;
+        }
+
+        // Insert schedule
+        await connection.query(
+          `INSERT INTO schedules (id, date, "startTime", "endTime", status, "storeMemberId", "serviceId", "userId", "storeId", notes, created_at, updated_at)
+           VALUES (gen_random_uuid(), $1, $2, $3, $4, $5, $6, $7, $8, $9, NOW(), NOW())`,
+          [
+            mockSchedule.date,
+            mockSchedule.startTime,
+            mockSchedule.endTime,
+            mockSchedule.status,
+            storeMemberId,
+            serviceId,
+            customerId,
+            storeId,
+            mockSchedule.notes || null,
+          ],
+        );
+
+        totalSchedules++;
+      }
+
       console.log(`✅ Store ${i + 1}/${storesData.length}: ${mockStore.name}`);
     }
 
@@ -242,6 +421,9 @@ async function seedStoresSimple() {
     console.log(`   - Services created: ${totalServices}`);
     console.log(`   - Gallery images created: ${totalGalleryImages}`);
     console.log(`   - Reviews created: ${totalReviews}`);
+    console.log(`   - Store members created: ${totalStoreMembers}`);
+    console.log(`   - Blocked times created: ${totalBlockedTimes}`);
+    console.log(`   - Schedules created: ${totalSchedules}`);
 
     await connection.close();
   } catch (error) {

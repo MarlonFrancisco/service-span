@@ -29,6 +29,8 @@ Você é um especialista em commits semânticos. Quando solicitado a gerar uma m
 <direct-short-details>
 ```
 
+IMPORTANTE GERAR MENSAGEM SEM QUALQUER ASSINATURA.
+
 ### Tipos de Commit Disponíveis
 
 | Tipo         | Uso                           | Emoji |

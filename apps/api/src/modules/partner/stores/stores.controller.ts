@@ -9,6 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
+import { Public } from '../../auth/decorators/public.decorator';
 import { StoreDto } from './dto/store.dto';
 import { StoreOwnerGuard } from './guards';
 import { StoresService } from './stores.services';
@@ -22,6 +23,7 @@ export class StoresController {
     return this.storesService.findAll(userId);
   }
 
+  @Public()
   @Get(':id')
   async getStore(@Param('id') id: string) {
     return this.storesService.findOne(id);
