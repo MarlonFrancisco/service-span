@@ -1,11 +1,11 @@
-import { useAuth } from '@/store/auth/auth.hook';
-import { useUser } from '@/store/user/user.hook';
+import { useUserQuery } from '@/hooks/use-query/use-user-query';
+import { useAuthStore } from '@/store/auth/auth.store';
 import Link from 'next/link';
 import type { TNavigationMenuConfig } from './navigation-menu.types';
 
 export const NavigationMenu = ({ items }: TNavigationMenuConfig) => {
-  const { openAuthAction } = useAuth();
-  const { isLoggedIn } = useUser();
+  const openAuthAction = useAuthStore((state) => state.openAuthAction);
+  const { isLoggedIn } = useUserQuery();
 
   const handleAuth = () => {
     openAuthAction({});

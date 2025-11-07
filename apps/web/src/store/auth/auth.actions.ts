@@ -1,6 +1,6 @@
 import { AuthService } from '@/service/auth';
 import { TStoreAction } from '@/types/store.types';
-import { useUserStore } from '../user/user.store';
+import { CACHE_QUERY_KEYS, getQueryClient } from '@/utils/helpers/query.helper';
 import { IAuthState } from './auth.types';
 
 export const openAuthAction: TStoreAction<
@@ -8,7 +8,7 @@ export const openAuthAction: TStoreAction<
   { onAuth?: () => void }
 > =
   (set, get) =>
-  async ({ onAuth }) => {
+  async ({ onAuth } = {}) => {
     set({
       isOpen: true,
       onAuth: async () => {
@@ -76,7 +76,14 @@ export const googleLoginAction: TStoreAction<IAuthState, string> =
   (set) => async (token) => {
     set({ fetchingStatus: 'loading' });
     const response = await AuthService.googleLogin(token);
-    const { user, isNewUser } = response.data;
-    useUserStore.setState({ authenticatedUser: user });
+    const { user, isNewUser } = response;
+
+    const queryClient = getQueryClient();
+
+    queryClient.setQueryData(
+      CACHE_QUERY_KEYS.user(user.email || user.telephone),
+      () => user,
+    );
+
     set({ fetchingStatus: 'success', isNewUser: isNewUser });
   };

@@ -40,8 +40,17 @@ export function DateTimeSelectionStep() {
       );
 
       const isScheduledTime = selectedProfessional?.schedules?.some(
-        (schedule) =>
-          schedule.date === selectedDateToIso && schedule.time === time,
+        (schedule) => {
+          const startTimeNormalized = schedule.startTime.replace(':', '');
+          const endTimeNormalized = schedule.endTime.replace(':', '');
+          const timeNormalized = time.replace(':', '');
+
+          return (
+            schedule.date === selectedDateToIso &&
+            startTimeNormalized <= timeNormalized &&
+            endTimeNormalized > timeNormalized
+          );
+        },
       );
 
       slots.push({

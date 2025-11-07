@@ -1,4 +1,4 @@
-import { useAuth } from '@/store/auth/auth.hook';
+import { useAuthStore } from '@/store/auth/auth.store';
 import { Button } from '@repo/ui';
 import { ArrowLeft, ArrowRight, RefreshCw, Shield } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
@@ -21,7 +21,11 @@ export function VerificationStep({
   const [countdown, setCountdown] = useState(60);
   const [canResend, setCanResend] = useState(false);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
-  const { isNewUser, validateAuthSessionAction, onAuth } = useAuth();
+  const isNewUser = useAuthStore((state) => state.isNewUser);
+  const validateAuthSessionAction = useAuthStore(
+    (state) => state.validateAuthSessionAction,
+  );
+  const onAuth = useAuthStore((state) => state.onAuth);
 
   const isEmail = contact.includes('@');
   const maskedContact = isEmail

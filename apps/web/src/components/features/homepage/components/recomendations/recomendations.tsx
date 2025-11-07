@@ -1,98 +1,91 @@
-import { Badge, Button, Card, CardContent } from '@repo/ui';
-import { ArrowRight, Calendar, Heart, Star } from 'lucide-react';
-import { motion } from 'motion/react';
-import { popularServices } from '../../homepage.mock';
+'use client';
+
+import {
+  Button,
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from '@repo/ui';
+import { ArrowRight } from 'lucide-react';
+import { RecommendationCard } from './components/recomendation-card';
+import { useRecommendations } from './recomendations.hook';
 
 export const Recomendations = () => {
-  return (
-    <section className="pb-24 px-6">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex items-center justify-between mb-12">
-          <div>
-            <h2 className="text-4xl font-semibold text-gray-900 mb-4">
-              Populares hoje
-            </h2>
-            <p className="text-xl text-gray-600">
-              Os serviços mais agendados nas últimas 24h
-            </p>
-          </div>
-          <Button
-            variant="outline"
-            className="hidden md:flex items-center gap-2 border-gray-300 hover:bg-gray-50"
-          >
-            Ver todos <ArrowRight className="h-4 w-4" />
-          </Button>
-        </div>
+  const { recommendationStores, isPendingRecommendationStores, isFavorited } =
+    useRecommendations();
 
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+  if (isPendingRecommendationStores) {
+    return <div>Carregando...</div>;
+  }
+
+  if (!recommendationStores) {
+    return null;
+  }
+
+  return (
+    <section className="py-16 md:py-24 px-4 md:px-6 mx-auto">
+      {/* Header */}
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 md:mb-12 gap-4">
+        <div>
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2 md:mb-4">
+            Populares hoje
+          </h2>
+          <p className="text-lg md:text-xl text-gray-600">
+            Os serviços mais agendados nas últimas 24h
+          </p>
+        </div>
+        <Button
+          variant="outline"
+          className="hidden lg:flex items-center gap-2 border-gray-300 hover:bg-gray-50 whitespace-nowrap"
         >
-          {popularServices.map((service) => (
-            <Card
-              key={service.id}
-              className="recommendations-card group cursor-pointer hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border-0 shadow-lg bg-white overflow-hidden"
-            >
-              <CardContent className="p-0">
-                <div className="relative overflow-hidden">
-                  <img
-                    src={service.imageUrl}
-                    alt={service.name}
-                    className="w-full h-52 object-cover"
-                  />
-                  <div className="absolute top-4 left-4">
-                    <Badge className="bg-white/95 text-gray-900 border-0 font-medium">
-                      {service.category}
-                    </Badge>
-                  </div>
-                  <button className="absolute top-4 right-4 p-2 bg-white/95 rounded-full hover:bg-white transition-colors">
-                    <Heart
-                      className={`h-4 w-4 ${service.isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-600'}`}
-                    />
-                  </button>
-                  <div className="absolute bottom-4 left-4">
-                    <div className="flex items-center gap-1 bg-white/95 px-2 py-1 rounded-lg">
-                      <Calendar className="h-3 w-3 text-green-600" />
-                      <span className="text-xs font-medium text-green-600">
-                        {service.nextSlot}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div className="p-6">
-                  <div className="flex items-center gap-2 mb-3">
-                    <div className="flex items-center gap-1">
-                      <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                      <span className="text-sm font-medium">
-                        {service.rating}
-                      </span>
-                    </div>
-                    <span className="text-sm text-gray-500">
-                      ({service.reviewCount})
-                    </span>
-                  </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                    {service.name}
-                  </h3>
-                  <div className="flex items-center justify-between">
-                    <span className="text-lg font-semibold text-gray-900">
-                      A partir de {service.price}
-                    </span>
-                    <Button
-                      size="sm"
-                      className="bg-black hover:bg-gray-800 text-white"
-                    >
-                      Agendar
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </motion.div>
+          Ver todos <ArrowRight className="h-4 w-4" />
+        </Button>
+      </div>
+
+      {/* Carousel for all screen sizes */}
+      <div className="relative">
+        <Carousel
+          className="w-full"
+          opts={{
+            align: 'start',
+            loop: true,
+          }}
+        >
+          <CarouselContent className="-ml-4 pb-4">
+            {recommendationStores.map((store) => (
+              <CarouselItem
+                key={store.id}
+                className="pl-4 basis-[90%] lg:basis-[calc(100%/3.2)]"
+              >
+                <RecommendationCard
+                  store={store}
+                  isFavorited={isFavorited(store.id) ?? false}
+                />
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+
+          {/* Navigation Buttons */}
+          <div className="absolute -left-4 md:-left-12 right-auto top-1/2 -translate-y-1/2 flex gap-2">
+            <CarouselPrevious className="relative left-0 top-0 -translate-y-0 hover:bg-gray-100 active:scale-95" />
+          </div>
+
+          <div className="absolute -right-4 md:-right-12 left-auto top-1/2 -translate-y-1/2 flex gap-2">
+            <CarouselNext className="relative right-0 top-0 -translate-y-0 hover:bg-gray-100 active:scale-95" />
+          </div>
+        </Carousel>
+      </div>
+
+      {/* "Ver todos" button */}
+      <div className="justify-center mt-8 flex md:hidden">
+        <Button
+          variant="outline"
+          className="items-center gap-2 border-gray-300 hover:bg-gray-50"
+        >
+          Ver todos <ArrowRight className="h-4 w-4" />
+        </Button>
       </div>
     </section>
   );

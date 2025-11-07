@@ -15,7 +15,6 @@ export function ProfessionalSelectionStep({
   onValidationError,
 }: IProfessionalSelectionStepProps) {
   const stores = useGetStore();
-  console.log('stores', stores);
   const { watch, setValue } = useFormContext<TBookingFormData>();
   const selectedServices = watch('selectedServices');
   const selectedProfessional = watch('selectedProfessional');

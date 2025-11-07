@@ -1,4 +1,4 @@
-import { useAuth } from '@/store/auth/auth.hook';
+import { useAuthStore } from '@/store/auth';
 import { Button } from '@repo/ui';
 import { ArrowRight, Store, User, Users } from 'lucide-react';
 import { useState } from 'react';
@@ -7,7 +7,7 @@ import { UserType } from '../../auth.types';
 export function ProfileSelectionStep() {
   const [selectedType, setSelectedType] = useState<UserType | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const { onAuth } = useAuth();
+  const onAuth = useAuthStore((state) => state.onAuth);
 
   const handleContinue = async () => {
     if (!selectedType) return;

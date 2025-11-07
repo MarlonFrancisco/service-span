@@ -1,11 +1,11 @@
+import { useUserQuery } from '@/hooks/use-query/use-user-query';
 import { SubscriptionService } from '@/service/subscription';
-import { useAuth } from '@/store/auth/auth.hook';
-import { useUser } from '@/store/user/user.hook';
+import { useAuthStore } from '@/store/auth/auth.store';
 import { useMutation } from '@tanstack/react-query';
 
 export const usePlanCard = ({ priceId }: { priceId: string }) => {
-  const { isLoggedIn } = useUser();
-  const { openAuthAction } = useAuth();
+  const { isLoggedIn } = useUserQuery();
+  const openAuthAction = useAuthStore((state) => state.openAuthAction);
 
   const { mutateAsync: createSubscription } = useMutation({
     mutationFn: (priceId: string) =>

@@ -1,8 +1,12 @@
 import { AuthModal } from '@/components/features/auth';
 import { Config, MobileSearchOverlay, Toaster } from '@/components/layout';
 import { QueryProvider } from '@/providers';
+import { UsersService } from '@/service/users';
+import { CACHE_QUERY_KEYS, getQueryClient } from '@/utils/helpers/query.helper';
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
+import { cookies } from 'next/headers';
 import Script from 'next/script';
 import './globals.css';
 
@@ -146,22 +150,38 @@ export const metadata: Metadata = {
     'Encontre e agende com os melhores profissionais perto de você. Simples, rápido e confiável.',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const queryClient = getQueryClient();
+
+  const cookieStore = await cookies();
+  const userIdentification = cookieStore.get('user_identification')?.value;
+
+  if (userIdentification) {
+    await queryClient.prefetchQuery({
+      queryKey: CACHE_QUERY_KEYS.user(userIdentification),
+      queryFn: () => UsersService.getUser(),
+    });
+  }
+
+  const dehydratedState = dehydrate(queryClient);
+
   return (
     <html lang="pt-BR">
       <body
         className={`${monaSans.variable} ${geistSans.variable} ${geistMono.variable}`}
       >
         <QueryProvider>
-          {children}
-          <Config />
-          <AuthModal />
-          <Toaster />
-          <MobileSearchOverlay />
+          <HydrationBoundary state={dehydratedState}>
+            {children}
+            <Config />
+            <AuthModal />
+            <Toaster />
+            <MobileSearchOverlay />
+          </HydrationBoundary>
         </QueryProvider>
 
         <Script

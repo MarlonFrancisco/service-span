@@ -1,20 +1,19 @@
-import { useCallback, useState } from 'react';
-
+/**
+ * Main orchestration hook for Homepage
+ *
+ * Following ANCR-FA Hook-Driven Architecture:
+ * - This hook acts as an orchestrator/composer
+ * - Individual component logic is handled by specialized hooks:
+ *   - useHeroSearchBar: Search bar logic (placeholder rotation, search, mobile handling)
+ *   - useCategoriesGrid: Categories navigation logic
+ *
+ * Components consume their respective specialized hooks directly
+ * rather than receiving props from this orchestrator.
+ */
 export const useHomepage = () => {
-  const [searchQuery, setSearchQuery] = useState('');
+  // This hook is now a simple orchestrator
+  // Individual components use their own specialized hooks
+  // No centralized logic needed here for now
 
-  const handleSearch = useCallback(() => {
-    const params = new URLSearchParams();
-    if (!searchQuery) return;
-
-    if (searchQuery) params.set('query', searchQuery);
-
-    window.location.href = `/booking?${params}`;
-  }, [searchQuery]);
-
-  return {
-    searchQuery,
-    setSearchQuery,
-    handleSearch,
-  };
+  return {};
 };

@@ -1,4 +1,4 @@
-import { useAuth } from '@/store/auth/auth.hook';
+import { useAuthStore } from '@/store/auth/auth.store';
 import { Button, Input, Separator } from '@repo/ui';
 import { ArrowRight, Globe, Mail, Phone } from 'lucide-react';
 import { useState } from 'react';
@@ -16,7 +16,9 @@ export function LoginStep({ onNext }: LoginStepProps) {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [contactType, setContactType] = useState<'email' | 'phone'>('email');
   const [isLoading, setIsLoading] = useState(false);
-  const { createAuthSessionAction } = useAuth();
+  const createAuthSessionAction = useAuthStore(
+    (state) => state.createAuthSessionAction,
+  );
 
   const handleContinue = async () => {
     setIsLoading(true);

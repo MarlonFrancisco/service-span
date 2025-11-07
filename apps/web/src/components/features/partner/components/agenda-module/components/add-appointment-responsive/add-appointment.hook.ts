@@ -1,7 +1,7 @@
 import { ScheduleService } from '@/service/partner/schedule';
 import { usePartnerStore } from '@/store';
 import { useAgendaStore } from '@/store/admin/agenda';
-import { IAppointment } from '@/types/api/schedule.types';
+import { IAppointment, ICreateAppointment } from '@/types/api/schedule.types';
 import { CACHE_QUERY_KEYS, getQueryClient } from '@/utils/helpers/query.helper';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
@@ -23,7 +23,7 @@ export const useAddAppointmentMutations = () => {
 
   const { mutate: createAppointment, isPending: isCreatingAppointment } =
     useMutation({
-      mutationFn: (data: Partial<IAppointment>) => {
+      mutationFn: (data: Partial<ICreateAppointment>) => {
         return ScheduleService.create(storeId, data);
       },
       onSuccess: (data: IAppointment) => {
@@ -86,7 +86,8 @@ export const useAddAppointment = () => {
           endTime: addMinutesToTime(data.startTime, data.service.duration),
           date: new Date(data.date).toISOString().split('T')[0],
           status: 'scheduled',
-        } as Partial<IAppointment>);
+          services: [{ id: data.service.id, duration: data.service.duration }],
+        });
       },
       (errors) => {
         const firstError = Object.values(errors)[0]?.message;

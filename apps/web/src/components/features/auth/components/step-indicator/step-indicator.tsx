@@ -1,4 +1,4 @@
-import { useAuth } from '@/store/auth/auth.hook';
+import { useAuthStore } from '@/store/auth/auth.store';
 import { AuthStep } from '../../auth.types';
 
 interface StepIndicatorProps {
@@ -6,7 +6,7 @@ interface StepIndicatorProps {
 }
 
 export function StepIndicator({ currentStep }: StepIndicatorProps) {
-  const { isNewUser } = useAuth();
+  const isNewUser = useAuthStore((state) => state.isNewUser);
 
   const steps = isNewUser
     ? ['login', 'verification', 'signup', 'profile-selection']

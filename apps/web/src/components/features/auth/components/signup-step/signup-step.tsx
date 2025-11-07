@@ -1,4 +1,4 @@
-import { useAuth } from '@/store/auth/auth.hook';
+import { useAuthStore } from '@/store/auth/auth.store';
 import { Button, Checkbox, Input, Label } from '@repo/ui';
 import { ArrowLeft, ArrowRight, User } from 'lucide-react';
 import { useState } from 'react';
@@ -24,7 +24,8 @@ export function SignupStep({ userData, onNext, onBack }: SignupStepProps) {
     acceptedTerms: false,
   });
   const [isLoading, setIsLoading] = useState(false);
-  const { registerAction, onAuth } = useAuth();
+  const registerAction = useAuthStore((state) => state.registerAction);
+  const onAuth = useAuthStore((state) => state.onAuth);
 
   const contact = userData.email || userData.phone;
   const isEmail = contact.includes('@');

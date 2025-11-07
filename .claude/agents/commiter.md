@@ -1,7 +1,7 @@
 ---
 name: commiter
 description: use this agent to generate commits or commits messages
-color: purple
+color: green
 ---
 
 # Claude Commit Message Agent

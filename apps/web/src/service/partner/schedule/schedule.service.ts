@@ -1,4 +1,4 @@
-import { IAppointment } from '@/types/api/schedule.types';
+import { IAppointment, ICreateAppointment } from '@/types/api/schedule.types';
 import { apiClient } from '../../api';
 import { HttpClientService } from '../../api/http-client.service';
 
@@ -6,7 +6,7 @@ export class ScheduleService {
   static apiClient: HttpClientService = apiClient;
   static headers?: HeadersInit;
 
-  static async create(storeId: string, schedule: Partial<IAppointment>) {
+  static async create(storeId: string, schedule: Partial<ICreateAppointment>) {
     return await this.apiClient.post<IAppointment>(
       `/partner/stores/${storeId}/schedules`,
       schedule,

@@ -1,7 +1,7 @@
 import { FetchingStatus } from '@/types/api';
 
 interface IAuthActions {
-  openAuthAction: ({ onAuth }: { onAuth?: () => void }) => Promise<void>;
+  openAuthAction: (params?: { onAuth?: () => void }) => Promise<void>;
   closeAuthAction: () => Promise<void>;
   createAuthSessionAction: (payload: {
     email?: string;

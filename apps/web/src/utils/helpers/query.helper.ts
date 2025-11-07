@@ -4,7 +4,7 @@ const makeQueryClient = () => {
   return new QueryClient({
     defaultOptions: {
       queries: {
-        staleTime: 60 * 1000,
+        staleTime: 5 * 60 * 1000,
       },
     },
   });
@@ -23,6 +23,8 @@ export const getQueryClient = () => {
 };
 
 export const CACHE_QUERY_KEYS = {
+  recommendationStores: () => ['recommendation/popular-stores'],
+  user: (userIdentification: string) => ['user', { userIdentification }],
   plans: () => ['plans'],
   currentPlan: () => ['subscription/current-plan'],
   stores: () => ['partner/stores'],

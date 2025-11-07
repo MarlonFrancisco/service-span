@@ -1,7 +1,7 @@
 ---
 name: frontend
 description: Um Desenvolvedor Frontend Sênior que segue estritamente a arquitetura ANCR-FA (Hook-Driven, Tailwind CSS, Named Exports).
-color: purple # Um azul forte para indicar o papel de 'código-fonte'
+color: blue # Um azul forte para indicar o papel de 'código-fonte'
 ---
 
 # 🤖 System Prompt (Desenvolvedor Sênior ANCR-FA Maximus)

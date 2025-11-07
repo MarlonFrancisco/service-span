@@ -13,9 +13,20 @@ export interface IAppointment {
   endTime: string;
   date: string;
   status: TAppointmentStatus;
-  price: number;
   notes?: string;
   user: IUser;
   service: IService;
   storeMember: IProfessional;
+}
+
+export interface ICreateAppointment {
+  id: string;
+  startTime: string;
+  endTime: string;
+  date: string;
+  status: TAppointmentStatus;
+  notes?: string;
+  user: Partial<IUser>;
+  services: Partial<IService>[];
+  storeMember: Partial<IProfessional>;
 }

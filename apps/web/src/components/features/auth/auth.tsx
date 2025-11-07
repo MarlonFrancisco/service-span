@@ -1,5 +1,5 @@
 'use client';
-import { useAuth } from '@/store/auth/auth.hook';
+import { useAuthStore } from '@/store/auth/auth.store';
 import { Dialog, DialogContent } from '@repo/ui';
 import { useState } from 'react';
 import { AuthStep } from './auth.types';
@@ -18,13 +18,14 @@ export function AuthModal() {
     name: '',
     isNewUser: false,
   });
-  const { isOpen, closeAuthAction } = useAuth();
+  const isOpen = useAuthStore((state) => state.isOpen);
+  const closeAuthAction = useAuthStore((state) => state.closeAuthAction);
+
   const isProfileSelection = currentStep === 'profile-selection';
 
   const handleStepChange = async (step: AuthStep, data?: any) => {
     setIsTransitioning(true);
 
-    // Small delay for smooth transition
     await new Promise((resolve) => setTimeout(resolve, 150));
 
     if (data) {
@@ -39,10 +40,6 @@ export function AuthModal() {
     setCurrentStep('login');
     closeAuthAction();
     setUserData({ email: '', phone: '', name: '', isNewUser: false });
-  };
-
-  const handleAuthComplete = () => {
-    handleClose();
   };
 
   const renderStep = () => {
@@ -67,14 +64,7 @@ export function AuthModal() {
             />
           );
         case 'profile-selection':
-          return (
-            <ProfileSelectionStep
-              onSelect={handleAuthComplete}
-              onBack={() =>
-                handleStepChange(userData.isNewUser ? 'signup' : 'verification')
-              }
-            />
-          );
+          return <ProfileSelectionStep />;
         default:
           return null;
       }
@@ -85,10 +75,7 @@ export function AuthModal() {
         {/* Progress Indicator - subtle and only for multi-step flows */}
         {currentStep !== 'login' && (
           <div className="px-8 pt-6">
-            <StepIndicator
-              currentStep={currentStep}
-              isNewUser={userData.isNewUser}
-            />
+            <StepIndicator currentStep={currentStep} />
           </div>
         )}
         {stepComponent}
