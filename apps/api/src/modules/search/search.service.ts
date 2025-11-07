@@ -1,54 +1,32 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { Search } from '@upstash/search';
+import { UpstashService } from '../upstash/upstash.service';
 import { IStoreSearchContent, IStoreSearchMetadata } from './search.types';
+
+const STORES_INDEX = 'stores';
 
 @Injectable()
 export class SearchService {
   private readonly logger = new Logger(SearchService.name);
-  private client: Search;
-  private index: ReturnType<
-    typeof this.client.index<
-      Record<string, keyof IStoreSearchContent>,
-      Record<string, keyof IStoreSearchMetadata>
-    >
-  >;
 
-  constructor(readonly configService: ConfigService) {
-    const upstashSearchRestUrl = this.configService.get(
-      'UPSTASH_SEARCH_REST_URL',
-    );
-    const upstashSearchRestToken = this.configService.get(
-      'UPSTASH_SEARCH_REST_TOKEN',
-    );
+  constructor(private readonly upstashService: UpstashService) {}
 
-    if (!upstashSearchRestUrl || !upstashSearchRestToken) {
-      this.logger.warn(
-        'Search credentials not configured - search functionality disabled',
-      );
-      return;
-    }
-
-    this.client = new Search({
-      url: upstashSearchRestUrl,
-      token: upstashSearchRestToken,
-    });
-
-    this.index = this.client.index('stores');
-  }
-
+  /**
+   * Index a store for search
+   */
   async indexStore(
     storeId: string,
-    content: Record<string, keyof IStoreSearchContent>,
-    metadata: Record<string, keyof IStoreSearchMetadata>,
+    content: Record<string, IStoreSearchContent>,
+    metadata: Record<string, IStoreSearchMetadata>,
   ) {
-    if (!this.client) {
-      this.logger.warn('Search client not available, skipping index');
+    if (!this.upstashService.isAvailable()) {
+      this.logger.warn('Upstash service not available, skipping index');
       return;
     }
 
     try {
-      await this.index.upsert([{ id: storeId, content, metadata }]);
+      await this.upstashService.upsert(STORES_INDEX, [
+        { id: storeId, content, metadata },
+      ]);
       this.logger.log(`Store ${storeId} indexed successfully`);
     } catch (error) {
       this.logger.error(`Failed to index store ${storeId}:`, error);
@@ -56,14 +34,17 @@ export class SearchService {
     }
   }
 
+  /**
+   * Remove a store from search index
+   */
   async deleteStoreIndex(storeId: string) {
-    if (!this.client) {
-      this.logger.warn('Search client not available, skipping deletion');
+    if (!this.upstashService.isAvailable()) {
+      this.logger.warn('Upstash service not available, skipping deletion');
       return;
     }
 
     try {
-      await this.index.delete({ ids: [storeId] });
+      await this.upstashService.delete(STORES_INDEX, [storeId]);
       this.logger.log(`Store ${storeId} removed from index`);
     } catch (error) {
       this.logger.error(`Failed to delete store ${storeId} from index:`, error);
@@ -71,20 +52,17 @@ export class SearchService {
     }
   }
 
+  /**
+   * Search for stores
+   */
   async search(
     query: string,
     options?: {
       filter?: string;
     },
   ) {
-    if (!this.client) {
-      this.logger.warn('Search client not available');
-      return { results: [], count: 0 };
-    }
-
     try {
-      const results = await this.index.search({
-        query,
+      const results = await this.upstashService.search(STORES_INDEX, query, {
         limit: 100,
         filter: options?.filter,
       });
@@ -93,19 +71,6 @@ export class SearchService {
     } catch (error) {
       this.logger.error('Search failed:', error);
       throw error;
-    }
-  }
-
-  async getIndexInfo() {
-    if (!this.client) {
-      return null;
-    }
-
-    try {
-      return await this.index.info();
-    } catch (error) {
-      this.logger.error('Failed to get index info:', error);
-      return null;
     }
   }
 }

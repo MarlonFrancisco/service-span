@@ -8,8 +8,10 @@ import { NotificationModule } from './notification';
 import { PartnerRoutesGuard } from './partner/guards';
 import { PartnerModule } from './partner/partner.module';
 import { PlansModule } from './plans';
+import { RecomendationModule } from './recomendation';
 import { SearchModule } from './search';
 import { SubscriptionModule } from './subscription';
+import { UpstashModule } from './upstash';
 import { UsersModule } from './users';
 
 @Module({
@@ -18,6 +20,7 @@ import { UsersModule } from './users';
       isGlobal: true,
       envFilePath: ['.env.local', '.env'],
     }),
+    UpstashModule,
     DatabaseModule,
     SubscriptionModule,
     PlansModule,
@@ -26,6 +29,7 @@ import { UsersModule } from './users';
     NotificationModule,
     PartnerModule,
     SearchModule,
+    RecomendationModule,
   ],
   providers: [
     {

@@ -1,7 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Between, Repository } from 'typeorm';
+import { calculateEndTime } from '../../../../utils/helpers/schedule.helpers';
 import { UsersService } from '../../../users/users.service';
+import { CreateSchedulesDto } from './dto/create-schedule.dto';
 import { ScheduleDto } from './dto/schedule.dto';
 import { Schedule } from './schedule.entity';
 
@@ -13,7 +15,7 @@ export class ScheduleService {
     private readonly userService: UsersService,
   ) {}
 
-  async create(scheduleDto: ScheduleDto): Promise<Schedule> {
+  async create(scheduleDto: CreateSchedulesDto): Promise<Schedule[]> {
     const user = await this.userService.findByOne({
       email: scheduleDto.user?.email,
       telephone: scheduleDto.user?.telephone,
@@ -25,14 +27,26 @@ export class ScheduleService {
 
     scheduleDto.user = { id: user.id };
 
-    const schedule = await this.scheduleRepository.save(scheduleDto);
+    let endTime = '';
 
-    return this.findOne(schedule.id, [
-      'storeMember',
-      'storeMember.user',
-      'user',
-      'service',
-    ]);
+    const schedules = scheduleDto.services.map((service) => {
+      const startTime = !endTime ? scheduleDto.startTime : endTime;
+      const scheduleEndTime = calculateEndTime(startTime, service.duration);
+
+      const nextSchedule = {
+        ...scheduleDto,
+        startTime,
+        endTime: scheduleEndTime,
+        service: { id: service.id },
+        services: undefined,
+      };
+
+      endTime = scheduleEndTime;
+
+      return nextSchedule;
+    });
+
+    return this.scheduleRepository.save(schedules);
   }
 
   async findAll(storeId: string): Promise<Schedule[]> {

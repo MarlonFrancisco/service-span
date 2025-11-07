@@ -1,4 +1,5 @@
 import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import { CreateSchedulesDto } from './dto/create-schedule.dto';
 import { ScheduleDto } from './dto/schedule.dto';
 import { ScheduleService } from './schedule.service';
 
@@ -12,9 +13,12 @@ export class ScheduleController {
   }
 
   @Post()
-  create(@Param('storeId') storeId: string, @Body() schedule: ScheduleDto) {
+  create(
+    @Param('storeId') storeId: string,
+    @Body() schedule: CreateSchedulesDto,
+  ) {
     return this.scheduleService.create(
-      new ScheduleDto({ ...schedule, store: { id: storeId } }),
+      new CreateSchedulesDto({ ...schedule, store: { id: storeId } }),
     );
   }
 

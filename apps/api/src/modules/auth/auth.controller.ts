@@ -46,6 +46,11 @@ export class AuthController {
         path: '/',
       });
 
+      res.cookie('user_identification', user.email || user.telephone, {
+        httpOnly: false,
+        maxAge: tokens.expires_in * 1000,
+      });
+
       return { user };
     } catch (error) {
       throw new UnauthorizedException(error);
@@ -75,6 +80,11 @@ export class AuthController {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: process.env.NODE_ENV === 'production' ? 'lax' : 'lax', // production should be strict, but for now we'll use lax
+      maxAge: tokens.expires_in * 1000,
+    });
+
+    res.cookie('user_identification', user.email || user.telephone, {
+      httpOnly: false,
       maxAge: tokens.expires_in * 1000,
     });
 
