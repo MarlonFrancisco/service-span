@@ -1,29 +1,29 @@
 'use client';
 
-import * as React from 'react';
 import { Slot } from '@radix-ui/react-slot';
-import { VariantProps, cva } from 'class-variance-authority';
+import { cva, type VariantProps } from 'class-variance-authority';
 import { PanelLeftIcon } from 'lucide-react';
+import * as React from 'react';
 
-import { useIsMobile } from './use-mobile';
-import { cn } from './utils';
-import { Button } from './button';
-import { Input } from './input';
-import { Separator } from './separator';
+import { Button } from '@repo/ui/components/ui/button';
+import { Input } from '@repo/ui/components/ui/input';
+import { Separator } from '@repo/ui/components/ui/separator';
 import {
   Sheet,
   SheetContent,
   SheetDescription,
   SheetHeader,
   SheetTitle,
-} from './sheet';
-import { Skeleton } from './skeleton';
+} from '@repo/ui/components/ui/sheet';
+import { Skeleton } from '@repo/ui/components/ui/skeleton';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from './tooltip';
+} from '@repo/ui/components/ui/tooltip';
+import { useIsMobile } from '@repo/ui/hooks/use-mobile';
+import { cn } from '@repo/ui/lib/utils';
 
 const SIDEBAR_COOKIE_NAME = 'sidebar_state';
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
@@ -309,7 +309,7 @@ function SidebarInset({ className, ...props }: React.ComponentProps<'main'>) {
     <main
       data-slot="sidebar-inset"
       className={cn(
-        'bg-background relative flex w-full flex-1 flex-col',
+        'bg-white relative flex w-full flex-1 flex-col dark:bg-neutral-950',
         'md:peer-data-[variant=inset]:m-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow-sm md:peer-data-[variant=inset]:peer-data-[state=collapsed]:ml-2',
         className,
       )}
@@ -326,7 +326,10 @@ function SidebarInput({
     <Input
       data-slot="sidebar-input"
       data-sidebar="input"
-      className={cn('bg-background h-8 w-full shadow-none', className)}
+      className={cn(
+        'bg-white h-8 w-full shadow-none dark:bg-neutral-950',
+        className,
+      )}
       {...props}
     />
   );
@@ -480,7 +483,7 @@ const sidebarMenuButtonVariants = cva(
       variant: {
         default: 'hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
         outline:
-          'bg-background shadow-[0_0_0_1px_hsl(var(--sidebar-border))] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground hover:shadow-[0_0_0_1px_hsl(var(--sidebar-accent))]',
+          'bg-white shadow-[0_0_0_1px_hsl(var(--sidebar-border))] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground hover:shadow-[0_0_0_1px_hsl(var(--sidebar-accent))] dark:bg-neutral-950',
       },
       size: {
         default: 'h-8 text-sm',
