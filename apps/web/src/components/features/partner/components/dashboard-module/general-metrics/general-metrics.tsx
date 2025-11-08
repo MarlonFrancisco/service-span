@@ -1,6 +1,6 @@
 'use client';
+import { TrendBadge } from '@/components/features/partner/components/dashboard-module/components/trend-badge';
 import {
-  Badge,
   Button,
   Card,
   CardContent,
@@ -10,8 +10,6 @@ import {
   ToggleGroupItem,
 } from '@repo/ui';
 import {
-  ArrowDownRight,
-  ArrowUpRight,
   Award,
   DollarSign,
   Percent,
@@ -112,7 +110,7 @@ export function GeneralMetricsModule() {
       value: `R$ ${Math.round(overview.weeklyRevenue.value).toLocaleString()}`,
       subValue: `vs período anterior`,
       icon: DollarSign,
-      trend: `${overview.weeklyRevenue.percentageChange > 0 ? '+' : ''}${overview.weeklyRevenue.percentageChange}%`,
+      trend: overview.weeklyRevenue.percentageChange,
       trendUp: overview.weeklyRevenue.percentageChange > 0,
       trendNeutral: overview.weeklyRevenue.percentageChange === 0,
       comparison: `${overview.weeklyRevenue.absoluteChange >= 0 ? '+' : ''}R$ ${Math.abs(overview.weeklyRevenue.absoluteChange).toLocaleString()}`,
@@ -122,7 +120,7 @@ export function GeneralMetricsModule() {
       value: `${overview.occupationRate.value}%`,
       subValue: 'dos horários preenchidos',
       icon: Percent,
-      trend: `${overview.occupationRate.percentageChange > 0 ? '+' : ''}${overview.occupationRate.percentageChange}%`,
+      trend: overview.occupationRate.percentageChange,
       trendUp: overview.occupationRate.percentageChange > 0,
       trendNeutral: overview.occupationRate.percentageChange === 0,
       comparison: comparisonText,
@@ -132,7 +130,7 @@ export function GeneralMetricsModule() {
       value: `R$ ${overview.averageTicket.value}`,
       subValue: 'por agendamento',
       icon: Target,
-      trend: `${overview.averageTicket.absoluteChange > 0 ? '+' : ''}R$ ${Math.abs(overview.averageTicket.absoluteChange)}`,
+      trend: overview.averageTicket.absoluteChange,
       trendUp: overview.averageTicket.absoluteChange > 0,
       trendNeutral: overview.averageTicket.absoluteChange === 0,
       comparison: comparisonText,
@@ -142,7 +140,8 @@ export function GeneralMetricsModule() {
       value: overview.averageRating.value.toFixed(1),
       subValue: `${overview.averageRating.reviewCount} avaliações ${subtitleText}`,
       icon: Star,
-      trend: `${overview.averageRating.value > overview.averageRating.previousValue ? '+' : overview.averageRating.value === overview.averageRating.previousValue ? '' : '-'}${overview.averageRating.value === overview.averageRating.previousValue ? '0.0' : Math.abs(overview.averageRating.value - overview.averageRating.previousValue).toFixed(1)}`,
+      trend:
+        overview.averageRating.value - overview.averageRating.previousValue,
       trendUp:
         overview.averageRating.value > overview.averageRating.previousValue,
       trendNeutral:
@@ -224,25 +223,7 @@ export function GeneralMetricsModule() {
                   <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gray-100 flex items-center justify-center group-hover:bg-gray-900 transition-colors">
                     <stat.icon className="h-5 w-5 text-gray-600 group-hover:text-white transition-colors" />
                   </div>
-                  <Badge
-                    variant="outline"
-                    className={`text-xs ${
-                      stat.trendNeutral
-                        ? 'text-gray-700 border-gray-200 bg-gray-50'
-                        : stat.trendUp
-                          ? 'text-green-700 border-green-200 bg-green-50'
-                          : 'text-red-700 border-red-200 bg-red-50'
-                    }`}
-                  >
-                    {stat.trendNeutral ? (
-                      <span className="inline mr-0.5">—</span>
-                    ) : stat.trendUp ? (
-                      <ArrowUpRight className="w-3 h-3 inline mr-0.5" />
-                    ) : (
-                      <ArrowDownRight className="w-3 h-3 inline mr-0.5" />
-                    )}
-                    {stat.trend}
-                  </Badge>
+                  <TrendBadge value={stat.trend} variant="outline" />
                 </div>
                 <div>
                   <p className="text-xs text-gray-500 mb-1.5">{stat.label}</p>

@@ -1,3 +1,4 @@
+'use client';
 import { PlansService } from '@/service/plans';
 import { CACHE_QUERY_KEYS } from '@/utils/helpers/query.helper';
 import { useQuery } from '@tanstack/react-query';

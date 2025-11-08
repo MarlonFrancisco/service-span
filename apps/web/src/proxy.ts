@@ -1,5 +1,7 @@
-import { UsersService } from '@/service/users';
 import { NextRequest, NextResponse } from 'next/server';
+import { UsersService } from './service/users';
+import { IUser } from './types/api';
+import { CACHE_QUERY_KEYS, getQueryClient } from './utils/helpers/query.helper';
 
 export const proxy = async (req: NextRequest) => {
   try {
@@ -17,13 +19,34 @@ export const proxy = async (req: NextRequest) => {
       return NextResponse.next();
     }
 
-    const accessToken = req.cookies.get('access_token')?.value;
+    const queryClient = getQueryClient();
 
-    const user = await UsersService.getUser({
-      headers: { Cookie: `access_token=${accessToken}` },
-    });
+    const userIdentification = req.cookies.get('user_identification')?.value;
 
-    if (!user.isSubscribed) {
+    if (!userIdentification) {
+      return NextResponse.redirect(new URL('/pricing', req.url));
+    }
+
+    let user = queryClient.getQueryData<IUser>(
+      CACHE_QUERY_KEYS.user(userIdentification),
+    );
+
+    if (!user) {
+      const accessToken = req.cookies.get('access_token')?.value;
+
+      user = await UsersService.getUser({
+        headers: { Cookie: `access_token=${accessToken}` },
+      });
+
+      if (user?.id) {
+        queryClient.setQueryData(
+          CACHE_QUERY_KEYS.user(userIdentification),
+          user,
+        );
+      }
+    }
+
+    if (!user?.isSubscribed) {
       return NextResponse.redirect(new URL('/pricing', req.url));
     }
 

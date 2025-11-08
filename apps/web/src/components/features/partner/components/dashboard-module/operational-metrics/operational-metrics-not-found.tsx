@@ -2,7 +2,7 @@
 
 import { Zap } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { MetricsNotFound } from '../shared/metrics-not-found';
+import { MetricsNotFound } from '../components/metrics-not-found';
 
 export function OperationalMetricsNotFound() {
   const router = useRouter();

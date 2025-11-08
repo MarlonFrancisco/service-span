@@ -1,4 +1,5 @@
 'use client';
+import { TrendBadge } from '@/components/features/partner/components/dashboard-module/components/trend-badge';
 import { useMetricsQuery } from '@/hooks/use-query/use-metrics-query';
 import { usePartnerStore } from '@/store';
 import {
@@ -11,8 +12,6 @@ import {
 } from '@repo/ui';
 import {
   AlertCircle,
-  ArrowDownRight,
-  ArrowUpRight,
   Clock,
   CreditCard,
   DollarSign,
@@ -73,7 +72,7 @@ export function SalesRevenueMetricsModule() {
   };
 
   // Loading state
-  if (isPendingSales && isEnabledSales) {
+  if (isPendingSales || !activeStore) {
     return <SalesRevenueMetricsSkeleton />;
   }
 
@@ -136,25 +135,7 @@ export function SalesRevenueMetricsModule() {
             <h2 className="text-gray-900">
               R$ {sales.revenue.value.toLocaleString()}
             </h2>
-            <Badge
-              className={`${
-                sales.revenue.percentageChange === 0
-                  ? 'bg-gray-50 text-gray-700 border-gray-200'
-                  : sales.revenue.percentageChange > 0
-                    ? 'bg-green-50 text-green-700 border-green-200'
-                    : 'bg-red-50 text-red-700 border-red-200'
-              }`}
-            >
-              {sales.revenue.percentageChange === 0 ? (
-                <span className="mr-1">—</span>
-              ) : sales.revenue.percentageChange > 0 ? (
-                <TrendingUp className="w-3 h-3 mr-1" />
-              ) : (
-                <ArrowDownRight className="w-3 h-3 mr-1" />
-              )}
-              {sales.revenue.percentageChange > 0 ? '+' : ''}
-              {sales.revenue.percentageChange}%
-            </Badge>
+            <TrendBadge value={sales.revenue.percentageChange} />
           </div>
         </div>
 
@@ -237,25 +218,10 @@ export function SalesRevenueMetricsModule() {
                   <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gray-100 flex items-center justify-center group-hover:bg-gray-900 transition-colors">
                     <stat.icon className="h-5 w-5 text-gray-600 group-hover:text-white transition-colors" />
                   </div>
-                  <Badge
+                  <TrendBadge
+                    value={Number(stat.trend.replace('%', ''))}
                     variant="outline"
-                    className={`text-xs ${
-                      stat.trendNeutral
-                        ? 'text-gray-700 border-gray-200 bg-gray-50'
-                        : stat.trendUp
-                          ? 'text-green-700 border-green-200 bg-green-50'
-                          : 'text-red-700 border-red-200 bg-red-50'
-                    }`}
-                  >
-                    {stat.trendNeutral ? (
-                      <span className="inline mr-0.5">—</span>
-                    ) : stat.trendUp ? (
-                      <ArrowUpRight className="w-3 h-3 inline mr-0.5" />
-                    ) : (
-                      <ArrowDownRight className="w-3 h-3 inline mr-0.5" />
-                    )}
-                    {stat.trend}
-                  </Badge>
+                  />
                 </div>
                 <div>
                   <p className="text-xs text-gray-500 mb-1.5">{stat.label}</p>

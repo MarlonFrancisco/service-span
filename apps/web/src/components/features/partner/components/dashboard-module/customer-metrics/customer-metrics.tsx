@@ -1,4 +1,5 @@
 'use client';
+import { TrendBadge } from '@/components/features/partner/components/dashboard-module/components/trend-badge';
 import {
   Badge,
   Card,
@@ -8,14 +9,10 @@ import {
   Progress,
 } from '@repo/ui';
 import {
-  ArrowDownRight,
-  ArrowUpRight,
   Crown,
   DollarSign,
   Heart,
   Star,
-  TrendingDown,
-  TrendingUp,
   Users,
 } from 'lucide-react';
 import { motion } from 'motion/react';
@@ -65,31 +62,9 @@ export function CustomerMetricsModule() {
             <h2 className="text-gray-900">
               {customers?.customerBase?.value || 0} Clientes
             </h2>
-            <Badge
-              className={
-                (customers?.customerBase?.comparison.percentageChange || 0) ===
-                0
-                  ? 'bg-gray-50 text-gray-700 border-gray-200'
-                  : (customers?.customerBase?.comparison.percentageChange ||
-                        0) > 0
-                    ? 'bg-green-50 text-green-700 border-green-200'
-                    : 'bg-red-50 text-red-700 border-red-200'
-              }
-            >
-              {(customers?.customerBase?.comparison.percentageChange || 0) ===
-              0 ? (
-                <span className="mr-1">—</span>
-              ) : (customers?.customerBase?.comparison.percentageChange || 0) >
-                0 ? (
-                <TrendingUp className="w-3 h-3 mr-1" />
-              ) : (
-                <TrendingDown className="w-3 h-3 mr-1" />
-              )}
-              {(customers?.customerBase?.comparison.percentageChange || 0) > 0
-                ? '+'
-                : ''}
-              {customers?.customerBase?.comparison.percentageChange || 0}%
-            </Badge>
+            <TrendBadge
+              value={customers?.customerBase?.comparison.percentageChange || 0}
+            />
           </div>
         </div>
 
@@ -139,25 +114,10 @@ export function CustomerMetricsModule() {
                       <Star className="h-5 w-5 text-gray-600 group-hover:text-white transition-colors" />
                     )}
                   </div>
-                  <Badge
+                  <TrendBadge
+                    value={Number(stat.trend.replace('%', ''))}
                     variant="outline"
-                    className={`text-xs ${
-                      stat.trendNeutral
-                        ? 'text-gray-700 border-gray-200 bg-gray-50'
-                        : stat.trendUp
-                          ? 'text-green-700 border-green-200 bg-green-50'
-                          : 'text-red-700 border-red-200 bg-red-50'
-                    }`}
-                  >
-                    {stat.trendNeutral ? (
-                      <span className="inline mr-0.5">—</span>
-                    ) : stat.trendUp ? (
-                      <ArrowUpRight className="w-3 h-3 inline mr-0.5" />
-                    ) : (
-                      <ArrowDownRight className="w-3 h-3 inline mr-0.5" />
-                    )}
-                    {stat.trend}
-                  </Badge>
+                  />
                 </div>
                 <div>
                   <p className="text-xs text-gray-500 mb-1.5">{stat.label}</p>

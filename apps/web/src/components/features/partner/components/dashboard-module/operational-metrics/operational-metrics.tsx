@@ -12,15 +12,11 @@ import {
 import {
   Activity,
   AlertTriangle,
-  ArrowDownRight,
-  ArrowUpRight,
   Award,
   CheckCircle,
   Clock,
   Sparkles,
   Timer,
-  TrendingDown,
-  TrendingUp,
   UserCheck,
   Zap,
 } from 'lucide-react';
@@ -39,6 +35,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
+import { TrendBadge } from '../components/trend-badge';
 import { OperationalMetricsNotFound } from './operational-metrics-not-found';
 import { OperationalMetricsSkeleton } from './operational-metrics.skeleton';
 
@@ -51,15 +48,14 @@ export function OperationalMetricsModule() {
   const [periodFilter, setPeriodFilter] = useState<PeriodFilter>('month');
 
   const activeStore = usePartnerStore((state) => state.activeStore);
-  const { operational, isPendingOperational, isEnabledOperational } =
-    useMetricsQuery({
-      storeId: activeStore?.id,
-      period: periodFilter,
-      includeOperational: true,
-    });
+  const { operational, isPendingOperational } = useMetricsQuery({
+    storeId: activeStore?.id,
+    period: periodFilter,
+    includeOperational: true,
+  });
 
   // Loading state
-  if (isPendingOperational && isEnabledOperational) {
+  if (isPendingOperational || !activeStore) {
     return <OperationalMetricsSkeleton />;
   }
 
@@ -161,9 +157,10 @@ export function OperationalMetricsModule() {
   // Heatmap data com remapeamento
   const heatmapData = operational.occupancyHeatMap.hours.map((hour, idx) => {
     const dayData: Record<string, number> = { hour };
-    const shortDays = ['seg', 'ter', 'qua', 'qui', 'sex', 'sab', 'dom'];
+    const shortDays = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sab'];
     operational.occupancyHeatMap.data.forEach((dayRow, dayIdx) => {
-      dayData[shortDays[dayIdx]] = dayRow.values[idx] || 0;
+      dayData[shortDays[dayIdx] as keyof typeof dayData] =
+        dayRow.values[idx] || 0;
     });
     return dayData;
   });
@@ -223,21 +220,7 @@ export function OperationalMetricsModule() {
             <h2 className="text-gray-900">
               {avgUtilization?.toFixed(1)}% Ocupação
             </h2>
-            <Badge
-              className={`${
-                operational.occupancyRate.percentageChange > 0
-                  ? 'bg-green-50 text-green-700 border-green-200'
-                  : 'bg-red-50 text-red-700 border-red-200'
-              }`}
-            >
-              {operational.occupancyRate.percentageChange > 0 ? (
-                <TrendingUp className="w-3 h-3 mr-1" />
-              ) : (
-                <TrendingDown className="w-3 h-3 mr-1" />
-              )}
-              {operational.occupancyRate.percentageChange > 0 ? '+' : ''}
-              {operational.occupancyRate.percentageChange}%
-            </Badge>
+            <TrendBadge value={operational.occupancyRate.percentageChange} />
           </div>
         </div>
 
@@ -352,25 +335,7 @@ export function OperationalMetricsModule() {
                   <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gray-100 flex items-center justify-center group-hover:bg-gray-900 transition-colors">
                     <stat.icon className="h-5 w-5 text-gray-600 group-hover:text-white transition-colors" />
                   </div>
-                  <Badge
-                    variant="outline"
-                    className={`text-xs ${
-                      stat.trendNeutral
-                        ? 'text-gray-700 border-gray-200 bg-gray-50'
-                        : stat.trendUp
-                          ? 'text-green-700 border-green-200 bg-green-50'
-                          : 'text-red-700 border-red-200 bg-red-50'
-                    }`}
-                  >
-                    {stat.trendNeutral ? (
-                      <span className="inline mr-0.5">—</span>
-                    ) : stat.trendUp ? (
-                      <ArrowUpRight className="w-3 h-3 inline mr-0.5" />
-                    ) : (
-                      <ArrowDownRight className="w-3 h-3 inline mr-0.5" />
-                    )}
-                    {stat.trend}
-                  </Badge>
+                  <TrendBadge value={Number(stat.trend.replace('%', ''))} />
                 </div>
                 <div>
                   <p className="text-xs text-gray-500 mb-1.5">{stat.label}</p>
@@ -666,25 +631,9 @@ export function OperationalMetricsModule() {
                         <h4 className="text-2xl text-gray-900">
                           {slot.bookings}
                         </h4>
-                        <Badge
-                          variant="outline"
-                          className={`text-xs ${
-                            slot.trendNeutral
-                              ? 'text-gray-700 border-gray-200 bg-gray-50'
-                              : slot.trendUp
-                                ? 'text-green-700 border-green-200 bg-green-50'
-                                : 'text-red-700 border-red-200 bg-red-50'
-                          }`}
-                        >
-                          {slot.trendNeutral ? (
-                            <span className="inline mr-0.5">—</span>
-                          ) : slot.trendUp ? (
-                            <TrendingUp className="w-3 h-3 inline mr-0.5" />
-                          ) : (
-                            <TrendingDown className="w-3 h-3 inline mr-0.5" />
-                          )}
-                          {slot.trend}
-                        </Badge>
+                        <TrendBadge
+                          value={Number(slot.trend.replace('%', ''))}
+                        />
                       </div>
                       <Progress value={slot.percentage} className="h-2 mb-2" />
                       <p className="text-xs text-gray-500">
@@ -799,29 +748,21 @@ export function OperationalMetricsModule() {
                       <div className="text-xs text-gray-600 font-medium flex items-center">
                         {row.hour}
                       </div>
-                      {(
-                        [
-                          'seg',
-                          'ter',
-                          'qua',
-                          'qui',
-                          'sex',
-                          'sab',
-                          'dom',
-                        ] as const
-                      ).map((day) => (
-                        <div
-                          key={day}
-                          className="aspect-square rounded-lg flex items-center justify-center text-xs font-medium text-white transition-all hover:scale-105"
-                          style={{
-                            backgroundColor: getOccupancyColor(
-                              (row[day] as number) || 0,
-                            ),
-                          }}
-                        >
-                          {(row[day] as number) || 0}%
-                        </div>
-                      ))}
+                      {['seg', 'ter', 'qua', 'qui', 'sex', 'sab', 'dom'].map(
+                        (day) => (
+                          <div
+                            key={day}
+                            className="aspect-square rounded-lg flex items-center justify-center text-xs font-medium text-white transition-all hover:scale-105"
+                            style={{
+                              backgroundColor: getOccupancyColor(
+                                (row[day] as number) || 0,
+                              ),
+                            }}
+                          >
+                            {(row[day] as number) || 0}%
+                          </div>
+                        ),
+                      )}
                     </div>
                   ))}
                 </div>
