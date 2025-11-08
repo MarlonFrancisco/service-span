@@ -1,12 +1,10 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { DashboardCustomersService } from './dashboard-customers.service';
-import { Store } from '../../stores/store.entity';
 import { Schedule } from '../../stores/schedule/schedule.entity';
-import { Review } from '../../stores/review/review.entity';
+import { DashboardCustomersService } from './dashboard-customers.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Store, Schedule, Review])],
+  imports: [TypeOrmModule.forFeature([Schedule])],
   providers: [DashboardCustomersService],
   exports: [DashboardCustomersService],
 })

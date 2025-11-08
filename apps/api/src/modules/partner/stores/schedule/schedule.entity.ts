@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, Index, ManyToOne } from 'typeorm';
 import { BaseEntity } from '../../../database';
 import { User } from '../../../users/user.entity';
 import { Service } from '../category/service/service.entity';
@@ -6,6 +6,10 @@ import { StoreMember } from '../store-member/store-member.entity';
 import { Store } from '../store.entity';
 
 @Entity('schedules')
+@Index('idx_schedules_store', ['store.id'])
+@Index('idx_schedules_service', ['service.id'])
+@Index('idx_schedules_user', ['user.id'])
+@Index('idx_schedules_store_member', ['storeMember.id'])
 export class Schedule extends BaseEntity {
   @Column({ type: 'char', length: 5, nullable: true })
   startTime: string;

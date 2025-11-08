@@ -14,6 +14,7 @@ import { Category } from '../category.entity';
 
 @Entity('services')
 @Index('idx_services_store', ['store.id'])
+@Index('idx_services_category', ['category.id'])
 export class Service extends BaseEntity {
   @Column({ type: 'varchar', nullable: true })
   name: string;

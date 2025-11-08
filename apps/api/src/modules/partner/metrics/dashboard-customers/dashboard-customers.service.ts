@@ -1,9 +1,21 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import {
+  getPeriodDateRange,
+  getPreviousPeriodStart,
+} from '../../../../utils/helpers/metrics.helpers';
 import { Schedule } from '../../stores/schedule/schedule.entity';
-import { Store } from '../../stores/store.entity';
-import { Review } from '../../stores/review/review.entity';
+import { DashboardCustomersQueries } from './dashboard-customers-queries';
+import {
+  AverageLTVResult,
+  CustomerBaseResult,
+  CustomerEvolutionResult,
+  LTVBySegmentResult,
+  NPSScoreResult,
+  RetentionRateResult,
+  TopVIPCustomerResult,
+} from './dashboard-customers.types';
 import {
   AverageLTV,
   CustomerBase,
@@ -12,41 +24,20 @@ import {
   LTVBySegment,
   NPSScore,
   RetentionRate,
-  TopVIPCustomer,
 } from './dto/dashboard-customers.dto';
 
 type PeriodType = 'week' | 'month' | 'quarter';
 
-interface DateRange {
-  start: Date;
-  end: Date;
-}
-
-interface CustomerData {
-  userId: string;
-  userName: string;
-  totalVisits: number;
-  totalSpent: number;
-  firstVisit: Date;
-  lastVisit: Date;
-  completedVisits: number;
-  monthlyVisits: number;
-}
-
 @Injectable()
 export class DashboardCustomersService {
   constructor(
-    @InjectRepository(Store)
-    private storeRepository: Repository<Store>,
     @InjectRepository(Schedule)
     private scheduleRepository: Repository<Schedule>,
-    @InjectRepository(Review)
-    private reviewRepository: Repository<Review>,
   ) {}
 
   /**
-   * Dashboard 3: Métricas de Clientes
-   * Calcula todas as métricas relacionadas aos clientes
+   * Dashboard 4: Métricas de Clientes
+   * Calcula todas as métricas relacionadas aos clientes usando SQL otimizado
    * @param storeId - ID da loja
    * @param period - Período para análise: 'week' (esta semana), 'month' (este mês), 'quarter' (trimestre)
    */
@@ -54,69 +45,105 @@ export class DashboardCustomersService {
     storeId: string,
     period: PeriodType = 'month',
   ): Promise<DashboardCustomersDto> {
-    const store = await this.storeRepository.findOne({
-      where: { id: storeId },
-    });
-
-    if (!store) {
-      throw new Error('Store not found');
-    }
-
-    // Calcular períodos
     const now = new Date();
-    const currentPeriod = this.getPeriodDateRange(now, period);
-    const previousPeriod = this.getPeriodDateRange(
-      this.getPreviousPeriodStart(now, period),
+    const currentPeriod = getPeriodDateRange(now, period);
+    const previousPeriod = getPeriodDateRange(
+      getPreviousPeriodStart(now, period),
+      period,
+    );
+    const beforePreviousPeriod = getPeriodDateRange(
+      getPreviousPeriodStart(previousPeriod.start, period),
       period,
     );
 
-    // Buscar todos os agendamentos da loja
-    const allSchedules = await this.scheduleRepository.find({
-      where: { store: { id: storeId } },
-      relations: ['user', 'service'],
-      order: { date: 'ASC' },
-    });
+    // Executar todas as queries em paralelo
+    const [
+      customerBaseResult,
+      retentionRateResult,
+      averageLTVResult,
+      npsScoreResult,
+      customerEvolutionResults,
+      ltvBySegmentResults,
+      topVIPCustomersResults,
+    ] = await Promise.all([
+      this.scheduleRepository.query(
+        DashboardCustomersQueries.calculateCustomerBase,
+        [
+          storeId,
+          currentPeriod.end,
+          previousPeriod.end,
+          currentPeriod.start,
+          currentPeriod.end,
+        ],
+      ),
+      this.scheduleRepository.query(
+        DashboardCustomersQueries.calculateRetentionRate,
+        [
+          storeId,
+          previousPeriod.start,
+          previousPeriod.end,
+          currentPeriod.start,
+          currentPeriod.end,
+          beforePreviousPeriod.start,
+          beforePreviousPeriod.end,
+        ],
+      ),
+      this.scheduleRepository.query(
+        DashboardCustomersQueries.calculateAverageLTV,
+        [storeId, currentPeriod.end, previousPeriod.end],
+      ),
+      this.scheduleRepository.query(
+        DashboardCustomersQueries.calculateNPSScore,
+        [
+          storeId,
+          currentPeriod.start,
+          currentPeriod.end,
+          previousPeriod.start,
+          previousPeriod.end,
+        ],
+      ),
+      this.scheduleRepository.query(
+        DashboardCustomersQueries.calculateCustomerEvolution,
+        [storeId, this.getSixMonthsAgo()],
+      ),
+      this.scheduleRepository.query(
+        DashboardCustomersQueries.calculateLTVBySegment,
+        [storeId],
+      ),
+      this.scheduleRepository.query(
+        DashboardCustomersQueries.calculateTopVIPCustomers,
+        [storeId],
+      ),
+    ]);
 
-    // Buscar reviews
-    const allReviews = await this.reviewRepository.find({
-      where: { store: { id: storeId } },
-      relations: ['user'],
-    });
-
-    // Calcular métricas principais
-    const customerBase = await this.calculateCustomerBase(
-      allSchedules,
-      currentPeriod,
-      previousPeriod,
+    // Formatar resultados
+    const customerBase = this.formatCustomerBaseResult(
+      customerBaseResult[0] as CustomerBaseResult,
     );
-
-    const retentionRate = await this.calculateRetentionRate(
-      allSchedules,
-      currentPeriod,
-      previousPeriod,
+    const retentionRate = this.formatRetentionRateResult(
+      retentionRateResult[0] as RetentionRateResult,
     );
-
-    const averageLTV = await this.calculateAverageLTV(
-      allSchedules,
-      currentPeriod,
-      previousPeriod,
+    const averageLTV = this.formatAverageLTVResult(
+      averageLTVResult[0] as AverageLTVResult,
     );
-
-    const npsScore = await this.calculateNPSScore(
-      allReviews,
-      currentPeriod,
-      previousPeriod,
+    const npsScore = this.formatNPSScoreResult(
+      npsScoreResult[0] as NPSScoreResult,
     );
-
-    // Métricas temporais
-    const customerEvolution = await this.calculateCustomerEvolution(
-      allSchedules,
-      now,
+    const customerEvolution = this.formatCustomerEvolutionResults(
+      customerEvolutionResults as CustomerEvolutionResult[],
     );
-
-    // Métricas de retenção
-    const ltvBySegment = await this.calculateLTVBySegment(allSchedules);
-    const topVIPCustomers = await this.calculateTopVIPCustomers(allSchedules);
+    const ltvBySegment = this.formatLTVBySegmentResults(
+      ltvBySegmentResults as LTVBySegmentResult[],
+    );
+    const topVIPCustomers = (
+      topVIPCustomersResults as TopVIPCustomerResult[]
+    ).map((customer) => ({
+      customerId: customer.customer_id,
+      customerName: customer.customer_name,
+      visits: Number(customer.visits),
+      totalSpent: Math.round(Number(customer.total_spent)),
+      lastVisit: customer.last_visit,
+    }));
 
     return {
       customerBase,
@@ -130,48 +157,11 @@ export class DashboardCustomersService {
   }
 
   /**
-   * 1. Base de Clientes
-   * Total de clientes únicos cadastrados
+   * Formata resultado SQL da base de clientes
    */
-  private async calculateCustomerBase(
-    allSchedules: Schedule[],
-    currentPeriod: DateRange,
-    previousPeriod: DateRange,
-  ): Promise<CustomerBase> {
-    // Total de clientes únicos até o final do período atual
-    const uniqueCustomersUntilCurrent = new Set(
-      allSchedules
-        .filter((s) => s.user && new Date(s.date) <= currentPeriod.end)
-        .map((s) => s.user.id),
-    );
-
-    // Total de clientes únicos até o final do período anterior
-    const uniqueCustomersUntilPrevious = new Set(
-      allSchedules
-        .filter((s) => s.user && new Date(s.date) <= previousPeriod.end)
-        .map((s) => s.user.id),
-    );
-
-    const currentValue = uniqueCustomersUntilCurrent.size;
-    const previousValue = uniqueCustomersUntilPrevious.size;
-
-    // Novos clientes no período atual
-    const newCustomersInPeriod = allSchedules.filter((s) => {
-      if (!s.user) return false;
-      // Primeira visita deste cliente
-      const firstVisit = allSchedules
-        .filter((sch) => sch.user?.id === s.user.id)
-        .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())[0];
-      const firstVisitDate = new Date(firstVisit.date);
-      return (
-        firstVisitDate >= currentPeriod.start &&
-        firstVisitDate <= currentPeriod.end
-      );
-    });
-
-    const uniqueNewCustomers = new Set(
-      newCustomersInPeriod.map((s) => s.user.id),
-    ).size;
+  private formatCustomerBaseResult(result: CustomerBaseResult): CustomerBase {
+    const currentValue = Number(result.current_customers) || 0;
+    const previousValue = Number(result.prev_customers) || 0;
 
     const percentageChange =
       previousValue > 0
@@ -184,91 +174,34 @@ export class DashboardCustomersService {
       value: currentValue,
       comparison: {
         percentageChange,
-        newCustomers: uniqueNewCustomers,
+        newCustomers: Number(result.new_customers_period) || 0,
       },
     };
   }
 
   /**
-   * 2. Taxa de Retenção
-   * % de clientes que retornaram no período
+   * Formata resultado SQL da taxa de retenção
    */
-  private async calculateRetentionRate(
-    allSchedules: Schedule[],
-    currentPeriod: DateRange,
-    previousPeriod: DateRange,
-  ): Promise<RetentionRate> {
-    // Clientes que compraram no período anterior
-    const previousCustomers = new Set(
-      allSchedules
-        .filter(
-          (s) =>
-            s.user &&
-            s.status === 'completed' &&
-            new Date(s.date) >= previousPeriod.start &&
-            new Date(s.date) <= previousPeriod.end,
-        )
-        .map((s) => s.user.id),
-    );
-
-    // Clientes do período anterior que retornaram no período atual
-    const returnedCustomers = new Set(
-      allSchedules
-        .filter(
-          (s) =>
-            s.user &&
-            s.status === 'completed' &&
-            new Date(s.date) >= currentPeriod.start &&
-            new Date(s.date) <= currentPeriod.end &&
-            previousCustomers.has(s.user.id),
-        )
-        .map((s) => s.user.id),
-    );
+  private formatRetentionRateResult(
+    result: RetentionRateResult,
+  ): RetentionRate {
+    const prevCustomersCount = Number(result.prev_customers_count) || 0;
+    const currentReturnedCount = Number(result.current_returned_count) || 0;
+    const beforePrevCount = Number(result.before_prev_count) || 0;
+    const prevReturnedCount = Number(result.prev_returned_count) || 0;
 
     const currentRate =
-      previousCustomers.size > 0
-        ? (returnedCustomers.size / previousCustomers.size) * 100
+      prevCustomersCount > 0
+        ? (currentReturnedCount / prevCustomersCount) * 100
         : 0;
-
-    // Calcular taxa do período anterior também
-    const beforePreviousPeriod = this.getPeriodDateRange(
-      this.getPreviousPeriodStart(previousPeriod.start, 'month'),
-      'month',
-    );
-
-    const beforePreviousCustomers = new Set(
-      allSchedules
-        .filter(
-          (s) =>
-            s.user &&
-            s.status === 'completed' &&
-            new Date(s.date) >= beforePreviousPeriod.start &&
-            new Date(s.date) <= beforePreviousPeriod.end,
-        )
-        .map((s) => s.user.id),
-    );
-
-    const returnedToPrevious = new Set(
-      allSchedules
-        .filter(
-          (s) =>
-            s.user &&
-            s.status === 'completed' &&
-            new Date(s.date) >= previousPeriod.start &&
-            new Date(s.date) <= previousPeriod.end &&
-            beforePreviousCustomers.has(s.user.id),
-        )
-        .map((s) => s.user.id),
-    );
 
     const previousRate =
-      beforePreviousCustomers.size > 0
-        ? (returnedToPrevious.size / beforePreviousCustomers.size) * 100
-        : 0;
+      beforePrevCount > 0 ? (prevReturnedCount / beforePrevCount) * 100 : 0;
 
-    const percentageChange = parseFloat((currentRate - previousRate).toFixed(1));
+    const percentageChange = parseFloat(
+      (currentRate - previousRate).toFixed(1),
+    );
 
-    // Classificação da taxa de retenção
     let context = 'Baixo';
     if (currentRate >= 80) context = 'Excelente';
     else if (currentRate >= 60) context = 'Bom';
@@ -284,64 +217,11 @@ export class DashboardCustomersService {
   }
 
   /**
-   * 3. LTV Médio (Lifetime Value)
-   * Valor médio gerado por cliente durante seu ciclo de vida
+   * Formata resultado SQL do LTV médio
    */
-  private async calculateAverageLTV(
-    allSchedules: Schedule[],
-    currentPeriod: DateRange,
-    previousPeriod: DateRange,
-  ): Promise<AverageLTV> {
-    // Calcular LTV por cliente (total gasto / número de clientes)
-    const customerSpending = new Map<string, number>();
-
-    allSchedules
-      .filter(
-        (s) =>
-          s.user &&
-          s.status === 'completed' &&
-          new Date(s.date) <= currentPeriod.end,
-      )
-      .forEach((schedule) => {
-        const userId = schedule.user.id;
-        const spent = customerSpending.get(userId) || 0;
-        customerSpending.set(userId, spent + (schedule.service?.price || 0));
-      });
-
-    const totalCustomers = customerSpending.size;
-    const totalRevenue = Array.from(customerSpending.values()).reduce(
-      (sum, val) => sum + val,
-      0,
-    );
-    const currentLTV = totalCustomers > 0 ? totalRevenue / totalCustomers : 0;
-
-    // Calcular LTV do período anterior
-    const previousCustomerSpending = new Map<string, number>();
-
-    allSchedules
-      .filter(
-        (s) =>
-          s.user &&
-          s.status === 'completed' &&
-          new Date(s.date) <= previousPeriod.end,
-      )
-      .forEach((schedule) => {
-        const userId = schedule.user.id;
-        const spent = previousCustomerSpending.get(userId) || 0;
-        previousCustomerSpending.set(
-          userId,
-          spent + (schedule.service?.price || 0),
-        );
-      });
-
-    const previousTotalCustomers = previousCustomerSpending.size;
-    const previousTotalRevenue = Array.from(
-      previousCustomerSpending.values(),
-    ).reduce((sum, val) => sum + val, 0);
-    const previousLTV =
-      previousTotalCustomers > 0
-        ? previousTotalRevenue / previousTotalCustomers
-        : 0;
+  private formatAverageLTVResult(result: AverageLTVResult): AverageLTV {
+    const currentLTV = Number(result.current_ltv) || 0;
+    const previousLTV = Number(result.prev_ltv) || 0;
 
     const percentageChange =
       previousLTV > 0
@@ -350,8 +230,7 @@ export class DashboardCustomersService {
           )
         : 0;
 
-    // CAC simplificado (assumindo custo de marketing fixo por cliente novo)
-    const cac = 50; // Valor exemplo em R$
+    const cac = 50; // Valor padrão em R$
 
     return {
       value: Math.round(currentLTV),
@@ -363,423 +242,58 @@ export class DashboardCustomersService {
   }
 
   /**
-   * 4. NPS Score
-   * Net Promoter Score baseado nas avaliações (0-5)
+   * Formata resultado SQL do NPS Score
    */
-  private async calculateNPSScore(
-    allReviews: Review[],
-    currentPeriod: DateRange,
-    previousPeriod: DateRange,
-  ): Promise<NPSScore> {
-    // Reviews do período atual
-    const currentReviews = allReviews.filter((r) => {
-      const reviewDate = new Date(r.createdAt);
-      return reviewDate >= currentPeriod.start && reviewDate <= currentPeriod.end;
-    });
-
-    // Reviews do período anterior
-    const previousReviews = allReviews.filter((r) => {
-      const reviewDate = new Date(r.createdAt);
-      return (
-        reviewDate >= previousPeriod.start && reviewDate <= previousPeriod.end
-      );
-    });
-
-    const currentScore =
-      currentReviews.length > 0
-        ? currentReviews.reduce((sum, r) => sum + r.rating, 0) /
-          currentReviews.length
-        : 0;
-
-    const previousScore =
-      previousReviews.length > 0
-        ? previousReviews.reduce((sum, r) => sum + r.rating, 0) /
-          previousReviews.length
-        : 0;
-
-    const absoluteChange = parseFloat((currentScore - previousScore).toFixed(1));
+  private formatNPSScoreResult(result: NPSScoreResult): NPSScore {
+    const currentNPS = Number(result.current_nps) || 0;
+    const previousNPS = Number(result.prev_nps) || 0;
+    const absoluteChange = parseFloat((currentNPS - previousNPS).toFixed(1));
 
     return {
-      value: parseFloat(currentScore.toFixed(1)),
+      value: currentNPS,
       comparison: {
         absoluteChange,
       },
-      reviewCount: currentReviews.length,
+      reviewCount: Number(result.review_count) || 0,
     };
   }
 
   /**
-   * 5. Evolução de Clientes (Últimos 6 meses)
+   * Formata resultados SQL de evolução de clientes
    */
-  private async calculateCustomerEvolution(
-    allSchedules: Schedule[],
-    referenceDate: Date,
-  ): Promise<CustomerEvolution[]> {
-    const months = [
-      'Jan',
-      'Fev',
-      'Mar',
-      'Abr',
-      'Mai',
-      'Jun',
-      'Jul',
-      'Ago',
-      'Set',
-      'Out',
-      'Nov',
-      'Dez',
-    ];
-    const result: CustomerEvolution[] = [];
-
-    // Últimos 6 meses
-    for (let i = 5; i >= 0; i--) {
-      const monthDate = new Date(referenceDate);
-      monthDate.setMonth(monthDate.getMonth() - i);
-
-      const monthStart = new Date(
-        monthDate.getFullYear(),
-        monthDate.getMonth(),
-        1,
-      );
-      const monthEnd = new Date(
-        monthDate.getFullYear(),
-        monthDate.getMonth() + 1,
-        0,
-      );
-      monthEnd.setHours(23, 59, 59, 999);
-
-      // Schedules do mês
-      const monthSchedules = allSchedules.filter((s) => {
-        const scheduleDate = new Date(s.date);
-        return scheduleDate >= monthStart && scheduleDate <= monthEnd;
-      });
-
-      // Novos clientes: primeira compra foi neste mês
-      const newCustomers = new Set(
-        monthSchedules.filter((s) => {
-          if (!s.user) return false;
-          const userSchedules = allSchedules
-            .filter((sch) => sch.user?.id === s.user.id)
-            .sort(
-              (a, b) =>
-                new Date(a.date).getTime() - new Date(b.date).getTime(),
-            );
-          const firstSchedule = userSchedules[0];
-          const firstDate = new Date(firstSchedule.date);
-          return firstDate >= monthStart && firstDate <= monthEnd;
-        }).map((s) => s.user.id),
-      ).size;
-
-      // Clientes recorrentes: compraram neste mês e já tinham comprado antes
-      const recurringCustomers = new Set(
-        monthSchedules.filter((s) => {
-          if (!s.user) return false;
-          const userSchedules = allSchedules
-            .filter((sch) => sch.user?.id === s.user.id)
-            .sort(
-              (a, b) =>
-                new Date(a.date).getTime() - new Date(b.date).getTime(),
-            );
-          const firstSchedule = userSchedules[0];
-          const firstDate = new Date(firstSchedule.date);
-          return firstDate < monthStart;
-        }).map((s) => s.user.id),
-      ).size;
-
-      // Churn: clientes que compraram no mês anterior mas não neste mês
-      const previousMonthStart = new Date(monthStart);
-      previousMonthStart.setMonth(previousMonthStart.getMonth() - 1);
-      const previousMonthEnd = new Date(monthStart);
-      previousMonthEnd.setDate(previousMonthEnd.getDate() - 1);
-
-      const previousMonthCustomers = new Set(
-        allSchedules
-          .filter((s) => {
-            if (!s.user || s.status !== 'completed') return false;
-            const scheduleDate = new Date(s.date);
-            return (
-              scheduleDate >= previousMonthStart &&
-              scheduleDate <= previousMonthEnd
-            );
-          })
-          .map((s) => s.user.id),
-      );
-
-      const currentMonthCustomers = new Set(
-        monthSchedules
-          .filter((s) => s.user && s.status === 'completed')
-          .map((s) => s.user.id),
-      );
-
-      let churn = 0;
-      previousMonthCustomers.forEach((customerId) => {
-        if (!currentMonthCustomers.has(customerId)) {
-          churn++;
-        }
-      });
-
-      // Total de clientes únicos até este mês
-      const totalCustomers = new Set(
-        allSchedules
-          .filter((s) => s.user && new Date(s.date) <= monthEnd)
-          .map((s) => s.user.id),
-      ).size;
-
-      result.push({
-        month: months[monthDate.getMonth()],
-        newCustomers,
-        recurringCustomers,
-        churn,
-        totalCustomers,
-      });
-    }
-
-    return result;
+  private formatCustomerEvolutionResults(
+    results: CustomerEvolutionResult[],
+  ): CustomerEvolution[] {
+    return results.map((result) => ({
+      month: result.month_name,
+      newCustomers: Number(result.new_customers) || 0,
+      recurringCustomers: Number(result.recurring_customers) || 0,
+      churn: Number(result.churn) || 0,
+      totalCustomers: Number(result.total_customers) || 0,
+    }));
   }
 
   /**
-   * 6. Lifetime Value por Segmento
-   * Segmentação de clientes por frequência de visitas
+   * Formata resultados SQL de LTV por segmento
    */
-  private async calculateLTVBySegment(
-    allSchedules: Schedule[],
-  ): Promise<LTVBySegment[]> {
-    // Coletar dados de cada cliente
-    const customerDataMap = new Map<string, CustomerData>();
-
-    allSchedules
-      .filter((s) => s.user)
-      .forEach((schedule) => {
-        const userId = schedule.user.id;
-        const userName = `${schedule.user.firstName || ''} ${schedule.user.lastName || ''}`.trim();
-
-        if (!customerDataMap.has(userId)) {
-          customerDataMap.set(userId, {
-            userId,
-            userName,
-            totalVisits: 0,
-            totalSpent: 0,
-            firstVisit: new Date(schedule.date),
-            lastVisit: new Date(schedule.date),
-            completedVisits: 0,
-            monthlyVisits: 0,
-          });
-        }
-
-        const data = customerDataMap.get(userId)!;
-        data.totalVisits++;
-        data.totalSpent += schedule.service?.price || 0;
-
-        if (schedule.status === 'completed') {
-          data.completedVisits++;
-        }
-
-        const scheduleDate = new Date(schedule.date);
-        if (scheduleDate < data.firstVisit) {
-          data.firstVisit = scheduleDate;
-        }
-        if (scheduleDate > data.lastVisit) {
-          data.lastVisit = scheduleDate;
-        }
-      });
-
-    // Calcular visitas mensais e segmentar
-    const segments: Record<
-      'VIPs' | 'Frequentes' | 'Regulares' | 'Ocasionais' | 'Novos',
-      CustomerData[]
-    > = {
-      VIPs: [],
-      Frequentes: [],
-      Regulares: [],
-      Ocasionais: [],
-      Novos: [],
-    };
-
-    customerDataMap.forEach((data) => {
-      // Calcular meses desde primeira visita
-      const monthsSinceFirst =
-        (data.lastVisit.getTime() - data.firstVisit.getTime()) /
-        (1000 * 60 * 60 * 24 * 30);
-      data.monthlyVisits =
-        monthsSinceFirst > 0 ? data.totalVisits / monthsSinceFirst : 0;
-
-      // Segmentar baseado em visitas mensais e total gasto
-      if (data.totalSpent > 1000 || data.monthlyVisits >= 4) {
-        segments.VIPs.push(data);
-      } else if (data.monthlyVisits >= 2) {
-        segments.Frequentes.push(data);
-      } else if (data.monthlyVisits >= 1) {
-        segments.Regulares.push(data);
-      } else if (data.totalVisits >= 2) {
-        segments.Ocasionais.push(data);
-      } else {
-        segments.Novos.push(data);
-      }
-    });
-
-    // Calcular métricas por segmento
-    const result: LTVBySegment[] = [];
-
-    Object.entries(segments).forEach(([segment, customers]) => {
-      if (customers.length === 0) {
-        result.push({
-          segment: segment as any,
-          averageLTV: 0,
-          customerCount: 0,
-          averageMonthlyVisits: 0,
-          retentionRate: 0,
-        });
-        return;
-      }
-
-      const averageLTV =
-        customers.reduce((sum, c) => sum + c.totalSpent, 0) / customers.length;
-
-      const averageMonthlyVisits =
-        customers.reduce((sum, c) => sum + c.monthlyVisits, 0) /
-        customers.length;
-
-      // Taxa de retenção: % de clientes que voltaram nos últimos 30 dias
-      const now = new Date();
-      const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-      const activeCustomers = customers.filter(
-        (c) => c.lastVisit >= thirtyDaysAgo,
-      ).length;
-      const retentionRate = (activeCustomers / customers.length) * 100;
-
-      result.push({
-        segment: segment as any,
-        averageLTV: Math.round(averageLTV),
-        customerCount: customers.length,
-        averageMonthlyVisits: parseFloat(averageMonthlyVisits.toFixed(1)),
-        retentionRate: parseFloat(retentionRate.toFixed(1)),
-      });
-    });
-
-    return result;
+  private formatLTVBySegmentResults(
+    results: LTVBySegmentResult[],
+  ): LTVBySegment[] {
+    return results.map((result) => ({
+      segment: result.segment,
+      averageLTV: Math.round(Number(result.average_ltv) || 0),
+      customerCount: Number(result.customer_count) || 0,
+      averageMonthlyVisits: Number(result.average_monthly_visits) || 0,
+      retentionRate: Number(result.retention_rate) || 0,
+    }));
   }
 
   /**
-   * 9. Top 5 Clientes VIP
-   * Clientes com maior valor gerado
+   * Retorna a data de 6 meses atrás
    */
-  private async calculateTopVIPCustomers(
-    allSchedules: Schedule[],
-  ): Promise<TopVIPCustomer[]> {
-    const customerDataMap = new Map<string, CustomerData>();
-
-    allSchedules
-      .filter((s) => s.user)
-      .forEach((schedule) => {
-        const userId = schedule.user.id;
-        const userName = `${schedule.user.firstName || ''} ${schedule.user.lastName || ''}`.trim();
-
-        if (!customerDataMap.has(userId)) {
-          customerDataMap.set(userId, {
-            userId,
-            userName,
-            totalVisits: 0,
-            totalSpent: 0,
-            firstVisit: new Date(schedule.date),
-            lastVisit: new Date(schedule.date),
-            completedVisits: 0,
-            monthlyVisits: 0,
-          });
-        }
-
-        const data = customerDataMap.get(userId)!;
-        data.totalVisits++;
-        data.totalSpent += schedule.service?.price || 0;
-
-        const scheduleDate = new Date(schedule.date);
-        if (scheduleDate > data.lastVisit) {
-          data.lastVisit = scheduleDate;
-        }
-      });
-
-    // Ordenar por valor total gasto e pegar top 5
-    const topCustomers = Array.from(customerDataMap.values())
-      .sort((a, b) => b.totalSpent - a.totalSpent)
-      .slice(0, 5)
-      .map((data) => ({
-        customerId: data.userId,
-        customerName: data.userName || 'Cliente',
-        visits: data.totalVisits,
-        totalSpent: Math.round(data.totalSpent),
-        lastVisit: data.lastVisit,
-      }));
-
-    return topCustomers;
-  }
-
-  /**
-   * Obtém o range de datas para um período específico
-   */
-  private getPeriodDateRange(date: Date, period: PeriodType): DateRange {
-    const d = new Date(date);
-    d.setHours(0, 0, 0, 0);
-
-    let start = new Date(d);
-    let end = new Date(d);
-
-    switch (period) {
-      case 'week': {
-        // Esta semana: de segunda até domingo
-        const dayOfWeek = d.getDay();
-        const diff = d.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
-        start = new Date(d.setDate(diff));
-        start.setHours(0, 0, 0, 0);
-
-        end = new Date(start);
-        end.setDate(end.getDate() + 6);
-        end.setHours(23, 59, 59, 999);
-        break;
-      }
-
-      case 'month': {
-        // Este mês: do dia 1 até o último dia
-        start = new Date(d.getFullYear(), d.getMonth(), 1);
-        start.setHours(0, 0, 0, 0);
-
-        end = new Date(d.getFullYear(), d.getMonth() + 1, 0);
-        end.setHours(23, 59, 59, 999);
-        break;
-      }
-
-      case 'quarter': {
-        // Trimestre: últimos 3 meses
-        start = new Date(d.getFullYear(), d.getMonth() - 2, 1);
-        start.setHours(0, 0, 0, 0);
-
-        end = new Date(d.getFullYear(), d.getMonth() + 1, 0);
-        end.setHours(23, 59, 59, 999);
-        break;
-      }
-    }
-
-    return { start, end };
-  }
-
-  /**
-   * Obtém o início do período anterior
-   */
-  private getPreviousPeriodStart(date: Date, period: PeriodType): Date {
-    const d = new Date(date);
-
-    switch (period) {
-      case 'week':
-        d.setDate(d.getDate() - 7);
-        break;
-
-      case 'month':
-        d.setMonth(d.getMonth() - 1);
-        break;
-
-      case 'quarter':
-        d.setMonth(d.getMonth() - 3);
-        break;
-    }
-
-    return d;
+  private getSixMonthsAgo(): Date {
+    const date = new Date();
+    date.setMonth(date.getMonth() - 6);
+    return date;
   }
 }
