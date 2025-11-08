@@ -14,7 +14,7 @@ export const EmptyStoreList = () => {
   const { setIsAddModalOpen } = useStoresStore();
 
   return (
-    <Empty className="border-3 border-dashed">
+    <Empty>
       <EmptyHeader>
         <EmptyMedia variant="default">
           <Store size={60} className="text-gray-500" />

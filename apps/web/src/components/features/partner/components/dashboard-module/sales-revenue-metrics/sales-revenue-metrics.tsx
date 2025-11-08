@@ -35,6 +35,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
+import { SalesRevenueMetricsNotFound } from './sales-revenue-metrics-not-found';
 import { SalesRevenueMetricsSkeleton } from './sales-revenue-metrics.skeleton';
 
 type PeriodFilter = 'week' | 'month' | 'quarter';
@@ -43,7 +44,7 @@ export function SalesRevenueMetricsModule() {
   const [periodFilter, setPeriodFilter] = useState<PeriodFilter>('month');
 
   const activeStore = usePartnerStore((state) => state.activeStore);
-  const { sales, isPendingSales } = useMetricsQuery({
+  const { sales, isPendingSales, isEnabledSales } = useMetricsQuery({
     storeId: activeStore?.id,
     period: periodFilter,
     includeSales: true,
@@ -72,8 +73,13 @@ export function SalesRevenueMetricsModule() {
   };
 
   // Loading state
-  if (isPendingSales || !sales) {
+  if (isPendingSales && isEnabledSales) {
     return <SalesRevenueMetricsSkeleton />;
+  }
+
+  // No data state
+  if (!sales) {
+    return <SalesRevenueMetricsNotFound />;
   }
 
   // Stats dinâmicos baseados nos dados reais

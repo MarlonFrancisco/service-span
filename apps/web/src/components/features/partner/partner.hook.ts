@@ -16,12 +16,14 @@ export const usePartner = () => {
   const currentModule =
     MODULE_CONFIG[pathname as keyof typeof MODULE_CONFIG] ||
     MODULE_CONFIG['/partner/dashboard'];
-  const showStoreSelector = currentModule?.showStoreSelector;
 
   const { data: stores = [] } = useQuery({
     queryKey: CACHE_QUERY_KEYS.stores(),
     queryFn: () => StoreService.getAll(),
   });
+
+  const showStoreSelector =
+    currentModule?.showStoreSelector && stores.length > 0;
 
   const { data: activeStore } = useQuery({
     queryKey: CACHE_QUERY_KEYS.store(stores[0]?.id ?? ''),

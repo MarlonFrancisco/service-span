@@ -13,19 +13,14 @@ import { RecommendationCard } from './components/recomendation-card';
 import { useRecommendations } from './recomendations.hook';
 
 export const Recomendations = () => {
-  const { recommendationStores, isPendingRecommendationStores, isFavorited } =
-    useRecommendations();
-
-  if (isPendingRecommendationStores) {
-    return <div>Carregando...</div>;
-  }
+  const { recommendationStores, isFavorited } = useRecommendations();
 
   if (!recommendationStores) {
     return null;
   }
 
   return (
-    <section className="py-16 md:py-24 px-4 md:px-6 mx-auto">
+    <section className="px-4 max-w-7xl md:px-6 mx-auto">
       {/* Header */}
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 md:mb-12 gap-4">
         <div>
@@ -68,11 +63,11 @@ export const Recomendations = () => {
           </CarouselContent>
 
           {/* Navigation Buttons */}
-          <div className="absolute -left-4 md:-left-12 right-auto top-1/2 -translate-y-1/2 flex gap-2">
+          <div className="absolute -left-4 md:-left-12 right-auto top-1/2 -translate-y-1/2 gap-2 hidden md:flex">
             <CarouselPrevious className="relative left-0 top-0 -translate-y-0 hover:bg-gray-100 active:scale-95" />
           </div>
 
-          <div className="absolute -right-4 md:-right-12 left-auto top-1/2 -translate-y-1/2 flex gap-2">
+          <div className="absolute -right-4 md:-right-12 left-auto top-1/2 -translate-y-1/2 gap-2 hidden md:flex">
             <CarouselNext className="relative right-0 top-0 -translate-y-0 hover:bg-gray-100 active:scale-95" />
           </div>
         </Carousel>
@@ -82,7 +77,7 @@ export const Recomendations = () => {
       <div className="justify-center mt-8 flex md:hidden">
         <Button
           variant="outline"
-          className="items-center gap-2 border-gray-300 hover:bg-gray-50"
+          className="items-center gap-2 border-gray-300 hover:bg-gray-50 w-full"
         >
           Ver todos <ArrowRight className="h-4 w-4" />
         </Button>

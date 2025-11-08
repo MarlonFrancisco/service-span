@@ -1,10 +1,11 @@
 'use client';
 import { usePartnerStore } from '@/store';
-import { Button, Card, CardContent } from '@repo/ui';
+import { Button } from '@repo/ui';
 import { Package, Plus } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { CategoryManagementModal } from './components/category-management';
 import { CategorySection } from './components/category-section';
+import { EmptyServicesList } from './components/empty-services-list';
 import { ServiceCard } from './components/service-card';
 import { ServiceFormModal } from './components/service-form';
 import { ServicesFilters } from './components/services-filters';
@@ -93,32 +94,11 @@ export function ServicesModule() {
 
       {/* Empty State */}
       {filteredServices.length === 0 && (
-        <Card className="border-gray-200">
-          <CardContent className="p-12 text-center">
-            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Package className="h-8 w-8 text-gray-400" />
-            </div>
-            <h3 className="text-gray-900 mb-2">
-              {searchQuery || filterCategory !== 'all'
-                ? 'Nenhum serviço encontrado'
-                : 'Nenhum serviço cadastrado'}
-            </h3>
-            <p className="text-gray-600 text-sm mb-4">
-              {searchQuery || filterCategory !== 'all'
-                ? 'Tente ajustar os filtros ou fazer uma nova busca'
-                : 'Comece adicionando seu primeiro serviço'}
-            </p>
-            {!searchQuery && filterCategory === 'all' && (
-              <Button
-                onClick={() => setServiceModalParams({ isOpen: true })}
-                className="bg-gray-900 hover:bg-gray-800 text-white"
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                Adicionar Primeiro Serviço
-              </Button>
-            )}
-          </CardContent>
-        </Card>
+        <EmptyServicesList
+          searchQuery={searchQuery}
+          filterCategory={filterCategory}
+          onAddService={() => setServiceModalParams({ isOpen: true })}
+        />
       )}
 
       {/* FAB - Mobile Only */}

@@ -14,11 +14,13 @@ export function useCustomerMetrics() {
     quarter: 'Trimestre',
   };
 
-  const { customers, isPendingCustomers } = useMetricsQuery({
-    storeId: activeStore?.id,
-    period,
-    includeCustomers: true,
-  });
+  const { customers, isPendingCustomers, isEnabledCustomers } = useMetricsQuery(
+    {
+      storeId: activeStore?.id,
+      period,
+      includeCustomers: true,
+    },
+  );
 
   const stats = customers
     ? [
@@ -28,7 +30,8 @@ export function useCustomerMetrics() {
           icon: 'Users',
           trend: `${customers.customerBase.comparison.percentageChange > 0 ? '+' : ''}${customers.customerBase.comparison.percentageChange}%`,
           trendUp: customers.customerBase.comparison.percentageChange > 0,
-          trendNeutral: customers.customerBase.comparison.percentageChange === 0,
+          trendNeutral:
+            customers.customerBase.comparison.percentageChange === 0,
           comparison: 'vs mês anterior',
           detail: `+${customers.customerBase.comparison.newCustomers} novos`,
         },
@@ -38,7 +41,8 @@ export function useCustomerMetrics() {
           icon: 'Heart',
           trend: `${customers.retentionRate.comparison.percentageChange > 0 ? '+' : ''}${customers.retentionRate.comparison.percentageChange}%`,
           trendUp: customers.retentionRate.comparison.percentageChange > 0,
-          trendNeutral: customers.retentionRate.comparison.percentageChange === 0,
+          trendNeutral:
+            customers.retentionRate.comparison.percentageChange === 0,
           comparison: 'vs mês anterior',
           detail: customers.retentionRate.context || '',
         },
@@ -58,7 +62,8 @@ export function useCustomerMetrics() {
           icon: 'Star',
           trend: `${customers.npsScore.comparison.absoluteChange > 0 ? '+' : ''}${customers.npsScore.comparison.absoluteChange}`,
           trendUp: (customers.npsScore.comparison.absoluteChange || 0) > 0,
-          trendNeutral: (customers.npsScore.comparison.absoluteChange || 0) === 0,
+          trendNeutral:
+            (customers.npsScore.comparison.absoluteChange || 0) === 0,
           comparison: 'vs mês anterior',
           detail: `${customers.npsScore.reviewCount} avaliações`,
         },
@@ -119,6 +124,7 @@ export function useCustomerMetrics() {
     topCustomers,
     isLoading: isPendingCustomers,
     customers,
+    isEnabledCustomers,
     setPeriod,
   };
 }

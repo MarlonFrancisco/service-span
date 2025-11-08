@@ -1,10 +1,23 @@
+import { useUserQuery } from '@/hooks/use-query/use-user-query';
 import { Button } from '@repo/ui';
+import { useRouter } from 'next/navigation';
 import type { TPartnerButtonConfig } from './partner-button.types';
 
 export const PartnerButton = ({
   variant = 'light',
   ...props
 }: TPartnerButtonConfig) => {
+  const router = useRouter();
+  const { user } = useUserQuery();
+
+  const handleClick = () => {
+    if (user?.isSubscribed) {
+      router.push('/partner');
+    } else {
+      router.push('/partner/plans');
+    }
+  };
+
   const textColor = variant === 'dark' ? 'text-white' : 'text-black';
   const hoverStyles =
     variant === 'dark'
@@ -16,11 +29,11 @@ export const PartnerButton = ({
       <Button
         variant="ghost"
         className={`text-sm font-medium ${textColor} ${hoverStyles} rounded-xl px-4 py-2`}
+        onClick={handleClick}
         {...props}
       >
-        Seja um parceiro
+        {user?.isSubscribed ? 'Meu painel' : 'Seja um parceiro'}
       </Button>
     </div>
   );
 };
-

@@ -7,7 +7,7 @@ export class ScheduleService {
   static headers?: HeadersInit;
 
   static async create(storeId: string, schedule: Partial<ICreateAppointment>) {
-    return await this.apiClient.post<IAppointment>(
+    return await this.apiClient.post<IAppointment[]>(
       `/partner/stores/${storeId}/schedules`,
       schedule,
     );

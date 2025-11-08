@@ -2,12 +2,7 @@
 
 import { Footer, Header } from '@/components/layout';
 import { motion } from 'motion/react';
-import {
-  CTA,
-  Features,
-  HeroSection,
-  Recomendations,
-} from './components';
+import { Features, HeroSection, Recomendations } from './components';
 import { useHomepage } from './homepage.hook';
 
 export const Homepage = () => {
@@ -22,8 +17,6 @@ export const Homepage = () => {
         <Recomendations />
 
         <Features />
-
-        <CTA />
 
         <Footer />
       </motion.div>

@@ -21,7 +21,7 @@ interface CategoryCardProps {
 const CategoryCard = ({ category, onClick }: CategoryCardProps) => (
   <button
     onClick={onClick}
-    className="group p-4 bg-white rounded-xl border border-gray-200 hover:border-gray-300 hover:shadow-lg transition-all duration-200 cursor-pointer w-full"
+    className="group p-4 bg-white rounded-xl border-2 border-gray-200 hover:border-gray-300 hover:shadow-lg transition-all duration-200 cursor-pointer w-full"
   >
     <div className="text-2xl mb-2">{category.icon}</div>
     <div className="text-sm font-medium text-gray-900 mb-1">
@@ -40,7 +40,7 @@ export const CategoriesGrid = () => {
         <Carousel className="w-full" opts={{ slidesToScroll: 2 }}>
           <CarouselContent>
             {featuredCategories.map((category, index) => (
-              <CarouselItem key={index} className="basis-[55%]">
+              <CarouselItem key={index} className="basis-[60%]">
                 <CategoryCard
                   category={category}
                   onClick={() => handleCategoryClick(category.name)}

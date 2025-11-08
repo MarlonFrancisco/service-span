@@ -26,10 +26,10 @@ export const useAddAppointmentMutations = () => {
       mutationFn: (data: Partial<ICreateAppointment>) => {
         return ScheduleService.create(storeId, data);
       },
-      onSuccess: (data: IAppointment) => {
+      onSuccess: (data: IAppointment[]) => {
         queryClient.setQueryData(
           CACHE_QUERY_KEYS.schedules(storeId),
-          (old: IAppointment[]) => [...old, data],
+          (old: IAppointment[]) => [...old, ...data],
         );
         toast.success('Agendamento criado com sucesso');
         setIsAddAppointmentOpen({ isAddAppointmentOpen: false });

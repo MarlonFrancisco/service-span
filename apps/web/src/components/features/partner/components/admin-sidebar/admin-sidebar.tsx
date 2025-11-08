@@ -10,12 +10,12 @@ import {
   SidebarRail,
   useSidebar,
 } from '@repo/ui';
-import { AdminSidebarHeader } from './components/admin-sidebar-header';
-import { AdminSidebarFooter } from './components/admin-sidebar-footer';
-import { AdminSidebarMenuItem } from './components/admin-sidebar-menu-item';
-import { AdminSidebarMenuItemWithSubmenu } from './components/admin-sidebar-menu-item-with-submenu';
 import { menuSections } from './admin-sidebar.config';
 import { useActiveModule } from './admin-sidebar.hook';
+import { AdminSidebarFooter } from './components/admin-sidebar-footer';
+import { AdminSidebarHeader } from './components/admin-sidebar-header';
+import { AdminSidebarMenuItem } from './components/admin-sidebar-menu-item';
+import { AdminSidebarMenuItemWithSubmenu } from './components/admin-sidebar-menu-item-with-submenu';
 
 export function AdminSidebar() {
   const { state } = useSidebar();
@@ -23,7 +23,7 @@ export function AdminSidebar() {
   const activeModule = useActiveModule();
 
   return (
-    <Sidebar collapsible="icon" className="border-r border-gray-200">
+    <Sidebar collapsible="icon">
       <AdminSidebarHeader isCollapsed={isCollapsed} />
 
       <SidebarContent>

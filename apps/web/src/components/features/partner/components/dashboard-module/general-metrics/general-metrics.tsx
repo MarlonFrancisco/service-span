@@ -40,6 +40,7 @@ import {
 
 import { useMetricsQuery } from '@/hooks/use-query/use-metrics-query/use-metrics-query.hook';
 import { usePartnerStore } from '@/store/partner/partner.store';
+import { GeneralMetricsNotFound } from './general-metrics-not-found';
 import { GeneralMetricsSkeleton } from './general-metrics.skeleton';
 type PeriodFilter = 'today' | 'week' | 'month';
 
@@ -48,15 +49,21 @@ export function GeneralMetricsModule() {
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const activeStore = usePartnerStore((state) => state.activeStore);
-  const { overview, isPendingOverview, overviewRefetch } = useMetricsQuery({
-    storeId: activeStore?.id,
-    period: periodFilter,
-    includeOverview: true,
-  });
+  const { overview, isPendingOverview, isEnabledOverview, overviewRefetch } =
+    useMetricsQuery({
+      storeId: activeStore?.id,
+      period: periodFilter,
+      includeOverview: true,
+    });
 
   // Loading state
-  if (isPendingOverview || !overview) {
+  if (isPendingOverview && isEnabledOverview) {
     return <GeneralMetricsSkeleton />;
+  }
+
+  // No data state
+  if (!overview) {
+    return <GeneralMetricsNotFound />;
   }
 
   // Cores para os serviços
@@ -137,8 +144,10 @@ export function GeneralMetricsModule() {
       subValue: `${overview.averageRating.reviewCount} avaliações ${subtitleText}`,
       icon: Star,
       trend: `${overview.averageRating.value > overview.averageRating.previousValue ? '+' : overview.averageRating.value === overview.averageRating.previousValue ? '' : '-'}${overview.averageRating.value === overview.averageRating.previousValue ? '0.0' : Math.abs(overview.averageRating.value - overview.averageRating.previousValue).toFixed(1)}`,
-      trendUp: overview.averageRating.value > overview.averageRating.previousValue,
-      trendNeutral: overview.averageRating.value === overview.averageRating.previousValue,
+      trendUp:
+        overview.averageRating.value > overview.averageRating.previousValue,
+      trendNeutral:
+        overview.averageRating.value === overview.averageRating.previousValue,
       comparison: comparisonText,
     },
   ];

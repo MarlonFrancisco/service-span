@@ -39,6 +39,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
+import { OperationalMetricsNotFound } from './operational-metrics-not-found';
 import { OperationalMetricsSkeleton } from './operational-metrics.skeleton';
 
 type PeriodFilter = 'week' | 'month' | 'quarter';
@@ -50,15 +51,21 @@ export function OperationalMetricsModule() {
   const [periodFilter, setPeriodFilter] = useState<PeriodFilter>('month');
 
   const activeStore = usePartnerStore((state) => state.activeStore);
-  const { operational, isPendingOperational } = useMetricsQuery({
-    storeId: activeStore?.id,
-    period: periodFilter,
-    includeOperational: true,
-  });
+  const { operational, isPendingOperational, isEnabledOperational } =
+    useMetricsQuery({
+      storeId: activeStore?.id,
+      period: periodFilter,
+      includeOperational: true,
+    });
 
   // Loading state
-  if (isPendingOperational || !operational) {
+  if (isPendingOperational && isEnabledOperational) {
     return <OperationalMetricsSkeleton />;
+  }
+
+  // No data state
+  if (!operational) {
+    return <OperationalMetricsNotFound />;
   }
 
   // Preparar dados para visualizações

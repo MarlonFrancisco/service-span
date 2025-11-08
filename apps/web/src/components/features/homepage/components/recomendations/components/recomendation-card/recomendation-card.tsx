@@ -1,8 +1,9 @@
+import { ImageWithFallback } from '@/components/ui/image-with-fallback';
 import { IRecommendationStore } from '@/types/api/recomendation.types';
+import { formatPrice } from '@/utils/helpers/price.helper';
 import { Badge, Card, CardContent } from '@repo/ui';
 import { Heart, Star } from 'lucide-react';
 import { motion } from 'motion/react';
-import Image from 'next/image';
 import { useState } from 'react';
 
 interface RecommendationCardProps {
@@ -21,38 +22,31 @@ export const RecommendationCard = ({
     setTimeout(() => setIsHeartAnimating(false), 600);
   };
 
+  const rating = (
+    store.metadata.reviews.reduce(
+      (sum, review) => sum + (review.rating || 0),
+      0,
+    ) / store.metadata.reviews.length || 0
+  ).toFixed(1);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
     >
-      <Card className="recommendations-card py-0 group cursor-pointer hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 border-0 shadow-lg bg-white overflow-hidden h-full flex flex-col">
+      <Card className="recommendations-card py-0 group cursor-pointer transition-all duration-300 border-0 shadow-lg bg-white overflow-hidden h-full flex flex-col">
         <CardContent className="p-0 flex flex-col h-full">
           {/* Image Section with Gradient Overlay */}
           <div className="relative overflow-hidden bg-gray-100 flex-shrink-0 w-full h-52">
-            <Image
+            <ImageWithFallback
               src={store.metadata.gallery?.[0]?.url ?? ''}
               alt={store.content.name}
               fill
-              className="object-cover group-hover:scale-110 transition-transform duration-500 ease-out"
-              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
-              priority={false}
+              sizes="(min-width: 768px) 300px, 200px"
             />
             {/* Gradient Overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-            {/* Category Badge */}
-            <div className="absolute top-3 left-3 md:top-4 md:left-4">
-              {store.content.services.map((service) => (
-                <Badge
-                  key={service.id}
-                  className="bg-white/95 backdrop-blur text-gray-900 border-0 font-medium text-xs md:text-sm"
-                >
-                  {service.name}
-                </Badge>
-              ))}
-            </div>
 
             {/* Favorite Button with Animation */}
             <button
@@ -78,43 +72,58 @@ export const RecommendationCard = ({
           </div>
 
           {/* Content Section */}
-          <div className="p-4 md:p-6 flex flex-col flex-grow">
-            {/* Rating and Reviews */}
-            <div className="flex items-center gap-3 mb-2">
-              <div className="flex items-center gap-1 bg-yellow-50 px-2 py-1 rounded-lg">
-                <Star className="h-4 w-4 fill-yellow-400 text-yellow-400 flex-shrink-0" />
-                <span className="text-sm font-semibold text-gray-900">
-                  {store.metadata.reviews.reduce(
-                    (sum, review) => sum + review.rating,
-                    0,
-                  ) / store.metadata.reviews.length}
-                </span>
-              </div>
-              <span className="text-xs md:text-sm text-gray-500 whitespace-nowrap">
-                {store.metadata.reviews.length} avaliações
-              </span>
+          <div className="p-4 md:p-6">
+            <div className="flex flex-col gap-2">
+              {/* Service Name */}
+              <h3 className="text-base md:text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
+                {store.content.name}
+              </h3>
+
+              {/* Location */}
+              <p className="text-xs md:text-sm text-gray-600 mb-3">
+                {store.content.city}
+              </p>
+
+              {/* Services Section */}
+              {store.content.services && store.content.services.length > 0 && (
+                <div className="flex gap-2 flex-wrap mb-3">
+                  {store.content.services.slice(0, 2).map((service) => (
+                    <Badge
+                      key={service.id}
+                      className="bg-blue-100 text-blue-800 border-0 text-xs"
+                    >
+                      {service.name}
+                    </Badge>
+                  ))}
+                  {store.content.services.length > 3 && (
+                    <Badge className="bg-gray-100 text-gray-800 border-0 text-xs">
+                      +{store.content.services.length - 2}
+                    </Badge>
+                  )}
+                </div>
+              )}
             </div>
 
-            {/* Service Name */}
-            <h3 className="text-base md:text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
-              {store.content.name}
-            </h3>
-
-            {/* Description */}
-            <p className="text-xs md:text-sm text-gray-600 mb-4 line-clamp-2 flex-grow">
-              {store.content.description}
-            </p>
-
-            {/* Footer: Price and Button */}
-            <div className="flex items-center justify-between gap-3 pt-4 border-t border-gray-100">
+            {/* Footer: Rating and Price */}
+            <div className="flex items-center justify-between gap-3 pt-3 border-t border-gray-100">
               <div className="flex-grow">
                 <p className="text-xs text-gray-500 mb-1">A partir de</p>
-                <p className="text-lg md:text-xl font-bold text-green-600">
-                  {store.content.services.reduce(
-                    (sum, service) => sum + service.price,
-                    0,
-                  ) / store.content.services.length}
+                <p className="text-lg md:text-xl font-bold text-gray-900">
+                  {formatPrice(
+                    store.content.services.reduce(
+                      (sum, service) => sum + service.price,
+                      0,
+                    ) / store.content.services.length,
+                    'BRL',
+                    'pt-BR',
+                  )}
                 </p>
+              </div>
+              <div className="flex items-center gap-1 bg-yellow-50 px-2 py-1 rounded-lg flex-shrink-0">
+                <Star className="h-3 w-3 md:h-4 md:w-4 fill-yellow-400 text-yellow-400" />
+                <span className="text-xs md:text-sm font-semibold text-gray-900">
+                  {rating}
+                </span>
               </div>
             </div>
           </div>

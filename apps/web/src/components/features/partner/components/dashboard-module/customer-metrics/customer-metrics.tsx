@@ -29,6 +29,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
+import { CustomerMetricsNotFound } from './customer-metrics-not-found';
 import { useCustomerMetrics } from './customer-metrics.hook';
 import { CustomerMetricsSkeleton } from './customer-metrics.skeleton';
 
@@ -42,11 +43,16 @@ export function CustomerMetricsModule() {
     lifetimeValueData,
     topCustomers,
     isLoading,
+    isEnabledCustomers,
     customers,
   } = useCustomerMetrics();
 
-  if (isLoading || !customers) {
+  if (isLoading && isEnabledCustomers) {
     return <CustomerMetricsSkeleton />;
+  }
+
+  if (!customers) {
+    return <CustomerMetricsNotFound />;
   }
 
   return (
@@ -61,21 +67,27 @@ export function CustomerMetricsModule() {
             </h2>
             <Badge
               className={
-                (customers?.customerBase?.comparison.percentageChange || 0) === 0
+                (customers?.customerBase?.comparison.percentageChange || 0) ===
+                0
                   ? 'bg-gray-50 text-gray-700 border-gray-200'
-                  : (customers?.customerBase?.comparison.percentageChange || 0) > 0
+                  : (customers?.customerBase?.comparison.percentageChange ||
+                        0) > 0
                     ? 'bg-green-50 text-green-700 border-green-200'
                     : 'bg-red-50 text-red-700 border-red-200'
               }
             >
-              {(customers?.customerBase?.comparison.percentageChange || 0) === 0 ? (
+              {(customers?.customerBase?.comparison.percentageChange || 0) ===
+              0 ? (
                 <span className="mr-1">—</span>
-              ) : (customers?.customerBase?.comparison.percentageChange || 0) > 0 ? (
+              ) : (customers?.customerBase?.comparison.percentageChange || 0) >
+                0 ? (
                 <TrendingUp className="w-3 h-3 mr-1" />
               ) : (
                 <TrendingDown className="w-3 h-3 mr-1" />
               )}
-              {(customers?.customerBase?.comparison.percentageChange || 0) > 0 ? '+' : ''}
+              {(customers?.customerBase?.comparison.percentageChange || 0) > 0
+                ? '+'
+                : ''}
               {customers?.customerBase?.comparison.percentageChange || 0}%
             </Badge>
           </div>

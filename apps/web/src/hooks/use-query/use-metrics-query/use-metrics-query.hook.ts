@@ -22,6 +22,7 @@ export const useMetricsQuery = ({
     data: overview,
     refetch: overviewRefetch,
     isPending: isPendingOverview,
+    isEnabled: isEnabledOverview,
   } = useQuery({
     queryKey: CACHE_QUERY_KEYS.metricsOverview(storeId || '', period),
     queryFn: () => MetricsService.getOverview(storeId || '', period),
@@ -32,6 +33,7 @@ export const useMetricsQuery = ({
     data: sales,
     refetch: salesRefetch,
     isPending: isPendingSales,
+    isEnabled: isEnabledSales,
   } = useQuery({
     queryKey: CACHE_QUERY_KEYS.metricsSales(storeId || '', period),
     queryFn: () => MetricsService.getSales(storeId || '', period),
@@ -42,6 +44,7 @@ export const useMetricsQuery = ({
     data: operational,
     refetch: operationalRefetch,
     isPending: isPendingOperational,
+    isEnabled: isEnabledOperational,
   } = useQuery({
     queryKey: CACHE_QUERY_KEYS.metricsOperational(storeId || '', period),
     queryFn: () => MetricsService.getOperational(storeId || '', period),
@@ -52,6 +55,7 @@ export const useMetricsQuery = ({
     data: customers,
     refetch: customersRefetch,
     isPending: isPendingCustomers,
+    isEnabled: isEnabledCustomers,
   } = useQuery({
     queryKey: CACHE_QUERY_KEYS.metricsCustomers(storeId || '', period),
     queryFn: () => MetricsService.getCustomers(storeId || '', period),
@@ -61,14 +65,18 @@ export const useMetricsQuery = ({
   return {
     overview,
     isPendingOverview,
+    isEnabledOverview,
     overviewRefetch,
     sales,
+    isEnabledSales,
     isPendingSales,
     salesRefetch,
     operational,
+    isEnabledOperational,
     isPendingOperational,
     operationalRefetch,
     customers,
+    isEnabledCustomers,
     isPendingCustomers,
     customersRefetch,
   };

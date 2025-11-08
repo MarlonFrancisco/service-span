@@ -2,6 +2,7 @@
 
 import useSearchStore from '@/store/search/search.store';
 import { IStoreSearchListItem } from '@/store/search/search.types';
+import { useIsMobile } from '@repo/ui';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { useRef } from 'react';
 import { ServiceCard } from '../service-card';
@@ -17,13 +18,16 @@ export function VirtualizedResultsList({
 
   const selectedStore = useSearchStore((state) => state.selectedStore);
   const setSelectedStore = useSearchStore((state) => state.setSelectedStore);
+  const isMobile = useIsMobile();
 
   const virtualizer = useVirtualizer({
     count: stores.length,
     getScrollElement: () => parentRef.current,
-    estimateSize: () => 380,
-    gap: 0,
+    estimateSize: () => (isMobile ? 750 : 380),
+    gap: 24,
     overscan: 10,
+    paddingEnd: 24,
+    paddingStart: 24,
   });
 
   const virtualItems = virtualizer.getVirtualItems();
@@ -46,7 +50,7 @@ export function VirtualizedResultsList({
       {/* Virtualized Container */}
       <div
         ref={parentRef}
-        className="h-[850px] overflow-y-auto rounded-lg border border-gray-200 pt-4"
+        className="h-[1200px] overflow-y-auto rounded-lg border border-gray-200"
       >
         <div
           style={{
@@ -63,6 +67,7 @@ export function VirtualizedResultsList({
               <div
                 key={virtualItem.key}
                 data-index={virtualItem.index}
+                ref={virtualizer.measureElement}
                 style={{
                   position: 'absolute',
                   top: 0,

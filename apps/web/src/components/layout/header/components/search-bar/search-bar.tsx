@@ -46,7 +46,7 @@ export const SearchBar = () => {
   };
 
   return (
-    <div className="w-full relative flex mx-12 max-w-xl">
+    <div className="w-full relative flex mr-5 md:mx-12 max-w-xl">
       {/* Desktop AI-Powered Search */}
       <div className="hidden md:block w-full relative group">
         {/* Animated gradient border effect */}

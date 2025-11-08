@@ -24,7 +24,7 @@ export const Header = ({
   children,
   ...props
 }: THeaderConfig) => {
-  const { isMenuOpen, toggleMenu, goToPlansPage } = useHeader();
+  const { isMenuOpen, toggleMenu } = useHeader();
 
   return (
     <div className="min-h-screen bg-black">
@@ -40,7 +40,7 @@ export const Header = ({
 
                 <div className="flex items-center gap-x-8">
                   <div className="hidden lg:block">
-                    <PartnerButton variant="light" onClick={goToPlansPage} />
+                    <PartnerButton variant="light" />
                   </div>
                   <MenuButton
                     isOpen={isMenuOpen}
@@ -70,7 +70,7 @@ export const Header = ({
                     <HeaderLogo variant="dark" />
 
                     <div className="flex items-center gap-x-8">
-                      <PartnerButton variant="dark" onClick={goToPlansPage} />
+                      <PartnerButton variant="dark" />
                       <MenuButton
                         isOpen={isMenuOpen}
                         onClick={toggleMenu}
