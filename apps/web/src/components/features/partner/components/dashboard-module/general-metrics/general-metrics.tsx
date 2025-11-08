@@ -42,7 +42,7 @@ import { useMetricsQuery } from '@/hooks/use-query/use-metrics-query/use-metrics
 import { usePartnerStore } from '@/store/partner/partner.store';
 import { GeneralMetricsNotFound } from './general-metrics-not-found';
 import { GeneralMetricsSkeleton } from './general-metrics.skeleton';
-type PeriodFilter = 'today' | 'week' | 'month';
+type PeriodFilter = 'week' | 'month' | 'quarter';
 
 export function GeneralMetricsModule() {
   const [periodFilter, setPeriodFilter] = useState<PeriodFilter>('week');
@@ -79,12 +79,12 @@ export function GeneralMetricsModule() {
   // Obter texto de comparação baseado no período
   const getComparisonText = () => {
     switch (periodFilter) {
-      case 'today':
-        return 'vs ontem';
       case 'week':
         return 'vs semana passada';
       case 'month':
         return 'vs mês passado';
+      case 'quarter':
+        return 'vs trimestre passado';
       default:
         return 'vs período anterior';
     }
@@ -93,12 +93,12 @@ export function GeneralMetricsModule() {
   // Obter texto de subtítulo baseado no período
   const getSubtitleText = () => {
     switch (periodFilter) {
-      case 'today':
-        return 'hoje';
       case 'week':
         return 'esta semana';
       case 'month':
         return 'este mês';
+      case 'quarter':
+        return 'este trimestre';
       default:
         return 'período atual';
     }
@@ -159,10 +159,9 @@ export function GeneralMetricsModule() {
   };
 
   const periodLabels = {
-    today: 'Hoje',
     week: 'Esta Semana',
     month: 'Este Mês',
-    custom: 'Personalizado',
+    quarter: 'Este Trimestre',
   };
 
   return (
@@ -181,7 +180,7 @@ export function GeneralMetricsModule() {
                 if (value) setPeriodFilter(value as PeriodFilter);
               }}
             >
-              {(['today', 'week', 'month'] as PeriodFilter[]).map((period) => (
+              {(['week', 'month', 'quarter'] as PeriodFilter[]).map((period) => (
                 <ToggleGroupItem
                   key={period}
                   value={period}
@@ -273,7 +272,7 @@ export function GeneralMetricsModule() {
                   <CardTitle className="text-base text-gray-900">
                     Agendamentos & Receita
                   </CardTitle>
-                  <p className="text-xs text-gray-500 mt-1">Últimos 7 dias</p>
+                  <p className="text-xs text-gray-500 mt-1">{subtitleText}</p>
                 </div>
               </div>
             </CardHeader>
@@ -401,7 +400,7 @@ export function GeneralMetricsModule() {
                   <CardTitle className="text-base text-gray-900">
                     Top Serviços
                   </CardTitle>
-                  <p className="text-xs text-gray-500 mt-1">Por demanda</p>
+                  <p className="text-xs text-gray-500 mt-1">{subtitleText}</p>
                 </div>
                 <div className="w-9 h-9 rounded-lg bg-gray-100 flex items-center justify-center">
                   <Award className="h-4 w-4 text-gray-600" />

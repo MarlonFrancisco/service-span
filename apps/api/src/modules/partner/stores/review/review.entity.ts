@@ -1,9 +1,11 @@
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, Index, ManyToOne } from 'typeorm';
 import { BaseEntity } from '../../../database';
 import { User } from '../../../users/user.entity';
 import { Store } from '../store.entity';
 
 @Entity('reviews')
+@Index('idx_reviews_store_user', ['store.id', 'user.id'])
+@Index('idx_reviews_store', ['store.id'])
 export class Review extends BaseEntity {
   @Column({ type: 'numeric', nullable: true, precision: 2, scale: 1 })
   rating: number;

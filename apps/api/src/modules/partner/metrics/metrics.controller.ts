@@ -1,11 +1,11 @@
 import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { DashboardCustomersService } from './dashboard-customers/dashboard-customers.service';
+import { DashboardOperationalService } from './dashboard-operational/dashboard-operational.service';
 import { DashboardOverviewService } from './dashboard-overview/dashboard-overview.service';
 import { DashboardSalesService } from './dashboard-sales/dashboard-sales.service';
-import { DashboardOperationalService } from './dashboard-operational/dashboard-operational.service';
-import { DashboardCustomersService } from './dashboard-customers/dashboard-customers.service';
 
-type OverviewPeriodType = 'today' | 'week' | 'month';
+type OverviewPeriodType = 'week' | 'month' | 'quarter';
 type SalesPeriodType = 'week' | 'month' | 'quarter';
 type OperationalPeriodType = 'week' | 'month' | 'quarter';
 type CustomersPeriodType = 'week' | 'month' | 'quarter';
@@ -32,7 +32,7 @@ export class MetricsController {
     @Query('period') period: OverviewPeriodType = 'week',
   ) {
     // Validar período
-    const validPeriods: OverviewPeriodType[] = ['today', 'week', 'month'];
+    const validPeriods: OverviewPeriodType[] = ['week', 'month', 'quarter'];
     const normalizedPeriod = validPeriods.includes(period) ? period : 'week';
 
     return this.dashboardOverviewService.getDashboardOverview(

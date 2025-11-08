@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Between, Repository } from 'typeorm';
+import { Between, In, Repository } from 'typeorm';
 import { calculateEndTime } from '../../../../utils/helpers/schedule.helpers';
 import { UsersService } from '../../../users/users.service';
 import { CreateSchedulesDto } from './dto/create-schedule.dto';
@@ -46,7 +46,12 @@ export class ScheduleService {
       return nextSchedule;
     });
 
-    return this.scheduleRepository.save(schedules);
+    const savedSchedules = await this.scheduleRepository.save(schedules);
+
+    return this.scheduleRepository.find({
+      where: { id: In(savedSchedules.map((schedule) => schedule.id)) },
+      relations: ['storeMember', 'storeMember.user', 'user', 'service'],
+    });
   }
 
   async findAll(storeId: string): Promise<Schedule[]> {

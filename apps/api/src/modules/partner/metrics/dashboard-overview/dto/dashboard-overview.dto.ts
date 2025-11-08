@@ -41,12 +41,6 @@ export class DashboardOverviewDto {
   conversionRate: {
     value: number;
   };
-
-  peakHours: {
-    start: string;
-    end: string;
-  };
-
   // Dados Temporais (11-12)
   appointmentsByDay: Array<{
     day: 'Seg' | 'Ter' | 'Qua' | 'Qui' | 'Sex' | 'Sáb' | 'Dom';

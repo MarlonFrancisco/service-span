@@ -1,4 +1,11 @@
-import { Column, Entity, ManyToMany, ManyToOne, OneToMany } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 import { BaseEntity } from '../../../../database';
 import { Schedule } from '../../schedule/schedule.entity';
 import { StoreMember } from '../../store-member/store-member.entity';
@@ -6,6 +13,7 @@ import { Store } from '../../store.entity';
 import { Category } from '../category.entity';
 
 @Entity('services')
+@Index('idx_services_store', ['store.id'])
 export class Service extends BaseEntity {
   @Column({ type: 'varchar', nullable: true })
   name: string;
