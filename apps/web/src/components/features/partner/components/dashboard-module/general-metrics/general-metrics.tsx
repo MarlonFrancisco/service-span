@@ -49,15 +49,14 @@ export function GeneralMetricsModule() {
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const activeStore = usePartnerStore((state) => state.activeStore);
-  const { overview, isPendingOverview, isEnabledOverview, overviewRefetch } =
-    useMetricsQuery({
-      storeId: activeStore?.id,
-      period: periodFilter,
-      includeOverview: true,
-    });
+  const { overview, isPendingOverview, overviewRefetch } = useMetricsQuery({
+    storeId: activeStore?.id,
+    period: periodFilter,
+    includeOverview: true,
+  });
 
   // Loading state
-  if (isPendingOverview && isEnabledOverview) {
+  if (isPendingOverview || !activeStore) {
     return <GeneralMetricsSkeleton />;
   }
 
@@ -180,15 +179,17 @@ export function GeneralMetricsModule() {
                 if (value) setPeriodFilter(value as PeriodFilter);
               }}
             >
-              {(['week', 'month', 'quarter'] as PeriodFilter[]).map((period) => (
-                <ToggleGroupItem
-                  key={period}
-                  value={period}
-                  className="px-2 sm:px-5 py-1.5 sm:py-2 text-xs rounded-md transition-all touch-manipulation min-h-[36px] data-[state=on]:bg-white data-[state=on]:text-gray-900 data-[state=on]:shadow-sm data-[state=off]:text-gray-600 data-[state=off]:hover:text-gray-900 data-[state=off]:active:bg-gray-200"
-                >
-                  {periodLabels[period]}
-                </ToggleGroupItem>
-              ))}
+              {(['week', 'month', 'quarter'] as PeriodFilter[]).map(
+                (period) => (
+                  <ToggleGroupItem
+                    key={period}
+                    value={period}
+                    className="px-2 sm:px-5 py-1.5 sm:py-2 text-xs rounded-md transition-all touch-manipulation min-h-[36px] data-[state=on]:bg-white data-[state=on]:text-gray-900 data-[state=on]:shadow-sm data-[state=off]:text-gray-600 data-[state=off]:hover:text-gray-900 data-[state=off]:active:bg-gray-200"
+                  >
+                    {periodLabels[period]}
+                  </ToggleGroupItem>
+                ),
+              )}
             </ToggleGroup>
           </div>
 

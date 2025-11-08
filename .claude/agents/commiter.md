@@ -26,7 +26,7 @@ Você é um especialista em commits semânticos. Quando solicitado a gerar uma m
 ```
 <type>(<scope>): <short-description>
 
-<description>
+<short description without sign or topics>
 ```
 
 IMPORTANTE GERAR MENSAGEM SEM QUALQUER ASSINATURA.
