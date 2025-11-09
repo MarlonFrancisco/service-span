@@ -1,3 +1,42 @@
+## 0.7.0 (2025-11-09)
+
+### Feat
+
+- **web**: redesign profile page with tabbed interface and enhanced hero section
+- **api**: implement recommendation module with upstash abstraction and multi-service scheduling
+- **api/db**: populate mock data with professionals and service assignments
+- **api/search**: implement upstash search module with store indexing and migration
+- **search**: implement virtualized search results with infinite scroll
+- **api/partner**: implement dashboard customers metrics module
+- **api/partner**: add operational metrics module
+- **api/partner**: implement dashboard 2 sales metrics
+- **web/partner**: integrate dashboard sales metrics with dynamic API data and skeleton loading
+- **web/partner**: integrate dashboard 1 metrics query with dynamic period filtering
+- **api/partner**: implement dashboard 1 metrics with period filtering and reviews management
+- **api/subscription**: implement getCurrentPlan endpoint with unlimited access support
+- **web/partner**: implement plans module and refactor AdminSidebar with unlimited access support
+- **api**: add notifications settings and history modules with nested routes
+- **web/partner**: refactor notifications module with separate email and SMS settings pages
+- **api**: add business hours to stores and improve entity relations
+
+### Refactor
+
+- **web**: adapt header layout for integrated profile and update ui color scheme
+- **web**: enhance booking flow validation and simplify checkout
+- **web/partner**: extract TrendBadge component and standardize trend display across all dashboard metrics
+- **ui**: standardize imports and enhance dark mode support
+- **web/partner**: standardize empty states and enhance UI consistency
+- **web**: modernize homepage with hero section and recomendation system
+- **web/booking**: migrate to server-side rendering and hook-driven architecture
+- **web/partner**: simplify customer metrics UI and remove unused features
+- **web/partner**: refactor partner modules with improved mutations and component structure
+
+### Perf
+
+- **api/metrics**: migrate dashboard customers and operational to sql with database optimizations
+- **api/metrics**: migrate dashboard sales to sql
+- **api/metrics**: migrate dashboard overview to sql
+
 ## 0.6.0 (2025-11-01)
 
 ### Feat
