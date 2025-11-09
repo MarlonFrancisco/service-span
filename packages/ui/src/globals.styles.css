@@ -6,19 +6,19 @@
 :root {
     --font-size: 16px;
     --background: #fafafa;
-    --foreground: #0a0a0a;
+    --foreground: #2B2B2B;
     --card: #ffffff;
-    --card-foreground: #0a0a0a;
+    --card-foreground: #2B2B2B;
     --popover: #ffffff;
-    --popover-foreground: #0a0a0a;
-    --primary: #0a0a0a;
+    --popover-foreground: #2B2B2B;
+    --primary: #2B2B2B;
     --primary-foreground: #fafafa;
     --secondary: #f4f4f5;
-    --secondary-foreground: #0a0a0a;
+    --secondary-foreground: #2B2B2B;
     --muted: #f4f4f5;
     --muted-foreground: #71717a;
     --accent: #f4f4f5;
-    --accent-foreground: #0a0a0a;
+    --accent-foreground: #2B2B2B;
     --destructive: #ef4444;
     --destructive-foreground: #fafafa;
     --border: #e4e4e7;
@@ -35,11 +35,11 @@
     --chart-5: #8b5cf6;
     --radius: 0.5rem;
     --sidebar: #ffffff;
-    --sidebar-foreground: #0a0a0a;
-    --sidebar-primary: #0a0a0a;
+    --sidebar-foreground: #2B2B2B;
+    --sidebar-primary: #2B2B2B;
     --sidebar-primary-foreground: #fafafa;
     --sidebar-accent: #f4f4f5;
-    --sidebar-accent-foreground: #0a0a0a;
+    --sidebar-accent-foreground: #2B2B2B;
     --sidebar-border: #e4e4e7;
     --sidebar-ring: #18181b;
 }

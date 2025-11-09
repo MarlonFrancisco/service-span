@@ -12,6 +12,7 @@ export type TUseHeaderConfig = {
 };
 
 export type TNavigationItem = {
-  href: string;
+  href?: string;
+  onClick?: () => void;
   label: string;
 };
