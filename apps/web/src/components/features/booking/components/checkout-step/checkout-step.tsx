@@ -37,6 +37,7 @@ export function CheckoutStep() {
   const handleSchedule = () => {
     form.handleSubmit(
       (data) => {
+        console.log('data', data);
         createSchedule(
           {
             user,

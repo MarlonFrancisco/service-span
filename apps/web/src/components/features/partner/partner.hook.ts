@@ -22,14 +22,13 @@ export const usePartner = () => {
     queryFn: () => StoreService.getAll(),
   });
 
-  const showStoreSelector =
-    currentModule?.showStoreSelector && stores.length > 0;
-
   const { data: activeStore } = useQuery({
     queryKey: CACHE_QUERY_KEYS.store(stores[0]?.id ?? ''),
     queryFn: () => StoreService.get(stores[0]!.id),
     enabled: !!stores[0]?.id,
   });
+
+  const showStoreSelector = currentModule?.showStoreSelector && !!activeStore;
 
   const { data: notificationsHistory = [] } = useQuery({
     queryKey: CACHE_QUERY_KEYS.notificationsHistory(activeStore?.id ?? ''),

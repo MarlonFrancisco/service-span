@@ -43,16 +43,16 @@ export function SalesRevenueMetricsModule() {
   const [periodFilter, setPeriodFilter] = useState<PeriodFilter>('month');
 
   const activeStore = usePartnerStore((state) => state.activeStore);
-  const { sales, isPendingSales, isEnabledSales } = useMetricsQuery({
+  const { sales, isPendingSales } = useMetricsQuery({
     storeId: activeStore?.id,
     period: periodFilter,
     includeSales: true,
   });
 
   const periodLabels = {
-    week: 'Esta Semana',
-    month: 'Este Mês',
-    quarter: 'Trimestre',
+    week: 'Semanal',
+    month: 'Mensal',
+    quarter: 'Trimestral',
   };
 
   const getMedalEmoji = (index: number) => {

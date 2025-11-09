@@ -236,9 +236,9 @@ export function OperationalMetricsModule() {
                     : 'text-gray-600 hover:text-gray-900 active:bg-gray-200'
                 }`}
               >
-                {view === 'week' && 'Esta Semana'}
-                {view === 'month' && 'Este Mês'}
-                {view === 'quarter' && 'Trimestre'}
+                {view === 'week' && 'Semanal'}
+                {view === 'month' && 'Mensal'}
+                {view === 'quarter' && 'Trimestral'}
               </button>
             ))}
           </div>

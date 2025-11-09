@@ -7,19 +7,14 @@ interface UseSearchQueryParams {
 }
 
 export const useSearchQuery = ({ query }: UseSearchQueryParams) => {
-  const {
-    data: searchResults,
-    isPending: isSearchLoading,
-    error: searchError,
-  } = useQuery({
+  const { data: searchResults, isPending: isSearchLoading } = useQuery({
     queryKey: CACHE_QUERY_KEYS.search(query),
     queryFn: () => SearchService.searchStores(query),
-    enabled: !!query,
   });
 
+  console.log(isSearchLoading, 'isSearchLoading');
   return {
     searchResults: searchResults || [],
     isSearchLoading,
-    searchError,
   };
 };

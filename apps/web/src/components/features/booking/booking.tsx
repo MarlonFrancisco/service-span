@@ -6,7 +6,7 @@ import { Button, Card } from '@repo/ui';
 import { AlertTriangle } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { useParams } from 'next/navigation';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { STEPS } from './booking.constants';
 import { BookingFormSchema, TBookingFormData } from './booking.schema';
@@ -29,7 +29,7 @@ export function BookingFlow() {
   });
 
   // Initialize form with React Hook Form
-  const methods = useForm<TBookingFormData>({
+  const form = useForm<TBookingFormData>({
     resolver: zodResolver(BookingFormSchema),
     defaultValues: {
       selectedServices: [],
@@ -41,27 +41,14 @@ export function BookingFlow() {
   });
 
   const [currentStep, setCurrentStep] = useState<TBookingStep>('services');
-  const [validationError, setValidationError] = useState<string | null>(null);
 
-  if (isPendingStore) {
-    return (
-      <Header showSearchBar logoProps={{ className: 'hidden lg:block' }}>
-        <BookingSkeleton />
-        <Footer />
-      </Header>
-    );
-  }
+  const selectedServices = form.watch('selectedServices');
+  const selectedProfessional = form.watch('selectedProfessional');
+  const isAnyProfessional = form.watch('isAnyProfessional');
+  const selectedDate = form.watch('selectedDate');
+  const selectedTime = form.watch('selectedTime');
 
-  const selectedServices = methods.watch('selectedServices');
-  const selectedProfessional = methods.watch('selectedProfessional');
-  const isAnyProfessional = methods.watch('isAnyProfessional');
-  const selectedDate = methods.watch('selectedDate');
-  const selectedTime = methods.watch('selectedTime');
-
-  const steps = STEPS;
-  const currentStepIndex = steps.findIndex((step) => step.id === currentStep);
-
-  const canProceedToNext = () => {
+  const canProceedToNext = useMemo(() => {
     switch (currentStep) {
       case 'services':
         return selectedServices.length > 0;
@@ -74,7 +61,17 @@ export function BookingFlow() {
       default:
         return false;
     }
-  };
+  }, [
+    currentStep,
+    selectedServices,
+    selectedProfessional,
+    isAnyProfessional,
+    selectedDate,
+    selectedTime,
+  ]);
+
+  const steps = STEPS;
+  const currentStepIndex = steps.findIndex((step) => step.id === currentStep);
 
   const nextButtonText = (() => {
     switch (currentStep) {
@@ -90,8 +87,6 @@ export function BookingFlow() {
   })();
 
   const handleNextStep = () => {
-    if (!canProceedToNext()) return;
-
     const stepIndex = steps.findIndex((step) => step.id === currentStep);
     if (stepIndex < steps.length - 1) {
       setCurrentStep(steps[stepIndex + 1]!.id);
@@ -100,6 +95,7 @@ export function BookingFlow() {
 
   const handlePrevStep = () => {
     const stepIndex = steps.findIndex((step) => step.id === currentStep);
+    form.clearErrors('root');
     if (stepIndex > 0) {
       setCurrentStep(steps[stepIndex - 1]!.id);
     }
@@ -120,9 +116,7 @@ export function BookingFlow() {
       case 'services':
         return <ServiceSelectionStep />;
       case 'professional':
-        return (
-          <ProfessionalSelectionStep onValidationError={setValidationError} />
-        );
+        return <ProfessionalSelectionStep />;
       case 'datetime':
         return <DateTimeSelectionStep />;
       case 'checkout':
@@ -132,8 +126,17 @@ export function BookingFlow() {
     }
   };
 
+  if (isPendingStore) {
+    return (
+      <Header showSearchBar logoProps={{ className: 'hidden lg:block' }}>
+        <BookingSkeleton />
+        <Footer />
+      </Header>
+    );
+  }
+
   return (
-    <FormProvider {...methods}>
+    <FormProvider {...form}>
       <Header showSearchBar logoProps={{ className: 'hidden lg:block' }}>
         {/* Business Showcase */}
         <BusinessShowcase />
@@ -144,11 +147,13 @@ export function BookingFlow() {
             {/* Main Content Column */}
             <div className="col-span-12 lg:col-span-8">
               {/* Validation Error */}
-              {validationError && (
+              {form.formState.errors.root && (
                 <Card className="p-3 md:p-4 mb-4 md:mb-6 bg-red-50 shadow-sm">
                   <div className="flex items-center gap-3 text-red-800">
                     <AlertTriangle className="h-5 w-5 text-red-600 flex-shrink-0" />
-                    <p className="text-sm">{validationError}</p>
+                    <p className="text-sm">
+                      {form.formState.errors.root.message}
+                    </p>
                   </div>
                 </Card>
               )}
@@ -193,7 +198,9 @@ export function BookingFlow() {
                     {currentStep !== 'checkout' && (
                       <Button
                         onClick={handleNextStep}
-                        disabled={!canProceedToNext() || !!validationError}
+                        disabled={
+                          !canProceedToNext || !!form.formState.errors.root
+                        }
                         className="bg-black hover:bg-gray-800 text-white px-8"
                       >
                         {nextButtonText}
@@ -255,7 +262,7 @@ export function BookingFlow() {
               {currentStep !== 'checkout' && (
                 <Button
                   onClick={handleNextStep}
-                  disabled={!canProceedToNext() || !!validationError}
+                  disabled={!canProceedToNext || !!form.formState.errors}
                   className="bg-black hover:bg-gray-800 text-white"
                 >
                   {nextButtonText}

@@ -1,4 +1,5 @@
 import { IBlockedTime } from './blocked-times.types';
+import { IAppointment } from './schedule.types';
 import { IService } from './service.types';
 import { IStore } from './stores.types';
 
@@ -22,5 +23,6 @@ export interface IProfessional {
   createdAt: Date;
   store?: IStore;
   services?: IService[];
+  schedules: IAppointment[];
   blockedTimes: IBlockedTime[];
 }

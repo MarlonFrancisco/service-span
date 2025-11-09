@@ -25,14 +25,12 @@ export const BookingFormSchema = z.object({
       id: z.string(),
       role: z.enum(['professional', 'manager', 'owner']),
       isActive: z.boolean(),
-      createdAt: z.string(),
       schedules: z.array(
         z.object({
           id: z.string(),
           date: z.string(),
           startTime: z.string(),
           endTime: z.string(),
-          isRecurring: z.boolean().optional(),
         }),
       ),
       blockedTimes: z.array(

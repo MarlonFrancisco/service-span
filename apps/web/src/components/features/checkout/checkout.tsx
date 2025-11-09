@@ -1,13 +1,11 @@
 'use client';
-import { Alert, AlertDescription, Badge, Button, Progress } from '@repo/ui';
+import { Alert, AlertDescription, Button, Progress } from '@repo/ui';
 import {
   AlertCircle,
   ArrowRight,
   Calendar,
   CheckCircle2,
   CreditCard,
-  Loader2,
-  Mail,
   MapPin,
   Shield,
   Sparkles,
@@ -15,14 +13,8 @@ import {
   Zap,
 } from 'lucide-react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
+import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-
-interface ICheckoutProps {
-  planName?: string;
-  onGoToDashboard?: () => void;
-  userEmail?: string;
-  activationDate?: Date;
-}
 
 interface LoadingStep {
   icon: typeof CreditCard;
@@ -30,26 +22,20 @@ interface LoadingStep {
   duration: number;
 }
 
-export const Checkout = ({
-  planName = 'Professional',
-  onGoToDashboard,
-  userEmail = 'seu-email@exemplo.com',
-  activationDate = new Date(),
-}: ICheckoutProps) => {
+export const Checkout = () => {
   const [isValidating, setIsValidating] = useState(true);
-  const [isNavigating, setIsNavigating] = useState(false);
-  const [showConfetti, setShowConfetti] = useState(false);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [progress, setProgress] = useState(0);
   const [hasTimeout, setHasTimeout] = useState(false);
+  const router = useRouter();
 
   const shouldReduceMotion = useReducedMotion();
   const mainButtonRef = useRef<HTMLButtonElement>(null);
 
   const loadingSteps: LoadingStep[] = [
-    { icon: CreditCard, message: 'Verificando pagamento', duration: 800 },
-    { icon: Shield, message: 'Ativando sua conta', duration: 800 },
-    { icon: Zap, message: 'Preparando dashboard', duration: 900 },
+    { icon: CreditCard, message: 'Verificando pagamento', duration: 1500 },
+    { icon: Shield, message: 'Ativando sua conta', duration: 3000 },
+    { icon: Zap, message: 'Preparando dashboard', duration: 3000 },
   ];
 
   useEffect(() => {
@@ -79,9 +65,6 @@ export const Checkout = ({
           setIsValidating(false);
           // Foca no botão principal após carregar (acessibilidade)
           setTimeout(() => {
-            if (!shouldReduceMotion) {
-              setShowConfetti(true);
-            }
             mainButtonRef.current?.focus();
           }, 100);
         }, 200);
@@ -112,21 +95,7 @@ export const Checkout = ({
   }, [isValidating, shouldReduceMotion]);
 
   const handleGoToDashboard = () => {
-    setIsNavigating(true);
-
-    // Tracking de conversão
-    if (typeof window !== 'undefined' && (window as any).analytics) {
-      (window as any).analytics.track('payment_success_dashboard_clicked', {
-        plan: planName,
-        timestamp: new Date().toISOString(),
-      });
-    }
-
-    if (onGoToDashboard) {
-      onGoToDashboard();
-    } else {
-      window.location.href = '/admin/dashboard';
-    }
+    router.push('/partner/dashboard');
   };
 
   const formatActivationDate = () => {
@@ -136,7 +105,7 @@ export const Checkout = ({
       year: 'numeric',
       hour: '2-digit',
       minute: '2-digit',
-    }).format(activationDate);
+    }).format(new Date());
   };
 
   const quickActions = [
@@ -342,14 +311,6 @@ export const Checkout = ({
             transition={{ delay: 0.3 }}
             className="px-2"
           >
-            <Badge
-              variant="secondary"
-              className="mb-3 sm:mb-4 bg-gray-100 text-gray-900 border-0 text-xs sm:text-sm"
-              role="status"
-            >
-              Plano {planName}
-            </Badge>
-
             <h1 className="text-gray-900 mb-2 sm:mb-3">Tudo pronto!</h1>
 
             <p className="text-gray-600 text-sm sm:text-base max-w-sm mx-auto px-2">
@@ -363,23 +324,6 @@ export const Checkout = ({
             </p>
           </motion.div>
         </motion.header>
-
-        {/* Email Confirmation Notice */}
-        <motion.div
-          className="bg-blue-50 border border-blue-100 rounded-lg p-3 sm:p-4 mb-5 sm:mb-6 flex items-start gap-3"
-          initial={shouldReduceMotion ? {} : { opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.35 }}
-        >
-          <Mail className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 flex-shrink-0 mt-0.5" />
-          <div className="flex-1 min-w-0">
-            <p className="text-blue-900 text-xs sm:text-sm">
-              <span className="font-medium">Confirmação enviada!</span> Enviamos
-              um email para <span className="font-medium">{userEmail}</span> com
-              todos os detalhes da sua assinatura.
-            </p>
-          </div>
-        </motion.div>
 
         {/* Next Steps Card */}
         <motion.section
@@ -433,54 +377,13 @@ export const Checkout = ({
           <Button
             ref={mainButtonRef}
             onClick={handleGoToDashboard}
-            disabled={isNavigating}
             className="w-full bg-gray-900 text-white hover:bg-gray-800 h-11 sm:h-12 text-sm sm:text-base disabled:opacity-50 touch-manipulation focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
             aria-label="Acessar dashboard do administrador"
           >
-            {isNavigating ? (
-              <>
-                <Loader2
-                  className="mr-2 h-4 w-4 animate-spin"
-                  aria-hidden="true"
-                />
-                Carregando...
-              </>
-            ) : (
-              <>
-                Acessar Dashboard
-                <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
-              </>
-            )}
+            Acessar Dashboard
+            <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
           </Button>
         </motion.div>
-
-        {/* Quick Links - Better touch targets on mobile */}
-        <motion.nav
-          className="flex items-center justify-center gap-3 sm:gap-4 mt-5 sm:mt-6"
-          initial={shouldReduceMotion ? {} : { opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.7 }}
-          aria-label="Links de suporte"
-        >
-          <a
-            href="/ajuda"
-            className="text-gray-600 hover:text-gray-900 transition-colors text-sm sm:text-base py-2 px-1 touch-manipulation focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 rounded"
-          >
-            Central de Ajuda
-          </a>
-          <span
-            className="text-gray-300 text-sm sm:text-base"
-            aria-hidden="true"
-          >
-            •
-          </span>
-          <a
-            href="/contact"
-            className="text-gray-600 hover:text-gray-900 transition-colors text-sm sm:text-base py-2 px-1 touch-manipulation focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 rounded"
-          >
-            Suporte
-          </a>
-        </motion.nav>
       </article>
     </main>
   );

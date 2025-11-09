@@ -157,9 +157,9 @@ export function GeneralMetricsModule() {
   };
 
   const periodLabels = {
-    week: 'Esta Semana',
-    month: 'Este Mês',
-    quarter: 'Este Trimestre',
+    week: 'Semanal',
+    month: 'Mensal',
+    quarter: 'Trimestral',
   };
 
   return (

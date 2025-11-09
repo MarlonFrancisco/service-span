@@ -7,18 +7,12 @@ import { useFormContext } from 'react-hook-form';
 import { useGetStore } from '../../booking.hook';
 import { TBookingFormData } from '../../booking.schema';
 
-interface IProfessionalSelectionStepProps {
-  onValidationError: (error: string | null) => void;
-}
-
-export function ProfessionalSelectionStep({
-  onValidationError,
-}: IProfessionalSelectionStepProps) {
+export function ProfessionalSelectionStep() {
   const stores = useGetStore();
-  const { watch, setValue } = useFormContext<TBookingFormData>();
-  const selectedServices = watch('selectedServices');
-  const selectedProfessional = watch('selectedProfessional');
-  const isAnyProfessional = watch('isAnyProfessional');
+  const form = useFormContext<TBookingFormData>();
+  const selectedServices = form.watch('selectedServices');
+  const selectedProfessional = form.watch('selectedProfessional');
+  const isAnyProfessional = form.watch('isAnyProfessional');
 
   const professionals = stores?.storeMembers?.filter(
     (member) => member.role === 'professional',
@@ -45,7 +39,7 @@ export function ProfessionalSelectionStep({
         availableProfessionals: professionals || [],
         hasIncompatibleCombination: false,
       });
-      onValidationError(null);
+      form.clearErrors('root');
       return;
     }
 
@@ -77,38 +71,42 @@ export function ProfessionalSelectionStep({
 
     // Configurar mensagens de validação
     if (hasIncompatibleCombination) {
-      onValidationError(
-        'Esta combinação de serviços não pode ser realizada por nenhum profissional desta unidade. Por favor, volte ao Passo 1 e remova um serviço para prosseguir.',
-      );
+      form.setError('root', {
+        message:
+          'Esta combinação de serviços não pode ser realizada por nenhum profissional desta unidade. Por favor, volte ao Passo 1 e remova um serviço para prosseguir.',
+      });
     } else if (!canUseAny && professionalsWhoCanDoSome.length > 0) {
-      onValidationError(null); // Erro será mostrado como info, não como bloqueio
+      form.setError('root', {
+        message:
+          'Esta combinação de serviços não pode ser realizada por nenhum profissional desta unidade. Por favor, volte ao Passo 1 e remova um serviço para prosseguir.',
+      });
     } else {
-      onValidationError(null);
+      form.clearErrors('root');
     }
 
     // Reset da seleção se não for mais válida
     if (isAnyProfessional && !canUseAny) {
-      setValue('selectedProfessional', null);
-      setValue('isAnyProfessional', false);
+      form.setValue('selectedProfessional', null);
+      form.setValue('isAnyProfessional', false);
     } else if (
       selectedProfessional &&
       !professionalsWhoCanDoSome.find((p) => p.id === selectedProfessional.id)
     ) {
-      setValue('selectedProfessional', null);
-      setValue('isAnyProfessional', false);
+      form.setValue('selectedProfessional', null);
+      form.setValue('isAnyProfessional', false);
     }
   };
 
   const handleAnyProfessionalSelect = () => {
     if (compatibilityStatus.canUseAny) {
-      setValue('selectedProfessional', null);
-      setValue('isAnyProfessional', true);
+      form.setValue('selectedProfessional', null);
+      form.setValue('isAnyProfessional', true);
     }
   };
 
   const handleProfessionalSelect = (professional: IProfessional) => {
-    setValue('selectedProfessional', professional);
-    setValue('isAnyProfessional', false);
+    form.setValue('selectedProfessional', professional);
+    form.setValue('isAnyProfessional', false);
   };
 
   const canProfessionalDoAllServices = (professional: IProfessional) => {

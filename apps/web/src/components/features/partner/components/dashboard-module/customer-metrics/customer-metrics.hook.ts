@@ -9,9 +9,9 @@ export function useCustomerMetrics() {
   const activeStore = usePartnerStore((state) => state.activeStore);
 
   const periodLabels = {
-    week: 'Esta Semana',
-    month: 'Este Mês',
-    quarter: 'Trimestre',
+    week: 'Semanal',
+    month: 'Mensal',
+    quarter: 'Trimestral',
   };
 
   const { customers, isPendingCustomers, isEnabledCustomers } = useMetricsQuery(
