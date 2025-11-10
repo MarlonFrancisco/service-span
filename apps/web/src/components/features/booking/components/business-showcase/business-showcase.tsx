@@ -24,6 +24,8 @@ export function BusinessShowcase() {
     data,
     showAllPhotos,
     selectedImageIndex,
+    isFavorite,
+    isLoggedIn,
     handleImageClick,
     handleShare,
     handleCloseGallery,
@@ -71,15 +73,21 @@ export function BusinessShowcase() {
               </Button>
             </div>
 
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleSave}
-              className="flex items-center gap-2 rounded-lg border-gray-300 hover:bg-gray-50"
-            >
-              <Heart className="h-4 w-4" />
-              Salvar
-            </Button>
+            {isLoggedIn && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleSave}
+                className="flex items-center gap-2 rounded-lg border-gray-300 hover:bg-gray-50"
+              >
+                {isFavorite ? (
+                  <Heart className="h-4 w-4 fill-red-500 text-red-500" />
+                ) : (
+                  <Heart className="h-4 w-4" />
+                )}
+                Salvar
+              </Button>
+            )}
           </div>
         </div>
 
