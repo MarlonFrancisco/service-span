@@ -1,5 +1,5 @@
 import { ScheduleService } from '@/service/partner/schedule/schedule.service';
-import { ICreateAppointment } from '@/types/api/schedule.types';
+import { IAppointment, ICreateAppointment } from '@/types/api/schedule.types';
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
@@ -7,7 +7,7 @@ export const useScheduleMutations = ({ storeId }: { storeId: string }) => {
   const { mutate: createSchedule, isPending: isCreatingSchedule } = useMutation(
     {
       mutationFn: (schedule: Partial<ICreateAppointment>) =>
-        ScheduleService.create(storeId, schedule),
+        ScheduleService.create(schedule.store?.id || storeId, schedule),
       onSuccess: () => {
         toast.success('Agendamento criado com sucesso');
       },
@@ -17,8 +17,23 @@ export const useScheduleMutations = ({ storeId }: { storeId: string }) => {
     },
   );
 
+  const { mutate: deleteSchedule, isPending: isDeletingSchedule } = useMutation(
+    {
+      mutationFn: (schedule: IAppointment) =>
+        ScheduleService.delete(schedule.store.id || storeId, schedule.id),
+      onSuccess: () => {
+        toast.success('Agendamento deletado com sucesso');
+      },
+      onError: () => {
+        toast.error('Erro ao deletar agendamento');
+      },
+    },
+  );
+
   return {
     createSchedule,
     isCreatingSchedule,
+    deleteSchedule,
+    isDeletingSchedule,
   };
 };

@@ -3,7 +3,10 @@
 import { useScheduleMutations } from '@/hooks';
 import { useUserQuery } from '@/hooks/use-query/use-user-query';
 import { useAuthStore } from '@/store/auth/auth.store';
-import { IProfessional } from '@/types/api/users.types';
+import { IAppointment } from '@/types/api/schedule.types';
+import { IProfessional, IUser } from '@/types/api/users.types';
+import { cookies } from '@/utils/helpers/cookie.helper';
+import { CACHE_QUERY_KEYS, getQueryClient } from '@/utils/helpers/query.helper';
 import { Button } from '@repo/ui';
 import {
   ArrowRight,
@@ -37,7 +40,6 @@ export function CheckoutStep() {
   const handleSchedule = () => {
     form.handleSubmit(
       (data) => {
-        console.log('data', data);
         createSchedule(
           {
             user,
@@ -51,8 +53,17 @@ export function CheckoutStep() {
             storeMember: { id: data.selectedProfessional!.id } as IProfessional,
           },
           {
-            onSuccess: () => {
-              router.push('/perfil');
+            onSuccess: (data: IAppointment[]) => {
+              const queryClient = getQueryClient();
+              queryClient.setQueryData(
+                CACHE_QUERY_KEYS.user(cookies.get('user_identification')!),
+                (old: IUser) => ({
+                  ...old,
+                  schedules: [...old.schedules, ...data],
+                }),
+              );
+
+              router.push('/profile');
             },
           },
         );

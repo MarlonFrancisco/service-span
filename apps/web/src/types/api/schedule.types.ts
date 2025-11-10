@@ -1,4 +1,5 @@
 import { IService } from './service.types';
+import { IStore } from './stores.types';
 import { IProfessional, IUser } from './users.types';
 
 export type TAppointmentStatus =
@@ -17,6 +18,7 @@ export interface IAppointment {
   user: IUser;
   service: IService;
   storeMember: IProfessional;
+  store: IStore;
 }
 
 export interface ICreateAppointment {
@@ -29,4 +31,5 @@ export interface ICreateAppointment {
   user: Partial<IUser>;
   services: Partial<IService>[];
   storeMember: Partial<IProfessional>;
+  store: Partial<IStore>;
 }
