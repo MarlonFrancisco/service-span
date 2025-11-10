@@ -37,7 +37,7 @@ export const PlanCard = ({ plan, index }: IPlanCardProps) => {
         <div className="mb-8">
           <div className="flex items-baseline gap-2">
             <span className="text-5xl text-gray-900">
-              {formatPrice(plan.price)}
+              {formatPrice(plan.price / 100)}
             </span>
             <span className="text-gray-600">/mês</span>
           </div>
