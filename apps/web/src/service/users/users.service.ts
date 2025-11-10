@@ -15,4 +15,14 @@ export class UsersService {
     const user = await this.getUser();
     return user?.isSubscribed;
   }
+
+  static async updateAvatar(avatar: string) {
+    return await this.apiClient.patch<IUser>('/users/me/avatar', {
+      avatar,
+    });
+  }
+
+  static async delete() {
+    return await this.apiClient.delete<{ id: string }>(`/users/me`);
+  }
 }
