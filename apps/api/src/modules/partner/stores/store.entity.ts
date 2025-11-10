@@ -1,5 +1,6 @@
 import { Column, Entity, Index, ManyToOne, OneToMany, OneToOne } from 'typeorm';
 import { BaseEntity } from '../../database';
+import { Favorite } from '../../users/favorites/favorite.entity';
 import { User } from '../../users/user.entity';
 import { Category } from './category/category.entity';
 import { Service } from './category/service/service.entity';
@@ -130,4 +131,7 @@ export class Store extends BaseEntity {
 
   @OneToMany(() => Review, (review) => review.store)
   reviews: Review[];
+
+  @OneToMany(() => Favorite, (favorite) => favorite.store)
+  favorites: Favorite[];
 }

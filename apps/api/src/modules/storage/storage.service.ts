@@ -24,7 +24,7 @@ export class StorageService {
   }) {
     const { data, error } = await this.storage
       .from(bucket)
-      .upload(filePath, file);
+      .upload(filePath, file, { upsert: true });
 
     if (error) {
       throw new Error(error.message);

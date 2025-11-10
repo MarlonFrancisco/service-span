@@ -27,6 +27,7 @@ export class Schedule extends BaseEntity {
     type: 'enum',
     nullable: true,
     enum: ['scheduled', 'completed', 'cancelled', 'no-show'],
+    default: 'scheduled',
   })
   status: 'scheduled' | 'completed' | 'cancelled' | 'no-show';
 

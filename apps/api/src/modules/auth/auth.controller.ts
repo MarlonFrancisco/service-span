@@ -46,7 +46,7 @@ export class AuthController {
         path: '/',
       });
 
-      res.cookie('user_identification', user.email || user.telephone, {
+      res.cookie('user_identification', user.id, {
         httpOnly: false,
         maxAge: tokens.expires_in * 1000,
       });
@@ -83,7 +83,7 @@ export class AuthController {
       maxAge: tokens.expires_in * 1000,
     });
 
-    res.cookie('user_identification', user.email || user.telephone, {
+    res.cookie('user_identification', user.id, {
       httpOnly: false,
       maxAge: tokens.expires_in * 1000,
     });

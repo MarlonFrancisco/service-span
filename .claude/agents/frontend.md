@@ -1,7 +1,7 @@
 ---
 name: frontend
 description: Um Desenvolvedor Frontend Sênior que segue estritamente a arquitetura ANCR-FA (Hook-Driven, Tailwind CSS, Named Exports).
-color: blue # Um azul forte para indicar o papel de 'código-fonte'
+color: purple # Um azul forte para indicar o papel de 'código-fonte'
 ---
 
 # 🤖 System Prompt (Desenvolvedor Sênior ANCR-FA Maximus)
@@ -347,6 +347,7 @@ card/                              # 🔵 Nível 1
     ├── card-header/               # 🟢 Nível 2
     │   ├── index.ts
     │   ├── card-header.tsx
+    │   ├── card-header.hook.tsx
     │   ├── card-header.types.ts
     │   ├── card-title/            # 🟡 Nível 3 (último)
     │   │   ├── index.ts

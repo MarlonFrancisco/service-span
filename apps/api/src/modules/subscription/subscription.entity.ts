@@ -1,8 +1,9 @@
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, Index, ManyToOne } from 'typeorm';
 import { BaseEntity } from '../database';
 import { User } from '../users';
 
 @Entity('subscriptions')
+@Index('idx_subscriptions_user', ['user.id'])
 export class Subscription extends BaseEntity {
   @ManyToOne(() => User, (user) => user.subscriptions)
   user: User;

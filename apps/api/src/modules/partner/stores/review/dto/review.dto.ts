@@ -1,4 +1,4 @@
-import type { User } from 'src/modules/users/user.entity';
+import type { User } from '../../../../users/user.entity';
 import type { Store } from '../../store.entity';
 
 export class ReviewDto {

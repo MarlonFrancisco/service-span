@@ -1,6 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import sharp from 'sharp';
 import type { Repository } from 'typeorm';
+import { StorageService } from '../storage/storage.service';
 import { StripeService } from '../stripe';
 import { User } from './user.entity';
 
@@ -10,6 +12,7 @@ export class UsersService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private readonly stripeService: StripeService,
+    private readonly storageService: StorageService,
   ) {}
 
   async findAll(): Promise<User[]> {
@@ -76,11 +79,14 @@ export class UsersService {
     return user;
   }
 
-  async delete(id: string): Promise<void> {
-    const result = await this.userRepository.delete(id);
-    if (result.affected === 0) {
-      throw new NotFoundException(`User with ID ${id} not found`);
-    }
+  async delete(id: string): Promise<{ id: string }> {
+    await this.userRepository.update(id, { isDeleted: true });
+    await this.storageService.deleteFile({
+      bucket: 'users',
+      path: `${id}/avatar.webp`,
+    });
+
+    return { id };
   }
 
   async updateLastLogin(id: string): Promise<void> {
@@ -90,8 +96,26 @@ export class UsersService {
   async getSubscription(id: string) {
     const user = await this.userRepository.findOne({
       where: { id, subscriptions: { status: 'active' } },
-      relations: ['subscriptions'],
-      select: ['id', 'email', 'firstName', 'lastName', 'telephone'],
+      relations: [
+        'subscriptions',
+        'favorites',
+        'favorites.store',
+        'favorites.store.gallery',
+        'schedules',
+        'schedules.service',
+        'schedules.store',
+        'schedules.store.gallery',
+        'schedules.storeMember',
+        'schedules.storeMember.user',
+      ],
+      select: [
+        'id',
+        'email',
+        'firstName',
+        'lastName',
+        'telephone',
+        'createdAt',
+      ],
     });
 
     return {
@@ -99,5 +123,20 @@ export class UsersService {
       isSubscribed: !!user.subscriptions[0],
       subscriptions: undefined,
     };
+  }
+
+  async updateAvatar(id: string, avatar: string): Promise<User> {
+    const cleanBase64 = avatar.split('base64,')[1];
+    const arrayBuffer = Buffer.from(cleanBase64, 'base64');
+    const webpBuffer = await sharp(arrayBuffer).webp().toBuffer();
+
+    const avatarUrl = await this.storageService.uploadFile({
+      bucket: 'users',
+      filePath: `${id}/avatar.webp`,
+      file: webpBuffer,
+    });
+
+    await this.userRepository.update(id, { avatar: `/users/${avatarUrl}` });
+    return this.findById(id);
   }
 }

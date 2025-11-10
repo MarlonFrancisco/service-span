@@ -5,11 +5,15 @@ import { Schedule } from '../partner/stores/schedule/schedule.entity';
 import { StoreMember } from '../partner/stores/store-member/store-member.entity';
 import { Store } from '../partner/stores/store.entity';
 import { Subscription } from '../subscription/subscription.entity';
+import { Favorite } from './favorites/favorite.entity';
 
 @Entity('users')
 export class User extends BaseEntity {
   @Column({ type: 'varchar', nullable: true, unique: true })
   email: string;
+
+  @Column({ type: 'varchar', nullable: true })
+  avatar: string;
 
   @Column({ type: 'varchar', nullable: true, unique: true, length: 20 })
   telephone: string;
@@ -29,6 +33,9 @@ export class User extends BaseEntity {
 
   @Column({ name: 'auth_code_expires_at', type: 'timestamp', nullable: true })
   authCodeExpiresAt: Date;
+
+  @Column({ type: 'boolean', default: false, nullable: true })
+  isDeleted: boolean;
 
   @Column({
     name: 'payment_customer_id',
@@ -60,4 +67,7 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Review, (review) => review.user)
   reviews: Review[];
+
+  @OneToMany(() => Favorite, (favorite) => favorite.user)
+  favorites: Favorite[];
 }

@@ -70,8 +70,9 @@ export class ScheduleService {
     return this.findOne(schedule.id);
   }
 
-  async delete(id: string): Promise<void> {
+  async delete(id: string): Promise<{ id: string }> {
     await this.scheduleRepository.delete(id);
+    return { id };
   }
 
   async getSchedulesByMonth(

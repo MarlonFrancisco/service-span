@@ -109,6 +109,10 @@ export class AuthService {
       throw new UnauthorizedException('Code expired');
     }
 
+    if (user.isDeleted) {
+      await this.userService.update(user.id, { isDeleted: false });
+    }
+
     const isNewUser = !user.email || !user.telephone;
     const tokens = await this.generateTokens({
       sub: user.id,
@@ -119,14 +123,7 @@ export class AuthService {
 
     return {
       tokens,
-      user: !isNewUser
-        ? {
-            email: user.email,
-            telephone: user.telephone,
-            firstName: user.firstName,
-            lastName: user.lastName,
-          }
-        : undefined,
+      user: !isNewUser ? user : undefined,
     };
   }
 
