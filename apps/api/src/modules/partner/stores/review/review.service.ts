@@ -12,15 +12,44 @@ export class ReviewService {
   ) {}
 
   async create(review: ReviewDto): Promise<Review> {
-    return this.reviewRepository.save(review);
+    const createdReview = await this.reviewRepository.save(review);
+    return this.findOne(createdReview.id);
   }
 
   async findAll(storeId: string): Promise<Review[]> {
-    return this.reviewRepository.find({ where: { store: { id: storeId } } });
+    return this.reviewRepository.find({
+      where: { store: { id: storeId } },
+      relations: ['user', 'store'],
+      select: {
+        user: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          avatar: true,
+        },
+        store: {
+          id: true,
+        },
+      },
+    });
   }
 
   async findOne(id: string): Promise<Review> {
-    return this.reviewRepository.findOne({ where: { id } });
+    return this.reviewRepository.findOne({
+      where: { id },
+      relations: ['user', 'store'],
+      select: {
+        user: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          avatar: true,
+        },
+        store: {
+          id: true,
+        },
+      },
+    });
   }
 
   async update(id: string, review: ReviewDto): Promise<Review> {
@@ -28,7 +57,8 @@ export class ReviewService {
     return this.findOne(id);
   }
 
-  async delete(id: string): Promise<void> {
+  async delete(id: string): Promise<{ id: string }> {
     await this.reviewRepository.delete(id);
+    return { id };
   }
 }

@@ -7,7 +7,14 @@ import { Store } from '../store.entity';
 @Index('idx_reviews_store_user', ['store.id', 'user.id'])
 @Index('idx_reviews_store', ['store.id'])
 export class Review extends BaseEntity {
-  @Column({ type: 'numeric', nullable: true, precision: 2, scale: 1 })
+  @Column({
+    type: 'numeric',
+    nullable: true,
+    transformer: {
+      to: (value: number) => value,
+      from: (value: string) => (value ? parseFloat(value) : value),
+    },
+  })
   rating: number;
 
   @Column({ type: 'varchar', nullable: true })
