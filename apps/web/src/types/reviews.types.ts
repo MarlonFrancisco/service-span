@@ -1,8 +1,11 @@
+import { IUser } from './api';
+import { IStore } from './api/stores.types';
+
 export interface IReview {
   id: string;
-  author: string;
-  rating: string;
-  date: string;
+  rating: number;
   comment: string;
-  avatar?: string;
+  createdAt: string;
+  user: IUser;
+  store: IStore;
 }

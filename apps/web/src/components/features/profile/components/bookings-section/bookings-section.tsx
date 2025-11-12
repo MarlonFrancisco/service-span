@@ -1,6 +1,8 @@
 'use client';
 
 import { NotFound } from '@/components/ui';
+import { ImageWithFallback } from '@/components/ui/image-with-fallback';
+import { useReviewsStore } from '@/store';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -26,7 +28,6 @@ import {
   Check,
   Clock,
   MapPin,
-  MessageCircle,
   Phone,
   Star,
   Users,
@@ -46,6 +47,10 @@ export const BookingsSection = () => {
     setBookingToCancel,
     handleCancelBooking,
   } = useBookingsSection();
+
+  const setReviewsAttributesAction = useReviewsStore(
+    (state) => state.setReviewsAttributesAction,
+  );
 
   const router = useRouter();
 
@@ -243,9 +248,11 @@ export const BookingsSection = () => {
                     <CardContent className="p-0">
                       {/* Image with overlay */}
                       <div className="relative h-52 overflow-hidden">
-                        <img
+                        <ImageWithFallback
                           src={booking.store.gallery[0]?.url ?? ''}
                           alt={booking.store.name ?? ''}
+                          fill
+                          sizes="(min-width: 768px) 300px, 200px"
                           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
@@ -286,13 +293,6 @@ export const BookingsSection = () => {
                           </div>
                         </div>
 
-                        <div className="mb-4 p-3 bg-gray-50 rounded-lg border border-gray-100">
-                          <p className="text-gray-600 text-center">
-                            <MessageCircle className="h-4 w-4 inline mr-1.5" />
-                            Avalie este serviço
-                          </p>
-                        </div>
-
                         {/* Footer */}
                         <div className="flex items-center justify-between pt-4 border-t border-gray-100">
                           <div className="flex items-center gap-2 text-gray-500">
@@ -313,6 +313,13 @@ export const BookingsSection = () => {
                             variant="ghost"
                             size="sm"
                             className="text-gray-900 hover:bg-gray-900 hover:text-white transition-colors"
+                            onClick={() =>
+                              setReviewsAttributesAction({
+                                storeId: booking.store.id,
+                                businessName: booking.store.name,
+                                isOpen: true,
+                              })
+                            }
                           >
                             <Star className="h-3.5 w-3.5 mr-1.5" />
                             Avaliar

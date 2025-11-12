@@ -1,8 +1,8 @@
 'use client';
 
 import { ImageGallery } from '@/components/layout/image-gallery';
-import { ReviewsModal } from '@/components/layout/reviews-modal';
-import { useReviews } from '@/store';
+import { ImageWithFallback } from '@/components/ui/image-with-fallback';
+import { useReviewsStore } from '@/store';
 import { formatBusinessHours } from '@/utils/helpers/business-hours.helper';
 import {
   Badge,
@@ -14,11 +14,10 @@ import {
   CarouselPrevious,
 } from '@repo/ui';
 import { Clock, Heart, Images, MapPinIcon, Share, Star } from 'lucide-react';
-import Image from 'next/image';
 import { useBusinessShowcase } from './business-showcase.hook';
 
 export function BusinessShowcase() {
-  const { toggleReviewsModalAction } = useReviews();
+  const { setReviewsAttributesAction } = useReviewsStore();
 
   const {
     data,
@@ -26,6 +25,7 @@ export function BusinessShowcase() {
     selectedImageIndex,
     isFavorite,
     isLoggedIn,
+    selectedStore,
     handleImageClick,
     handleShare,
     handleCloseGallery,
@@ -97,10 +97,10 @@ export function BusinessShowcase() {
           <div className="hidden md:grid grid-cols-4 gap-1 h-[420px] rounded-xl overflow-hidden">
             {/* Main Image - Left Side */}
             <div className="col-span-2 relative group cursor-pointer overflow-hidden">
-              <Image
+              <ImageWithFallback
                 src={images[0] || ''}
-                width={600}
-                height={500}
+                fill
+                sizes="(min-width: 768px) 300px, (min-width: 1368px) 500px, (min-width: 1920px) 600px, 150px"
                 alt={businessName}
                 className="w-full h-full object-cover transition-all duration-300 group-hover:scale-105 group-hover:shadow-2xl aspect-square"
                 onClick={() => handleImageClick(0)}
@@ -115,7 +115,7 @@ export function BusinessShowcase() {
                   className="relative group cursor-pointer overflow-hidden"
                   onClick={() => handleImageClick(index + 1)}
                 >
-                  <Image
+                  <ImageWithFallback
                     fill
                     sizes="100px"
                     src={image}
@@ -140,7 +140,7 @@ export function BusinessShowcase() {
                 {images.map((image: string, index: number) => (
                   <CarouselItem key={index}>
                     <div className="relative h-64">
-                      <Image
+                      <ImageWithFallback
                         width={500}
                         height={256}
                         src={image}
@@ -221,7 +221,13 @@ export function BusinessShowcase() {
                 <span className="font-medium">{averageRating.toFixed(1)}</span>
                 <span>·</span>
                 <button
-                  onClick={() => toggleReviewsModalAction(true)}
+                  onClick={() =>
+                    setReviewsAttributesAction({
+                      storeId: selectedStore?.id,
+                      businessName: selectedStore?.name,
+                      isOpen: true,
+                    })
+                  }
                   className="underline cursor-pointer hover:text-gray-700 transition-colors"
                 >
                   {reviewCount} avaliações
@@ -256,9 +262,6 @@ export function BusinessShowcase() {
           businessName={businessName}
           currentIndex={selectedImageIndex}
         />
-
-        {/* Reviews Modal */}
-        <ReviewsModal />
       </div>
     </div>
   );

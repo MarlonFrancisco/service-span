@@ -1,18 +1,16 @@
-import { IReview } from '@/types/reviews.types';
-import { TStoreSet } from '@/types/store.types';
+import { TStoreAction } from '@/types/store.types';
 import { IReviewsStore } from './reviews.types';
 
-export const addReviewAction =
-  (set: TStoreSet<IReviewsStore>) => (review: IReview) => {
-    set((state) => ({
-      reviews: [...state.reviews, review],
-      status: 'success',
-    }));
-  };
-
-export const toggleReviewsModalAction =
-  (set: TStoreSet<IReviewsStore>) => (open: boolean) => {
+export const toggleReviewsModalAction: TStoreAction<IReviewsStore, boolean> =
+  (set) => async (open: boolean) => {
     set({
       isOpen: open,
-    });
+    } as Partial<IReviewsStore>);
   };
+
+export const setReviewsAttributesAction: TStoreAction<
+  IReviewsStore,
+  Partial<IReviewsStore>
+> = (set) => async (attributes) => {
+  set(attributes as Partial<IReviewsStore>);
+};

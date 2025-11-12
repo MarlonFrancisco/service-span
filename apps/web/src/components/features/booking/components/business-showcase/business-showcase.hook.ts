@@ -129,6 +129,7 @@ export const useBusinessShowcase = () => {
     selectedImageIndex,
     isFavorite,
     isLoggedIn,
+    selectedStore,
     handleImageClick,
     handleCloseGallery,
     handleShare,

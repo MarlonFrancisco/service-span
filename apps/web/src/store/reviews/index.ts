@@ -1,1 +1,1 @@
-export { useReviews } from './reviews.hook';
+export { useReviewsStore } from './reviews.store';
