@@ -1,3 +1,24 @@
+## 0.8.0 (2025-11-12)
+
+### Feat
+
+- **api/review**: enhance review module with public access and relation loading
+- **api**: implement favorites module with user relations
+- **web**: implement NotFound component with customizable actions
+- **web**: implement favorites system with mutations and service layer
+
+### Fix
+
+- **web**: update plan card component styling
+
+### Refactor
+
+- **web**: modularize reviews modal with hook-driven architecture
+- **web**: enhance homepage ui with auto-scroll carousels and performance optimizations
+- **web**: improve checkout flow and schedule management
+- **web**: enhance booking showcase with favorites integration
+- **web**: restructure profile page with modular component architecture
+
 ## 0.7.0 (2025-11-09)
 
 ### Feat
