@@ -6,6 +6,11 @@ export const setIsMobileSearchOpenAction: TStoreAction<ISearchStore, boolean> =
     set({ isMobileSearchOpen: isOpen });
   };
 
+export const setMobileDrawerOpenAction: TStoreAction<ISearchStore, boolean> =
+  (set) => async (isOpen) => {
+    set({ mobileDrawerOpen: isOpen });
+  };
+
 export const setSelectedStoreAction: TStoreAction<
   ISearchStore,
   IStoreSearchListItem

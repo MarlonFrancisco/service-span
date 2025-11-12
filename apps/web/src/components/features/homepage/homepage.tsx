@@ -2,8 +2,24 @@
 
 import { Footer, Header } from '@/components/layout';
 import { motion } from 'motion/react';
-import { Features, HeroSection, Recomendations } from './components';
+import { lazy, Suspense } from 'react';
+import { HeroSection } from './components';
+import { FeaturesSkeleton } from './components/features-skeleton';
+import { RecommendationsSkeleton } from './components/recomendations/components/recommendations-skeleton';
 import { useHomepage } from './homepage.hook';
+
+// Lazy load heavy components
+const Recomendations = lazy(() =>
+  import('./components/recomendations').then((module) => ({
+    default: module.Recomendations,
+  })),
+);
+
+const Features = lazy(() =>
+  import('./components/features').then((module) => ({
+    default: module.Features,
+  })),
+);
 
 export const Homepage = () => {
   useHomepage();
@@ -11,12 +27,15 @@ export const Homepage = () => {
   return (
     <Header>
       <motion.div className="pt-12">
-        {/* Hero Section - Composed of Badge, Title, Subtitle, SearchBar, and CategoriesGrid */}
         <HeroSection />
 
-        <Recomendations />
+        <Suspense fallback={<RecommendationsSkeleton />}>
+          <Recomendations />
+        </Suspense>
 
-        <Features />
+        <Suspense fallback={<FeaturesSkeleton />}>
+          <Features />
+        </Suspense>
 
         <Footer />
       </motion.div>

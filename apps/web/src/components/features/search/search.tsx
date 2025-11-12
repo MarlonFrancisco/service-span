@@ -1,17 +1,17 @@
 'use client';
 import { Footer } from '@/components/layout';
 import { Header } from '@/components/layout/header/header';
-import { ResultsList, ServicePreview } from './components';
+import { ResultsList, ServicePreview, StoreDetailsDrawer } from './components';
 
 export function SearchResults() {
   return (
     <Header showSearchBar logoProps={{ className: 'hidden lg:block' }}>
       {/* Modern Layout */}
-      <div className="max-w-8xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
-        <div className="grid grid-cols-12 gap-6 sm:gap-8 lg:gap-12 min-h-[calc(100vh-180px)]">
+      <div className="max-w-8xl mx-auto px-3 sm:px-6 md:px-8 lg:px-12">
+        <div className="grid grid-cols-12 gap-0 lg:gap-12 min-h-[calc(100vh-180px)]">
           {/* Results Column */}
           <div className="col-span-12 lg:col-span-7">
-            <div className="fade-in">
+            <div>
               <ResultsList />
             </div>
           </div>
@@ -28,6 +28,9 @@ export function SearchResults() {
 
         <Footer />
       </div>
+
+      {/* Mobile Drawer */}
+      <StoreDetailsDrawer />
     </Header>
   );
 }

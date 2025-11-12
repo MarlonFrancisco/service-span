@@ -188,7 +188,41 @@ export default async function RootLayout({
 
         <Script
           src="https://accounts.google.com/gsi/client"
-          strategy="beforeInteractive"
+          strategy="lazyOnload"
+          async
+        />
+
+        <Script
+          type="application/ld+json"
+          id="json-ld"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'WebSite',
+              name: 'ServiceSnap - Agende seus serviços favoritos',
+              description:
+                'Encontre e agende com os melhores profissionais perto de você. Simples, rápido e confiável.',
+              url: 'https://ssnap.io',
+              image: 'https://ssnap.io/logo.png',
+              publisher: {
+                '@type': 'Organization',
+                name: 'ServiceSnap',
+                url: 'https://ssnap.io',
+              },
+              sameAs: [
+                'https://www.facebook.com/servicesnap',
+                'https://www.instagram.com/servicesnap',
+                'https://www.twitter.com/servicesnap',
+                'https://www.linkedin.com/company/servicesnap',
+              ],
+              inLanguage: 'pt-BR',
+              potentialAction: {
+                '@type': 'SearchAction',
+                target: 'https://ssnap.io?query={search_term_string}',
+                'query-input': 'required name=search_term_string',
+              },
+            }),
+          }}
         />
       </body>
     </html>

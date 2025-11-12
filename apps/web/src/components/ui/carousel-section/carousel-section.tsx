@@ -20,13 +20,7 @@ export interface CarouselSectionProps<T> {
   showViewAll?: boolean;
   onViewAllClick?: () => void;
   viewAllText?: string;
-  itemClassNames?: {
-    mobile?: string;
-    tablet?: string;
-    desktop?: string;
-    large?: string;
-    xlarge?: string;
-  };
+  itemClassName?: string;
   showNavigation?: boolean;
   loop?: boolean;
   containerClassName?: string;
@@ -41,27 +35,11 @@ export function CarouselSection<T>({
   showViewAll = true,
   onViewAllClick,
   viewAllText = 'Ver todos',
-  itemClassNames = {
-    mobile: 'basis-[85%]',
-    tablet: 'basis-[45%]',
-    desktop: 'basis-[32%]',
-    large: 'basis-[24%]',
-    xlarge: 'basis-[19%]',
-  },
+  itemClassName = 'basis-[85%] sm:basis-[45%] md:basis-[32%] lg:basis-[24%] xl:basis-[19%]',
   showNavigation = true,
   loop = true,
   containerClassName = 'px-4 w-full max-w-7xl md:px-6 mx-auto',
 }: CarouselSectionProps<T>) {
-  const itemBasisClasses = [
-    itemClassNames.mobile,
-    itemClassNames.tablet && `sm:${itemClassNames.tablet}`,
-    itemClassNames.desktop && `md:${itemClassNames.desktop}`,
-    itemClassNames.large && `lg:${itemClassNames.large}`,
-    itemClassNames.xlarge && `xl:${itemClassNames.xlarge}`,
-  ]
-    .filter(Boolean)
-    .join(' ');
-
   return (
     <section className={containerClassName}>
       {/* Header */}
@@ -95,10 +73,7 @@ export function CarouselSection<T>({
         >
           <CarouselContent>
             {items.map((item) => (
-              <CarouselItem
-                key={getItemKey(item)}
-                className={`${itemBasisClasses}`}
-              >
+              <CarouselItem key={getItemKey(item)} className={itemClassName}>
                 {renderItem(item)}
               </CarouselItem>
             ))}

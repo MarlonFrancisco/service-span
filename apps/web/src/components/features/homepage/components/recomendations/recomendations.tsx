@@ -1,18 +1,25 @@
 'use client';
 
 import { CarouselSection } from '@/components/ui/carousel-section';
+import { EmptyRecommendations } from './components/empty-recommendations';
 import { RecommendationCard } from './components/recomendation-card';
+import { RecommendationsSkeleton } from './components/recommendations-skeleton';
 import { useRecommendations } from './recomendations.hook';
 
 export const Recomendations = () => {
-  const { recommendationStores } = useRecommendations();
+  const { recommendationStores, isPendingRecommendationStores } =
+    useRecommendations();
 
-  if (!recommendationStores) {
-    return null;
+  if (isPendingRecommendationStores) {
+    return <RecommendationsSkeleton />;
+  }
+
+  if (!recommendationStores || recommendationStores.length === 0) {
+    return <EmptyRecommendations />;
   }
 
   return (
-    <div className="flex flex-col gap-20 mb-10">
+    <div className="mb-10">
       <CarouselSection
         title="Populares hoje"
         subtitle="Os serviços mais agendados nas últimas 24h"
