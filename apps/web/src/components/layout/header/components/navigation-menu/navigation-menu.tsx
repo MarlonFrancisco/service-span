@@ -42,7 +42,7 @@ export const NavigationMenu = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2">
               {navigationItems.map((item) => (
                 <button
-                  key={item.href}
+                  key={item.label}
                   onClick={item.onClick}
                   className="text-2xl sm:text-5xl group relative isolate -mx-6 bg-foreground px-6 py-6 even:mt-px sm:mx-0 sm:px-0 sm:py-16 sm:odd:pr-16 sm:even:mt-0 sm:even:border-l sm:even:border-neutral-600 sm:even:pl-16"
                 >

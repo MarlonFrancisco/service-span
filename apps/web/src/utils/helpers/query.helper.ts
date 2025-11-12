@@ -23,6 +23,7 @@ export const getQueryClient = () => {
 };
 
 export const CACHE_QUERY_KEYS = {
+  reviews: (storeId: string) => [`partner/stores/${storeId}/reviews`],
   recommendationStores: () => ['recommendation/popular-stores'],
   user: (userIdentification: string) => ['user', { userIdentification }],
   plans: () => ['plans'],

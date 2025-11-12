@@ -75,7 +75,6 @@ export function CheckoutStep() {
         );
       },
       (errors) => {
-        console.log('errors', errors);
         const firstError = Object.values(errors)[0]?.message;
         if (firstError) {
           toast.error(firstError);

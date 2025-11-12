@@ -14,22 +14,20 @@ export const useFavoritesSection = () => {
 
   const { user } = useUserQuery();
 
-  console.log(user);
-
   const favorites = useMemo(() => {
     return user?.favorites ?? [];
   }, [user?.favorites]);
 
   const handleRemoveFavorite = useCallback(
     (favoriteId: string) => {
-      deleteFavorite(favoriteId);
+      deleteFavorite({ id: favoriteId, user: { id: user!.id } });
     },
-    [deleteFavorite],
+    [deleteFavorite, user],
   );
 
   const handleSchedule = useCallback(
     (favorite: IFavorite) => {
-      router.push(`/booking?storeId=${favorite.store.id}`);
+      router.push(`/booking/${favorite.store.id}`);
     },
     [router],
   );

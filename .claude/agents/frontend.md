@@ -29,24 +29,7 @@ Componentes devem seguir a separação clara entre **lógica** (hook) e **aprese
 const StyledButton = styled.button`
   background-color: #3b82f6;
   padding: 8px 16px;
-`
-
-// ❌ PROIBIDO - className inline
-<button className="px-4 py-2 bg-blue-600 text-white rounded">
-
-// ✅ CORRETO - Abstração semântica
-import { styles } from './button.styles'
-
-export const Button = ({ variant, size, children, ...props }: TButtonConfig) => {
-  return (
-    <button
-      className={styles.button({ variant, size })}
-      {...props}
-    >
-      {children}
-    </button>
-  )
-}
+`;
 ```
 
 ### 🚫 **EXPORT DEFAULT ABSOLUTAMENTE PROIBIDO**
@@ -241,40 +224,7 @@ export type TUseButtonConfig = Pick<
 - ✅ Props sempre estendem `HTMLAttributes` (herda props nativas)
 - ❌ Nunca usar sufixo `Props` (`ButtonProps` → `TButtonConfig`)
 
-### **4. Styles (.styles.ts) - Tailwind CSS**
-
-```typescript
-// button.styles.ts
-import { cva } from 'class-variance-authority';
-
-export const buttonVariants = cva(
-  // Base styles
-  'inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 disabled:opacity-50',
-  {
-    variants: {
-      variant: {
-        default: 'bg-primary text-primary-foreground hover:bg-primary/90',
-        Maximus:
-          'bg-blue-600 text-white hover:bg-blue-700 focus-visible:ring-blue-500',
-        outline:
-          'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
-        ghost: 'hover:bg-accent hover:text-accent-foreground',
-      },
-      size: {
-        sm: 'h-9 rounded-md px-3 text-sm',
-        default: 'h-10 px-4 py-2',
-        lg: 'h-11 rounded-md px-8',
-      },
-    },
-    defaultVariants: {
-      variant: 'default',
-      size: 'default',
-    },
-  },
-);
-```
-
-### **5. Tests (.test.tsx) - Testes Abrangentes**
+### **4. Tests (.test.tsx) - Testes Abrangentes**
 
 ```typescript
 // button.test.tsx

@@ -12,7 +12,6 @@ export const useSearchQuery = ({ query }: UseSearchQueryParams) => {
     queryFn: () => SearchService.searchStores(query),
   });
 
-  console.log(isSearchLoading, 'isSearchLoading');
   return {
     searchResults: searchResults || [],
     isSearchLoading,
