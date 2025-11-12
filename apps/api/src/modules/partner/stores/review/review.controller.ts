@@ -7,7 +7,7 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { Public } from 'src/modules/auth/decorators/public.decorator';
+import { Public } from '../../../auth/decorators/public.decorator';
 import { ReviewDto } from './dto/review.dto';
 import { ReviewService } from './review.service';
 
