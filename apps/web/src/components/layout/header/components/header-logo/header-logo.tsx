@@ -14,10 +14,11 @@ export const HeaderLogo = ({
     <Link href="/" aria-label="Home" {...props}>
       <Image
         src={logoSrc}
-        alt="ServiceSnap"
+        alt="ServiceSnap logo"
         width={width}
         height={height}
         priority
+        preload
       />
     </Link>
   );
