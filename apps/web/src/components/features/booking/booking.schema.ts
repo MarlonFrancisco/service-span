@@ -45,7 +45,7 @@ export const BookingFormSchema = z.object({
         id: z.string(),
         firstName: z.string(),
         lastName: z.string(),
-        avatar: z.string().optional(),
+        avatar: z.string().nullable().optional(),
       }),
       services: z
         .array(

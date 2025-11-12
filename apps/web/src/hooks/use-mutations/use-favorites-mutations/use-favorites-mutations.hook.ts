@@ -11,7 +11,8 @@ export const useFavoritesMutations = () => {
 
   const { mutate: createFavorite, isPending: isCreatingFavorite } = useMutation(
     {
-      mutationFn: (favorite: IFavorite) => FavoritesService.create(favorite),
+      mutationFn: (favorite: { store: { id: string }; user: { id: string } }) =>
+        FavoritesService.create(favorite),
       onSuccess: (data: IFavorite) => {
         queryClient.setQueryData(
           CACHE_QUERY_KEYS.user(cookies.get('user_identification')!),
@@ -30,7 +31,8 @@ export const useFavoritesMutations = () => {
 
   const { mutate: deleteFavorite, isPending: isDeletingFavorite } = useMutation(
     {
-      mutationFn: (id: string) => FavoritesService.delete(id),
+      mutationFn: (favorite: { id: string; user: { id: string } }) =>
+        FavoritesService.delete(favorite),
       onSuccess: (data: IFavorite) => {
         queryClient.setQueryData(
           CACHE_QUERY_KEYS.user(cookies.get('user_identification')!),

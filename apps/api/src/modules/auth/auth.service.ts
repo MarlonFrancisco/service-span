@@ -65,7 +65,7 @@ export class AuthService {
     const authCode = generateAuthCode();
     let isNewUser = user?.email && user?.telephone ? false : true;
 
-    if (!user) {
+    if (!user?.id) {
       await this.userService.create({
         ...body,
         authCode: authCode.code,

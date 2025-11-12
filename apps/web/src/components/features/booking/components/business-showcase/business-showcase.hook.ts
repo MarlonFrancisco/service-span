@@ -2,7 +2,6 @@
 
 import { useFavoritesMutations } from '@/hooks/use-mutations/use-favorites-mutations/use-favorites-mutations.hook';
 import { useUserQuery } from '@/hooks/use-query/use-user-query';
-import { IFavorite } from '@/types/api/favorites.types';
 import { TWorkingDays } from '@/types/api/stores.types';
 import { useCallback, useMemo, useState } from 'react';
 import { toast } from 'sonner';
@@ -105,12 +104,15 @@ export const useBusinessShowcase = () => {
 
   const handleSave = useCallback(() => {
     if (isFavorite) {
-      deleteFavorite(favorite!.id);
+      deleteFavorite({
+        id: favorite!.id,
+        user: { id: user!.id },
+      });
     } else {
       createFavorite({
         store: { id: selectedStore!.id },
         user: { id: user!.id },
-      } as IFavorite);
+      });
     }
   }, [
     createFavorite,

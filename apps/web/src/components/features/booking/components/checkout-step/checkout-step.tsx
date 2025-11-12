@@ -59,7 +59,13 @@ export function CheckoutStep() {
                 CACHE_QUERY_KEYS.user(cookies.get('user_identification')!),
                 (old: IUser) => ({
                   ...old,
-                  schedules: [...old.schedules, ...data],
+                  schedules: [
+                    ...old.schedules,
+                    ...data.map((d) => ({
+                      ...d,
+                      store: store!,
+                    })),
+                  ],
                 }),
               );
 
@@ -69,6 +75,7 @@ export function CheckoutStep() {
         );
       },
       (errors) => {
+        console.log('errors', errors);
         const firstError = Object.values(errors)[0]?.message;
         if (firstError) {
           toast.error(firstError);

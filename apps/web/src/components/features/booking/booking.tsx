@@ -262,7 +262,7 @@ export function BookingFlow() {
               {currentStep !== 'checkout' && (
                 <Button
                   onClick={handleNextStep}
-                  disabled={!canProceedToNext || !!form.formState.errors}
+                  disabled={!canProceedToNext || !!form.formState.errors.root}
                   className="bg-black hover:bg-gray-800 text-white"
                 >
                   {nextButtonText}

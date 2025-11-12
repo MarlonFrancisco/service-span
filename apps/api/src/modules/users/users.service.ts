@@ -40,12 +40,12 @@ export class UsersService {
     paymentCustomerId?: string;
     includeSubscriptions?: boolean;
   }): Promise<User | null> {
-    return this.userRepository.findOne({
+    return await this.userRepository.findOne({
       where: {
         email,
         telephone,
         paymentCustomerId,
-        subscriptions: { status: 'active' },
+        subscriptions: includeSubscriptions ? { status: 'active' } : undefined,
       },
       relations: includeSubscriptions ? ['subscriptions'] : undefined,
     });

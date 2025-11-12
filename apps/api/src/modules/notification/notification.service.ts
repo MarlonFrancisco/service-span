@@ -41,7 +41,7 @@ export class NotificationService {
     body: string,
   ): Promise<AWS.SES.SendEmailResponse> {
     const params: AWS.SES.SendEmailRequest = {
-      Source: 'no-reply@service-span.com',
+      Source: 'general@ssnap.io',
       Destination: {
         ToAddresses: [to],
       },
