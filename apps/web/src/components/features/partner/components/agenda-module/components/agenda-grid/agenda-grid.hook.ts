@@ -14,6 +14,8 @@ import { IBlockedTime } from '@/types/api/blocked-times.types';
 import type { IAppointment } from '@/types/api/schedule.types';
 import type { IProfessional } from '@/types/api/users.types';
 import { useCallback, useMemo } from 'react';
+import { useAgendaGridBulkBlock } from './agenda-grid-bulk-block.hook';
+import type { TSelectedSlot } from './agenda-grid-bulk-block.types';
 import {
   dateToISOString,
   getProfessionalFullName,
@@ -56,6 +58,35 @@ export const useAgendaGrid = () => {
 
   const { createBlockedTime, deleteBlockedTime } = useBlockedTimeMutations({
     storeId: activeStore?.id,
+  });
+
+  // Bulk block handler
+  const handleBulkBlock = useCallback(
+    (slots: TSelectedSlot[]) => {
+      const professional = professionals.find(
+        (p) => p.id === slots[0]?.professionalId,
+      );
+
+      if (!professional) return;
+
+      // Create blocked times for all selected slots
+      slots.forEach((slot) => {
+        createBlockedTime({
+          date: slot.date,
+          time: slot.time,
+          isRecurring: false,
+          dayOfWeek: slot.dayIndex,
+          storeMember: professional,
+        });
+      });
+    },
+    [createBlockedTime, professionals],
+  );
+
+  // Initialize bulk block hook
+  const bulkBlockHook = useAgendaGridBulkBlock({
+    isBlockMode,
+    onBulkBlock: handleBulkBlock,
   });
 
   const filteredProfessionals = useMemo(() => {
@@ -156,6 +187,8 @@ export const useAgendaGrid = () => {
             dayOfWeek: dayIndex,
             storeMember: professional,
           });
+          // Remove from selection after unblocking
+          bulkBlockHook.removeSlotFromSelection(professional.id, dayIndex, time);
           return;
         }
 
@@ -166,6 +199,8 @@ export const useAgendaGrid = () => {
           dayOfWeek: dayIndex,
           storeMember: professional,
         });
+        // Remove from selection after blocking
+        bulkBlockHook.removeSlotFromSelection(professional.id, dayIndex, time);
         return;
       }
 
@@ -194,6 +229,8 @@ export const useAgendaGrid = () => {
       createBlockedTime,
       weekDates,
       setIsAddAppointmentOpen,
+      deleteBlockedTime,
+      bulkBlockHook,
     ],
   );
 
@@ -288,5 +325,8 @@ export const useAgendaGrid = () => {
     handleAppointmentClick,
     getSlotClassName,
     getSlotsSpan,
+
+    // Bulk block hook
+    bulkBlockHook,
   };
 };

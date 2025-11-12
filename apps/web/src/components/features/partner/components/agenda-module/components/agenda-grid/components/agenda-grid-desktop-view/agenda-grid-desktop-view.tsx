@@ -1,6 +1,7 @@
 import { Card, CardContent } from '@repo/ui';
 import { Lock } from 'lucide-react';
 import { memo } from 'react';
+import { BulkActionToolbar } from '../bulk-action-toolbar';
 import { GRID_CONSTANTS } from '../../agenda-grid.constants';
 import { isBlockedTime } from '../../agenda-grid.helpers';
 import { useAgendaGridDesktopView } from './agenda-grid-desktop-view.hook';
@@ -20,9 +21,23 @@ export const AgendaGridDesktopView = memo(
       handleSlotClick,
       getSlotClassName,
       getSlotsSpan,
+      isBlockMode,
+      bulkBlockHook,
     } = gridHook;
 
     const { desktopDayData } = useAgendaGridDesktopView(gridHook);
+
+    // Bulk block selection handlers
+    const {
+      isSlotSelected,
+      handleSlotMouseDown,
+      handleSlotMouseEnter,
+      handleSlotMouseUp,
+      handleShiftClick,
+      clearSelection,
+      executeBlockAction,
+      selectedSlotsArray,
+    } = bulkBlockHook;
 
     const slotHeight = GRID_CONSTANTS.SLOT_HEIGHT;
     const shouldShowFullDetails = filteredProfessionals.length === 1;
@@ -36,8 +51,9 @@ export const AgendaGridDesktopView = memo(
     );
 
     return (
-      <Card className="p-0">
-        <CardContent className="p-0">
+      <>
+        <Card className="p-0">
+          <CardContent className="p-0">
           <div className="grid grid-cols-8 min-w-[900px]">
             {/* Time Column */}
             <div className="border-r border-gray-200 bg-gray-50">
@@ -134,13 +150,30 @@ export const AgendaGridDesktopView = memo(
                             isWorkingDay,
                           });
 
+                          const dateStr = date.toISOString().split('T')[0] ?? '';
+                          const isSelected = isSlotSelected(professional.id, dayIndex, time);
+
+                          // Selection styling
+                          const selectionClasses = isBlockMode && isSelected && !isBlocked && !appointment
+                            ? 'ring-2 ring-blue-500 ring-inset bg-blue-50 hover:bg-blue-100'
+                            : '';
+
                           return (
                             <div
                               key={`${professional.id}-${time}`}
-                              onClick={() => {
+                              onClick={(e) => {
                                 if (!isWorkingDay) {
                                   return;
                                 }
+
+                                // Shift+Click for range selection
+                                if (isBlockMode && e.shiftKey && !isBlocked && !appointment) {
+                                  e.preventDefault();
+                                  handleShiftClick(professional.id, dayIndex, time, dateStr, isBlocked);
+                                  return;
+                                }
+
+                                // Default single-click behavior
                                 handleSlotClick(
                                   professional,
                                   dayIndex,
@@ -148,6 +181,16 @@ export const AgendaGridDesktopView = memo(
                                   blockedTime,
                                 );
                               }}
+                              onMouseDown={(e) => {
+                                if (!isWorkingDay || !isBlockMode || appointment) return;
+                                e.preventDefault();
+                                handleSlotMouseDown(professional.id, dayIndex, time, dateStr, isBlocked);
+                              }}
+                              onMouseEnter={() => {
+                                if (!isWorkingDay || !isBlockMode || appointment) return;
+                                handleSlotMouseEnter(professional.id, dayIndex, time, dateStr, isBlocked);
+                              }}
+                              onMouseUp={handleSlotMouseUp}
                               onKeyDown={(e) => {
                                 if (!isWorkingDay) return;
                                 if (e.key === 'Enter' || e.key === ' ') {
@@ -176,7 +219,8 @@ export const AgendaGridDesktopView = memo(
                                     : `Agendar às ${time} com ${professional.user.firstName}`
                               }
                               aria-pressed={isBlocked}
-                              className={`${!isLastSlot ? 'border-b border-gray-200' : ''} ${classNameForSlot}`}
+                              aria-selected={isSelected}
+                              className={`${!isLastSlot ? 'border-b border-gray-200' : ''} ${classNameForSlot} ${selectionClasses} select-none transition-all`}
                               style={{ height: slotHeight * slotsSpan }}
                             >
                               {isBlocked ? (
@@ -223,6 +267,16 @@ export const AgendaGridDesktopView = memo(
           </div>
         </CardContent>
       </Card>
+
+      {/* Bulk Action Toolbar - Shows when slots are selected */}
+      {isBlockMode && (
+        <BulkActionToolbar
+          selectedCount={selectedSlotsArray.length}
+          onBlock={executeBlockAction}
+          onClear={clearSelection}
+        />
+      )}
+    </>
     );
   },
 );
