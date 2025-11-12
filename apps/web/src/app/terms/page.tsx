@@ -1,8 +1,11 @@
+import { Footer } from '@/components/layout';
+import { Header } from '@/components/layout/header/header';
+
 export default function TermsPage() {
   return (
-    <div className="min-h-screen bg-background">
+    <Header>
       {/* Content */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="prose prose-gray max-w-none">
           {/* Header */}
           <div className="text-center mb-12">
@@ -36,42 +39,123 @@ export default function TermsPage() {
                 2. Descrição do Serviço
               </h2>
               <p className="text-gray-700 leading-relaxed mb-4">
-                O ServiceSnap é uma plataforma digital que conecta clientes a
-                prestadores de serviços de beleza, bem-estar e cuidados
-                pessoais. Nossa plataforma facilita:
+                O ServiceSnap é um marketplace digital brasileiro que conecta
+                clientes a prestadores verificados de serviços de beleza,
+                bem-estar e cuidados pessoais. Nossa plataforma oferece:
               </p>
               <ul className="list-disc pl-6 space-y-2 text-gray-700">
                 <li>
-                  Descoberta e busca de prestadores de serviços qualificados
+                  <strong>Para Clientes:</strong> Descoberta e busca de
+                  profissionais por categoria, agendamento online em 4 etapas
+                  (serviço → profissional → data/hora → checkout), pagamento
+                  seguro via Stripe, sistema de avaliações com 1-5 estrelas,
+                  lembretes automáticos por SMS/email, histórico de agendamentos
+                  e favoritos
                 </li>
-                <li>Agendamento online de serviços</li>
-                <li>Sistema de avaliações e comentários</li>
-                <li>Processamento de pagamentos</li>
-                <li>Comunicação entre clientes e prestadores</li>
+                <li>
+                  <strong>Para Profissionais:</strong> Dashboard com métricas
+                  analíticas (vendas, receita, clientes), agenda visual
+                  interativa, gestão de equipe com roles
+                  (Owner/Manager/Profissional), cadastro de serviços e preços,
+                  bloqueio de horários, notificações configuráveis, planos de
+                  assinatura via Stripe
+                </li>
+                <li>
+                  <strong>Comunicações Automatizadas:</strong> Confirmações e
+                  lembretes de agendamento via AWS SNS (SMS) e AWS SES (email)
+                </li>
+                <li>
+                  <strong>Autenticação:</strong> Login via Google OAuth ou
+                  código OTP de 6 dígitos por SMS/email
+                </li>
+                <li>
+                  <strong>Verificação Profissional:</strong> Sistema de
+                  validação de documentos e selo de confiança
+                </li>
               </ul>
+              <p className="text-gray-700 leading-relaxed mt-4">
+                <strong>Importante:</strong> O ServiceSnap atua exclusivamente
+                como intermediário tecnológico. Não prestamos os serviços de
+                beleza e bem-estar diretamente - estes são fornecidos pelos
+                profissionais cadastrados na plataforma.
+              </p>
             </section>
 
             <section>
               <h2 className="text-2xl text-[#1a2b4c] mb-4">
                 3. Cadastro e Conta de Usuário
               </h2>
-              <h3 className="text-xl text-[#1a2b4c] mb-3">3.1 Eligibilidade</h3>
+              <h3 className="text-xl text-[#1a2b4c] mb-3">3.1 Elegibilidade</h3>
               <p className="text-gray-700 leading-relaxed mb-4">
-                Para usar nossa plataforma, você deve ter pelo menos 18 anos de
-                idade ou ter permissão dos seus responsáveis legais. Ao criar
-                uma conta, você declara que todas as informações fornecidas são
-                verdadeiras e precisas.
+                Para usar nossa plataforma, você deve:
+              </p>
+              <ul className="list-disc pl-6 space-y-2 text-gray-700 mb-4">
+                <li>Ter pelo menos 18 anos de idade</li>
+                <li>
+                  Fornecer informações verdadeiras, precisas e completas durante
+                  o cadastro (nome, email, telefone, data de nascimento)
+                </li>
+                <li>
+                  Possuir um número de telefone válido para receber códigos OTP
+                  de verificação
+                </li>
+                <li>
+                  Para profissionais: apresentar documentação válida para
+                  verificação e aprovar termos adicionais de prestador de
+                  serviços
+                </li>
+              </ul>
+
+              <h3 className="text-xl text-[#1a2b4c] mb-3">
+                3.2 Métodos de Autenticação
+              </h3>
+              <p className="text-gray-700 leading-relaxed mb-4">
+                Oferecemos os seguintes métodos de login:
+              </p>
+              <ul className="list-disc pl-6 space-y-2 text-gray-700 mb-4">
+                <li>
+                  <strong>Google OAuth:</strong> Login social via sua conta
+                  Google
+                </li>
+                <li>
+                  <strong>OTP via SMS/Email:</strong> Código de 6 dígitos
+                  enviado para seu telefone ou email registrado
+                </li>
+              </ul>
+              <p className="text-gray-700 leading-relaxed mb-4">
+                Tokens de autenticação JWT são válidos por 24 horas (acesso) e 7
+                dias (refresh).
               </p>
 
               <h3 className="text-xl text-[#1a2b4c] mb-3">
-                3.2 Responsabilidades da Conta
+                3.3 Responsabilidades da Conta
               </h3>
               <p className="text-gray-700 leading-relaxed mb-4">
-                Você é responsável por manter a confidencialidade de suas
-                credenciais de login e por todas as atividades que ocorrem em
-                sua conta. Deve notificar-nos imediatamente sobre qualquer uso
-                não autorizado de sua conta.
+                Você é responsável por:
               </p>
+              <ul className="list-disc pl-6 space-y-2 text-gray-700">
+                <li>
+                  Manter a confidencialidade de suas credenciais de login e
+                  tokens de acesso
+                </li>
+                <li>
+                  Todas as atividades que ocorrem em sua conta, incluindo
+                  agendamentos e pagamentos
+                </li>
+                <li>
+                  Notificar-nos imediatamente através de{' '}
+                  <a
+                    href="mailto:general@ssnap.io"
+                    className="text-[#20b2aa] hover:underline"
+                  >
+                    general@ssnap.io
+                  </a>{' '}
+                  sobre qualquer uso não autorizado
+                </li>
+                <li>
+                  Manter suas informações de perfil atualizadas e precisas
+                </li>
+              </ul>
             </section>
 
             <section>
@@ -102,20 +186,95 @@ export default function TermsPage() {
                 5.1 Processo de Agendamento
               </h3>
               <p className="text-gray-700 leading-relaxed mb-4">
-                Os agendamentos feitos através da plataforma constituem um
-                acordo direto entre o cliente e o prestador de serviços. O
-                ServiceSnap atua apenas como intermediário, facilitando a
-                conexão e o processo de pagamento.
+                O agendamento online segue 4 etapas simples:
+              </p>
+              <ol className="list-decimal pl-6 space-y-2 text-gray-700 mb-4">
+                <li>
+                  <strong>Seleção de Serviço(s):</strong> Escolha um ou mais
+                  serviços com duração e preço definidos
+                </li>
+                <li>
+                  <strong>Seleção de Profissional:</strong> Escolha um
+                  profissional específico ou "qualquer profissional"
+                </li>
+                <li>
+                  <strong>Data e Horário:</strong> Selecione data e horário
+                  disponível baseado na agenda do profissional
+                </li>
+                <li>
+                  <strong>Checkout:</strong> Revise e confirme o agendamento com
+                  pagamento via Stripe
+                </li>
+              </ol>
+              <p className="text-gray-700 leading-relaxed mb-4">
+                <strong>Importante:</strong> Os agendamentos constituem um
+                acordo direto entre você e o prestador de serviços. O
+                ServiceSnap atua apenas como intermediário tecnológico,
+                facilitando a conexão, processamento de pagamento e envio de
+                confirmações/lembretes automáticos.
               </p>
 
               <h3 className="text-xl text-[#1a2b4c] mb-3">
                 5.2 Política de Cancelamento
               </h3>
               <p className="text-gray-700 leading-relaxed mb-4">
-                Cancelamentos devem ser feitos com pelo menos 24 horas de
-                antecedência. Cancelamentos de última hora podem estar sujeitos
-                a taxas, conforme definido pelo prestador de serviços.
+                <strong>Cancelamentos pelo Cliente:</strong>
               </p>
+              <ul className="list-disc pl-6 space-y-2 text-gray-700 mb-4">
+                <li>
+                  Devem ser feitos com pelo menos 24 horas de antecedência
+                </li>
+                <li>
+                  Cancelamentos com menos de 24h podem estar sujeitos a taxas
+                  conforme política do profissional
+                </li>
+                <li>
+                  No-shows (não comparecimento sem aviso) podem resultar em
+                  cobrança total do serviço
+                </li>
+              </ul>
+              <p className="text-gray-700 leading-relaxed mb-4">
+                <strong>Sistema de Lembretes:</strong> Para reduzir no-shows,
+                enviamos lembretes automáticos via SMS e email antes do
+                agendamento. Esses lembretes reduziram faltas em até 80%.
+              </p>
+
+              <h3 className="text-xl text-[#1a2b4c] mb-3">
+                5.3 Pagamentos e Taxas
+              </h3>
+              <p className="text-gray-700 leading-relaxed mb-4">
+                <strong>Para Clientes:</strong>
+              </p>
+              <ul className="list-disc pl-6 space-y-2 text-gray-700 mb-4">
+                <li>
+                  Pagamentos processados exclusivamente via Stripe (PCI DSS
+                  Level 1)
+                </li>
+                <li>Preços exibidos em Real Brasileiro (BRL)</li>
+                <li>Confirmação instantânea após processamento bem-sucedido</li>
+                <li>Histórico de transações disponível no perfil do usuário</li>
+              </ul>
+              <p className="text-gray-700 leading-relaxed mb-4">
+                <strong>Para Profissionais:</strong>
+              </p>
+              <ul className="list-disc pl-6 space-y-2 text-gray-700">
+                <li>
+                  Modelo de assinatura via planos Stripe para acesso à
+                  plataforma
+                </li>
+                <li>
+                  Planos com features diferenciadas (verificados dinamicamente
+                  via metadata do Stripe)
+                </li>
+                <li>
+                  Gestão de assinatura: upgrade, downgrade e cancelamento
+                  disponíveis no dashboard
+                </li>
+                <li>
+                  Dashboard com métricas de vendas, receita e performance em
+                  tempo real
+                </li>
+              </ul>
             </section>
 
             <section>
@@ -123,65 +282,204 @@ export default function TermsPage() {
                 6. Avaliações e Comentários
               </h2>
               <p className="text-gray-700 leading-relaxed mb-4">
-                Nosso sistema de avaliações é baseado em experiências reais dos
-                usuários. Avaliações falsas, enganosas ou abusivas são proibidas
-                e podem resultar na suspensão da conta.
+                Nosso sistema de avaliações permite que clientes avaliem
+                experiências reais:
+              </p>
+              <ul className="list-disc pl-6 space-y-2 text-gray-700 mb-4">
+                <li>
+                  <strong>Classificação:</strong> Sistema de 1-5 estrelas para
+                  avaliar o serviço prestado
+                </li>
+                <li>
+                  <strong>Comentários:</strong> Espaço para feedback escrito
+                  detalhado sobre a experiência
+                </li>
+                <li>
+                  <strong>Autenticidade:</strong> Apenas clientes que
+                  efetivamente utilizaram o serviço podem avaliar
+                </li>
+                <li>
+                  <strong>Visibilidade Pública:</strong> Avaliações são exibidas
+                  publicamente no perfil do profissional
+                </li>
+              </ul>
+              <p className="text-gray-700 leading-relaxed mb-4">
+                <strong>Proibido:</strong> Avaliações falsas, enganosas,
+                difamatórias, abusivas, com conteúdo discriminatório ou que
+                violem direitos de terceiros. Violações podem resultar em
+                suspensão permanente da conta.
               </p>
               <p className="text-gray-700 leading-relaxed">
-                Reservamo-nos o direito de moderar e remover avaliações que
-                violem nossas diretrizes de comunidade.
+                <strong>Moderação:</strong> Reservamo-nos o direito de moderar,
+                editar ou remover avaliações que violem estas diretrizes ou
+                nossa política de comunidade, sem aviso prévio.
               </p>
             </section>
 
             <section>
               <h2 className="text-2xl text-[#1a2b4c] mb-4">
-                7. Limitação de Responsabilidade
+                7. Verificação de Profissionais
               </h2>
               <p className="text-gray-700 leading-relaxed mb-4">
-                O ServiceSnap não se responsabiliza pela qualidade dos serviços
-                prestados pelos profissionais cadastrados em nossa plataforma.
-                Nossa responsabilidade se limita a facilitar a conexão entre
-                clientes e prestadores.
+                Todos os profissionais cadastrados passam por processo de
+                verificação:
               </p>
+              <ul className="list-disc pl-6 space-y-2 text-gray-700 mb-4">
+                <li>Validação de documentação obrigatória</li>
+                <li>Verificação de informações de contato e endereço</li>
+                <li>
+                  Aprovação manual pela equipe ServiceSnap antes de ativação
+                </li>
+                <li>
+                  Profissionais verificados recebem selo de confiança visível no
+                  perfil
+                </li>
+              </ul>
               <p className="text-gray-700 leading-relaxed">
-                Em nenhuma circunstância seremos responsáveis por danos
-                indiretos, incidentais ou consequenciais decorrentes do uso da
-                plataforma.
+                <strong>Importante:</strong> A verificação confirma identidade e
+                documentação, mas não garante qualidade do serviço. Consulte
+                sempre as avaliações de outros clientes.
               </p>
             </section>
 
             <section>
               <h2 className="text-2xl text-[#1a2b4c] mb-4">
-                8. Modificações dos Termos
+                8. Limitação de Responsabilidade
               </h2>
               <p className="text-gray-700 leading-relaxed mb-4">
-                Reservamo-nos o direito de modificar estes termos a qualquer
-                momento. As alterações entrarão em vigor imediatamente após a
-                publicação na plataforma.
+                <strong>Papel da Plataforma:</strong> O ServiceSnap atua
+                exclusivamente como intermediário tecnológico. NÃO prestamos
+                serviços de beleza, bem-estar ou cuidados pessoais diretamente.
               </p>
+              <p className="text-gray-700 leading-relaxed mb-4">
+                <strong>Responsabilidades Limitadas:</strong>
+              </p>
+              <ul className="list-disc pl-6 space-y-2 text-gray-700 mb-4">
+                <li>
+                  <strong>Qualidade do Serviço:</strong> Não nos
+                  responsabilizamos pela qualidade, resultado, pontualidade ou
+                  conduta dos profissionais. A responsabilidade é exclusiva do
+                  prestador de serviços.
+                </li>
+                <li>
+                  <strong>Disputas:</strong> Conflitos entre clientes e
+                  profissionais devem ser resolvidos diretamente entre as partes
+                </li>
+                <li>
+                  <strong>Danos:</strong> Não seremos responsáveis por danos
+                  diretos, indiretos, incidentais, especiais, consequenciais ou
+                  punitivos decorrentes do uso da plataforma ou serviços
+                  prestados
+                </li>
+                <li>
+                  <strong>Disponibilidade:</strong> Não garantimos que a
+                  plataforma estará disponível ininterruptamente ou livre de
+                  erros
+                </li>
+                <li>
+                  <strong>Terceiros:</strong> Não nos responsabilizamos por
+                  ações de terceiros (Stripe, AWS, Supabase, Vercel)
+                </li>
+              </ul>
+              <p className="text-gray-700 leading-relaxed">
+                <strong>Responsabilidade Máxima:</strong> Nossa responsabilidade
+                total, se houver, não excederá o valor pago pelo serviço
+                específico objeto da reclamação nos últimos 12 meses.
+              </p>
+            </section>
+
+            <section>
+              <h2 className="text-2xl text-[#1a2b4c] mb-4">
+                9. Propriedade Intelectual
+              </h2>
+              <p className="text-gray-700 leading-relaxed mb-4">
+                Todo conteúdo da plataforma ServiceSnap (código, design,
+                logotipos, textos, gráficos, interface) é protegido por direitos
+                autorais e propriedade intelectual do ServiceSnap e seus
+                licenciadores.
+              </p>
+              <p className="text-gray-700 leading-relaxed">
+                É proibido copiar, modificar, distribuir, vender ou explorar
+                comercialmente qualquer parte da plataforma sem autorização
+                expressa por escrito.
+              </p>
+            </section>
+
+            <section>
+              <h2 className="text-2xl text-[#1a2b4c] mb-4">
+                10. Modificações dos Termos
+              </h2>
+              <p className="text-gray-700 leading-relaxed mb-4">
+                Reservamo-nos o direito de modificar estes Termos de Serviço a
+                qualquer momento. Notificaremos sobre mudanças significativas
+                através de:
+              </p>
+              <ul className="list-disc pl-6 space-y-2 text-gray-700 mb-4">
+                <li>E-mail para o endereço cadastrado</li>
+                <li>Aviso destacado na plataforma</li>
+                <li>
+                  Atualização da data "Última atualização" no topo deste
+                  documento
+                </li>
+              </ul>
               <p className="text-gray-700 leading-relaxed">
                 É sua responsabilidade revisar periodicamente estes termos. O
                 uso continuado da plataforma após as modificações constitui
-                aceitação dos novos termos.
+                aceitação dos novos termos. Caso não concorde com as mudanças,
+                você deve encerrar o uso da plataforma.
               </p>
             </section>
 
             <section>
-              <h2 className="text-2xl text-[#1a2b4c] mb-4">9. Contato</h2>
+              <h2 className="text-2xl text-[#1a2b4c] mb-4">
+                11. Lei Aplicável e Foro
+              </h2>
+              <p className="text-gray-700 leading-relaxed mb-4">
+                Estes Termos de Serviço são regidos pelas leis da República
+                Federativa do Brasil, especialmente:
+              </p>
+              <ul className="list-disc pl-6 space-y-2 text-gray-700 mb-4">
+                <li>Lei Geral de Proteção de Dados (LGPD - Lei 13.709/2018)</li>
+                <li>Marco Civil da Internet (Lei 12.965/2014)</li>
+                <li>Código de Defesa do Consumidor (Lei 8.078/1990)</li>
+                <li>Código Civil Brasileiro (Lei 10.406/2002)</li>
+              </ul>
               <p className="text-gray-700 leading-relaxed">
+                Fica eleito o foro da comarca de [CIDADE], Brasil, para dirimir
+                quaisquer controvérsias decorrentes destes termos, com renúncia
+                expressa a qualquer outro, por mais privilegiado que seja.
+              </p>
+            </section>
+
+            <section>
+              <h2 className="text-2xl text-[#1a2b4c] mb-4">12. Contato</h2>
+              <p className="text-gray-700 leading-relaxed mb-4">
                 Se você tiver dúvidas sobre estes Termos de Serviço, entre em
-                contato conosco através do e-mail:{' '}
-                <a
-                  href="mailto:legal@servicesnap.com"
-                  className="text-[#20b2aa] hover:underline"
-                >
-                  legal@servicesnap.com
-                </a>
+                contato conosco:
+              </p>
+              <ul className="list-none space-y-2 text-gray-700">
+                <li>
+                  <strong>E-mail Geral:</strong>{' '}
+                  <a href="mailto:general@ssnap.io" className="hover:underline">
+                    general@ssnap.io
+                  </a>
+                </li>
+                <li>
+                  <strong>Suporte:</strong> Através da central de ajuda em{' '}
+                  <a href="/help" className="hover:underline">
+                    /help
+                  </a>
+                </li>
+              </ul>
+              <p className="text-gray-700 leading-relaxed mt-4">
+                Responderemos sua solicitação em até 5 dias úteis.
               </p>
             </section>
           </div>
         </div>
       </div>
-    </div>
+
+      <Footer />
+    </Header>
   );
 }

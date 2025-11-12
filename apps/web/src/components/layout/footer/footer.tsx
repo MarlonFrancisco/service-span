@@ -1,16 +1,9 @@
 'use client';
 
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import Link from 'next/link';
 
 export const Footer = () => {
-  const router = useRouter();
-
-  const navigate = (path: string) => {
-    router.push(path, { scroll: true });
-  };
-
   return (
     <footer>
       <div className="max-w-7xl mx-auto px-6 py-16">
@@ -24,36 +17,29 @@ export const Footer = () => {
               </h3>
               <ul className="space-y-4">
                 <li>
-                  <a
-                    href="#"
+                  <Link
+                    href="/about"
                     className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
                   >
                     Sobre nós
-                  </a>
+                  </Link>
                 </li>
+
                 <li>
-                  <a
-                    href="#"
+                  <Link
+                    href="/privacy"
                     className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
                   >
-                    Carreiras
-                  </a>
+                    Privacidade
+                  </Link>
                 </li>
                 <li>
-                  <a
-                    href="#"
+                  <Link
+                    href="/terms"
                     className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
                   >
-                    Blog
-                  </a>
-                </li>
-                <li>
-                  <button
-                    onClick={() => navigate('contact')}
-                    className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
-                  >
-                    Contato
-                  </button>
+                    Termos
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -65,36 +51,20 @@ export const Footer = () => {
               </h3>
               <ul className="space-y-4">
                 <li>
-                  <button
-                    onClick={() => navigate('help')}
+                  <Link
+                    href="/help"
                     className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
                   >
                     Central de ajuda
-                  </button>
+                  </Link>
                 </li>
                 <li>
-                  <a
-                    href="#"
+                  <Link
+                    href="/about"
                     className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
                   >
                     Como funciona
-                  </a>
-                </li>
-                <li>
-                  <button
-                    onClick={() => navigate('privacy')}
-                    className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
-                  >
-                    Privacidade
-                  </button>
-                </li>
-                <li>
-                  <button
-                    onClick={() => navigate('terms')}
-                    className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
-                  >
-                    Termos
-                  </button>
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -147,8 +117,8 @@ export const Footer = () => {
               Inscreva-se na nossa newsletter
             </h3>
             <p className="text-sm text-gray-600 mb-6">
-              Receba as últimas novidades sobre design, artigos, recursos e
-              inspiração.
+              Receba as últimas novidades sobre serviços, profissionais e muito
+              mais.
             </p>
             <div className="flex gap-3">
               <input

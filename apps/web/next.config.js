@@ -25,6 +25,10 @@ const nextConfig = {
   turbopack: {
     root: path.resolve('../../../'),
   },
+  // Target modern browsers only (ES2022+)
+  experimental: {
+    optimizePackageImports: ['@repo/ui', 'lucide-react'],
+  },
   async rewrites() {
     return [
       {

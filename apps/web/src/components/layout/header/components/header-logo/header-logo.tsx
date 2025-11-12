@@ -12,7 +12,13 @@ export const HeaderLogo = ({
 
   return (
     <Link href="/" aria-label="Home" {...props}>
-      <Image src={logoSrc} alt="ServiceSnap" width={width} height={height} />
+      <Image
+        src={logoSrc}
+        alt="ServiceSnap"
+        width={width}
+        height={height}
+        priority
+      />
     </Link>
   );
 };

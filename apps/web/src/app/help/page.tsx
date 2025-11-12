@@ -1,27 +1,13 @@
 'use client';
 
-import { Button } from '@repo/ui';
-import { ArrowLeft } from 'lucide-react';
+import { Footer } from '@/components/layout';
+import { Header } from '@/components/layout/header/header';
 
 export default function HelpPage() {
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="border-b border-gray-200">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <Button
-            variant="ghost"
-            onClick={() => window.history.back()}
-            className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Voltar
-          </Button>
-        </div>
-      </div>
-
+    <Header>
       {/* Content */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="prose prose-gray max-w-none">
           {/* Header */}
           <div className="text-center mb-12">
@@ -88,29 +74,11 @@ export default function HelpPage() {
                 </div>
               </div>
             </section>
-
-            <section>
-              <h2 className="text-2xl text-[#1a2b4c] mb-4">Contato</h2>
-              <p className="text-gray-700 leading-relaxed mb-4">
-                Não encontrou a resposta que procurava? Entre em contato
-                conosco:
-              </p>
-              <div className="bg-gray-50 p-6 rounded-lg">
-                <p className="text-gray-700 mb-2">
-                  <strong>E-mail:</strong> suporte@servicesnap.com
-                </p>
-                <p className="text-gray-700 mb-2">
-                  <strong>Telefone:</strong> (11) 9999-9999
-                </p>
-                <p className="text-gray-700">
-                  <strong>Horário de atendimento:</strong> Segunda a sexta, das
-                  8h às 18h
-                </p>
-              </div>
-            </section>
           </div>
         </div>
       </div>
-    </div>
+
+      <Footer />
+    </Header>
   );
 }
