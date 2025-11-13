@@ -80,7 +80,8 @@ export function ImageCarousel({
                       src={image}
                       alt={`${alt} - Imagem ${index + 1}`}
                       fill
-                      sizes="(min-width: 728px) 400px, 150px"
+                      sizes="(min-width: 728px) 350px, 150px"
+                      loading="lazy"
                     />
                   </AspectRatio>
                 </div>

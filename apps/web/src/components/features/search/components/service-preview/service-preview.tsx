@@ -33,7 +33,7 @@ export function ServicePreview() {
             className="w-full rounded-b-none!"
             showCounter={selectedStore.images.length > 1}
             showFullscreenButton={selectedStore.images.length > 1}
-            aspectRatio={4 / 2}
+            aspectRatio={3 / 2}
           />
 
           <div className="space-y-3 px-6">
@@ -49,7 +49,9 @@ export function ServicePreview() {
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-1 bg-yellow-50 px-2 py-1 rounded-md">
                 <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                <span className="font-semibold text-sm">{selectedStore.rating}</span>
+                <span className="font-semibold text-sm">
+                  {selectedStore.rating}
+                </span>
               </div>
               <span className="text-sm text-gray-500">
                 ({selectedStore.reviewCount} avaliações)
@@ -92,7 +94,9 @@ export function ServicePreview() {
                   {selectedStore.address}, {selectedStore.city} -{' '}
                   {selectedStore.state}
                 </p>
-                <p className="text-gray-500 text-xs mt-0.5">{selectedStore.zipCode}</p>
+                <p className="text-gray-500 text-xs mt-0.5">
+                  {selectedStore.zipCode}
+                </p>
               </div>
             </div>
 
@@ -113,7 +117,9 @@ export function ServicePreview() {
 
         {/* Avaliações em destaque */}
         <div className="space-y-3 px-6">
-          <h4 className="text-sm font-semibold text-gray-900">Avaliações Recentes</h4>
+          <h4 className="text-sm font-semibold text-gray-900">
+            Avaliações Recentes
+          </h4>
 
           <div className="space-y-2.5">
             {selectedStore.reviews?.slice(0, 3).map((review) => (
@@ -131,7 +137,9 @@ export function ServicePreview() {
                     Usuário Anônimo
                   </span>
                 </div>
-                <p className="text-sm text-gray-600 leading-relaxed">{review.comment}</p>
+                <p className="text-sm text-gray-600 leading-relaxed">
+                  {review.comment}
+                </p>
               </div>
             ))}
 

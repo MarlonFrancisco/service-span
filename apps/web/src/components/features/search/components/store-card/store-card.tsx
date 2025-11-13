@@ -177,6 +177,7 @@ export function StoreCard({ store, isSelected, onClick }: StoreCardProps) {
               showFullscreenButton={false}
               rounded={false}
               className="h-full"
+              aspectRatio={16 / 13.5}
             />
           </div>
         </div>

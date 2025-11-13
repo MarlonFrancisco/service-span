@@ -99,11 +99,38 @@ export function DateTimeSelectionStep() {
     }).format(price);
   };
 
+  const getDayOfWeekKey = (date: Date) => {
+    const dayIndex = date.getDay();
+    const dayKeys: Record<number, keyof typeof store.businessDays> = {
+      0: 'sunday',
+      1: 'monday',
+      2: 'tuesday',
+      3: 'wednesday',
+      4: 'thursday',
+      5: 'friday',
+      6: 'saturday',
+    };
+    return dayKeys[dayIndex] || 'monday';
+  };
+
   const isDateDisabled = (date: Date) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    return date < today;
+    // Disable if date is in the past
+    if (date < today) {
+      return true;
+    }
+
+    // Disable if it's not a business day
+    if (store?.businessDays) {
+      const dayKey = getDayOfWeekKey(date);
+      if (!store.businessDays[dayKey]) {
+        return true;
+      }
+    }
+
+    return false;
   };
 
   return (
@@ -129,6 +156,7 @@ export function DateTimeSelectionStep() {
             selected={selectedDate || undefined}
             onSelect={handleDateSelect}
             disabled={isDateDisabled}
+            businessDays={store?.businessDays}
           />
         </Card>
 

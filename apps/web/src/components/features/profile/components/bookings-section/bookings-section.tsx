@@ -268,6 +268,9 @@ export const BookingsSection = () => {
                           <Button
                             size="sm"
                             className="w-full bg-white hover:bg-gray-100 text-gray-900 shadow-lg"
+                            onClick={() =>
+                              router.push(`/booking/${booking.store.id}`)
+                            }
                           >
                             <Calendar className="h-3.5 w-3.5 mr-2" />
                             Reservar novamente

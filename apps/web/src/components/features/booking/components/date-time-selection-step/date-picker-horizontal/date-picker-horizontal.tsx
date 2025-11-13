@@ -1,5 +1,6 @@
 'use client';
 import { Button, cn } from '@repo/ui/index';
+import { TWorkingDays } from '@/types/api/stores.types';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
@@ -8,6 +9,7 @@ interface IDatePickerHorizontalProps {
   daysToShow?: number;
   onSelect: (date: Date | undefined) => void;
   disabled?: (date: Date) => boolean;
+  businessDays?: TWorkingDays;
 }
 
 export function DatePickerHorizontal({
@@ -15,6 +17,7 @@ export function DatePickerHorizontal({
   daysToShow = 14,
   onSelect,
   disabled,
+  businessDays,
 }: IDatePickerHorizontalProps) {
   const [startIndex, setStartIndex] = useState(0);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -50,8 +53,35 @@ export function DatePickerHorizontal({
     );
   };
 
+  const getDayOfWeekKey = (date: Date): keyof TWorkingDays => {
+    const dayIndex = date.getDay();
+    const dayKeys: Record<number, keyof TWorkingDays> = {
+      0: 'sunday',
+      1: 'monday',
+      2: 'tuesday',
+      3: 'wednesday',
+      4: 'thursday',
+      5: 'friday',
+      6: 'saturday',
+    };
+    return dayKeys[dayIndex] || 'monday';
+  };
+
   const isDateDisabled = (date: Date) => {
-    return disabled ? disabled(date) : false;
+    // Check custom disabled function first
+    if (disabled && disabled(date)) {
+      return true;
+    }
+
+    // Check if day is a business day
+    if (businessDays) {
+      const dayKey = getDayOfWeekKey(date);
+      if (!businessDays[dayKey]) {
+        return true;
+      }
+    }
+
+    return false;
   };
 
   const formatDayName = (date: Date) => {

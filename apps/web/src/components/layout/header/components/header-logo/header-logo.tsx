@@ -17,7 +17,6 @@ export const HeaderLogo = ({
         alt="ServiceSnap logo"
         width={width}
         height={height}
-        priority
         preload
       />
     </Link>
