@@ -1,6 +1,12 @@
 'use client';
 import { useAuthStore } from '@/store/auth/auth.store';
-import { Dialog, DialogContent } from '@repo/ui';
+import {
+  Dialog,
+  DialogContent,
+  Drawer,
+  DrawerContent,
+  useIsMobile,
+} from '@repo/ui';
 import { useState } from 'react';
 import { AuthStep } from './auth.types';
 import { LoginStep } from './components/login-step';
@@ -18,6 +24,7 @@ export function AuthModal() {
     name: '',
     isNewUser: false,
   });
+  const isMobile = useIsMobile();
   const isOpen = useAuthStore((state) => state.isOpen);
   const closeAuthAction = useAuthStore((state) => state.closeAuthAction);
 
@@ -72,7 +79,6 @@ export function AuthModal() {
 
     return (
       <div className="auth-step-enter">
-        {/* Progress Indicator - subtle and only for multi-step flows */}
         {currentStep !== 'login' && (
           <div className="px-8 pt-6">
             <StepIndicator currentStep={currentStep} />
@@ -82,6 +88,22 @@ export function AuthModal() {
       </div>
     );
   };
+
+  if (isMobile) {
+    return (
+      <Drawer open={isOpen} onOpenChange={handleClose}>
+        <DrawerContent>
+          <div className="bg-card rounded-3xl overflow-hidden border border-border/20 shadow-2xl backdrop-blur-xl">
+            <div
+              className={`transition-all duration-300 ${isTransitioning ? 'opacity-50 scale-[0.98]' : 'opacity-100 scale-100'}`}
+            >
+              {renderStep()}
+            </div>
+          </div>
+        </DrawerContent>
+      </Drawer>
+    );
+  }
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>

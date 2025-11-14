@@ -83,12 +83,8 @@ export const Header = ({
 
             {/* Footer Section */}
             <div className="relative bg-foreground before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-foreground">
-              <div className="mx-auto max-w-7xl px-6 lg:px-8">
-                <div className="mx-auto max-w-2xl lg:max-w-none">
-                  <div className="grid grid-cols-1 gap-y-10 pt-10 pb-16 sm:grid-cols-2 sm:pt-16">
-                    <SocialLinks links={SOCIAL_LINKS} />
-                  </div>
-                </div>
+              <div className="mx-auto max-w-7xl mt-8 md:mt-18 pb-10 md:pb-16 px-6">
+                <SocialLinks links={SOCIAL_LINKS} />
               </div>
             </div>
           </div>

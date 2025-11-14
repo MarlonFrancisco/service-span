@@ -62,28 +62,6 @@ export function LoginStep({ onNext }: LoginStepProps) {
 
           {/* Contact Input Section */}
           <div className="space-y-5">
-            {/* Input Type Toggle */}
-            <div className="flex gap-2 p-1 bg-muted rounded-xl">
-              <Button
-                variant={contactType === 'email' ? 'default' : 'ghost'}
-                size="sm"
-                onClick={() => setContactType('email')}
-                className={`flex-1 h-10 ${contactType === 'email' ? 'bg-background shadow-sm text-black hover:text-white' : ''}`}
-              >
-                <Mail className="h-4 w-4 mr-2" />
-                Email
-              </Button>
-              <Button
-                variant={contactType === 'phone' ? 'default' : 'ghost'}
-                size="sm"
-                onClick={() => setContactType('phone')}
-                className={`flex-1 h-10 ${contactType === 'phone' ? 'bg-background shadow-sm text-black hover:text-white' : ''}`}
-              >
-                <Phone className="h-4 w-4 mr-2" />
-                Telefone
-              </Button>
-            </div>
-
             {/* Input Field */}
             <div className="space-y-3">
               <label className="text-foreground font-medium text-sm block transition-colors">

@@ -2,7 +2,7 @@ import type { TSocialLinksConfig } from './social-links.types';
 
 export const SocialLinks = ({ links }: TSocialLinksConfig) => {
   return (
-    <div className="sm:border-l sm:border-transparent sm:pl-16">
+    <div className="sm:border-l sm:border-transparent">
       <h2 className="font-display text-base font-semibold text-white">
         Conecte-se
       </h2>
