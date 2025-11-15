@@ -120,7 +120,7 @@ export class UsersService {
 
     return {
       ...user,
-      isSubscribed: !!user.subscriptions[0],
+      isSubscribed: !!user.subscriptions?.[0],
       subscriptions: undefined,
     };
   }
