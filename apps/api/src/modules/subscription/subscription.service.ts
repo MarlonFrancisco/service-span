@@ -146,7 +146,7 @@ export class SubscriptionService {
         },
       ],
       success_url: `${process.env.FRONTEND_URL}/checkout?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.FRONTEND_URL}/checkout`,
+      cancel_url: `${process.env.FRONTEND_URL}/pricing`,
     });
 
     return {
@@ -168,7 +168,7 @@ export class SubscriptionService {
         billing_cycle_anchor: Math.floor(Date.now() / 1000),
       },
       success_url: `${process.env.FRONTEND_URL}/checkout?session_id={CHECKOUT_SESSION_ID}&upgrade=true`,
-      cancel_url: `${process.env.FRONTEND_URL}/checkout`,
+      cancel_url: `${process.env.FRONTEND_URL}/pricing`,
       metadata: {
         previous_subscription: subscription.subscriptionId,
         upgrade: 'true',
