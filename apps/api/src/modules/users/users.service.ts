@@ -95,7 +95,7 @@ export class UsersService {
 
   async getSubscription(id: string) {
     const user = await this.userRepository.findOne({
-      where: { id, subscriptions: { status: 'active' } },
+      where: { id },
       relations: [
         'subscriptions',
         'favorites',
@@ -120,7 +120,9 @@ export class UsersService {
 
     return {
       ...user,
-      isSubscribed: !!user.subscriptions?.[0],
+      isSubscribed: user.subscriptions.some(
+        (subscription) => subscription.status === 'active',
+      ),
       subscriptions: undefined,
     };
   }
