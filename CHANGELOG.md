@@ -1,3 +1,22 @@
+## 0.9.0 (2025-11-15)
+
+### Feat
+
+- **web**: enhance mobile responsiveness and simplify navigation
+- **web/booking**: implement business days blocking in date picker
+- **web**: implement seo optimization with sitemap and robots.txt
+- **web**: implement legal pages and modernize browser targeting
+- **web**: enhance homepage and search with loading states, empty states, and mobile UX improvements
+- **web/partner**: implement bulk time blocking with drag and shift selection
+
+### Fix
+
+- **api/review**: import wrong module
+
+### Refactor
+
+- **api/notification**: migrate from aws ses/sns to sendgrid
+
 ## 0.8.0 (2025-11-12)
 
 ### Feat
