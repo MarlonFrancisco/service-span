@@ -18,6 +18,7 @@
     "reset:db": "ts-node -O '{\"module\":\"commonjs\"}' src/scripts/reset-db.ts"
   },
   "dependencies": {
+    "@nestjs/cli": "^11.0.0",
     "@nestjs/common": "^11.0.0",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.0.0",
@@ -29,7 +30,6 @@
     "@supabase/supabase-js": "^2.76.1",
     "@upstash/search": "^0.1.6",
     "@vercel/node": "^5.4.0",
-    "aws-sdk": "^2.1692.0",
     "dotenv": "^16.4.5",
     "express": "^5.1.0",
     "google-auth-library": "^10.4.0",
@@ -41,18 +41,17 @@
     "rxjs": "^7.8.1",
     "sharp": "^0.34.4",
     "stripe": "^19.1.0",
-    "typeorm": "^0.3.27"
+    "typeorm": "^0.3.27",
+    "@types/node": "^22.10.7",
+    "@repo/typescript-config": "workspace:*"
   },
   "devDependencies": {
-    "@nestjs/cli": "^11.0.0",
     "@nestjs/schematics": "^11.0.0",
     "@nestjs/testing": "^11.0.0",
     "@repo/eslint-config": "workspace:*",
-    "@repo/typescript-config": "workspace:*",
     "@repo/vitest-config": "workspace:*",
     "@types/bcrypt": "^6.0.0",
     "@types/express": "^4.17.17",
-    "@types/node": "^22.10.7",
     "@types/passport-jwt": "^4.0.1",
     "@types/pg": "^8.15.5",
     "source-map-support": "^0.5.21",

@@ -1,17 +1,13 @@
 {
-    "extends": [
-        "//"
-    ],
-    "tasks": {
-        "test": {
-            "dependsOn": [
-                "^test"
-            ]
-        },
-        "test:watch": {
-            "cache": false,
-            "persistent": true
-        },
-        "test:e2e": {}
-    }
+  "extends": ["//"],
+  "tasks": {
+    "test": {
+      "dependsOn": ["^test"]
+    },
+    "test:watch": {
+      "cache": false,
+      "persistent": true
+    },
+    "test:e2e": {}
+  }
 }

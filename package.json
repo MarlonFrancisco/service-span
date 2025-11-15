@@ -31,7 +31,6 @@
     "node": ">=18"
   },
   "dependencies": {
-    "lucide-react": "^0.552.0",
-    "typescript": "5.8.2"
+    "lucide-react": "^0.552.0"
   }
 }
