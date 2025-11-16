@@ -19,6 +19,8 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
+  private readonly isProduction = process.env.NODE_ENV === 'production';
+
   constructor(
     private readonly authService: AuthService,
     private readonly googleSSOService: GoogleSSOService,
@@ -40,14 +42,15 @@ export class AuthController {
 
       res.cookie('access_token', tokens.access_token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: process.env.NODE_ENV === 'production' ? 'lax' : 'lax',
+        secure: this.isProduction,
+        sameSite: 'none',
         maxAge: tokens.expires_in * 1000, // converte para milissegundos
         path: '/',
       });
 
       res.cookie('user_identification', user.id, {
         httpOnly: false,
+        secure: this.isProduction,
         maxAge: tokens.expires_in * 1000,
       });
 
@@ -78,13 +81,14 @@ export class AuthController {
 
     res.cookie('access_token', tokens.access_token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'lax' : 'lax', // production should be strict, but for now we'll use lax
+      secure: this.isProduction,
+      sameSite: 'none',
       maxAge: tokens.expires_in * 1000,
     });
 
     res.cookie('user_identification', user.id, {
       httpOnly: false,
+      secure: this.isProduction,
       maxAge: tokens.expires_in * 1000,
     });
 
