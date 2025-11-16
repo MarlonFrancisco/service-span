@@ -101,7 +101,7 @@ export function CurrentPlan() {
                   <div className="space-y-2">
                     <div className="flex items-center gap-2 text-sm text-gray-600">
                       <Mail className="h-4 w-4" />
-                      suporte@servicesnap.com
+                      general@ssnap.io
                     </div>
                   </div>
                 </div>

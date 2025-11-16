@@ -1,8 +1,8 @@
 'use client';
 import { useNotificationsStore } from '@/store';
+import { INotificationsHistory } from '@/types/api/stores.types';
 import { useCallback, useMemo, useState } from 'react';
 import { toast } from 'sonner';
-import { INotificationsHistory } from 'src/types/api/stores.types';
 
 const MOCK_NOTIFICATIONS: INotificationsHistory[] = [
   {

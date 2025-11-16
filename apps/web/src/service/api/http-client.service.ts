@@ -19,8 +19,18 @@ export class HttpClientService {
     const response = await fetch(url, { ...config, headers });
 
     if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || 'Sorry, something went wrong.');
+      const contentType = response.headers.get('content-type');
+      let error: { message?: string } = {};
+
+      if (contentType?.includes('application/json')) {
+        try {
+          error = await response.json();
+        } catch {
+          error.message = 'Sorry, something went wrong.';
+        }
+      }
+
+      throw new Error(error.message ?? 'Sorry, something went wrong.');
     }
 
     return response.json();

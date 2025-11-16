@@ -129,7 +129,7 @@ export default function ContactPage() {
                 </h3>
                 <div className="space-y-2 text-gray-600">
                   <p>
-                    <strong>E-mail:</strong> suporte@servicesnap.com
+                    <strong>E-mail:</strong> general@ssnap.io
                   </p>
                   <p>
                     <strong>Telefone:</strong> (11) 9999-9999
