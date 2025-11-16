@@ -164,7 +164,12 @@ export default async function RootLayout({
   if (userIdentification) {
     await queryClient.prefetchQuery({
       queryKey: CACHE_QUERY_KEYS.user(userIdentification),
-      queryFn: () => UsersService.getUser(),
+      queryFn: () =>
+        UsersService.getUser({
+          headers: {
+            Cookie: `access_token=${cookieStore.get('access_token')?.value}`,
+          },
+        }),
     });
   }
 

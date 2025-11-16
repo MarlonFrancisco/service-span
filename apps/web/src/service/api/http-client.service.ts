@@ -11,10 +11,16 @@ export class HttpClientService {
   ): Promise<T> {
     const url = `${this.baseUrl}${endpoint}`;
 
-    const headers = {
+    const headers: Record<string, string> = {
       'Content-Type': 'application/json',
-      ...config.headers,
+      ...(config.headers as Record<string, string>),
     };
+
+    // Adiciona token de bypass da Vercel se disponível
+    const vercelBypassToken = process.env.VERCEL_AUTOMATION_API_BYPASS_SECRET;
+    if (vercelBypassToken) {
+      headers['x-vercel-protection-bypass'] = vercelBypassToken;
+    }
 
     const response = await fetch(url, { ...config, headers });
 
@@ -30,7 +36,22 @@ export class HttpClientService {
         }
       }
 
-      throw new Error(error.message ?? 'Sorry, something went wrong.');
+      throw new Error(error.message ?? 'Sorry, something went wrong.', {
+        cause: {
+          response: {
+            status: response.status,
+            statusText: response.statusText,
+            headers: response.headers,
+            body: await response.text(),
+          },
+          request: {
+            url: url,
+            method: config.method,
+            headers: JSON.stringify(headers),
+            body: config.body,
+          },
+        },
+      });
     }
 
     return response.json();
