@@ -161,10 +161,10 @@ export class SubscriptionService {
       });
 
       if (currentSubscription) {
-        await this.stripeService.subscriptions.update(
+        await this.stripeService.subscriptions.cancel(
           currentSubscription.subscriptionId,
           {
-            cancel_at_period_end: true,
+            prorate: true,
           },
         );
 

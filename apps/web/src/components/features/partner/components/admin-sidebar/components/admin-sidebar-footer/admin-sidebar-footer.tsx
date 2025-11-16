@@ -145,7 +145,11 @@ function AdminSidebarFooterExpandedLimited({
 
           <div className="flex items-center gap-1.5 bg-orange-50 rounded-lg p-2 border border-orange-100 mb-3">
             <Zap className="h-3.5 w-3.5 text-orange-600" />
-            <p className="text-xs text-orange-900">Próximo ao limite mensal</p>
+            {usagePercentage >= 80 && (
+              <p className="text-xs text-orange-900">
+                Próximo ao limite mensal
+              </p>
+            )}
           </div>
 
           <Button
@@ -191,7 +195,9 @@ function AdminSidebarFooterExpandedUnlimited({
 
           <div className="flex items-center gap-1.5 bg-blue-50 rounded-lg p-2 border border-blue-100">
             <CreditCard className="h-3.5 w-3.5 text-blue-600" />
-            <p className="text-xs text-blue-900">Acesso ilimitado a todos os agendamentos</p>
+            <p className="text-xs text-blue-900">
+              Acesso ilimitado a todos os agendamentos
+            </p>
           </div>
         </div>
       </div>
