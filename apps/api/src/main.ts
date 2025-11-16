@@ -1,6 +1,6 @@
 import type { INestApplication } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import { json } from 'express';
+import express, { json } from 'express';
 import { AppModule } from './modules/app.module';
 
 let cachedApp: INestApplication | null = null;
@@ -15,6 +15,17 @@ export async function createApp(): Promise<INestApplication> {
   }
 
   const app = await NestFactory.create(AppModule);
+
+  const rawBodyMiddleware = express.json({
+    verify: (req: any, res, buf) => {
+      if (req.originalUrl === '/subscription/webhook') {
+        req.rawBody = buf;
+      }
+      return true;
+    },
+  });
+
+  app.use(rawBodyMiddleware);
 
   // Aumenta o limite de payload para uploads de imagens (padrão: 100kb)
   app.use(json({ limit: '5mb' }));

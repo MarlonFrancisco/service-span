@@ -1,12 +1,18 @@
 import {
+  BadRequestException,
   Injectable,
   InternalServerErrorException,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 
-import type { Repository } from 'typeorm';
+import { In, type Repository } from 'typeorm';
 
+import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
+import Stripe from 'stripe';
+import { getSubscriptionPeriodDate } from '../../utils';
+import { NotificationService } from '../notification';
 import { ScheduleService } from '../partner/stores/schedule/schedule.service';
 import { StoresService } from '../partner/stores/stores.services';
 import { StripeService } from '../stripe';
@@ -15,14 +21,12 @@ import { CurrentPlanDto } from './dto/current-plan.dto';
 import { CustomerSubscriptionCreatedDto } from './dto/customer-subscription-created.dto';
 import { CustomerSubscriptionUpdateDto } from './dto/customer-subscription-update.dto';
 import { Subscription } from './subscription.entity';
-import type {
-  ICustomerSubscriptionCreatedEvent,
-  ICustomerSubscriptionUpdatedEvent,
-  IWebhookPayload,
-} from './subscription.types';
+import { TSubscriptionStatus } from './subscription.types';
 
 @Injectable()
 export class SubscriptionService {
+  private readonly logger = new Logger(SubscriptionService.name);
+
   constructor(
     @InjectRepository(Subscription)
     private readonly subscriptionRepository: Repository<Subscription>,
@@ -30,6 +34,8 @@ export class SubscriptionService {
     private readonly stripeService: StripeService,
     private readonly scheduleService: ScheduleService,
     private readonly storesService: StoresService,
+    private readonly notificationService: NotificationService,
+    private readonly configService: ConfigService,
   ) {}
 
   async getCurrentPlan(userId: string): Promise<CurrentPlanDto> {
@@ -115,8 +121,7 @@ export class SubscriptionService {
       if (error instanceof NotFoundException) {
         throw error;
       }
-      // Log para debugging (pode ser integrado com serviço de logging)
-      console.error(
+      this.logger.error(
         '[SubscriptionService.getCurrentPlan] Error fetching current plan:',
         error instanceof Error ? error.message : error,
       );
@@ -126,16 +131,7 @@ export class SubscriptionService {
     }
   }
 
-  async create(priceId: string, userId: string, paymentCustomerId: string) {
-    const subscription = await this.subscriptionRepository.findOne({
-      where: { user: { id: userId }, status: 'active' },
-      relations: ['user'],
-    });
-
-    if (subscription) {
-      return await this.update(priceId, subscription);
-    }
-
+  async create(priceId: string, paymentCustomerId: string) {
     const session = await this.stripeService.checkout.sessions.create({
       mode: 'subscription',
       customer: paymentCustomerId,
@@ -154,46 +150,32 @@ export class SubscriptionService {
     };
   }
 
-  async update(priceId: string, subscription: Subscription) {
-    const session = await this.stripeService.checkout.sessions.create({
-      mode: 'subscription',
-      customer: subscription.user.paymentCustomerId,
-      line_items: [
-        {
-          price: priceId,
-          quantity: 1,
-        },
-      ],
-      subscription_data: {
-        billing_cycle_anchor: Math.floor(Date.now() / 1000),
-      },
-      success_url: `${process.env.FRONTEND_URL}/checkout?session_id={CHECKOUT_SESSION_ID}&upgrade=true`,
-      cancel_url: `${process.env.FRONTEND_URL}/pricing`,
-      metadata: {
-        previous_subscription: subscription.subscriptionId,
-        upgrade: 'true',
-      },
-    });
-
-    return { url: session.url };
-  }
-
-  async customerSubscriptionCreation({
+  async handleCustomerSubscriptionCreated({
     user: { paymentCustomerId },
     ...customerSubscription
   }: CustomerSubscriptionCreatedDto) {
     try {
-      let subscription = await this.subscriptionRepository.findOne({
-        where: { user: { paymentCustomerId }, status: 'active' },
+      const currentSubscription = await this.subscriptionRepository.findOne({
+        where: { user: { paymentCustomerId }, status: In(['active', 'paid']) },
         relations: ['user'],
       });
 
-      if (subscription) {
-        return await this.customerSubscriptionUpdate({
+      if (currentSubscription) {
+        await this.stripeService.subscriptions.update(
+          currentSubscription.subscriptionId,
+          {
+            cancel_at_period_end: true,
+          },
+        );
+
+        const newSubscription = await this.subscriptionRepository.create({
           ...customerSubscription,
-          previousSubscriptionId: subscription.subscriptionId,
-          user: subscription.user,
+          user: currentSubscription.user,
         });
+
+        await this.subscriptionRepository.save(newSubscription);
+
+        return newSubscription;
       }
 
       const user = await this.userService.findByOne({ paymentCustomerId });
@@ -202,50 +184,25 @@ export class SubscriptionService {
         throw new NotFoundException('User not found');
       }
 
-      subscription = await this.subscriptionRepository.create({
+      const newSubscription = await this.subscriptionRepository.create({
         ...customerSubscription,
         user,
       });
 
-      await this.subscriptionRepository.save(subscription);
+      await this.subscriptionRepository.save(newSubscription);
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
   }
 
-  async customerSubscriptionUpdate(
+  async handleCustomerSubscriptionUpdated(
     customerSubscription: CustomerSubscriptionUpdateDto,
   ) {
     try {
       const subscription = await this.subscriptionRepository.findOne({
-        where: { subscriptionId: customerSubscription.previousSubscriptionId },
+        where: { subscriptionId: customerSubscription.subscriptionId },
         relations: ['user'],
       });
-
-      if (!subscription) {
-        delete customerSubscription.previousSubscriptionId;
-        return await this.customerSubscriptionCreation(customerSubscription);
-      }
-
-      if (subscription.priceId !== customerSubscription.priceId) {
-        await this.subscriptionRepository.update(subscription.id, {
-          status: 'canceled',
-          currentPeriodEnd: new Date(),
-        });
-
-        const newSubscription = await this.subscriptionRepository.create({
-          ...customerSubscription,
-          user: subscription.user,
-        });
-
-        await this.subscriptionRepository.save(newSubscription);
-
-        await this.stripeService.subscriptions.cancel(
-          subscription.subscriptionId,
-        );
-
-        return newSubscription;
-      }
 
       await this.subscriptionRepository.update(subscription.id, {
         status: customerSubscription.status,
@@ -259,12 +216,10 @@ export class SubscriptionService {
     }
   }
 
-  async customerSubscriptionDeletion(
-    customerSubscription: CustomerSubscriptionUpdateDto,
-  ) {
+  async handleCustomerSubscriptionDeleted(subscriptionId: string) {
     try {
       const subscription = await this.subscriptionRepository.findOne({
-        where: { subscriptionId: customerSubscription.subscriptionId },
+        where: { subscriptionId },
       });
 
       if (!subscription) {
@@ -280,28 +235,121 @@ export class SubscriptionService {
     }
   }
 
-  async webhook(payload: IWebhookPayload) {
+  async handleInvoicePaid(invoiceData: Stripe.InvoicePaidEvent.Data) {
+    try {
+      const subscriptionId = invoiceData.object.parent.subscription_details
+        .subscription as string;
+
+      const subscription = await this.subscriptionRepository.findOne({
+        where: { subscriptionId },
+        relations: ['user'],
+      });
+
+      if (!subscription) {
+        this.logger.warn(
+          `[SubscriptionService.handleInvoicePaid] Subscription not found for ID: ${subscriptionId}`,
+        );
+
+        return new NotFoundException('Subscription not found');
+      }
+
+      const { currentPeriodEnd } = getSubscriptionPeriodDate(
+        invoiceData.object.period_start,
+        invoiceData.object.period_end,
+      );
+
+      subscription.status = invoiceData.object.status as TSubscriptionStatus;
+      subscription.currentPeriodEnd = currentPeriodEnd;
+
+      await this.subscriptionRepository.save(subscription);
+
+      await this.notificationService.invoicePaid(
+        subscription.user.email,
+        subscription.subscriptionId,
+        subscription.currentPeriodEnd.toISOString(),
+      );
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async handleInvoicePaymentFailed(
+    event: Stripe.InvoicePaymentFailedEvent.Data,
+  ) {
+    try {
+      const { id: subscriptionId, attempt_count } = event.object;
+
+      const subscription = await this.subscriptionRepository.findOne({
+        where: { subscriptionId },
+        relations: ['user'],
+      });
+
+      if (!subscription) {
+        this.logger.warn(
+          `[SubscriptionService.handleInvoicePaymentFailed] Subscription not found for ID: ${subscriptionId}`,
+        );
+        return new NotFoundException('Subscription not found');
+      }
+
+      subscription.status = event.object.status as TSubscriptionStatus;
+
+      await this.subscriptionRepository.save(subscription);
+
+      await this.notificationService.paymentFailed(
+        subscription.user.email,
+        subscriptionId,
+        attempt_count,
+      );
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async webhook(event: Stripe.Event, signature: string) {
+    const webhookSecret = this.configService.get<string>(
+      'STRIPE_WEBHOOK_SECRET',
+    );
+
+    if (!webhookSecret) {
+      throw new BadRequestException('STRIPE_WEBHOOK_SECRET is not configured');
+    }
+
+    if (!signature) {
+      throw new BadRequestException('Missing stripe-signature header');
+    }
+
     const events = {
-      'customer.subscription.deleted': async () =>
-        await this.customerSubscriptionUpdate(
-          new CustomerSubscriptionUpdateDto(
-            payload.data as ICustomerSubscriptionUpdatedEvent,
+      'checkout.session.completed': async () => {
+        this.logger.log(`[webhook] Checkout session completed: ${event.id}`);
+      },
+      'invoice.paid': async () =>
+        this.handleInvoicePaid(event.data as Stripe.InvoicePaidEvent.Data),
+      'invoice.payment_failed': async () =>
+        this.handleInvoicePaymentFailed(
+          event.data as Stripe.InvoicePaymentFailedEvent.Data,
+        ),
+      'customer.subscription.created': async () =>
+        this.handleCustomerSubscriptionCreated(
+          new CustomerSubscriptionCreatedDto(
+            event.data as Stripe.CustomerSubscriptionCreatedEvent.Data,
           ),
         ),
       'customer.subscription.updated': async () =>
-        await this.customerSubscriptionUpdate(
+        this.handleCustomerSubscriptionUpdated(
           new CustomerSubscriptionUpdateDto(
-            payload.data as ICustomerSubscriptionUpdatedEvent,
+            event.data as Stripe.CustomerSubscriptionUpdatedEvent.Data,
           ),
         ),
-      'customer.subscription.created': async () =>
-        await this.customerSubscriptionCreation(
-          new CustomerSubscriptionCreatedDto(
-            payload.data as ICustomerSubscriptionCreatedEvent,
-          ),
-        ),
+      'customer.subscription.deleted': async () => {
+        const subscriptionId = (
+          event.data
+            .object as Stripe.CustomerSubscriptionDeletedEvent.Data['object']
+        ).id;
+
+        return this.handleCustomerSubscriptionDeleted(subscriptionId);
+      },
     };
 
-    return await events[payload.type]();
+    return await events[event.type]?.();
   }
 }

@@ -120,8 +120,8 @@ export class UsersService {
 
     return {
       ...user,
-      isSubscribed: user.subscriptions.some(
-        (subscription) => subscription.status === 'active',
+      isSubscribed: user.subscriptions.some((subscription) =>
+        ['active', 'paid'].includes(subscription.status),
       ),
       subscriptions: undefined,
     };

@@ -1,9 +1,7 @@
+import type Stripe from 'stripe';
 import { getSubscriptionPeriodDate } from '../../../utils';
 import type { User } from '../../users';
-import type {
-  ICustomerSubscriptionCreatedEvent,
-  TSubscriptionStatus,
-} from '../subscription.types';
+import type { TSubscriptionStatus } from '../subscription.types';
 
 export class CustomerSubscriptionCreatedDto {
   subscriptionId: string;
@@ -15,7 +13,7 @@ export class CustomerSubscriptionCreatedDto {
 
   user: Partial<User>;
 
-  constructor(subscription: ICustomerSubscriptionCreatedEvent) {
+  constructor(subscription: Stripe.CustomerSubscriptionCreatedEvent.Data) {
     const { currentPeriodStart, currentPeriodEnd } = getSubscriptionPeriodDate(
       subscription.object.items.data?.[0].current_period_start,
       subscription.object.items.data?.[0].current_period_end,
@@ -23,10 +21,10 @@ export class CustomerSubscriptionCreatedDto {
 
     this.subscriptionId = subscription.object.id;
     this.priceId = subscription.object.items.data[0].price.id;
-    this.productId = subscription.object.items.data[0].price.product;
+    this.productId = subscription.object.items.data[0].price.product as string;
     this.status = subscription.object.status;
     this.currentPeriodStart = currentPeriodStart;
     this.currentPeriodEnd = currentPeriodEnd;
-    this.user = { paymentCustomerId: subscription.object.customer };
+    this.user = { paymentCustomerId: subscription.object.customer as string };
   }
 }

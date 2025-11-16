@@ -1,6 +1,7 @@
 import { Column, Entity, Index, ManyToOne } from 'typeorm';
 import { BaseEntity } from '../database';
 import { User } from '../users';
+import type { TSubscriptionStatus } from './subscription.types';
 
 @Entity('subscriptions')
 @Index('idx_subscriptions_user', ['user.id'])
@@ -12,18 +13,7 @@ export class Subscription extends BaseEntity {
   subscriptionId: string;
 
   @Column({ type: 'varchar', nullable: true })
-  status:
-    | 'incomplete'
-    | 'incomplete_expired'
-    | 'trialing'
-    | 'active'
-    | 'past_due'
-    | 'canceled'
-    | 'unpaid'
-    | 'paused'
-    | 'draft'
-    | 'open'
-    | 'paid';
+  status: TSubscriptionStatus;
 
   @Column({ type: 'varchar', nullable: true })
   priceId: string;

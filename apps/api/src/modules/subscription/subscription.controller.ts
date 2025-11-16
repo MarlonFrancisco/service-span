@@ -1,9 +1,16 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Headers,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
+import Stripe from 'stripe';
 import type { JwtPayload } from '../auth/auth.service';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { SubscriptionService } from './subscription.service';
-import type { IWebhookPayload } from './subscription.types';
 
 @Controller('subscription')
 export class SubscriptionController {
@@ -21,15 +28,14 @@ export class SubscriptionController {
     @Body({ transform: (value) => value.priceId }) priceId: string,
     @CurrentUser() user: JwtPayload,
   ) {
-    return this.subscriptionService.create(
-      priceId,
-      user.sub,
-      user.paymentCustomerId,
-    );
+    return this.subscriptionService.create(priceId, user.paymentCustomerId);
   }
 
   @Post('webhook')
-  async webhook(@Body() body: IWebhookPayload) {
-    return this.subscriptionService.webhook(body);
+  async webhook(
+    @Body() body: Stripe.Event,
+    @Headers('stripe-signature') signature: string,
+  ) {
+    return this.subscriptionService.webhook(body, signature);
   }
 }

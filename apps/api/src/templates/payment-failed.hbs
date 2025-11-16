@@ -1,0 +1,23 @@
+<html>
+  <head>
+    <meta charset='UTF-8' />
+    <title>Pagamento Falhou</title>
+    <style>
+      body { font-family: Arial, sans-serif; line-height: 1.6; }
+    </style>
+  </head>
+  <body>
+    <div style='font-family: Arial, sans-serif; line-height: 1.6;'>
+      <h1 style='color: #d32f2f;'>Pagamento Falhou</h1>
+      <p style='color: #d32f2f; font-weight: bold;'>Seu pagamento de assinatura
+        não pôde ser processado.</p>
+      <p><strong>ID da Fatura:</strong> {{invoiceId}}</p>
+      <p><strong>Tentativas de Pagamento:</strong> {{attemptCount}}</p>
+      <p style='color: #d32f2f;'>Por favor, atualize seu método de pagamento
+        imediatamente para evitar interrupção do serviço.</p>
+      <p>Para atualizar seu método de pagamento, por favor faça login em sua
+        conta e navegue até Configurações de Pagamento.</p>
+      <p>Se precisar de assistência, entre em contato com nosso suporte.</p>
+    </div>
+  </body>
+</html>

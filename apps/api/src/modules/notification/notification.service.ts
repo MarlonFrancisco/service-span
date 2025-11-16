@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import SendGrid from '@sendgrid/mail';
+import fs from 'fs/promises';
+import handlebars from 'handlebars';
+import path from 'path';
 
 @Injectable()
 export class NotificationService {
@@ -35,5 +38,27 @@ export class NotificationService {
   async sendSMSOTP(phoneNumber: string, code: string) {
     const message = `Seu código de verificação é: ${code}`;
     return this.sendSMS(phoneNumber, message);
+  }
+
+  async invoicePaid(to: string, invoiceId: string, currentPeriodEnd: string) {
+    const template = await fs.readFile(
+      path.join(process.cwd(), 'src', 'templates', 'invoice-paid.hbs'),
+      'utf8',
+    );
+
+    const body = handlebars.compile(template)({ invoiceId, currentPeriodEnd });
+
+    return this.sendEmail(to, 'Pagamento Recebido - Assinatura Ativa', body);
+  }
+
+  async paymentFailed(to: string, invoiceId: string, attemptCount: number) {
+    const template = await fs.readFile(
+      path.join(process.cwd(), 'src', 'templates', 'payment-failed.hbs'),
+      'utf8',
+    );
+
+    const body = handlebars.compile(template)({ invoiceId, attemptCount });
+
+    return this.sendEmail(to, 'Pagamento Falhou - Assinatura Inativa', body);
   }
 }

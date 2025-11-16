@@ -26,13 +26,16 @@
     "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^11.0.0",
     "@nestjs/typeorm": "^11.0.0",
+    "@repo/typescript-config": "workspace:*",
     "@sendgrid/mail": "^8.1.6",
     "@supabase/supabase-js": "^2.76.1",
+    "@types/node": "^22.10.7",
     "@upstash/search": "^0.1.6",
     "@vercel/node": "^5.4.0",
     "dotenv": "^16.4.5",
     "express": "^5.1.0",
     "google-auth-library": "^10.4.0",
+    "handlebars": "^4.7.8",
     "libphonenumber-js": "^1.12.24",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
@@ -41,9 +44,7 @@
     "rxjs": "^7.8.1",
     "sharp": "^0.34.4",
     "stripe": "^19.1.0",
-    "typeorm": "^0.3.27",
-    "@types/node": "^22.10.7",
-    "@repo/typescript-config": "workspace:*"
+    "typeorm": "^0.3.27"
   },
   "devDependencies": {
     "@nestjs/schematics": "^11.0.0",
