@@ -10,6 +10,7 @@ export class CustomerSubscriptionCreatedDto {
   currentPeriodStart: Date;
   currentPeriodEnd: Date;
   status: TSubscriptionStatus;
+  trialEnd: number;
 
   user: Partial<User>;
 
@@ -26,5 +27,6 @@ export class CustomerSubscriptionCreatedDto {
     this.currentPeriodStart = currentPeriodStart;
     this.currentPeriodEnd = currentPeriodEnd;
     this.user = { paymentCustomerId: subscription.object.customer as string };
+    this.trialEnd = subscription.object.trial_end;
   }
 }

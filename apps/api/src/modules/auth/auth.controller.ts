@@ -43,9 +43,7 @@ export class AuthController {
       res.cookie('access_token', tokens.access_token, {
         httpOnly: true,
         secure: this.isProduction,
-        sameSite: 'none',
-        maxAge: tokens.expires_in * 1000, // converte para milissegundos
-        path: '/',
+        maxAge: tokens.expires_in * 1000,
       });
 
       res.cookie('user_identification', user.id, {
@@ -82,7 +80,6 @@ export class AuthController {
     res.cookie('access_token', tokens.access_token, {
       httpOnly: true,
       secure: this.isProduction,
-      sameSite: 'none',
       maxAge: tokens.expires_in * 1000,
     });
 

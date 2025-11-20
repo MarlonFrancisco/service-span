@@ -121,7 +121,7 @@ export class UsersService {
     return {
       ...user,
       isSubscribed: user.subscriptions.some((subscription) =>
-        ['active', 'paid'].includes(subscription.status),
+        ['active', 'paid', 'trialing'].includes(subscription.status),
       ),
       subscriptions: undefined,
     };

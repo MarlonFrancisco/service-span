@@ -53,7 +53,6 @@ export class CurrentPlanDto {
       current_period_end?: number;
     };
     invoices: Stripe.Invoice[];
-    features: Stripe.Entitlements.Feature;
     schedulesLength: number;
     storesLength: number;
     storeMembersLength: number;
@@ -64,7 +63,6 @@ export class CurrentPlanDto {
       price,
       subscription,
       invoices,
-      features,
       schedulesLength,
       storesLength,
       storeMembersLength,
@@ -84,7 +82,7 @@ export class CurrentPlanDto {
     this.marketingFeatures = Array.isArray(product.marketing_features)
       ? product.marketing_features.map((f) => f.name || '')
       : [];
-    this.features = features.metadata;
+    this.features = product.metadata;
     this.subscriptionStatus = subscription.status;
     this.currentPeriodStart = new Date(
       subscription.current_period_start * 1000,
@@ -95,22 +93,22 @@ export class CurrentPlanDto {
     this.invoices = invoices.map((invoice) => new InvoiceDto(invoice));
 
     this.maxStores =
-      features.metadata.UNIT_LIMIT === 'UNLIMITED'
+      product.metadata.UNIT_LIMIT === 'UNLIMITED'
         ? 0
-        : parseInt(features.metadata.UNIT_LIMIT);
+        : parseInt(product.metadata.UNIT_LIMIT);
     this.maxUsers =
-      features.metadata.PRO_LIMIT === 'UNLIMITED'
+      product.metadata.PRO_LIMIT === 'UNLIMITED'
         ? 0
-        : parseInt(features.metadata.PRO_LIMIT);
+        : parseInt(product.metadata.PRO_LIMIT);
 
     this.maxSchedules =
-      features.metadata.SCHEDULE_LIMIT === 'UNLIMITED'
+      product.metadata.SCHEDULE_LIMIT === 'UNLIMITED'
         ? 0
-        : parseInt(features.metadata.SCHEDULE_LIMIT);
+        : parseInt(product.metadata.SCHEDULE_LIMIT);
 
-    this.rankTier = features.metadata.RANK_TIER;
+    this.rankTier = product.metadata.RANK_TIER;
 
-    this.smsReminder = features.metadata.SMS_REMINDER === 'true';
+    this.smsReminder = product.metadata.SMS_REMINDER === 'true';
 
     this.schedulesLength = schedulesLength;
     this.storesLength = storesLength;

@@ -42,7 +42,10 @@ export class SubscriptionService {
     try {
       // 1. Buscar subscription ativa do usuário no banco
       const subscription = await this.subscriptionRepository.findOne({
-        where: { user: { id: userId }, status: 'active' },
+        where: {
+          user: { id: userId },
+          status: In(['active', 'paid', 'trialing']),
+        },
         relations: ['user'],
       });
 
@@ -102,16 +105,11 @@ export class SubscriptionService {
         },
       });
 
-      const productFeatures = await this.stripeService.products.listFeatures(
-        product.id,
-      );
-
       return new CurrentPlanDto({
         product,
         price,
         subscription: stripeSubscription,
         invoices: invoicesResponse.data,
-        features: productFeatures.data[0].entitlement_feature,
         schedulesLength,
         storesLength,
         storeMembersLength,
@@ -132,6 +130,17 @@ export class SubscriptionService {
   }
 
   async create(priceId: string, paymentCustomerId: string) {
+    const price = await this.stripeService.prices.retrieve(priceId);
+    const product = await this.stripeService.products.retrieve(
+      price.product as string,
+    );
+
+    const hasSubscription = await this.subscriptionRepository.findOne({
+      where: { user: { paymentCustomerId } },
+    });
+
+    const trialPeriodDays = parseInt(product.metadata.TRIAL_PERIOD_DAYS || '0');
+
     const session = await this.stripeService.checkout.sessions.create({
       mode: 'subscription',
       customer: paymentCustomerId,
@@ -141,6 +150,10 @@ export class SubscriptionService {
           quantity: 1,
         },
       ],
+      subscription_data:
+        !hasSubscription && trialPeriodDays
+          ? { trial_period_days: trialPeriodDays }
+          : undefined,
       success_url: `${process.env.FRONTEND_URL}/checkout?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.FRONTEND_URL}/pricing`,
     });
@@ -179,10 +192,6 @@ export class SubscriptionService {
       }
 
       const user = await this.userService.findByOne({ paymentCustomerId });
-
-      if (!user) {
-        throw new NotFoundException('User not found');
-      }
 
       const newSubscription = await this.subscriptionRepository.create({
         ...customerSubscription,

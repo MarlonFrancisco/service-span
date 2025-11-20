@@ -15,7 +15,8 @@
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\"",
     "migrate:stores-to-search": "ts-node -O '{\"module\":\"commonjs\"}' src/scripts/migrate-stores-to-search.ts",
     "seed:stores:json": "ts-node -O '{\"module\":\"commonjs\"}' src/scripts/seed-stores.ts",
-    "reset:db": "ts-node -O '{\"module\":\"commonjs\"}' src/scripts/reset-db.ts"
+    "reset:db": "ts-node -O '{\"module\":\"commonjs\"}' src/scripts/reset-db.ts",
+    "products:update": "ts-node -O '{\"module\":\"commonjs\"}' src/scripts/update-stripe-products-metadata.ts"
   },
   "dependencies": {
     "@nestjs/cli": "^11.0.0",
