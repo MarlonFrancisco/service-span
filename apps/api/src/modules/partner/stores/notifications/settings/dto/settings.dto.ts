@@ -10,6 +10,10 @@ export class NotificationsSettingsDto {
   smsReminderAdvanceHours: string;
   smsReminderCustomMessage: string;
 
+  whatsappReminderEnabled: boolean;
+  whatsappReminderAdvanceHours: string;
+  whatsappReminderCustomMessage: string;
+
   store: Partial<Store>;
 
   constructor(data: Partial<NotificationsSettingsDto>) {
@@ -20,6 +24,9 @@ export class NotificationsSettingsDto {
     this.smsReminderEnabled = data.smsReminderEnabled;
     this.smsReminderAdvanceHours = data.smsReminderAdvanceHours;
     this.smsReminderCustomMessage = data.smsReminderCustomMessage;
+    this.whatsappReminderEnabled = data.whatsappReminderEnabled;
+    this.whatsappReminderAdvanceHours = data.whatsappReminderAdvanceHours;
+    this.whatsappReminderCustomMessage = data.whatsappReminderCustomMessage;
     this.store = data.store;
   }
 }

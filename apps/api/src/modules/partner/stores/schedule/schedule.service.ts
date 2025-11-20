@@ -3,6 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Between, In, Repository } from 'typeorm';
 import { calculateEndTime } from '../../../../utils/helpers/schedule.helpers';
 import { UsersService } from '../../../users/users.service';
+import { Store } from '../store.entity';
+import { WhatsappService } from '../whatsapp/whatsapp.service';
 import { CreateSchedulesDto } from './dto/create-schedule.dto';
 import { ScheduleDto } from './dto/schedule.dto';
 import { Schedule } from './schedule.entity';
@@ -12,7 +14,10 @@ export class ScheduleService {
   constructor(
     @InjectRepository(Schedule)
     private readonly scheduleRepository: Repository<Schedule>,
+    @InjectRepository(Store)
+    private readonly storeRepository: Repository<Store>,
     private readonly userService: UsersService,
+    private readonly whatsappService: WhatsappService,
   ) {}
 
   async create(scheduleDto: CreateSchedulesDto): Promise<Schedule[]> {
@@ -47,6 +52,29 @@ export class ScheduleService {
     });
 
     const savedSchedules = await this.scheduleRepository.save(schedules);
+
+    // WhatsApp Notification
+    try {
+      const store = await this.storeRepository.findOne({
+        where: { id: scheduleDto.storeId },
+        relations: ['whatsappConfig', 'notificationsSettings'],
+      });
+
+      if (
+        store?.whatsappConfig?.accessToken &&
+        store?.notificationsSettings?.whatsappReminderEnabled
+      ) {
+        const message = `Olá ${user.firstName} ${user.lastName}! Seu agendamento foi confirmado para ${scheduleDto.startTime}.`;
+        await this.whatsappService.sendText(
+          store.whatsappConfig.phoneNumberId,
+          user.telephone,
+          message,
+          store.whatsappConfig.accessToken,
+        );
+      }
+    } catch (error) {
+      console.error('Failed to send WhatsApp notification', error);
+    }
 
     return this.scheduleRepository.find({
       where: { id: In(savedSchedules.map((schedule) => schedule.id)) },

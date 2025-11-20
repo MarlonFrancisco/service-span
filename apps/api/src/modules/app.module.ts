@@ -13,6 +13,7 @@ import { SearchModule } from './search';
 import { SubscriptionModule } from './subscription';
 import { UpstashModule } from './upstash';
 import { UsersModule } from './users';
+import { WhatsappBotModule } from './whatsapp-bot';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { UsersModule } from './users';
     PartnerModule,
     SearchModule,
     RecomendationModule,
+    WhatsappBotModule,
   ],
   providers: [
     {

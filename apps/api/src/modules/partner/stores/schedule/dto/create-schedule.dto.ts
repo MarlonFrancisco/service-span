@@ -15,6 +15,7 @@ export class CreateSchedulesDto {
   services: Partial<Service>[];
   user: Partial<User>;
   store: Partial<Store>;
+  storeId: string;
 
   constructor(data: Partial<CreateSchedulesDto>) {
     this.id = data.id;

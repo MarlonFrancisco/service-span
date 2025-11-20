@@ -10,6 +10,7 @@ import { NotificationsSettings } from './notifications/settings/settings.entity'
 import { Review } from './review/review.entity';
 import { Schedule } from './schedule/schedule.entity';
 import { StoreMember } from './store-member/store-member.entity';
+import { WhatsappConfig } from './whatsapp/whatsapp.entity';
 
 @Entity('stores')
 export class Store extends BaseEntity {
@@ -128,6 +129,9 @@ export class Store extends BaseEntity {
     (notificationsSettings) => notificationsSettings.store,
   )
   notificationsSettings: NotificationsSettings;
+
+  @OneToOne(() => WhatsappConfig, (whatsappConfig) => whatsappConfig.store)
+  whatsappConfig: WhatsappConfig;
 
   @OneToMany(() => Review, (review) => review.store)
   reviews: Review[];

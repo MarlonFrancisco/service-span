@@ -22,6 +22,15 @@ export class NotificationsSettings extends BaseEntity {
   @Column({ type: 'varchar', nullable: true })
   smsReminderCustomMessage: string;
 
+  @Column({ type: 'boolean', default: false, nullable: true })
+  whatsappReminderEnabled: boolean;
+
+  @Column({ type: 'varchar', nullable: true })
+  whatsappReminderAdvanceHours: string;
+
+  @Column({ type: 'varchar', nullable: true })
+  whatsappReminderCustomMessage: string;
+
   @OneToOne(() => Store, (store) => store.notificationsSettings, {
     onDelete: 'CASCADE',
   })
