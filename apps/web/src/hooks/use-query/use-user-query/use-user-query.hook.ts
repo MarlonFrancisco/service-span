@@ -19,9 +19,6 @@ export const useUserQuery = () => {
   const { data: user, isPending: isPendingUser } = useQuery({
     queryKey: CACHE_QUERY_KEYS.user(queryKey),
     queryFn: () => UsersService.getUser(),
-    retry: (failureCount, error) => {
-      return error.message.includes('Unauthorized') ? false : failureCount <= 3;
-    },
     enabled: !!queryKey,
   });
 

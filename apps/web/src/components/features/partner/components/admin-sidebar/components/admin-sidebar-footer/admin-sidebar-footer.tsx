@@ -114,6 +114,8 @@ function AdminSidebarFooterExpandedLimited({
     currentPlan.maxSchedules,
   );
 
+  console.log(currentPlan);
+
   return (
     <SidebarFooter className="border-t border-gray-100 p-4">
       <div className="bg-gradient-to-br from-gray-50 to-gray-100/50 rounded-xl border border-gray-200/60 relative overflow-hidden p-4">
@@ -143,14 +145,14 @@ function AdminSidebarFooterExpandedLimited({
             <Progress value={usagePercentage} className="h-1.5" />
           </div>
 
-          <div className="flex items-center gap-1.5 bg-orange-50 rounded-lg p-2 border border-orange-100 mb-3">
-            <Zap className="h-3.5 w-3.5 text-orange-600" />
-            {usagePercentage >= 80 && (
+          {usagePercentage >= 80 && (
+            <div className="flex items-center gap-1.5 bg-orange-50 rounded-lg p-2 border border-orange-100 mb-3">
+              <Zap className="h-3.5 w-3.5 text-orange-600" />
               <p className="text-xs text-orange-900">
                 Próximo ao limite mensal
               </p>
-            )}
-          </div>
+            </div>
+          )}
 
           <Button
             size="sm"

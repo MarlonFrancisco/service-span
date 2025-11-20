@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { motion } from 'motion/react';
 import { ROICalculator } from '../roi-calculator';
+import { BillingToggle } from './billing-toggle';
 import { usePricing } from './pricing.hook';
 
 const benefits = [
@@ -55,7 +56,7 @@ const benefits = [
 ];
 
 export const Pricing = () => {
-  const { plans } = usePricing();
+  const { plans, type, setType, currentPlan } = usePricing();
 
   return (
     <Header>
@@ -85,6 +86,11 @@ export const Pricing = () => {
           </div>
         </div>
 
+        {/* Billing Toggle */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+          <BillingToggle value={type} onChange={setType} />
+        </div>
+
         {/* Pricing Cards */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
           <Carousel
@@ -92,21 +98,32 @@ export const Pricing = () => {
               slidesToScroll: 1,
               active: true,
               align: 'start',
-              breakpoints: {
-                '(min-width: 64rem)': { active: false },
-              },
             }}
             className="-mx-4"
           >
-            <CarouselContent className="pt-3 px-4">
-              {plans?.map((plan, index) => (
-                <CarouselItem
-                  key={plan.name}
-                  className="pl-4 basis-[85%] lg:basis-[calc(100%/3)]"
-                >
-                  <PlanCard plan={plan} index={index} />
-                </CarouselItem>
-              ))}
+            <CarouselContent className="pt-3 px-4 items-stretch">
+              {plans?.map((plan, index) => {
+                const isCurrentPlan =
+                  plan.id === currentPlan?.planId &&
+                  plan.interval === currentPlan?.billingPeriod;
+
+                return (
+                  <CarouselItem
+                    key={plan.name}
+                    className="pl-4 basis-[85%] lg:basis-[calc(100%/3.5)]"
+                  >
+                    <PlanCard
+                      plan={plan}
+                      index={index}
+                      trialPeriodDays={plan.trialPeriodDays}
+                      isCurrentPlan={isCurrentPlan}
+                      customButtonText={
+                        isCurrentPlan ? 'Seu plano atual' : undefined
+                      }
+                    />
+                  </CarouselItem>
+                );
+              })}
             </CarouselContent>
           </Carousel>
         </div>

@@ -1,12 +1,35 @@
-import { formatPrice } from '@/utils/helpers/price.helper';
+import { formatPrice, formatPriceBRL } from '@/utils/helpers/price.helper';
 import { Badge, Button, Card } from '@repo/ui';
 import { Check } from 'lucide-react';
 import { motion } from 'motion/react';
 import { usePlanCard } from './plan-card.hook';
 import { IPlanCardProps } from './plan-card.types';
 
-export const PlanCard = ({ plan, index }: IPlanCardProps) => {
+export const PlanCard = ({
+  plan,
+  index,
+  trialPeriodDays,
+  isCurrentPlan = false,
+  customButtonText,
+  onSelectPlan,
+  isLoading = false,
+}: IPlanCardProps) => {
   const { handleCreateSubscription } = usePlanCard({ priceId: plan.priceId });
+
+  const hasDiscount = plan.discount > 0;
+  const hasTrial = trialPeriodDays > 0;
+  const priceInReais = plan.price / 100;
+  const originalPrice = hasDiscount
+    ? priceInReais / (1 - plan.discount / 100)
+    : priceInReais;
+
+  const handleClick = () => {
+    if (onSelectPlan) {
+      onSelectPlan(plan.priceId);
+    } else {
+      handleCreateSubscription();
+    }
+  };
 
   return (
     <motion.div
@@ -14,18 +37,24 @@ export const PlanCard = ({ plan, index }: IPlanCardProps) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.2 + index * 0.1 }}
-      className="relative"
+      className="relative h-full select-none"
     >
       <Card
         className={`relative h-full p-8 ${
           plan.popular
             ? 'border-2 border-black shadow-xl'
             : 'border border-gray-200'
-        }`}
+        } ${isCurrentPlan ? 'opacity-75' : ''}`}
       >
         {plan.popular && (
           <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-black text-white">
             Mais popular
+          </Badge>
+        )}
+
+        {isCurrentPlan && (
+          <Badge className="absolute -top-3 right-4 bg-gray-100 text-gray-700 border-gray-300">
+            Plano Atual
           </Badge>
         )}
 
@@ -35,23 +64,47 @@ export const PlanCard = ({ plan, index }: IPlanCardProps) => {
         </div>
 
         <div className="mb-8">
+          {hasDiscount && (
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-sm text-gray-500 line-through">
+                {formatPriceBRL(originalPrice)}
+              </span>
+              <Badge
+                variant="outline"
+                className="border-green-600 text-green-600 text-xs"
+              >
+                -{plan.discount}%
+              </Badge>
+            </div>
+          )}
           <div className="flex items-baseline gap-2">
-            <span className="text-5xl text-gray-900">
-              {formatPrice(plan.price / 100)}
+            <span className="text-4xl text-gray-900">
+              {formatPrice(priceInReais)}
             </span>
-            <span className="text-gray-600">/mês</span>
+            <span className="text-gray-600">
+              /{plan.interval === 'month' ? 'mês' : 'ano'}
+            </span>
           </div>
+          {hasTrial && !isCurrentPlan && (
+            <p className="text-sm text-gray-500 mt-2">
+              {trialPeriodDays} dias grátis, depois {formatPrice(priceInReais)}/
+              {plan.interval === 'month' ? 'mês' : 'ano'}
+            </p>
+          )}
         </div>
 
         <Button
           className={`w-full mb-8 ${
-            plan.popular
-              ? 'bg-black hover:bg-gray-800 text-white'
-              : 'bg-gray-100 hover:bg-gray-200 text-gray-900'
+            isCurrentPlan
+              ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+              : plan.popular
+                ? 'bg-black hover:bg-gray-800 text-white'
+                : 'bg-gray-100 hover:bg-gray-200 text-gray-900'
           }`}
-          onClick={handleCreateSubscription}
+          onClick={handleClick}
+          disabled={isCurrentPlan || isLoading}
         >
-          Assinar plano
+          {customButtonText || 'Assinar plano'}
         </Button>
 
         <ul className="space-y-4">

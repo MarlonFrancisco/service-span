@@ -1,7 +1,7 @@
 import { useSubscriptionMutations } from '@/hooks/use-mutations/use-subscription-mutations';
 import { usePlansQuery } from '@/hooks/use-query/use-plans-query';
 import { useSubscriptionQuery } from '@/hooks/use-query/use-subscription-query';
-import { useCallback } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 const benefits = [
   {
@@ -37,10 +37,16 @@ const benefits = [
 ];
 
 export function useUpgradePlan() {
-  const { plans, isPendingPlans } = usePlansQuery();
+  const { plans: allPlans, isPendingPlans } = usePlansQuery();
   const { currentPlan } = useSubscriptionQuery();
   const { createSubscription, isCreatingSubscription } =
     useSubscriptionMutations();
+
+  const [type, setType] = useState<'month' | 'year'>('month');
+
+  const filteredPlans = useMemo(() => {
+    return allPlans?.[type] || [];
+  }, [allPlans, type]);
 
   const handleSelectPlan = useCallback(
     (planId: string) => {
@@ -54,11 +60,13 @@ export function useUpgradePlan() {
   );
 
   return {
-    plans,
+    plans: filteredPlans,
     benefits,
     currentPlan,
     isPendingPlans,
     isCreatingSubscription,
     handleSelectPlan,
+    type,
+    setType,
   };
 }

@@ -6,6 +6,9 @@ export interface IPlan {
   price: number;
   popular: boolean;
   features: string[];
+  interval: 'month' | 'year';
+  discount: number;
+  trialPeriodDays: number;
 }
 
 export interface IInvoice {
@@ -41,4 +44,7 @@ export interface IMySubscription {
   smsReminder: boolean;
 }
 
-export type IPlansResponse = IPlan[];
+export type IPlansResponse = {
+  month: IPlan[];
+  year: IPlan[];
+};

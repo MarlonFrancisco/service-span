@@ -1,9 +1,18 @@
 'use client';
 
+import { BillingToggle } from '@/components/features/pricing/billing-toggle';
 import { ROICalculator } from '@/components/features/roi-calculator';
-import { formatPrice } from '@/utils/helpers/price.helper';
-import { Alert, AlertDescription, Badge, Button, Card } from '@repo/ui';
-import { Check, Crown, Sparkles } from 'lucide-react';
+import { PlanCard } from '@/components/ui';
+import {
+  Alert,
+  AlertDescription,
+  Badge,
+  Card,
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+} from '@repo/ui';
+import { Crown, Sparkles } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useUpgradePlan } from './upgrade-plan.hook';
 import { UpgradePlanSkeleton } from './upgrade-plan.skeleton';
@@ -16,6 +25,8 @@ export function UpgradePlan() {
     isPendingPlans,
     isCreatingSubscription,
     handleSelectPlan,
+    type,
+    setType,
   } = useUpgradePlan();
 
   if (isPendingPlans) {
@@ -39,87 +50,54 @@ export function UpgradePlan() {
         </AlertDescription>
       </Alert>
 
-      {/* Plans Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mx-auto">
-        {plans?.map((plan, index) => {
-          const isCurrentPlan = plan.id === currentPlan?.planId;
-          const isUpgrade =
-            plans.findIndex((p) => p.id === plan.id) >
-            plans.findIndex((p) => p.id === currentPlan?.planId);
+      {/* Billing Toggle */}
+      <div className="flex justify-center">
+        <BillingToggle value={type} onChange={setType} />
+      </div>
 
-          return (
-            <motion.div
-              key={plan.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="relative"
-            >
-              <Card
-                className={`relative h-full p-8 ${
-                  plan.popular
-                    ? 'border-2 border-black shadow-xl'
-                    : 'border border-gray-200'
-                } ${isCurrentPlan ? 'opacity-75' : ''}`}
-              >
-                {plan.popular && (
-                  <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-black text-white">
-                    Mais popular
-                  </Badge>
-                )}
+      {/* Plans Carousel */}
+      <div className="max-w-7xl mx-auto">
+        <Carousel
+          opts={{
+            slidesToScroll: 1,
+            active: true,
+            align: 'start',
+          }}
+          className="-mx-4"
+        >
+          <CarouselContent className="pt-3 px-4 items-stretch">
+            {plans?.map((plan, index) => {
+              const isCurrentPlan =
+                plan.id === currentPlan?.planId &&
+                plan.interval === currentPlan?.billingPeriod;
+              const isUpgrade =
+                plans.findIndex((p) => p.id === plan.id) >
+                plans.findIndex((p) => p.id === currentPlan?.planId);
 
-                {isCurrentPlan && (
-                  <Badge className="absolute -top-3 right-4 bg-gray-100 text-gray-700 border-gray-300">
-                    Plano Atual
-                  </Badge>
-                )}
+              const buttonText = isCurrentPlan
+                ? 'Seu plano atual'
+                : isUpgrade
+                  ? 'Fazer upgrade'
+                  : 'Assinar plano';
 
-                <div className="mb-8">
-                  <h3 className="text-xl text-gray-900 mb-2">{plan.name}</h3>
-                  <p className="text-sm text-gray-600">{plan.description}</p>
-                </div>
-
-                <div className="mb-8">
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-5xl text-gray-900">
-                      {formatPrice(plan.price)}
-                    </span>
-                    <span className="text-gray-600">/mês</span>
-                  </div>
-                </div>
-
-                <Button
-                  className={`w-full mb-8 ${
-                    isCurrentPlan
-                      ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                      : plan.popular
-                        ? 'bg-black hover:bg-gray-800 text-white'
-                        : 'bg-gray-100 hover:bg-gray-200 text-gray-900'
-                  }`}
-                  onClick={() =>
-                    !isCurrentPlan && handleSelectPlan(plan.priceId)
-                  }
-                  disabled={isCurrentPlan || isCreatingSubscription}
+              return (
+                <CarouselItem
+                  key={plan.id}
+                  className="pl-4 basis-[85%] lg:basis-[calc(100%/3.5)]"
                 >
-                  {isCurrentPlan
-                    ? 'Seu plano atual'
-                    : isUpgrade
-                      ? 'Fazer upgrade'
-                      : 'Escolher plano'}
-                </Button>
-
-                <ul className="space-y-4">
-                  {plan.features.map((feature) => (
-                    <li key={feature} className="flex items-start gap-3">
-                      <Check className="w-5 h-5 text-black flex-shrink-0 mt-0.5" />
-                      <span className={`text-sm text-gray-700`}>{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-              </Card>
-            </motion.div>
-          );
-        })}
+                  <PlanCard
+                    plan={plan}
+                    index={index}
+                    isCurrentPlan={isCurrentPlan}
+                    customButtonText={buttonText}
+                    onSelectPlan={handleSelectPlan}
+                    isLoading={isCreatingSubscription}
+                  />
+                </CarouselItem>
+              );
+            })}
+          </CarouselContent>
+        </Carousel>
       </div>
 
       {/* ROI Calculator Section */}
