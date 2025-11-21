@@ -10,10 +10,13 @@ export class WhatsappConfig extends BaseEntity {
   @Column({ type: 'varchar', nullable: true })
   businessAccountId: string;
 
-  @Column({ type: 'varchar', nullable: true, select: false })
+  @Column({ type: 'varchar', nullable: true })
   accessToken: string;
 
-  @Column({ type: 'varchar', nullable: true })
+  @Column({
+    type: 'varchar',
+    nullable: true,
+  })
   webhookVerifyToken: string;
 
   @OneToOne(() => Store, { onDelete: 'CASCADE' })

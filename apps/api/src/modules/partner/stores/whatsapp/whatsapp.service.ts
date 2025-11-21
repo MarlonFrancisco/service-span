@@ -1,4 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import axios from 'axios';
 import { Repository } from 'typeorm';
@@ -13,6 +14,7 @@ export class WhatsappService {
   constructor(
     @InjectRepository(WhatsappConfig)
     private readonly whatsappConfigRepository: Repository<WhatsappConfig>,
+    private readonly configService: ConfigService,
   ) {}
 
   async sendMessage(
@@ -100,6 +102,11 @@ export class WhatsappService {
       where: config,
     });
 
-    return result;
+    return (
+      result ||
+      ({
+        webhookVerifyToken: this.configService.get('WHATSAPP_VERIFY_TOKEN'),
+      } as WhatsappConfig)
+    );
   }
 }

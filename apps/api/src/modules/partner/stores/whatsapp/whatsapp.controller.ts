@@ -6,12 +6,16 @@ import {
   Param,
   Post,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { SaveWhatsappConfigDto } from './dto/save-whatsapp-config.dto';
 import { WhatsappService } from './whatsapp.service';
 
 @Controller('partner/stores/:storeId/whatsapp')
 export class WhatsappController {
-  constructor(private readonly whatsappService: WhatsappService) {}
+  constructor(
+    private readonly whatsappService: WhatsappService,
+    private readonly configService: ConfigService,
+  ) {}
 
   @Post()
   async saveConfig(
@@ -22,6 +26,7 @@ export class WhatsappController {
       new SaveWhatsappConfigDto({
         ...body,
         store: { id: storeId },
+        webhookVerifyToken: this.configService.get('WHATSAPP_VERIFY_TOKEN'),
       }),
     );
     return config;

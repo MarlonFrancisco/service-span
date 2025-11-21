@@ -28,11 +28,7 @@ export class WhatsappBotService {
     });
   }
 
-  async handleIncomingMessage(
-    message: any,
-    config: WhatsappConfig,
-    accessToken: string,
-  ) {
+  async handleIncomingMessage(message: any, config: WhatsappConfig) {
     const from = message.from; // User's phone number
     const text = (message.text?.body ||
       message.interactive?.button_reply?.id) as string;
@@ -46,11 +42,11 @@ export class WhatsappBotService {
 
     switch (state) {
       case BotState.MENU:
-        await this.handleMenuState(from, text, config, accessToken);
+        await this.handleMenuState(from, text, config);
         break;
       // TODO: Implement other states
       default:
-        await this.sendMenu(from, config, accessToken);
+        await this.sendMenu(from, config);
     }
   }
 
@@ -58,7 +54,6 @@ export class WhatsappBotService {
     from: string,
     text: string,
     config: WhatsappConfig,
-    accessToken: string,
   ) {
     if (text.toLowerCase().includes('agendar')) {
       await this.redis.set(
@@ -72,18 +67,14 @@ export class WhatsappBotService {
         config.phoneNumberId,
         from,
         'Por favor, escolha o serviço (Simulação: Digite 1 para Corte)',
-        accessToken,
+        config.accessToken,
       );
     } else {
-      await this.sendMenu(from, config, accessToken);
+      await this.sendMenu(from, config);
     }
   }
 
-  private async sendMenu(
-    from: string,
-    config: WhatsappConfig,
-    accessToken: string,
-  ) {
+  private async sendMenu(from: string, config: WhatsappConfig) {
     await this.whatsappService.sendInteractiveButtons(
       config.phoneNumberId,
       from,
@@ -92,7 +83,7 @@ export class WhatsappBotService {
         { id: 'agendar', title: '📅 Agendar' },
         { id: 'meus_agendamentos', title: '📋 Meus Agendamentos' },
       ],
-      accessToken,
+      config.accessToken,
     );
   }
 
@@ -108,12 +99,8 @@ export class WhatsappBotService {
               phoneNumberId: businessPhoneNumberId,
             });
 
-            if (config) {
-              await this.handleIncomingMessage(
-                message,
-                config,
-                config.accessToken,
-              );
+            if (config.phoneNumberId) {
+              await this.handleIncomingMessage(message, config);
             } else {
               this.logger.warn(
                 `No config found for phone number ID: ${businessPhoneNumberId}`,
