@@ -25,9 +25,30 @@ export class StoreMemberService {
     });
   }
 
+  async findStoreMemberWithSchedules(
+    storeId: string,
+    storeMemberId: string,
+  ): Promise<StoreMember> {
+    return this.storeMemberRepository.findOne({
+      where: {
+        store: { id: storeId },
+        id: storeMemberId,
+      },
+      relations: ['blockedTimes', 'schedules', 'user'],
+    });
+  }
+
   async findStoreMembers(storeId: string): Promise<StoreMember[]> {
     return this.storeMemberRepository.find({
       where: { store: { id: storeId } },
+      relations: ['services', 'user'],
+      select: {
+        services: {
+          id: true,
+          name: true,
+          description: true,
+        },
+      },
     });
   }
 

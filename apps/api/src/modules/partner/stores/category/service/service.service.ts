@@ -16,9 +16,9 @@ export class ServiceService {
     return this.serviceRepository.save(service);
   }
 
-  async findAll(categoryId: string): Promise<Service[]> {
+  async findAll(storeId: string): Promise<Service[]> {
     return this.serviceRepository.find({
-      where: { category: { id: categoryId } },
+      where: { store: { id: storeId } },
     });
   }
 

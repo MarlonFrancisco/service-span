@@ -105,6 +105,7 @@ export class WhatsappService {
       phoneNumberId,
       to,
       {
+        type: 'interactive',
         interactive: {
           type: 'list',
           header: {
@@ -137,7 +138,14 @@ export class WhatsappService {
     const result = await this.whatsappConfigRepository.findOne({
       relations: ['store'],
       select: {
-        store: { id: true },
+        store: {
+          id: true,
+          businessDays: true,
+          openTime: true,
+          closeTime: true,
+          lunchStartTime: true,
+          lunchEndTime: true,
+        },
       },
       where: config,
     });

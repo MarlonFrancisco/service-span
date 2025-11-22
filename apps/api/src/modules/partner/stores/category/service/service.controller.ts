@@ -15,8 +15,8 @@ export class ServiceController {
   constructor(private readonly serviceService: ServiceService) {}
 
   @Get()
-  async findAll(@Param('categoryId') categoryId: string) {
-    return this.serviceService.findAll(categoryId);
+  async findAll(@Param('storeId') storeId: string) {
+    return this.serviceService.findAll(storeId);
   }
 
   @Get(':id')
