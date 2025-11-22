@@ -13,6 +13,9 @@ export class WhatsappConfig extends BaseEntity {
   @Column({ type: 'varchar', nullable: true })
   accessToken: string;
 
+  @Column({ type: 'boolean', default: false, nullable: true })
+  isActive: boolean;
+
   @Column({
     type: 'varchar',
     nullable: true,

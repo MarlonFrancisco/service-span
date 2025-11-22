@@ -1,6 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Redis } from '@upstash/redis';
+import { mapCategoryToWhatsappInteractiveList } from 'src/utils/helpers/whatsapp.helpers';
+import { CategoryService } from '../partner/stores/category/category.service';
 import { WhatsappConfig } from '../partner/stores/whatsapp/whatsapp.entity';
 import { WhatsappService } from '../partner/stores/whatsapp/whatsapp.service';
 import { IWhatsappWebhook } from './whatsapp-bot.types';
@@ -8,6 +10,7 @@ import { IWhatsappWebhook } from './whatsapp-bot.types';
 export enum BotState {
   MENU = 'MENU',
   SELECT_SERVICE = 'SELECT_SERVICE',
+  SELECT_PROFESSIONAL = 'SELECT_PROFESSIONAL',
   SELECT_DATE = 'SELECT_DATE',
   SELECT_TIME = 'SELECT_TIME',
   CONFIRM_BOOKING = 'CONFIRM_BOOKING',
@@ -21,6 +24,7 @@ export class WhatsappBotService {
   constructor(
     private readonly configService: ConfigService,
     private readonly whatsappService: WhatsappService,
+    private readonly categoryService: CategoryService,
   ) {
     this.redis = new Redis({
       url: this.configService.get('REDIS_REST_URL'),
@@ -44,6 +48,9 @@ export class WhatsappBotService {
       case BotState.MENU:
         await this.handleMenuState(from, text, config);
         break;
+      case BotState.SELECT_SERVICE:
+        await this.handleSelectServiceState(from, text, config);
+        break;
       // TODO: Implement other states
       default:
         await this.sendMenu(from, config);
@@ -63,14 +70,57 @@ export class WhatsappBotService {
           ex: 900, // 15 mins TTL
         },
       );
+
+      const categories = await this.categoryService.findAll(config.store.id);
+
+      await this.whatsappService.sendInteractiveList({
+        phoneNumberId: config.phoneNumberId,
+        to: from,
+        headerText: 'Serviços disponíveis',
+        bodyText: 'Por favor, escolha o serviço',
+        footerText: 'Selecione um serviço',
+        buttonText: 'Selecionar Serviço',
+        sections: categories.map(mapCategoryToWhatsappInteractiveList),
+        accessToken: config.accessToken,
+      });
+    } else {
+      await this.sendMenu(from, config);
+    }
+  }
+
+  private async handleSelectServiceState(
+    from: string,
+    text: string,
+    config: WhatsappConfig,
+  ) {
+    // TODO: Fetch services from database based on config.storeId
+    // For now, simulating with hardcoded service
+    if (text === '1') {
+      await this.redis.set(
+        `whatsapp:session:${from}:service`,
+        JSON.stringify({ id: 1, name: 'Corte' }),
+        { ex: 900 },
+      );
+
+      await this.redis.set(
+        `whatsapp:session:${from}`,
+        BotState.SELECT_PROFESSIONAL,
+        { ex: 900 },
+      );
+
       await this.whatsappService.sendText(
         config.phoneNumberId,
         from,
-        'Por favor, escolha o serviço (Simulação: Digite 1 para Corte)',
+        'Serviço selecionado: Corte\n\nAgora escolha o profissional (Simulação: Digite 1 para João)',
         config.accessToken,
       );
     } else {
-      await this.sendMenu(from, config);
+      await this.whatsappService.sendText(
+        config.phoneNumberId,
+        from,
+        'Opção inválida. Por favor, digite 1 para Corte',
+        config.accessToken,
+      );
     }
   }
 
@@ -99,7 +149,7 @@ export class WhatsappBotService {
               phoneNumberId: businessPhoneNumberId,
             });
 
-            if (config.phoneNumberId) {
+            if (config.isActive) {
               await this.handleIncomingMessage(message, config);
             } else {
               this.logger.warn(

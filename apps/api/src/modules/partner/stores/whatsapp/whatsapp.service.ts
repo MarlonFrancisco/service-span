@@ -5,11 +5,12 @@ import axios from 'axios';
 import { Repository } from 'typeorm';
 import { SaveWhatsappConfigDto } from './dto/save-whatsapp-config.dto';
 import { WhatsappConfig } from './whatsapp.entity';
+import { IWhatsappInteractiveList } from './whatsapp.types';
 
 @Injectable()
 export class WhatsappService {
   private readonly logger = new Logger(WhatsappService.name);
-  private readonly baseUrl = 'https://graph.facebook.com/v22.0';
+  private readonly baseUrl = 'https://graph.facebook.com/v24.0';
 
   constructor(
     @InjectRepository(WhatsappConfig)
@@ -90,6 +91,42 @@ export class WhatsappService {
     );
   }
 
+  async sendInteractiveList({
+    phoneNumberId,
+    to,
+    headerText,
+    bodyText,
+    footerText,
+    buttonText,
+    sections,
+    accessToken,
+  }: IWhatsappInteractiveList) {
+    return this.sendMessage(
+      phoneNumberId,
+      to,
+      {
+        interactive: {
+          type: 'list',
+          header: {
+            type: 'text',
+            text: headerText,
+          },
+          body: {
+            text: bodyText,
+          },
+          footer: {
+            text: footerText,
+          },
+          action: {
+            button: buttonText,
+            sections: sections,
+          },
+        },
+      },
+      accessToken,
+    );
+  }
+
   async save(config: SaveWhatsappConfigDto) {
     const configResult = await this.whatsappConfigRepository.save(config);
 
@@ -99,6 +136,9 @@ export class WhatsappService {
   async findOne(config: Partial<SaveWhatsappConfigDto>) {
     const result = await this.whatsappConfigRepository.findOne({
       relations: ['store'],
+      select: {
+        store: { id: true },
+      },
       where: config,
     });
 

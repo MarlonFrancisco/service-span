@@ -4,6 +4,7 @@ export class SaveWhatsappConfigDto {
   businessAccountId: string;
   accessToken: string;
   webhookVerifyToken: string;
+  isActive: boolean;
   store: { id: string };
 
   constructor(partial: Partial<SaveWhatsappConfigDto>) {
@@ -12,6 +13,7 @@ export class SaveWhatsappConfigDto {
     this.businessAccountId = partial.businessAccountId;
     this.accessToken = partial.accessToken;
     this.webhookVerifyToken = partial.webhookVerifyToken;
+    this.isActive = partial.isActive;
     this.store = partial.store;
   }
 }
