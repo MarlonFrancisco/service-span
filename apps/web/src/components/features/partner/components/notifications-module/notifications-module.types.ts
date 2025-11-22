@@ -4,7 +4,7 @@ export type TStore = {
   address: string;
 };
 
-export type TNotificationPreviewType = 'email' | 'sms';
+export type TNotificationPreviewType = 'email' | 'sms' | 'whatsapp';
 
 export type TEmailReminderSettings = {
   enabled: boolean;

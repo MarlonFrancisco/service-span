@@ -42,13 +42,11 @@ export class HttpClientService {
             status: response.status,
             statusText: response.statusText,
             headers: response.headers,
-            body: await response.text(),
           },
           request: {
             url: url,
             method: config.method,
             headers: JSON.stringify(headers),
-            body: config.body,
           },
         },
       });

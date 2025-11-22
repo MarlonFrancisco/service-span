@@ -5,6 +5,15 @@ const makeQueryClient = () => {
     defaultOptions: {
       queries: {
         staleTime: 5 * 60 * 1000,
+        retry: (failureCount, error) => {
+          const cause = error.cause as { response: { status: number } };
+
+          if (cause.response.status === 404) {
+            return false;
+          }
+
+          return failureCount < 3;
+        },
       },
     },
   });
@@ -58,4 +67,5 @@ export const CACHE_QUERY_KEYS = {
     { period },
   ],
   search: (query: string) => ['search', { query }],
+  whatsappConfig: (storeId: string) => [`partner/stores/${storeId}/whatsapp`],
 };

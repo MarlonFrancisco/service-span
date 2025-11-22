@@ -9,3 +9,4 @@ export * from './components/plans-module';
 export { ServicesModule } from './components/services-module';
 export { StoreSelector } from './components/store-selector';
 export { StoresModule } from './components/stores-module';
+export { WhatsappSettingsModule } from './components/whatsapp-settings-module';

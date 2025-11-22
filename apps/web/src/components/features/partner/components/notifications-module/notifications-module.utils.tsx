@@ -11,6 +11,7 @@ import {
   List,
   Loader,
   Mail,
+  MessageCircle,
   MessageSquare,
   Save,
   Search,
@@ -155,4 +156,5 @@ export const Icons = {
   User,
   Users,
   X,
+  MessageCircle,
 };

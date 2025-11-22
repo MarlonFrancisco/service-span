@@ -16,7 +16,7 @@ export function StoreSelector() {
       <Button
         variant="outline"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 min-w-[180px] sm:min-w-[240px] justify-between border-gray-200 hover:border-gray-300 hover:bg-gray-50"
+        className="flex items-center gap-2 h-12 min-w-[180px] sm:min-w-[240px] justify-between border-gray-200 hover:border-gray-300 hover:bg-gray-50"
       >
         <div className="flex items-center gap-2">
           <div className="p-1.5 rounded-md bg-indigo-100">

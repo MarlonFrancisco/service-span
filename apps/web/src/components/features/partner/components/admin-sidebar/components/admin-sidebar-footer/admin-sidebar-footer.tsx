@@ -114,8 +114,6 @@ function AdminSidebarFooterExpandedLimited({
     currentPlan.maxSchedules,
   );
 
-  console.log(currentPlan);
-
   return (
     <SidebarFooter className="border-t border-gray-100 p-4">
       <div className="bg-gradient-to-br from-gray-50 to-gray-100/50 rounded-xl border border-gray-200/60 relative overflow-hidden p-4">

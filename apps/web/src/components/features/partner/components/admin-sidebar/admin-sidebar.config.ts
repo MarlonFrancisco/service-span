@@ -2,6 +2,7 @@ import {
   Activity,
   AtSign,
   BellRing,
+  Briefcase,
   Calendar,
   Clock,
   CreditCard,
@@ -9,6 +10,7 @@ import {
   DollarSign,
   LayoutDashboard,
   Mail,
+  MessageCircle,
   Settings,
   Shield,
   Store,
@@ -72,7 +74,7 @@ export const menuSections: IMenuSection[] = [
       {
         id: 'services',
         label: 'Serviços',
-        icon: Settings,
+        icon: Briefcase,
         url: '/partner/services',
       },
     ],
@@ -104,6 +106,12 @@ export const menuSections: IMenuSection[] = [
             label: 'Configurar SMS',
             icon: Mail,
           },
+          {
+            id: 'notifications-whatsapp-settings',
+            url: '/partner/notifications/whatsapp-settings',
+            label: 'Configurar WhatsApp',
+            icon: MessageCircle,
+          },
         ],
       },
       {
@@ -123,6 +131,20 @@ export const menuSections: IMenuSection[] = [
             url: '/partner/plans/upgrade',
             label: 'Fazer Upgrade',
             icon: Crown,
+          },
+        ],
+      },
+      {
+        id: 'settings',
+        label: 'Configurações',
+        icon: Settings,
+        hasSubmenu: true,
+        submenu: [
+          {
+            id: 'settings-whatsapp',
+            url: '/partner/settings/whatsapp',
+            label: 'WhatsApp',
+            icon: MessageCircle,
           },
         ],
       },

@@ -30,6 +30,9 @@ export interface INotificationsSettings {
   smsReminderEnabled: boolean;
   smsReminderAdvanceHours: string;
   smsReminderCustomMessage: string;
+  whatsappReminderEnabled: boolean;
+  whatsappReminderAdvanceHours: string;
+  whatsappReminderCustomMessage: string;
 }
 
 export interface IStoreGallery {
