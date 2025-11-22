@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Redis } from '@upstash/redis';
-import { mapCategoryToWhatsappInteractiveList } from 'src/utils/helpers/whatsapp.helpers';
+import { mapCategoryToWhatsappInteractiveList } from '../../utils/helpers/whatsapp.helpers';
 import { CategoryService } from '../partner/stores/category/category.service';
 import { WhatsappConfig } from '../partner/stores/whatsapp/whatsapp.entity';
 import { WhatsappService } from '../partner/stores/whatsapp/whatsapp.service';
