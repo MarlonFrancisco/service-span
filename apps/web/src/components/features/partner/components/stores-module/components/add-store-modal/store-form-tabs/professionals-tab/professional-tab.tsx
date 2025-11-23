@@ -84,6 +84,8 @@ export const ProfessionalTab = () => {
                         <ImageWithFallback
                           src={professional.user.avatar}
                           alt={professional.user.firstName}
+                          fill
+                          sizes="(min-width: 728px) 48px, 32px"
                           className="w-full h-full object-cover"
                         />
                       </div>

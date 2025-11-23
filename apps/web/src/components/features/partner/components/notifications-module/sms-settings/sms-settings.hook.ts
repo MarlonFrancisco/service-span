@@ -8,7 +8,7 @@ import { smsSettingsSchema, TSmsSettingsFormData } from './sms-settings.schema';
 
 export const useSmsSettings = () => {
   const storeId = usePartnerStore((state) => state.activeStore?.id);
-  const { notificationsSettings } = useNotificationsQuery(storeId);
+  const { notificationsSettings } = useNotificationsQuery({ storeId });
 
   const form = useForm<TSmsSettingsFormData>({
     resolver: zodResolver(smsSettingsSchema),

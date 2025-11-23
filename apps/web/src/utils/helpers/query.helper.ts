@@ -8,7 +8,7 @@ const makeQueryClient = () => {
         retry: (failureCount, error) => {
           const cause = error.cause as { response: { status: number } };
 
-          if (cause.response.status === 404) {
+          if (cause?.response?.status === 404) {
             return false;
           }
 

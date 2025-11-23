@@ -7,7 +7,6 @@ import {
 import type { IPartnerStore } from './partner.types';
 
 export const usePartnerStore = create<IPartnerStore>((set, get) => ({
-  stores: [],
   activeStore: INITIAL_STORE,
   isMobileSidebarOpen: false,
   setActiveStore: setActiveStoreAction(set, get),

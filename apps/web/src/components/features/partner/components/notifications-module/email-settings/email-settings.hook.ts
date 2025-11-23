@@ -11,7 +11,7 @@ import {
 
 export const useSettings = () => {
   const storeId = usePartnerStore((state) => state.activeStore?.id);
-  const { notificationsSettings } = useNotificationsQuery(storeId);
+  const { notificationsSettings } = useNotificationsQuery({ storeId });
 
   const { updateNotificationsSettings, isUpdatingNotificationsSettings } =
     useNotificationsMutations({ storeId });

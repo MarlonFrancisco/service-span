@@ -8,13 +8,7 @@ import {
   CardTitle,
   Progress,
 } from '@repo/ui';
-import {
-  Crown,
-  DollarSign,
-  Heart,
-  Star,
-  Users,
-} from 'lucide-react';
+import { Crown, DollarSign, Heart, Star, Users } from 'lucide-react';
 import { motion } from 'motion/react';
 import {
   Area,
@@ -166,100 +160,114 @@ export function CustomerMetricsModule() {
             </div>
           </CardHeader>
           <CardContent className="px-3 sm:px-6">
-            <div className="w-full h-[250px] sm:h-[300px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart
-                  data={retentionData}
-                  margin={{ top: 10, right: 5, left: -15, bottom: 0 }}
-                >
-                  <defs>
-                    <linearGradient id="colorNew" x1="0" y1="0" x2="0" y2="1">
-                      <stop
-                        offset="5%"
-                        stopColor="#000000"
-                        stopOpacity={0.12}
-                      />
-                      <stop offset="95%" stopColor="#000000" stopOpacity={0} />
-                    </linearGradient>
-                    <linearGradient
-                      id="colorReturning"
-                      x1="0"
-                      y1="0"
-                      x2="0"
-                      y2="1"
-                    >
-                      <stop
-                        offset="5%"
-                        stopColor="#10b981"
-                        stopOpacity={0.12}
-                      />
-                      <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid
-                    strokeDasharray="3 3"
-                    stroke="#f5f5f5"
-                    vertical={false}
-                  />
-                  <XAxis
-                    dataKey="month"
-                    stroke="#9ca3af"
-                    fontSize={11}
-                    tickLine={false}
-                    axisLine={false}
-                  />
-                  <YAxis
-                    stroke="#9ca3af"
-                    fontSize={10}
-                    tickLine={false}
-                    axisLine={false}
-                    width={40}
-                  />
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: 'white',
-                      border: '1px solid #e5e7eb',
-                      borderRadius: '10px',
-                      padding: '8px 12px',
-                      fontSize: '12px',
-                      boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
-                    }}
-                    formatter={(value: number, name: string) => {
-                      if (name === 'new') return [value, 'Novos'];
-                      if (name === 'returning') return [value, 'Recorrentes'];
-                      if (name === 'churn') return [value, 'Churn'];
-                      return [value, name];
-                    }}
-                  />
-                  <Area
-                    type="monotone"
-                    dataKey="returning"
-                    stroke="#10b981"
-                    strokeWidth={2.5}
-                    fillOpacity={1}
-                    fill="url(#colorReturning)"
-                    name="returning"
-                  />
-                  <Area
-                    type="monotone"
-                    dataKey="new"
-                    stroke="#000000"
-                    strokeWidth={2.5}
-                    fillOpacity={1}
-                    fill="url(#colorNew)"
-                    name="new"
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="churn"
-                    stroke="#ef4444"
-                    strokeWidth={2.5}
-                    dot={{ fill: '#ef4444', r: 4 }}
-                    name="churn"
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
-            </div>
+            {retentionData.length === 0 ? (
+              <div className="flex flex-col items-center justify-center h-[250px] sm:h-[300px] text-center">
+                <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-4">
+                  <Users className="h-8 w-8 text-gray-400" />
+                </div>
+                <p className="text-sm text-gray-500 mb-1">
+                  Nenhum dado de clientes
+                </p>
+                <p className="text-xs text-gray-400">
+                  Os dados aparecerão quando houver histórico de clientes
+                </p>
+              </div>
+            ) : (
+              <div className="w-full h-[250px] sm:h-[300px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart
+                    data={retentionData}
+                    margin={{ top: 10, right: 5, left: -15, bottom: 0 }}
+                  >
+                    <defs>
+                      <linearGradient id="colorNew" x1="0" y1="0" x2="0" y2="1">
+                        <stop
+                          offset="5%"
+                          stopColor="#000000"
+                          stopOpacity={0.12}
+                        />
+                        <stop offset="95%" stopColor="#000000" stopOpacity={0} />
+                      </linearGradient>
+                      <linearGradient
+                        id="colorReturning"
+                        x1="0"
+                        y1="0"
+                        x2="0"
+                        y2="1"
+                      >
+                        <stop
+                          offset="5%"
+                          stopColor="#10b981"
+                          stopOpacity={0.12}
+                        />
+                        <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      stroke="#f5f5f5"
+                      vertical={false}
+                    />
+                    <XAxis
+                      dataKey="month"
+                      stroke="#9ca3af"
+                      fontSize={11}
+                      tickLine={false}
+                      axisLine={false}
+                    />
+                    <YAxis
+                      stroke="#9ca3af"
+                      fontSize={10}
+                      tickLine={false}
+                      axisLine={false}
+                      width={40}
+                    />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: 'white',
+                        border: '1px solid #e5e7eb',
+                        borderRadius: '10px',
+                        padding: '8px 12px',
+                        fontSize: '12px',
+                        boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
+                      }}
+                      formatter={(value: number, name: string) => {
+                        if (name === 'new') return [value, 'Novos'];
+                        if (name === 'returning') return [value, 'Recorrentes'];
+                        if (name === 'churn') return [value, 'Churn'];
+                        return [value, name];
+                      }}
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="returning"
+                      stroke="#10b981"
+                      strokeWidth={2.5}
+                      fillOpacity={1}
+                      fill="url(#colorReturning)"
+                      name="returning"
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="new"
+                      stroke="#000000"
+                      strokeWidth={2.5}
+                      fillOpacity={1}
+                      fill="url(#colorNew)"
+                      name="new"
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="churn"
+                      stroke="#ef4444"
+                      strokeWidth={2.5}
+                      dot={{ fill: '#ef4444', r: 4 }}
+                      name="churn"
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            )}
           </CardContent>
         </Card>
       </motion.div>
@@ -283,49 +291,63 @@ export function CustomerMetricsModule() {
               </div>
             </CardHeader>
             <CardContent className="px-3 sm:px-6">
-              <div className="space-y-4">
-                {lifetimeValueData.map((segment, index) => (
-                  <div key={index} className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2">
-                          <p className="text-sm text-gray-900">
-                            {segment.segment}
-                          </p>
-                          {segment.segment === 'VIPs' && (
-                            <Crown className="h-3.5 w-3.5 text-yellow-500" />
-                          )}
-                        </div>
-                        <p className="text-xs text-gray-500">
-                          {segment.customers} clientes • {segment.avgVisits}{' '}
-                          visitas/mês
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-sm text-gray-900">
-                          R$ {segment.ltv.toLocaleString()}
-                        </p>
-                        <Badge
-                          variant="outline"
-                          className={`text-xs ${
-                            segment.retention >= 90
-                              ? 'text-green-700 border-green-200 bg-green-50'
-                              : segment.retention >= 70
-                                ? 'text-yellow-700 border-yellow-200 bg-yellow-50'
-                                : 'text-red-700 border-red-200 bg-red-50'
-                          }`}
-                        >
-                          {segment.retention}% retenção
-                        </Badge>
-                      </div>
-                    </div>
-                    <Progress
-                      value={(segment.ltv / 2400) * 100}
-                      className="h-1.5"
-                    />
+              {lifetimeValueData.length === 0 ? (
+                <div className="flex flex-col items-center justify-center h-[180px] text-center">
+                  <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-4">
+                    <DollarSign className="h-8 w-8 text-gray-400" />
                   </div>
-                ))}
-              </div>
+                  <p className="text-sm text-gray-500 mb-1">
+                    Nenhum segmento de clientes
+                  </p>
+                  <p className="text-xs text-gray-400">
+                    Os dados aparecerão quando houver clientes cadastrados
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {lifetimeValueData.map((segment, index) => (
+                    <div key={index} className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2">
+                            <p className="text-sm text-gray-900">
+                              {segment.segment}
+                            </p>
+                            {segment.segment === 'VIPs' && (
+                              <Crown className="h-3.5 w-3.5 text-yellow-500" />
+                            )}
+                          </div>
+                          <p className="text-xs text-gray-500">
+                            {segment.customers} clientes • {segment.avgVisits}{' '}
+                            visitas/mês
+                          </p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-sm text-gray-900">
+                            R$ {segment.ltv.toLocaleString()}
+                          </p>
+                          <Badge
+                            variant="outline"
+                            className={`text-xs ${
+                              segment.retention >= 90
+                                ? 'text-green-700 border-green-200 bg-green-50'
+                                : segment.retention >= 70
+                                  ? 'text-yellow-700 border-yellow-200 bg-yellow-50'
+                                  : 'text-red-700 border-red-200 bg-red-50'
+                            }`}
+                          >
+                            {segment.retention}% retenção
+                          </Badge>
+                        </div>
+                      </div>
+                      <Progress
+                        value={(segment.ltv / 2400) * 100}
+                        className="h-1.5"
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
         </motion.div>
@@ -347,48 +369,62 @@ export function CustomerMetricsModule() {
               </div>
             </CardHeader>
             <CardContent className="px-3 sm:px-6">
-              <div className="space-y-3">
-                {topCustomers.map((customer, index) => {
-                  const rankIcons = ['🥇', '🥈', '🥉'];
-                  return (
-                    <div
-                      key={index}
-                      className="flex items-center justify-between p-3 bg-gray-50 rounded-xl border border-gray-100 hover:bg-gray-100 transition-colors group"
-                    >
-                      <div className="flex items-center gap-3 flex-1 min-w-0">
-                        <div className="relative">
-                          <div className="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center text-white text-sm">
-                            {customer.name
-                              .split(' ')
-                              .map((n) => n[0])
-                              .join('')}
-                          </div>
-                          {index < 3 && (
-                            <div className="absolute -top-1 -right-1 text-sm">
-                              {rankIcons[index]}
+              {topCustomers.length === 0 ? (
+                <div className="flex flex-col items-center justify-center h-[180px] text-center">
+                  <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-4">
+                    <Star className="h-8 w-8 text-gray-400" />
+                  </div>
+                  <p className="text-sm text-gray-500 mb-1">
+                    Nenhum cliente cadastrado
+                  </p>
+                  <p className="text-xs text-gray-400">
+                    Os dados aparecerão quando houver clientes
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {topCustomers.map((customer, index) => {
+                    const rankIcons = ['🥇', '🥈', '🥉'];
+                    return (
+                      <div
+                        key={index}
+                        className="flex items-center justify-between p-3 bg-gray-50 rounded-xl border border-gray-100 hover:bg-gray-100 transition-colors group"
+                      >
+                        <div className="flex items-center gap-3 flex-1 min-w-0">
+                          <div className="relative">
+                            <div className="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center text-white text-sm">
+                              {customer.name
+                                .split(' ')
+                                .map((n) => n[0])
+                                .join('')}
                             </div>
-                          )}
+                            {index < 3 && (
+                              <div className="absolute -top-1 -right-1 text-sm">
+                                {rankIcons[index]}
+                              </div>
+                            )}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm text-gray-900 truncate">
+                              {customer.name}
+                            </p>
+                            <p className="text-xs text-gray-500">
+                              {customer.visits} visitas • {customer.lastVisit}
+                            </p>
+                          </div>
                         </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm text-gray-900 truncate">
-                            {customer.name}
-                          </p>
-                          <p className="text-xs text-gray-500">
-                            {customer.visits} visitas • {customer.lastVisit}
-                          </p>
+                        <div className="flex items-center gap-2">
+                          <div className="text-right">
+                            <p className="text-sm text-gray-900">
+                              R$ {customer.spent.toLocaleString()}
+                            </p>
+                          </div>
                         </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <div className="text-right">
-                          <p className="text-sm text-gray-900">
-                            R$ {customer.spent.toLocaleString()}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
+                    );
+                  })}
+                </div>
+              )}
             </CardContent>
           </Card>
         </motion.div>

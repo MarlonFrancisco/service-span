@@ -1,16 +1,23 @@
 'use client';
-import { usePartnerStore, useStoresStore } from '@/store';
+import { useStoresQuery } from '@/hooks/use-query/use-stores-query/use-stores-query.hook';
+import { useStoresStore } from '@/store';
 import { Button } from '@repo/ui';
 import { Plus } from 'lucide-react';
 import { AddStoreModal } from './components/add-store-modal';
 import { EmptyStoreList } from './components/empty-store-list/empty-store-list';
 import { StatsCards } from './components/stats-cards';
-import { StoreCard, StoreCardSkeleton } from './components/store-card';
+import { StoreCard } from './components/store-card';
 import { StoreDetailsDrawer } from './components/store-details-drawer';
+import { StoresModuleSkeleton } from './stores-module.skeleton';
 
 export const StoresModule = () => {
-  const { stores } = usePartnerStore();
+  const { stores } = useStoresQuery({ includeStores: true });
   const { setIsAddModalOpen } = useStoresStore();
+  const { isPendingStores } = useStoresQuery({ includeStores: true });
+
+  if (isPendingStores) {
+    return <StoresModuleSkeleton />;
+  }
 
   return (
     <div className="space-y-6 pb-6">
@@ -38,21 +45,11 @@ export const StoresModule = () => {
 
       {/* Stores List */}
       <div className="space-y-4">
-        {false ? (
-          <div className="flex flex-col gap-4">
-            <StoreCardSkeleton />
-            <StoreCardSkeleton />
-            <StoreCardSkeleton />
-          </div>
-        ) : (
-          <>
-            {stores.map((store, index) => (
-              <StoreCard key={store.id} store={store} index={index} />
-            ))}
+        {stores.map((store, index) => (
+          <StoreCard key={store.id} store={store} index={index} />
+        ))}
 
-            {stores.length === 0 && <EmptyStoreList />}
-          </>
-        )}
+        {stores.length === 0 && <EmptyStoreList />}
       </div>
 
       {/* Store Details Drawer (Mobile) */}

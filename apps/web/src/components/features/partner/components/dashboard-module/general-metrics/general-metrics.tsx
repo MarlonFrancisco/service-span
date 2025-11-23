@@ -47,14 +47,15 @@ export function GeneralMetricsModule() {
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const activeStore = usePartnerStore((state) => state.activeStore);
-  const { overview, isPendingOverview, overviewRefetch } = useMetricsQuery({
-    storeId: activeStore?.id,
-    period: periodFilter,
-    includeOverview: true,
-  });
+  const { overview, isPendingOverview, isEnabledOverview, overviewRefetch } =
+    useMetricsQuery({
+      storeId: activeStore?.id,
+      period: periodFilter,
+      includeOverview: true,
+    });
 
   // Loading state
-  if (isPendingOverview || !activeStore) {
+  if (isPendingOverview && isEnabledOverview) {
     return <GeneralMetricsSkeleton />;
   }
 
@@ -166,8 +167,6 @@ export function GeneralMetricsModule() {
     <div className="space-y-6">
       {/* Header with Filters and Actions */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div />
-
         <div className="flex items-center gap-2 w-full sm:w-auto">
           {/* Period Filter */}
           <div className="flex items-center gap-0.5 sm:gap-1 bg-gray-100 rounded-lg p-1 flex-1 sm:flex-initial">
@@ -259,112 +258,126 @@ export function GeneralMetricsModule() {
               </div>
             </CardHeader>
             <CardContent className="px-3 sm:px-6">
-              <div className="w-full h-[250px] sm:h-[300px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart
-                    data={performanceData}
-                    margin={{ top: 10, right: 5, left: -15, bottom: 0 }}
-                  >
-                    <defs>
-                      <linearGradient
-                        id="colorRevenue"
-                        x1="0"
-                        y1="0"
-                        x2="0"
-                        y2="1"
-                      >
-                        <stop
-                          offset="5%"
-                          stopColor="#000000"
-                          stopOpacity={0.12}
-                        />
-                        <stop
-                          offset="95%"
-                          stopColor="#000000"
-                          stopOpacity={0}
-                        />
-                      </linearGradient>
-                      <linearGradient
-                        id="colorAppointments"
-                        x1="0"
-                        y1="0"
-                        x2="0"
-                        y2="1"
-                      >
-                        <stop
-                          offset="5%"
-                          stopColor="#6b7280"
-                          stopOpacity={0.12}
-                        />
-                        <stop
-                          offset="95%"
-                          stopColor="#6b7280"
-                          stopOpacity={0}
-                        />
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid
-                      strokeDasharray="3 3"
-                      stroke="#f5f5f5"
-                      vertical={false}
-                    />
-                    <XAxis
-                      dataKey="day"
-                      stroke="#9ca3af"
-                      fontSize={11}
-                      tickLine={false}
-                      axisLine={false}
-                    />
-                    <YAxis
-                      yAxisId="left"
-                      stroke="#9ca3af"
-                      fontSize={10}
-                      tickLine={false}
-                      axisLine={false}
-                      width={35}
-                    />
-                    <YAxis
-                      yAxisId="right"
-                      orientation="right"
-                      stroke="#9ca3af"
-                      fontSize={10}
-                      tickLine={false}
-                      axisLine={false}
-                      width={35}
-                    />
-                    <Tooltip
-                      contentStyle={{
-                        backgroundColor: 'white',
-                        border: '1px solid #e5e7eb',
-                        borderRadius: '10px',
-                        padding: '8px 12px',
-                        fontSize: '12px',
-                        boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
-                      }}
-                    />
-                    <Area
-                      yAxisId="right"
-                      type="monotone"
-                      dataKey="revenue"
-                      stroke="#000000"
-                      strokeWidth={2.5}
-                      fillOpacity={1}
-                      fill="url(#colorRevenue)"
-                      name="Receita (R$)"
-                    />
-                    <Area
-                      yAxisId="left"
-                      type="monotone"
-                      dataKey="appointments"
-                      stroke="#6b7280"
-                      strokeWidth={2.5}
-                      fillOpacity={1}
-                      fill="url(#colorAppointments)"
-                      name="Agendamentos"
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
+              {performanceData.length === 0 || !performanceData ? (
+                <div className="flex flex-col items-center justify-center h-[250px] sm:h-[300px] text-center">
+                  <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-4">
+                    <Target className="h-8 w-8 text-gray-400" />
+                  </div>
+                  <p className="text-sm text-gray-500 mb-1">
+                    Nenhum agendamento registrado
+                  </p>
+                  <p className="text-xs text-gray-400">
+                    Os dados aparecerão quando houver agendamentos
+                  </p>
+                </div>
+              ) : (
+                <div className="w-full h-[250px] sm:h-[300px]">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart
+                      data={performanceData}
+                      margin={{ top: 10, right: 5, left: -15, bottom: 0 }}
+                    >
+                      <defs>
+                        <linearGradient
+                          id="colorRevenue"
+                          x1="0"
+                          y1="0"
+                          x2="0"
+                          y2="1"
+                        >
+                          <stop
+                            offset="5%"
+                            stopColor="#000000"
+                            stopOpacity={0.12}
+                          />
+                          <stop
+                            offset="95%"
+                            stopColor="#000000"
+                            stopOpacity={0}
+                          />
+                        </linearGradient>
+                        <linearGradient
+                          id="colorAppointments"
+                          x1="0"
+                          y1="0"
+                          x2="0"
+                          y2="1"
+                        >
+                          <stop
+                            offset="5%"
+                            stopColor="#6b7280"
+                            stopOpacity={0.12}
+                          />
+                          <stop
+                            offset="95%"
+                            stopColor="#6b7280"
+                            stopOpacity={0}
+                          />
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid
+                        strokeDasharray="3 3"
+                        stroke="#f5f5f5"
+                        vertical={false}
+                      />
+                      <XAxis
+                        dataKey="day"
+                        stroke="#9ca3af"
+                        fontSize={11}
+                        tickLine={false}
+                        axisLine={false}
+                      />
+                      <YAxis
+                        yAxisId="left"
+                        stroke="#9ca3af"
+                        fontSize={10}
+                        tickLine={false}
+                        axisLine={false}
+                        width={35}
+                      />
+                      <YAxis
+                        yAxisId="right"
+                        orientation="right"
+                        stroke="#9ca3af"
+                        fontSize={10}
+                        tickLine={false}
+                        axisLine={false}
+                        width={35}
+                      />
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: 'white',
+                          border: '1px solid #e5e7eb',
+                          borderRadius: '10px',
+                          padding: '8px 12px',
+                          fontSize: '12px',
+                          boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
+                        }}
+                      />
+                      <Area
+                        yAxisId="right"
+                        type="monotone"
+                        dataKey="revenue"
+                        stroke="#000000"
+                        strokeWidth={2.5}
+                        fillOpacity={1}
+                        fill="url(#colorRevenue)"
+                        name="Receita (R$)"
+                      />
+                      <Area
+                        yAxisId="left"
+                        type="monotone"
+                        dataKey="appointments"
+                        stroke="#6b7280"
+                        strokeWidth={2.5}
+                        fillOpacity={1}
+                        fill="url(#colorAppointments)"
+                        name="Agendamentos"
+                      />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                </div>
+              )}
             </CardContent>
           </Card>
         </motion.div>
@@ -390,54 +403,70 @@ export function GeneralMetricsModule() {
               </div>
             </CardHeader>
             <CardContent className="px-3 sm:px-6">
-              <ResponsiveContainer width="100%" height={250}>
-                <PieChart>
-                  <Pie
-                    data={topServices}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={45}
-                    outerRadius={75}
-                    paddingAngle={2}
-                    dataKey="bookings"
-                  >
-                    {topServices.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: 'white',
-                      border: '1px solid #e5e7eb',
-                      borderRadius: '10px',
-                      padding: '10px 14px',
-                      fontSize: '13px',
-                      boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
-                    }}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
-
-              {/* Legend */}
-              <div className="mt-4 space-y-2">
-                {topServices.slice(0, 3).map((service, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between text-xs"
-                  >
-                    <div className="flex items-center gap-2">
-                      <div
-                        className="w-3 h-3 rounded-full"
-                        style={{ backgroundColor: service.color }}
-                      />
-                      <span className="text-gray-700">{service.name}</span>
-                    </div>
-                    <span className="text-gray-900 font-medium">
-                      {service.bookings}
-                    </span>
+              {topServices.length === 0 ? (
+                <div className="flex flex-col items-center justify-center h-[250px] text-center">
+                  <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-4">
+                    <Award className="h-8 w-8 text-gray-400" />
                   </div>
-                ))}
-              </div>
+                  <p className="text-sm text-gray-500 mb-1">
+                    Nenhum serviço agendado
+                  </p>
+                  <p className="text-xs text-gray-400">
+                    Os dados aparecerão quando houver agendamentos
+                  </p>
+                </div>
+              ) : (
+                <>
+                  <ResponsiveContainer width="100%" height={250}>
+                    <PieChart>
+                      <Pie
+                        data={topServices}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={45}
+                        outerRadius={75}
+                        paddingAngle={2}
+                        dataKey="bookings"
+                      >
+                        {topServices.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.color} />
+                        ))}
+                      </Pie>
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: 'white',
+                          border: '1px solid #e5e7eb',
+                          borderRadius: '10px',
+                          padding: '10px 14px',
+                          fontSize: '13px',
+                          boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
+                        }}
+                      />
+                    </PieChart>
+                  </ResponsiveContainer>
+
+                  {/* Legend */}
+                  <div className="mt-4 space-y-2">
+                    {topServices.slice(0, 3).map((service, index) => (
+                      <div
+                        key={index}
+                        className="flex items-center justify-between text-xs"
+                      >
+                        <div className="flex items-center gap-2">
+                          <div
+                            className="w-3 h-3 rounded-full"
+                            style={{ backgroundColor: service.color }}
+                          />
+                          <span className="text-gray-700">{service.name}</span>
+                        </div>
+                        <span className="text-gray-900 font-medium">
+                          {service.bookings}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
             </CardContent>
           </Card>
         </motion.div>

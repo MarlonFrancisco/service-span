@@ -5,12 +5,12 @@ import {
 } from '@/service/store';
 import { IProfessional } from '@/types/api';
 import { IStore, IStoreGallery } from '@/types/api/stores.types';
-import { CACHE_QUERY_KEYS, getQueryClient } from '@/utils/helpers/query.helper';
-import { useMutation } from '@tanstack/react-query';
+import { CACHE_QUERY_KEYS } from '@/utils/helpers/query.helper';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
 export const useStoreMutations = () => {
-  const queryClient = getQueryClient();
+  const queryClient = useQueryClient();
 
   const { mutate: updateStore, isPending: isUpdatingStore } = useMutation({
     mutationFn: (data: Partial<IStore>) => StoreService.update(data),
@@ -30,6 +30,10 @@ export const useStoreMutations = () => {
     onSuccess: (data) => {
       queryClient.setQueryData(CACHE_QUERY_KEYS.stores(), (old: IStore[]) =>
         old.filter((s) => s.id !== data.id),
+      );
+      queryClient.setQueryData(
+        CACHE_QUERY_KEYS.store(data.id),
+        () => undefined,
       );
       toast.success('Loja excluída com sucesso');
     },

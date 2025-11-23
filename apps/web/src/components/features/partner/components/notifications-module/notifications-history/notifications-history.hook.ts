@@ -1,5 +1,6 @@
 'use client';
-import { useNotificationsStore } from '@/store';
+import { useNotificationsQuery } from '@/hooks/use-query/use-notifications-query/use-notifications-query.hook';
+import { usePartnerStore } from '@/store';
 import { INotificationsHistory } from '@/types/api/stores.types';
 import { useCallback, useMemo, useState } from 'react';
 import { toast } from 'sonner';
@@ -85,9 +86,11 @@ export const useNotificationsHistory = (): TUseNotificationsHistoryReturn => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterType, setFilterType] = useState<string>('all');
   const [filterStatus, setFilterStatus] = useState<string>('all');
-  const notifications = useNotificationsStore(
-    (state) => state.notificationsHistory,
-  );
+  const { activeStore } = usePartnerStore();
+  const { notificationsHistory } = useNotificationsQuery({
+    storeId: activeStore.id,
+    includeNotificationsHistory: true,
+  });
 
   const markAsRead = useCallback((notificationId: string) => {
     toast.success('Marcado como lido');
@@ -103,7 +106,7 @@ export const useNotificationsHistory = (): TUseNotificationsHistoryReturn => {
 
   const filteredNotifications = useMemo(
     () =>
-      notifications.filter((notification) => {
+      notificationsHistory.filter((notification) => {
         const matchesSearch =
           notification.title
             .toLowerCase()
@@ -120,12 +123,12 @@ export const useNotificationsHistory = (): TUseNotificationsHistoryReturn => {
           filterStatus === 'all' || notification.status === filterStatus;
         return matchesSearch && matchesType && matchesStatus;
       }),
-    [notifications, searchQuery, filterType, filterStatus],
+    [notificationsHistory, searchQuery, filterType, filterStatus],
   );
 
   const unreadCount = useMemo(
-    () => notifications.filter((n) => !n.read).length,
-    [notifications],
+    () => notificationsHistory.filter((n) => !n.read).length,
+    [notificationsHistory],
   );
 
   return {

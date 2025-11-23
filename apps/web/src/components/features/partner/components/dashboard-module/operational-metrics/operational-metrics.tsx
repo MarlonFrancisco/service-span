@@ -48,14 +48,15 @@ export function OperationalMetricsModule() {
   const [periodFilter, setPeriodFilter] = useState<PeriodFilter>('month');
 
   const activeStore = usePartnerStore((state) => state.activeStore);
-  const { operational, isPendingOperational } = useMetricsQuery({
-    storeId: activeStore?.id,
-    period: periodFilter,
-    includeOperational: true,
-  });
+  const { operational, isPendingOperational, isEnabledOperational } =
+    useMetricsQuery({
+      storeId: activeStore?.id,
+      period: periodFilter,
+      includeOperational: true,
+    });
 
   // Loading state
-  if (isPendingOperational || !activeStore) {
+  if (isPendingOperational && isEnabledOperational) {
     return <OperationalMetricsSkeleton />;
   }
 
@@ -156,7 +157,7 @@ export function OperationalMetricsModule() {
 
   // Heatmap data com remapeamento
   const heatmapData = operational.occupancyHeatMap.hours.map((hour, idx) => {
-    const dayData: Record<string, number> = { hour };
+    const dayData: Record<string, string | number> = { hour };
     const shortDays = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sab'];
     operational.occupancyHeatMap.data.forEach((dayRow, dayIdx) => {
       dayData[shortDays[dayIdx] as keyof typeof dayData] =
@@ -202,12 +203,18 @@ export function OperationalMetricsModule() {
   };
 
   const getOccupancyColor = (value: number) => {
-    if (value >= 90) return '#10b981'; // green
-    if (value >= 70) return '#f59e0b'; // yellow
-    if (value >= 50) return '#6b7280'; // gray
-    if (value >= 30) return '#aaafbc'; // gray-300
-    if (value >= 10) return '#c1c4cb'; // gray-200
-    return '#e5e7eb'; // light gray
+    if (value >= 90) return '#111827'; // gray-900 (quase preto)
+    if (value >= 70) return '#374151'; // gray-700
+    if (value >= 50) return '#6b7280'; // gray-500
+    if (value >= 30) return '#9ca3af'; // gray-400
+    if (value >= 10) return '#d1d5db'; // gray-300
+    return '#f3f4f6'; // gray-100 (bem claro)
+  };
+
+  const getTextColor = (value: number) => {
+    // Texto branco para fundos escuros (50% ou mais)
+    // Texto escuro para fundos claros (menos de 50%)
+    return value >= 50 ? '#ffffff' : '#1f2937';
   };
 
   return (
@@ -480,61 +487,80 @@ export function OperationalMetricsModule() {
                   </div>
                 </CardHeader>
                 <CardContent className="px-3 sm:px-6">
-                  <div className="w-full h-[180px]">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <PieChart>
-                        <Pie
-                          data={statusData}
-                          cx="50%"
-                          cy="50%"
-                          innerRadius={45}
-                          outerRadius={70}
-                          paddingAngle={2}
-                          dataKey="value"
-                        >
-                          {statusData.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={entry.color} />
-                          ))}
-                        </Pie>
-                        <Tooltip
-                          contentStyle={{
-                            backgroundColor: 'white',
-                            border: '1px solid #e5e7eb',
-                            borderRadius: '10px',
-                            padding: '8px 12px',
-                            fontSize: '12px',
-                            boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
-                          }}
-                        />
-                      </PieChart>
-                    </ResponsiveContainer>
-                  </div>
-                  <div className="grid grid-cols-2 gap-3 mt-4">
-                    {statusData.map((item, index) => (
-                      <div
-                        key={index}
-                        className="flex items-center justify-between gap-2"
-                      >
-                        <div className="flex items-center gap-2 flex-1 min-w-0">
-                          <div
-                            className="w-3 h-3 rounded-full shrink-0"
-                            style={{ backgroundColor: item.color }}
-                          />
-                          <p className="text-xs text-gray-700 truncate">
-                            {item.name}
-                          </p>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-xs text-gray-900 font-medium">
-                            {item.value}
-                          </p>
-                          <p className="text-xs text-gray-400">
-                            {item.percentage}%
-                          </p>
-                        </div>
+                  {statusData.reduce((sum, s) => sum + s.value, 0) === 0 ? (
+                    <div className="flex flex-col items-center justify-center h-[180px] text-center">
+                      <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-4">
+                        <Activity className="h-8 w-8 text-gray-400" />
                       </div>
-                    ))}
-                  </div>
+                      <p className="text-sm text-gray-500 mb-1">
+                        Nenhum agendamento registrado
+                      </p>
+                      <p className="text-xs text-gray-400">
+                        Os dados aparecerão quando houver agendamentos
+                      </p>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="w-full h-[180px]">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <PieChart>
+                            <Pie
+                              data={statusData}
+                              cx="50%"
+                              cy="50%"
+                              innerRadius={45}
+                              outerRadius={70}
+                              paddingAngle={2}
+                              dataKey="value"
+                            >
+                              {statusData.map((entry, index) => (
+                                <Cell
+                                  key={`cell-${index}`}
+                                  fill={entry.color}
+                                />
+                              ))}
+                            </Pie>
+                            <Tooltip
+                              contentStyle={{
+                                backgroundColor: 'white',
+                                border: '1px solid #e5e7eb',
+                                borderRadius: '10px',
+                                padding: '8px 12px',
+                                fontSize: '12px',
+                                boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
+                              }}
+                            />
+                          </PieChart>
+                        </ResponsiveContainer>
+                      </div>
+                      <div className="grid grid-cols-2 gap-3 mt-4">
+                        {statusData.map((item, index) => (
+                          <div
+                            key={index}
+                            className="flex items-center justify-between gap-2"
+                          >
+                            <div className="flex items-center gap-2 flex-1 min-w-0">
+                              <div
+                                className="w-3 h-3 rounded-full shrink-0"
+                                style={{ backgroundColor: item.color }}
+                              />
+                              <p className="text-xs text-gray-700 truncate">
+                                {item.name}
+                              </p>
+                            </div>
+                            <div className="text-right">
+                              <p className="text-xs text-gray-900 font-medium">
+                                {item.value}
+                              </p>
+                              <p className="text-xs text-gray-400">
+                                {item.percentage}%
+                              </p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </>
+                  )}
                 </CardContent>
               </Card>
             </motion.div>
@@ -556,45 +582,59 @@ export function OperationalMetricsModule() {
                   </div>
                 </CardHeader>
                 <CardContent className="px-3 sm:px-6">
-                  <div className="space-y-4">
-                    {serviceDurationAvg.map((service, index) => (
-                      <div key={index} className="space-y-2">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            <Timer className="h-3.5 w-3.5 text-gray-400" />
-                            <span className="text-sm text-gray-900">
-                              {service.service}
-                            </span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <span className="text-sm text-gray-600">
-                              {service.avgTime}min
-                            </span>
-                            <Badge
-                              variant="outline"
-                              className={`text-xs ${
-                                service.variance <= 3
-                                  ? 'text-green-700 border-green-200 bg-green-50'
-                                  : 'text-yellow-700 border-yellow-200 bg-yellow-50'
-                              }`}
-                            >
-                              {service.variance > 0 ? '+' : ''}
-                              {service.variance}min
-                            </Badge>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Progress
-                            value={(service.avgTime / service.planned) * 100}
-                            className="h-1.5 flex-1"
-                          />
-                          <span className="text-xs text-gray-400">
-                            {service.planned}min
-                          </span>
-                        </div>
+                  {serviceDurationAvg.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center h-[180px] text-center">
+                      <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-4">
+                        <Timer className="h-8 w-8 text-gray-400" />
                       </div>
-                    ))}
-                  </div>
+                      <p className="text-sm text-gray-500 mb-1">
+                        Nenhum serviço registrado
+                      </p>
+                      <p className="text-xs text-gray-400">
+                        Os dados aparecerão quando houver serviços realizados
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {serviceDurationAvg.map((service, index) => (
+                        <div key={index} className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <Timer className="h-3.5 w-3.5 text-gray-400" />
+                              <span className="text-sm text-gray-900">
+                                {service.service}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm text-gray-600">
+                                {service.avgTime}min
+                              </span>
+                              <Badge
+                                variant="outline"
+                                className={`text-xs ${
+                                  service.variance <= 3
+                                    ? 'text-green-700 border-green-200 bg-green-50'
+                                    : 'text-yellow-700 border-yellow-200 bg-yellow-50'
+                                }`}
+                              >
+                                {service.variance > 0 ? '+' : ''}
+                                {service.variance}min
+                              </Badge>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Progress
+                              value={(service.avgTime / service.planned) * 100}
+                              className="h-1.5 flex-1"
+                            />
+                            <span className="text-xs text-gray-400">
+                              {service.planned}min
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </motion.div>
@@ -618,30 +658,47 @@ export function OperationalMetricsModule() {
                 </div>
               </CardHeader>
               <CardContent className="px-3 sm:px-6">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {peakHours.map((slot, index) => (
-                    <div
-                      key={index}
-                      className="p-4 bg-gray-50 rounded-xl border border-gray-100"
-                    >
-                      <p className="text-sm text-gray-900 mb-3">
-                        {slot.period}
-                      </p>
-                      <div className="flex items-end justify-between mb-2">
-                        <h4 className="text-2xl text-gray-900">
-                          {slot.bookings}
-                        </h4>
-                        <TrendBadge
-                          value={Number(slot.trend.replace('%', ''))}
-                        />
-                      </div>
-                      <Progress value={slot.percentage} className="h-2 mb-2" />
-                      <p className="text-xs text-gray-500">
-                        {slot.percentage}% do total
-                      </p>
+                {peakHours.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center h-[180px] text-center">
+                    <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-4">
+                      <Clock className="h-8 w-8 text-gray-400" />
                     </div>
-                  ))}
-                </div>
+                    <p className="text-sm text-gray-500 mb-1">
+                      Nenhum agendamento por período
+                    </p>
+                    <p className="text-xs text-gray-400">
+                      Os dados aparecerão quando houver agendamentos
+                    </p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {peakHours.map((slot, index) => (
+                      <div
+                        key={index}
+                        className="p-4 bg-gray-50 rounded-xl border border-gray-100"
+                      >
+                        <p className="text-sm text-gray-900 mb-3">
+                          {slot.period}
+                        </p>
+                        <div className="flex items-end justify-between mb-2">
+                          <h4 className="text-2xl text-gray-900">
+                            {slot.bookings}
+                          </h4>
+                          <TrendBadge
+                            value={Number(slot.trend.replace('%', ''))}
+                          />
+                        </div>
+                        <Progress
+                          value={slot.percentage}
+                          className="h-2 mb-2"
+                        />
+                        <p className="text-xs text-gray-500">
+                          {slot.percentage}% do total
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </CardContent>
             </Card>
           </motion.div>
@@ -667,28 +724,28 @@ export function OperationalMetricsModule() {
             </CardHeader>
             <CardContent className="px-3 sm:px-6">
               {/* Legend */}
-              <div className="flex items-center justify-end gap-4 mb-4 text-xs">
+              <div className="flex flex-wrap items-center justify-end gap-3 mb-4 text-xs">
+                <span className="text-gray-500 font-medium">
+                  Taxa de ocupação:
+                </span>
                 <div className="flex items-center gap-2">
-                  <div className="flex items-center gap-2">
-                    <div
-                      className="w-4 h-4 rounded"
-                      style={{ backgroundColor: '#e5e7eb' }}
-                    />
-                    <span className="text-gray-600">0-10%</span>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    {' '}
-                    <div
-                      className="w-4 h-4 rounded"
-                      style={{ backgroundColor: '#c1c4cb' }}
-                    />
-                    <span className="text-gray-600">10-30%</span>{' '}
-                  </div>
-
                   <div
                     className="w-4 h-4 rounded"
-                    style={{ backgroundColor: '#aaafbc' }}
+                    style={{ backgroundColor: '#f3f4f6' }}
+                  />
+                  <span className="text-gray-600">0-10%</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div
+                    className="w-4 h-4 rounded"
+                    style={{ backgroundColor: '#d1d5db' }}
+                  />
+                  <span className="text-gray-600">10-30%</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div
+                    className="w-4 h-4 rounded"
+                    style={{ backgroundColor: '#9ca3af' }}
                   />
                   <span className="text-gray-600">30-50%</span>
                 </div>
@@ -702,14 +759,14 @@ export function OperationalMetricsModule() {
                 <div className="flex items-center gap-2">
                   <div
                     className="w-4 h-4 rounded"
-                    style={{ backgroundColor: '#f59e0b' }}
+                    style={{ backgroundColor: '#374151' }}
                   />
                   <span className="text-gray-600">70-90%</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div
                     className="w-4 h-4 rounded"
-                    style={{ backgroundColor: '#10b981' }}
+                    style={{ backgroundColor: '#111827' }}
                   />
                   <span className="text-gray-600">90-100%</span>
                 </div>
@@ -749,19 +806,21 @@ export function OperationalMetricsModule() {
                         {row.hour}
                       </div>
                       {['seg', 'ter', 'qua', 'qui', 'sex', 'sab', 'dom'].map(
-                        (day) => (
-                          <div
-                            key={day}
-                            className="aspect-square rounded-lg flex items-center justify-center text-xs font-medium text-white transition-all hover:scale-105"
-                            style={{
-                              backgroundColor: getOccupancyColor(
-                                (row[day] as number) || 0,
-                              ),
-                            }}
-                          >
-                            {(row[day] as number) || 0}%
-                          </div>
-                        ),
+                        (day) => {
+                          const value = (row[day] as number) || 0;
+                          return (
+                            <div
+                              key={day}
+                              className="aspect-square rounded-lg flex items-center justify-center text-xs font-medium transition-all hover:scale-105"
+                              style={{
+                                backgroundColor: getOccupancyColor(value),
+                                color: getTextColor(value),
+                              }}
+                            >
+                              {value}%
+                            </div>
+                          );
+                        },
                       )}
                     </div>
                   ))}
@@ -769,34 +828,49 @@ export function OperationalMetricsModule() {
               </div>
 
               {/* Idle Time Opportunities */}
-              <div className="mt-6 p-4 bg-yellow-50 rounded-xl border border-yellow-100">
-                <div className="flex items-start gap-3 mb-3">
-                  <Sparkles className="h-5 w-5 text-yellow-600 shrink-0 mt-0.5" />
-                  <div>
-                    <p className="text-sm text-gray-900 mb-1">
-                      Oportunidades de Otimização
-                    </p>
-                    <p className="text-xs text-gray-600">
-                      Horários com baixa ocupação que podem gerar receita
-                      adicional
-                    </p>
+              <div className="mt-6 p-5 bg-gray-50 rounded-xl border border-gray-200">
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex items-start gap-3">
+                    <div className="w-9 h-9 rounded-lg bg-gray-900 flex items-center justify-center shrink-0">
+                      <Sparkles className="h-4 w-4 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-gray-900 mb-1">
+                        Oportunidades de Otimização
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        Horários com baixa ocupação que podem gerar receita
+                        adicional
+                      </p>
+                    </div>
                   </div>
+                  <Badge variant="outline" className="text-xs shrink-0">
+                    {idleTimeOpportunities.length} período
+                    {idleTimeOpportunities.length !== 1 ? 's' : ''}
+                  </Badge>
                 </div>
                 <div className="space-y-2">
                   {idleTimeOpportunities.map((opp, index) => (
                     <div
                       key={index}
-                      className="flex items-center justify-between p-2 bg-white rounded-lg"
+                      className="flex items-center justify-between p-3 bg-white rounded-lg border-2 border-gray-100 hover:border-gray-200 transition-colors"
                     >
-                      <div>
-                        <p className="text-sm text-gray-900">{opp.day}</p>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm text-gray-900 font-medium mb-0.5">
+                          {opp.day}
+                        </p>
                         <p className="text-xs text-gray-500">
-                          {opp.idleSlots} horários vazios
+                          {opp.idleSlots} horário
+                          {opp.idleSlots !== 1 ? 's' : ''} vazio
+                          {opp.idleSlots !== 1 ? 's' : ''}
                         </p>
                       </div>
-                      <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200">
-                        +R$ {opp.potentialRevenue.toLocaleString()}
-                      </Badge>
+                      <div className="text-right">
+                        <p className="text-sm font-medium text-gray-900">
+                          +R$ {opp.potentialRevenue.toLocaleString()}
+                        </p>
+                        <p className="text-xs text-gray-400">potencial</p>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -829,100 +903,119 @@ export function OperationalMetricsModule() {
               </div>
             </CardHeader>
             <CardContent className="px-3 sm:px-6">
-              <div className="space-y-5">
-                {professionals.map((prof, index) => (
-                  <div
-                    key={index}
-                    className="p-4 bg-gray-50 rounded-xl border border-gray-100"
-                  >
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex items-start gap-3">
-                        <div className="relative">
-                          <div className="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center text-white text-sm">
-                            {prof.name
-                              .split(' ')
-                              .map((n) => n[0])
-                              .join('')}
-                          </div>
-                          {index < 3 && (
-                            <div className="absolute -top-1 -right-1 text-base">
-                              {getMedalEmoji(index)}
+              {professionals.length === 0 ? (
+                <div className="flex flex-col items-center justify-center h-[250px] text-center">
+                  <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-4">
+                    <Award className="h-8 w-8 text-gray-400" />
+                  </div>
+                  <p className="text-sm text-gray-500 mb-1">
+                    Nenhum profissional cadastrado
+                  </p>
+                  <p className="text-xs text-gray-400">
+                    Adicione profissionais para visualizar métricas de
+                    performance
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-5">
+                  {professionals.map((prof, index) => (
+                    <div
+                      key={index}
+                      className="p-4 bg-gray-50 rounded-xl border border-gray-100"
+                    >
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex items-start gap-3">
+                          <div className="relative">
+                            <div className="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center text-white text-sm">
+                              {prof.name
+                                .split(' ')
+                                .map((n) => n[0])
+                                .join('')}
                             </div>
-                          )}
+                            {index < 3 && (
+                              <div className="absolute -top-1 -right-1 text-base">
+                                {getMedalEmoji(index)}
+                              </div>
+                            )}
+                          </div>
+                          <div>
+                            <p className="text-sm text-gray-900 font-medium">
+                              {prof.name}
+                            </p>
+                            <p className="text-xs text-gray-500">
+                              {prof.bookings} agendamentos
+                            </p>
+                          </div>
                         </div>
-                        <div>
+                        <div className="text-right">
                           <p className="text-sm text-gray-900 font-medium">
-                            {prof.name}
+                            R$ {prof.revenue.toLocaleString()}
                           </p>
                           <p className="text-xs text-gray-500">
-                            {prof.bookings} agendamentos
+                            R$ {Math.round(prof.revenue / prof.bookings)}/agend.
                           </p>
                         </div>
                       </div>
-                      <div className="text-right">
-                        <p className="text-sm text-gray-900 font-medium">
-                          R$ {prof.revenue.toLocaleString()}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          R$ {Math.round(prof.revenue / prof.bookings)}/agend.
-                        </p>
-                      </div>
-                    </div>
 
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                      <div>
-                        <p className="text-xs text-gray-500 mb-1">Eficiência</p>
-                        <div className="flex items-center gap-2">
-                          <Progress
-                            value={prof.efficiency}
-                            className="h-1.5 flex-1"
-                          />
-                          <span className="text-xs text-gray-900 font-medium">
-                            {prof.efficiency}%
-                          </span>
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <div>
+                          <p className="text-xs text-gray-500 mb-1">
+                            Eficiência
+                          </p>
+                          <div className="flex items-center gap-2">
+                            <Progress
+                              value={prof.efficiency}
+                              className="h-1.5 flex-1"
+                            />
+                            <span className="text-xs text-gray-900 font-medium">
+                              {prof.efficiency}%
+                            </span>
+                          </div>
                         </div>
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-500 mb-1">
-                          Pontualidade
-                        </p>
-                        <div className="flex items-center gap-2">
-                          <Progress
-                            value={prof.onTime}
-                            className="h-1.5 flex-1"
-                          />
-                          <span className="text-xs text-gray-900 font-medium">
-                            {prof.onTime}%
-                          </span>
+                        <div>
+                          <p className="text-xs text-gray-500 mb-1">
+                            Pontualidade
+                          </p>
+                          <div className="flex items-center gap-2">
+                            <Progress
+                              value={prof.onTime}
+                              className="h-1.5 flex-1"
+                            />
+                            <span className="text-xs text-gray-900 font-medium">
+                              {prof.onTime}%
+                            </span>
+                          </div>
                         </div>
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-500 mb-1">Utilização</p>
-                        <div className="flex items-center gap-2">
-                          <Progress
-                            value={prof.utilizationRate}
-                            className="h-1.5 flex-1"
-                          />
-                          <span className="text-xs text-gray-900 font-medium">
-                            {prof.utilizationRate}%
-                          </span>
+                        <div>
+                          <p className="text-xs text-gray-500 mb-1">
+                            Utilização
+                          </p>
+                          <div className="flex items-center gap-2">
+                            <Progress
+                              value={prof.utilizationRate}
+                              className="h-1.5 flex-1"
+                            />
+                            <span className="text-xs text-gray-900 font-medium">
+                              {prof.utilizationRate}%
+                            </span>
+                          </div>
                         </div>
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-500 mb-1">
-                          Tempo Médio
-                        </p>
-                        <div className="flex items-center gap-2">
-                          <Clock className="h-3 w-3 text-gray-400" />
-                          <span className="text-xs text-gray-900 font-medium">
-                            {prof.avgDuration}min
-                          </span>
+                        <div>
+                          <p className="text-xs text-gray-500 mb-1">
+                            Tempo Médio
+                          </p>
+                          <div className="flex items-center gap-2">
+                            <Clock className="h-3 w-3 text-gray-400" />
+                            <span className="text-xs text-gray-900 font-medium">
+                              {prof.avgDuration}min
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
         </motion.div>

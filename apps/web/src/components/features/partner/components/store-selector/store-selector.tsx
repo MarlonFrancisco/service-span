@@ -1,4 +1,5 @@
 'use client';
+import { useStoresQuery } from '@/hooks/use-query/use-stores-query/use-stores-query.hook';
 import { usePartnerStore } from '@/store/partner';
 import { Button } from '@repo/ui';
 import { Check, ChevronDown, MapPin } from 'lucide-react';
@@ -6,7 +7,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import { useState } from 'react';
 
 export function StoreSelector() {
-  const stores = usePartnerStore((state) => state.stores);
+  const { stores } = useStoresQuery({ includeStores: true });
   const activeStore = usePartnerStore((state) => state.activeStore);
   const setActiveStore = usePartnerStore((state) => state.setActiveStore);
   const [isOpen, setIsOpen] = useState(false);

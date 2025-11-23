@@ -43,7 +43,7 @@ export function SalesRevenueMetricsModule() {
   const [periodFilter, setPeriodFilter] = useState<PeriodFilter>('month');
 
   const activeStore = usePartnerStore((state) => state.activeStore);
-  const { sales, isPendingSales } = useMetricsQuery({
+  const { sales, isPendingSales, isEnabledSales } = useMetricsQuery({
     storeId: activeStore?.id,
     period: periodFilter,
     includeSales: true,
@@ -72,7 +72,7 @@ export function SalesRevenueMetricsModule() {
   };
 
   // Loading state
-  if (isPendingSales || !activeStore) {
+  if (isPendingSales && isEnabledSales) {
     return <SalesRevenueMetricsSkeleton />;
   }
 
@@ -483,39 +483,53 @@ export function SalesRevenueMetricsModule() {
             </div>
           </CardHeader>
           <CardContent className="px-4 sm:px-6">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {sales.revenueByCategory.map((category) => (
-                <div key={category.id} className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <p className="text-sm text-gray-900">{category.name}</p>
-                    <Badge
-                      variant="outline"
-                      className={`text-xs ${
-                        category.growthPercentage >= 0
-                          ? 'text-green-700 border-green-200 bg-green-50'
-                          : 'text-red-700 border-red-200 bg-red-50'
-                      }`}
-                    >
-                      {category.growthPercentage >= 0 ? '+' : ''}
-                      {category.growthPercentage}%
-                    </Badge>
-                  </div>
-                  <p className="text-lg text-gray-900">
-                    R$ {category.revenue.toLocaleString()}
-                  </p>
-                  <Progress
-                    value={
-                      (category.revenue /
-                        Math.max(
-                          ...sales.revenueByCategory.map((c) => c.revenue),
-                        )) *
-                      100
-                    }
-                    className="h-1.5"
-                  />
+            {sales.revenueByCategory.length === 0 ? (
+              <div className="flex flex-col items-center justify-center h-[180px] text-center">
+                <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-4">
+                  <Receipt className="h-8 w-8 text-gray-400" />
                 </div>
-              ))}
-            </div>
+                <p className="text-sm text-gray-500 mb-1">
+                  Nenhuma categoria com receita
+                </p>
+                <p className="text-xs text-gray-400">
+                  Os dados aparecerão quando houver vendas
+                </p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                {sales.revenueByCategory.map((category) => (
+                  <div key={category.id} className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm text-gray-900">{category.name}</p>
+                      <Badge
+                        variant="outline"
+                        className={`text-xs ${
+                          category.growthPercentage >= 0
+                            ? 'text-green-700 border-green-200 bg-green-50'
+                            : 'text-red-700 border-red-200 bg-red-50'
+                        }`}
+                      >
+                        {category.growthPercentage >= 0 ? '+' : ''}
+                        {category.growthPercentage}%
+                      </Badge>
+                    </div>
+                    <p className="text-lg text-gray-900">
+                      R$ {category.revenue.toLocaleString()}
+                    </p>
+                    <Progress
+                      value={
+                        (category.revenue /
+                          Math.max(
+                            ...sales.revenueByCategory.map((c) => c.revenue),
+                          )) *
+                        100
+                      }
+                      className="h-1.5"
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
           </CardContent>
         </Card>
       </motion.div>
@@ -539,51 +553,65 @@ export function SalesRevenueMetricsModule() {
               </div>
             </CardHeader>
             <CardContent className="px-3 sm:px-6">
-              <div className="space-y-4">
-                {sales.topServices.map((service, index) => (
-                  <div key={service.id} className="space-y-2">
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="flex items-start gap-2 flex-1 min-w-0">
-                        <span className="text-lg shrink-0 mt-0.5">
-                          {getMedalEmoji(index)}
-                        </span>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm text-gray-900 truncate">
-                            {service.name}
+              {sales.topServices.length === 0 ? (
+                <div className="flex flex-col items-center justify-center h-[180px] text-center">
+                  <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-4">
+                    <TrendingUp className="h-8 w-8 text-gray-400" />
+                  </div>
+                  <p className="text-sm text-gray-500 mb-1">
+                    Nenhum serviço vendido
+                  </p>
+                  <p className="text-xs text-gray-400">
+                    Os dados aparecerão quando houver vendas
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {sales.topServices.map((service, index) => (
+                    <div key={service.id} className="space-y-2">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-start gap-2 flex-1 min-w-0">
+                          <span className="text-lg shrink-0 mt-0.5">
+                            {getMedalEmoji(index)}
+                          </span>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm text-gray-900 truncate">
+                              {service.name}
+                            </p>
+                            <p className="text-xs text-gray-500">
+                              {service.appointments} agendamentos
+                            </p>
+                          </div>
+                        </div>
+                        <div className="text-right shrink-0">
+                          <p className="text-sm text-gray-900">
+                            R$ {service.revenue.toLocaleString()}
                           </p>
-                          <p className="text-xs text-gray-500">
-                            {service.appointments} agendamentos
-                          </p>
+                          <Badge
+                            variant="outline"
+                            className={`text-xs mt-0.5 ${
+                              service.growthPercentage >= 0
+                                ? 'text-green-700 border-green-200 bg-green-50'
+                                : 'text-red-700 border-red-200 bg-red-50'
+                            }`}
+                          >
+                            {service.growthPercentage >= 0 ? '+' : ''}
+                            {service.growthPercentage}%
+                          </Badge>
                         </div>
                       </div>
-                      <div className="text-right shrink-0">
-                        <p className="text-sm text-gray-900">
-                          R$ {service.revenue.toLocaleString()}
-                        </p>
-                        <Badge
-                          variant="outline"
-                          className={`text-xs mt-0.5 ${
-                            service.growthPercentage >= 0
-                              ? 'text-green-700 border-green-200 bg-green-50'
-                              : 'text-red-700 border-red-200 bg-red-50'
-                          }`}
-                        >
-                          {service.growthPercentage >= 0 ? '+' : ''}
-                          {service.growthPercentage}%
-                        </Badge>
+                      <div className="w-full bg-gray-100 rounded-full h-1.5">
+                        <div
+                          className="bg-gray-900 h-1.5 rounded-full transition-all"
+                          style={{
+                            width: `${Math.min(service.percentageOfTotal * 5, 100)}%`,
+                          }}
+                        />
                       </div>
                     </div>
-                    <div className="w-full bg-gray-100 rounded-full h-1.5">
-                      <div
-                        className="bg-gray-900 h-1.5 rounded-full transition-all"
-                        style={{
-                          width: `${Math.min(service.percentageOfTotal * 5, 100)}%`,
-                        }}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
         </motion.div>
@@ -605,36 +633,50 @@ export function SalesRevenueMetricsModule() {
               </div>
             </CardHeader>
             <CardContent className="px-3 sm:px-6">
-              <div className="space-y-3">
-                {sales.profitableHours.slice(0, 6).map((hour, index) => (
-                  <div key={index} className="space-y-1.5">
-                    <div className="flex items-center justify-between text-sm">
-                      <div className="flex items-center gap-2">
-                        <Clock className="h-3.5 w-3.5 text-gray-400" />
-                        <span className="text-gray-900">{hour.hour}</span>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <span className="text-gray-600 text-xs">
-                          R$ {hour.revenue.toLocaleString()}
-                        </span>
-                        <Badge
-                          variant="outline"
-                          className={`text-xs ${
-                            hour.utilizationRate >= 90
-                              ? 'text-green-700 border-green-200 bg-green-50'
-                              : hour.utilizationRate >= 70
-                                ? 'text-yellow-700 border-yellow-200 bg-yellow-50'
-                                : 'text-gray-700 border-gray-200 bg-gray-50'
-                          }`}
-                        >
-                          {hour.utilizationRate}%
-                        </Badge>
-                      </div>
-                    </div>
-                    <Progress value={hour.utilizationRate} className="h-1" />
+              {sales.profitableHours.length === 0 ? (
+                <div className="flex flex-col items-center justify-center h-[180px] text-center">
+                  <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-4">
+                    <Clock className="h-8 w-8 text-gray-400" />
                   </div>
-                ))}
-              </div>
+                  <p className="text-sm text-gray-500 mb-1">
+                    Nenhum horário com receita
+                  </p>
+                  <p className="text-xs text-gray-400">
+                    Os dados aparecerão quando houver vendas
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {sales.profitableHours.slice(0, 6).map((hour, index) => (
+                    <div key={index} className="space-y-1.5">
+                      <div className="flex items-center justify-between text-sm">
+                        <div className="flex items-center gap-2">
+                          <Clock className="h-3.5 w-3.5 text-gray-400" />
+                          <span className="text-gray-900">{hour.hour}</span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <span className="text-gray-600 text-xs">
+                            R$ {hour.revenue.toLocaleString()}
+                          </span>
+                          <Badge
+                            variant="outline"
+                            className={`text-xs ${
+                              hour.utilizationRate >= 90
+                                ? 'text-green-700 border-green-200 bg-green-50'
+                                : hour.utilizationRate >= 70
+                                  ? 'text-yellow-700 border-yellow-200 bg-yellow-50'
+                                  : 'text-gray-700 border-gray-200 bg-gray-50'
+                            }`}
+                          >
+                            {hour.utilizationRate}%
+                          </Badge>
+                        </div>
+                      </div>
+                      <Progress value={hour.utilizationRate} className="h-1" />
+                    </div>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
         </motion.div>

@@ -30,12 +30,23 @@ export const useServiceFormContent = () => {
     form.handleSubmit(
       (data) => {
         if (isEditing) {
-          updateService(data as IService);
+          updateService(data as IService, {
+            onSuccess: () => {
+              handleClose();
+            },
+          });
         } else {
-          createService({
-            ...data,
-            id: undefined,
-          } as Partial<IService>);
+          createService(
+            {
+              ...data,
+              id: undefined,
+            } as Partial<IService>,
+            {
+              onSuccess: () => {
+                handleClose();
+              },
+            },
+          );
         }
       },
       (errors) => {

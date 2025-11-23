@@ -12,7 +12,7 @@ import {
 
 export const useWhatsappSettings = () => {
   const storeId = usePartnerStore((state) => state.activeStore?.id);
-  const { notificationsSettings } = useNotificationsQuery(storeId);
+  const { notificationsSettings } = useNotificationsQuery({ storeId });
   const { whatsappConfig } = useWhatsappQuery(storeId);
 
   const form = useForm<TWhatsappSettingsFormData>({
