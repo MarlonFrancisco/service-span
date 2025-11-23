@@ -7,7 +7,7 @@ export interface IWhatsappInteractiveList {
   buttonText: string;
   sections: {
     title: string;
-    rows: { id: string; title: string; description: string }[];
+    rows: { id: string; title: string; description?: string }[];
   }[];
   accessToken: string;
 }

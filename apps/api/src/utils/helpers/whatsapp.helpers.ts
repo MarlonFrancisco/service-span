@@ -13,12 +13,8 @@ export const mapCategoryToWhatsappInteractiveList = (category: Category) => ({
 export const mapStoreMemberToWhatsappInteractiveList = (
   storeMember: StoreMember,
 ) => ({
+  id: storeMember.id,
   title: storeMember.user.firstName + ' ' + storeMember.user.lastName,
-  rows: storeMember.services.map((service) => ({
-    id: service.id,
-    title: service.name,
-    description: service.description,
-  })),
 });
 
 // Date validation helpers

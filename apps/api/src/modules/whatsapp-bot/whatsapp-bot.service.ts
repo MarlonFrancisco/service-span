@@ -14,9 +14,11 @@ import {
   validateDateForBooking,
 } from '../../utils/helpers/whatsapp.helpers';
 import { CategoryService } from '../partner/stores/category/category.service';
+import { Service } from '../partner/stores/category/service/service.entity';
 import { ServiceService } from '../partner/stores/category/service/service.service';
 import { CreateSchedulesDto } from '../partner/stores/schedule/dto/create-schedule.dto';
 import { ScheduleService } from '../partner/stores/schedule/schedule.service';
+import { StoreMember } from '../partner/stores/store-member/store-member.entity';
 import { StoreMemberService } from '../partner/stores/store-member/store-member.service';
 import { WhatsappConfig } from '../partner/stores/whatsapp/whatsapp.entity';
 import { WhatsappService } from '../partner/stores/whatsapp/whatsapp.service';
@@ -54,14 +56,15 @@ export class WhatsappBotService {
     });
   }
 
-  async handleIncomingMessage(message: IWhatsappWebhookMessage) {
+  async handleIncomingMessage(
+    message: IWhatsappWebhookMessage,
+    userName: string,
+  ) {
     const from = message.from; // User's phone number
     const text =
       message.text?.body ||
       message.interactive?.button_reply?.id ||
       message.interactive?.list_reply?.id;
-
-    this.logger.log('text', text);
 
     if (!text) return;
 
@@ -87,7 +90,7 @@ export class WhatsappBotService {
         await this.handleTimeState(from, text);
         break;
       case BotState.CONFIRM_BOOKING:
-        await this.handleConfirmBookingState(from, text);
+        await this.handleConfirmBookingState(from, text, userName);
         break;
       default:
         await this.sendMenu(from);
@@ -106,7 +109,7 @@ export class WhatsappBotService {
         headerText: 'Serviços disponíveis',
         bodyText: 'Por favor, escolha o serviço',
         footerText: 'Selecione um serviço',
-        buttonText: 'Selecionar Serviço',
+        buttonText: 'Selecionar',
         sections: categories.map(mapCategoryToWhatsappInteractiveList),
         accessToken: this.config.accessToken,
       });
@@ -128,7 +131,7 @@ export class WhatsappBotService {
       const service = await this.serviceService.findOne(text);
 
       if (!service) {
-        return void this.whatsappService.sendText(
+        return await this.whatsappService.sendText(
           this.config.phoneNumberId,
           from,
           'Serviço não encontrado. Por favor, escolha um serviço disponível.',
@@ -167,16 +170,28 @@ export class WhatsappBotService {
           headerText: 'Profissionais disponíveis',
           bodyText: 'Por favor, escolha o profissional',
           footerText: 'Selecione um profissional',
-          buttonText: 'Selecionar Profissional',
-          sections: storeMembersWithService.map(
-            mapStoreMemberToWhatsappInteractiveList,
-          ),
+          buttonText: 'Selecionar',
+          sections: [
+            {
+              title: 'Profissionais',
+              rows: storeMembersWithService.map(
+                mapStoreMemberToWhatsappInteractiveList,
+              ),
+            },
+          ],
           accessToken: this.config.accessToken,
         });
+      } else {
+        await this.whatsappService.sendText(
+          this.config.phoneNumberId,
+          from,
+          'Nenhum profissional disponível para esse serviço. Por favor, escolha um serviço disponível.',
+          this.config.accessToken,
+        );
       }
     } catch (error) {
       this.logger.error('Failed to handle service state', error);
-      return await this.whatsappService.sendText(
+      await this.whatsappService.sendText(
         this.config.phoneNumberId,
         from,
         'Ocorreu um erro ao processar o serviço. Por favor, tente novamente mais tarde.',
@@ -205,7 +220,10 @@ export class WhatsappBotService {
       `whatsapp:session:${from}:storeMember`,
       JSON.stringify({
         id: storeMember.id,
-        name: storeMember.user.firstName + ' ' + storeMember.user.lastName,
+        user: {
+          firstName: storeMember.user.firstName,
+          lastName: storeMember.user.lastName,
+        },
         blockedTimes: storeMember.blockedTimes,
         schedules: storeMember.schedules,
       }),
@@ -243,15 +261,10 @@ export class WhatsappBotService {
       { ex: 900 },
     );
 
-    await this.redis.set(`whatsapp:session:${from}`, BotState.SELECT_TIME, {
-      ex: 900,
-    });
-
     // Busca storeMember selecionado do Redis (já contém schedules e blockedTimes)
-    const storeMemberData = await this.redis.get<string>(
+    const storeMember = await this.redis.get<StoreMember>(
       `whatsapp:session:${from}:storeMember`,
     );
-    const storeMember = storeMemberData ? JSON.parse(storeMemberData) : null;
 
     if (!storeMember) {
       await this.whatsappService.sendText(
@@ -261,9 +274,9 @@ export class WhatsappBotService {
         this.config.accessToken,
       );
 
-      void this.clearSession(from);
+      await this.clearSession(from);
 
-      void this.sendMenu(from);
+      await this.sendMenu(from);
 
       return;
     }
@@ -291,6 +304,10 @@ export class WhatsappBotService {
       { ex: 900 },
     );
 
+    await this.redis.set(`whatsapp:session:${from}`, BotState.SELECT_TIME, {
+      ex: 900,
+    });
+
     // Envia mensagem com horários disponíveis
     const message = formatTimeSlotsForMessage(availableSlots);
     await this.whatsappService.sendText(
@@ -302,11 +319,9 @@ export class WhatsappBotService {
   }
 
   private async handleTimeState(from: string, text: string) {
-    // Recupera slots disponíveis do Redis
-    const slotsData = await this.redis.get<string>(
+    const availableSlots = await this.redis.get<string[]>(
       `whatsapp:session:${from}:availableSlots`,
     );
-    const availableSlots = slotsData ? JSON.parse(slotsData) : [];
 
     if (availableSlots.length === 0) {
       await this.whatsappService.sendText(
@@ -315,6 +330,11 @@ export class WhatsappBotService {
         'Erro ao recuperar horários disponíveis. Por favor, reinicie o processo.',
         this.config.accessToken,
       );
+
+      await this.clearSession(from);
+
+      await this.sendMenu(from);
+
       return;
     }
 
@@ -322,13 +342,12 @@ export class WhatsappBotService {
     const selectedIndex = extractNumberFromText(text);
 
     if (selectedIndex === null) {
-      await this.whatsappService.sendText(
+      return await this.whatsappService.sendText(
         this.config.phoneNumberId,
         from,
         'Por favor, informe o número correspondente ao horário desejado.',
         this.config.accessToken,
       );
-      return;
     }
 
     // Obtém o horário selecionado
@@ -354,18 +373,16 @@ export class WhatsappBotService {
     });
 
     // Recupera informações para resumo
-    const serviceData = await this.redis.get<string>(
+    const service = await this.redis.get<Service>(
       `whatsapp:session:${from}:service`,
     );
-    const storeMemberData = await this.redis.get<string>(
+    const storeMember = await this.redis.get<StoreMember>(
       `whatsapp:session:${from}:storeMember`,
     );
     const dateData = await this.redis.get<string>(
       `whatsapp:session:${from}:date`,
     );
 
-    const service = serviceData ? JSON.parse(serviceData) : null;
-    const storeMember = storeMemberData ? JSON.parse(storeMemberData) : null;
     const date = dateData ? new Date(dateData) : null;
 
     // Formata a data para exibição
@@ -381,7 +398,7 @@ export class WhatsappBotService {
     const summary =
       `📋 *Resumo do Agendamento*\n\n` +
       `📌 Serviço: ${service?.name || 'N/A'}\n` +
-      `👤 Profissional: ${storeMember?.name || 'N/A'}\n` +
+      `👤 Profissional: ${storeMember?.user.firstName} ${storeMember?.user.lastName}\n` +
       `📅 Data: ${formattedDate}\n` +
       `🕐 Horário: ${selectedTime}\n\n` +
       `Confirmar agendamento?`;
@@ -398,7 +415,11 @@ export class WhatsappBotService {
     );
   }
 
-  private async handleConfirmBookingState(from: string, text: string) {
+  private async handleConfirmBookingState(
+    from: string,
+    text: string,
+    userName: string,
+  ) {
     const response = text.toLowerCase();
 
     if (response.includes('cancelar')) {
@@ -407,9 +428,12 @@ export class WhatsappBotService {
       await this.whatsappService.sendText(
         this.config.phoneNumberId,
         from,
-        'Agendamento cancelado. Digite "agendar" para fazer um novo agendamento.',
+        'Agendamento cancelado.',
         this.config.accessToken,
       );
+
+      await this.sendMenu(from);
+
       return;
     }
 
@@ -424,10 +448,10 @@ export class WhatsappBotService {
     }
 
     // Recupera todas as informações da sessão
-    const serviceData = await this.redis.get<string>(
+    const service = await this.redis.get<Service>(
       `whatsapp:session:${from}:service`,
     );
-    const storeMemberData = await this.redis.get<string>(
+    const storeMember = await this.redis.get<StoreMember>(
       `whatsapp:session:${from}:storeMember`,
     );
     const dateData = await this.redis.get<string>(
@@ -437,8 +461,6 @@ export class WhatsappBotService {
       `whatsapp:session:${from}:time`,
     );
 
-    const service = serviceData ? JSON.parse(serviceData) : null;
-    const storeMember = storeMemberData ? JSON.parse(storeMemberData) : null;
     const date = dateData ? new Date(dateData) : null;
     const time = timeData || '';
 
@@ -449,17 +471,29 @@ export class WhatsappBotService {
         'Erro ao recuperar informações do agendamento. Por favor, reinicie o processo.',
         this.config.accessToken,
       );
+
+      await this.clearSession(from);
+
+      await this.sendMenu(from);
+
       return;
     }
 
     try {
+      const [firstName, lastName] = userName.split(' ');
+
       await this.scheduleService.create(
         new CreateSchedulesDto({
           storeId: this.config.store.id,
           storeMember: { id: storeMember.id },
           services: [{ id: service.id, duration: service.duration }],
-          user: { telephone: from },
+          user: {
+            telephone: from,
+            firstName,
+            lastName,
+          },
           date,
+          store: { id: this.config.store.id },
           startTime: time,
         }),
       );
@@ -477,7 +511,7 @@ export class WhatsappBotService {
         from,
         `✅ *Agendamento Confirmado!*\n\n` +
           `📌 Serviço: ${service.name}\n` +
-          `👤 Profissional: ${storeMember.name}\n` +
+          `👤 Profissional: ${storeMember.user.firstName} ${storeMember.user.lastName}\n` +
           `📅 Data: ${formattedDate}\n` +
           `🕐 Horário: ${time}\n\n` +
           `Aguardamos você! 😊`,
@@ -491,6 +525,12 @@ export class WhatsappBotService {
         'Erro ao criar agendamento. Por favor, tente novamente mais tarde.',
         this.config.accessToken,
       );
+
+      await this.clearSession(from);
+
+      await this.sendMenu(from);
+
+      return;
     }
   }
 
@@ -525,6 +565,7 @@ export class WhatsappBotService {
         for (const change of entry.changes) {
           if (change.value.messages) {
             const message = change.value.messages[0];
+            const userName = change.value.contacts[0].profile.name;
             const businessPhoneNumberId = change.value.metadata.phone_number_id;
             this.logger.log('handleWebhookMessage', JSON.stringify(body));
 
@@ -533,7 +574,7 @@ export class WhatsappBotService {
             });
 
             if (this.config.isActive) {
-              await this.handleIncomingMessage(message);
+              await this.handleIncomingMessage(message, userName);
             } else {
               this.logger.warn(
                 `No config found for phone number ID: ${businessPhoneNumberId}`,
