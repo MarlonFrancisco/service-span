@@ -29,6 +29,7 @@ export * from './label';
 export * from './menubar';
 export * from './morphing-text';
 export * from './navigation-menu';
+export * from './pagination';
 export * from './popover';
 export * from './progress';
 export * from './radio-group';
