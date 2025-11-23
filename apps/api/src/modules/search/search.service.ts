@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { UpstashService } from '../upstash/upstash.service';
+import { UpstashSearchService } from '../upstash-search/upstash-search.service';
 import { IStoreSearchContent, IStoreSearchMetadata } from './search.types';
 
 const STORES_INDEX = 'stores';
@@ -8,7 +8,7 @@ const STORES_INDEX = 'stores';
 export class SearchService {
   private readonly logger = new Logger(SearchService.name);
 
-  constructor(private readonly upstashService: UpstashService) {}
+  constructor(private readonly upstashService: UpstashSearchService) {}
 
   /**
    * Index a store for search

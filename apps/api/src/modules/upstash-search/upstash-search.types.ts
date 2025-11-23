@@ -2,7 +2,7 @@
  * Common types for Upstash Search integration
  */
 
-export interface IUpstashDocument {
+export interface IUpstashSearchDocument {
   id: string;
   content: Record<string, unknown>;
   metadata?: Record<string, unknown>;
@@ -18,7 +18,7 @@ export interface IUpstashSearchResult<T = any> {
   count: number;
 }
 
-export interface IUpstashIndexInfo {
+export interface IUpstashSearchIndexInfo {
   name: string;
   documentCount: number;
   stats?: Record<string, unknown>;

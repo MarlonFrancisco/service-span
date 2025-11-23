@@ -2,15 +2,15 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Search } from '@upstash/search';
 
-export interface UpstashIndexConfig {
+export interface UpstashSearchIndexConfig {
   indexName: string;
   contentSchema?: Record<string, string>;
   metadataSchema?: Record<string, string>;
 }
 
 @Injectable()
-export class UpstashService {
-  private readonly logger = new Logger(UpstashService.name);
+export class UpstashSearchService {
+  private readonly logger = new Logger(UpstashSearchService.name);
   private client: Search | null = null;
   private indexes: Map<string, ReturnType<typeof this.client.index>> =
     new Map();

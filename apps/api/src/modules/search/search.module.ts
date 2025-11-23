@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { UpstashModule } from '../upstash/upstash.module';
+import { UpstashSearchModule } from '../upstash-search/upstash-search.module';
 import { SearchController } from './search.controller';
 import { SearchService } from './search.service';
 
 @Module({
-  imports: [UpstashModule],
+  imports: [UpstashSearchModule],
   providers: [SearchService],
   controllers: [SearchController],
   exports: [SearchService],

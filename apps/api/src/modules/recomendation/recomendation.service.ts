@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { UpstashService } from '../upstash/upstash.service';
+import { UpstashSearchService } from '../upstash-search/upstash-search.service';
 
 const RECOMMENDATIONS_INDEX = 'stores';
 
@@ -7,7 +7,7 @@ const RECOMMENDATIONS_INDEX = 'stores';
 export class RecomendationService {
   private readonly logger = new Logger(RecomendationService.name);
 
-  constructor(private readonly upstashService: UpstashService) {}
+  constructor(private readonly upstashService: UpstashSearchService) {}
 
   /**
    * Get popular/recommended stores

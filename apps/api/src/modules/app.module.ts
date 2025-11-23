@@ -11,7 +11,7 @@ import { PlansModule } from './plans';
 import { RecomendationModule } from './recomendation';
 import { SearchModule } from './search';
 import { SubscriptionModule } from './subscription';
-import { UpstashModule } from './upstash';
+import { UpstashSearchModule } from './upstash-search';
 import { UsersModule } from './users';
 import { WhatsappBotModule } from './whatsapp-bot';
 
@@ -22,7 +22,6 @@ import { WhatsappBotModule } from './whatsapp-bot';
       envFilePath: ['.env.local', '.env'],
     }),
     AuthModule,
-    UpstashModule,
     DatabaseModule,
     SubscriptionModule,
     PlansModule,
@@ -31,6 +30,7 @@ import { WhatsappBotModule } from './whatsapp-bot';
     PartnerModule,
     SearchModule,
     RecomendationModule,
+    UpstashSearchModule,
     WhatsappBotModule,
   ],
   providers: [
