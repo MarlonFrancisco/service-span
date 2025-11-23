@@ -6,7 +6,7 @@ import {
   ManyToOne,
   OneToMany,
 } from 'typeorm';
-import { BaseEntity } from '../../../../database';
+import { BaseEntity } from '../../../../database/base.entity';
 import { Schedule } from '../../schedule/schedule.entity';
 import { StoreMember } from '../../store-member/store-member.entity';
 import { Store } from '../../store.entity';

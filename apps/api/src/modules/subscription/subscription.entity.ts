@@ -1,6 +1,6 @@
 import { Column, Entity, Index, ManyToOne } from 'typeorm';
-import { BaseEntity } from '../database';
-import { User } from '../users';
+import { BaseEntity } from '../database/base.entity';
+import { User } from '../users/user.entity';
 import type { TSubscriptionStatus } from './subscription.types';
 
 @Entity('subscriptions')

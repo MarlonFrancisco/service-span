@@ -1,6 +1,6 @@
 import type Stripe from 'stripe';
 import { getSubscriptionPeriodDate } from '../../../utils';
-import type { User } from '../../users';
+import type { User } from '../../users/user.entity';
 import type { TSubscriptionStatus } from '../subscription.types';
 
 export class CustomerSubscriptionUpdateDto {

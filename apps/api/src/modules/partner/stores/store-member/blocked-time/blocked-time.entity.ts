@@ -1,5 +1,5 @@
 import { Column, Entity, Index, ManyToOne } from 'typeorm';
-import { BaseEntity } from '../../../../database';
+import { BaseEntity } from '../../../../database/base.entity';
 import { StoreMember } from '../../store-member/store-member.entity';
 
 @Entity('blocked_times')

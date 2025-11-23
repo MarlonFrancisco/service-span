@@ -4,10 +4,14 @@ import SendGrid from '@sendgrid/mail';
 import fs from 'fs/promises';
 import handlebars from 'handlebars';
 import path from 'path';
+import { WhatsappService } from '../partner/stores/whatsapp';
 
 @Injectable()
 export class NotificationService {
-  constructor(private readonly configService: ConfigService) {
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly whatsappService: WhatsappService,
+  ) {
     SendGrid.setApiKey(configService.get<string>('SENDGRID_API_KEY'));
   }
 
@@ -27,6 +31,25 @@ export class NotificationService {
       subject: subject,
       html: body,
     });
+  }
+
+  async sendWhatsapp({
+    phoneNumberId,
+    to,
+    message,
+    accessToken,
+  }: {
+    phoneNumberId: string;
+    to: string;
+    message: string;
+    accessToken: string;
+  }) {
+    return this.whatsappService.sendText(
+      phoneNumberId,
+      to,
+      message,
+      accessToken,
+    );
   }
 
   async sendEmailOTP(to: string, code: string) {

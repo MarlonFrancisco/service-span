@@ -1,5 +1,5 @@
 import { Column, Entity, ManyToOne } from 'typeorm';
-import { BaseEntity } from '../../../../database';
+import { BaseEntity } from '../../../../database/base.entity';
 import { Store } from '../../store.entity';
 
 @Entity('notifications_history')
