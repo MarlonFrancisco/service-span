@@ -1,4 +1,6 @@
 'use client';
+import type { PeriodFilterValue } from '@/components/features/partner/components/dashboard-module/components/period-filter-with-refresh';
+import { PeriodFilterWithRefresh } from '@/components/features/partner/components/dashboard-module/components/period-filter-with-refresh';
 import { useMetricsQuery } from '@/hooks/use-query/use-metrics-query';
 import { usePartnerStore } from '@/store/partner/partner.store';
 import {
@@ -39,21 +41,24 @@ import { TrendBadge } from '../components/trend-badge';
 import { OperationalMetricsNotFound } from './operational-metrics-not-found';
 import { OperationalMetricsSkeleton } from './operational-metrics.skeleton';
 
-type PeriodFilter = 'week' | 'month' | 'quarter';
-
 export function OperationalMetricsModule() {
   const [selectedView, setSelectedView] = useState<
     'overview' | 'heatmap' | 'efficiency'
   >('overview');
-  const [periodFilter, setPeriodFilter] = useState<PeriodFilter>('month');
+  const [periodFilter, setPeriodFilter] = useState<PeriodFilterValue>('month');
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const activeStore = usePartnerStore((state) => state.activeStore);
-  const { operational, isPendingOperational, isEnabledOperational } =
-    useMetricsQuery({
-      storeId: activeStore?.id,
-      period: periodFilter,
-      includeOperational: true,
-    });
+  const {
+    operational,
+    isPendingOperational,
+    isEnabledOperational,
+    operationalRefetch,
+  } = useMetricsQuery({
+    storeId: activeStore?.id,
+    period: periodFilter,
+    includeOperational: true,
+  });
 
   // Loading state
   if (isPendingOperational && isEnabledOperational) {
@@ -64,6 +69,12 @@ export function OperationalMetricsModule() {
   if (!operational) {
     return <OperationalMetricsNotFound />;
   }
+
+  const handleRefresh = () => {
+    operationalRefetch();
+    setIsRefreshing(true);
+    setTimeout(() => setIsRefreshing(false), 2000);
+  };
 
   // Preparar dados para visualizações
   const utilizationData = operational.dailyCapacityUtilization.map((item) => ({
@@ -232,23 +243,12 @@ export function OperationalMetricsModule() {
         </div>
 
         <div className="flex items-center gap-2 w-full sm:w-auto">
-          <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-1 flex-1 sm:flex-initial">
-            {(['week', 'month', 'quarter'] as const).map((view) => (
-              <button
-                key={view}
-                onClick={() => setPeriodFilter(view as PeriodFilter)}
-                className={`px-3 py-2 text-xs rounded-md transition-all touch-manipulation min-h-[36px] flex-1 sm:flex-initial ${
-                  periodFilter === view
-                    ? 'bg-white text-gray-900 shadow-sm'
-                    : 'text-gray-600 hover:text-gray-900 active:bg-gray-200'
-                }`}
-              >
-                {view === 'week' && 'Semanal'}
-                {view === 'month' && 'Mensal'}
-                {view === 'quarter' && 'Trimestral'}
-              </button>
-            ))}
-          </div>
+          <PeriodFilterWithRefresh
+            value={periodFilter}
+            onValueChange={setPeriodFilter}
+            onRefresh={handleRefresh}
+            isRefreshing={isRefreshing}
+          />
 
           <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-1 flex-1 sm:flex-initial">
             {(['overview', 'heatmap', 'efficiency'] as const).map((view) => (

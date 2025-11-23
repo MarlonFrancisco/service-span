@@ -5,6 +5,7 @@ import { useState } from 'react';
 
 export function useCustomerMetrics() {
   const [period, setPeriod] = useState<PeriodType>('month');
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const activeStore = usePartnerStore((state) => state.activeStore);
 
@@ -14,13 +15,12 @@ export function useCustomerMetrics() {
     quarter: 'Trimestral',
   };
 
-  const { customers, isPendingCustomers, isEnabledCustomers } = useMetricsQuery(
-    {
+  const { customers, isPendingCustomers, isEnabledCustomers, customersRefetch } =
+    useMetricsQuery({
       storeId: activeStore?.id,
       period,
       includeCustomers: true,
-    },
-  );
+    });
 
   const stats = customers
     ? [
@@ -115,6 +115,12 @@ export function useCustomerMetrics() {
       };
     }) || [];
 
+  const handleRefresh = () => {
+    customersRefetch();
+    setIsRefreshing(true);
+    setTimeout(() => setIsRefreshing(false), 2000);
+  };
+
   return {
     period,
     periodLabels,
@@ -126,5 +132,7 @@ export function useCustomerMetrics() {
     customers,
     isEnabledCustomers,
     setPeriod,
+    handleRefresh,
+    isRefreshing,
   };
 }

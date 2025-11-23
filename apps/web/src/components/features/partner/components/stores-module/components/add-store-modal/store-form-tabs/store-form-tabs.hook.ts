@@ -43,6 +43,7 @@ export const useStoreFormTabs = () => {
         );
       },
       (errors) => {
+        console.log(errors);
         const firstError = Object.values(errors)[0]?.message;
         if (firstError) {
           toast.error(firstError);

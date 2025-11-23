@@ -91,9 +91,9 @@ export const storeFormSchema = z.object({
           email: z.string().email('Email inválido'),
           firstName: z.string(),
           lastName: z.string(),
-          telephone: z.string().min(1, 'Telefone é obrigatório'),
+          telephone: z.string().nullable(),
           isSubscribed: z.boolean().default(false),
-          avatar: z.string().optional(),
+          avatar: z.string().nullable(),
         }),
       }),
     )

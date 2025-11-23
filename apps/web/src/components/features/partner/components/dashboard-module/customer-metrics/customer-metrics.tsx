@@ -1,5 +1,6 @@
 'use client';
 import { TrendBadge } from '@/components/features/partner/components/dashboard-module/components/trend-badge';
+import { PeriodFilterWithRefresh } from '@/components/features/partner/components/dashboard-module/components/period-filter-with-refresh';
 import {
   Badge,
   Card,
@@ -36,6 +37,8 @@ export function CustomerMetricsModule() {
     isLoading,
     isEnabledCustomers,
     customers,
+    handleRefresh,
+    isRefreshing,
   } = useCustomerMetrics();
 
   if (isLoading && isEnabledCustomers) {
@@ -62,24 +65,13 @@ export function CustomerMetricsModule() {
           </div>
         </div>
 
-        <div className="flex items-center gap-2 w-full sm:w-auto">
-          {/* Period Filter */}
-          <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-1">
-            {(['week', 'month', 'quarter'] as const).map((p) => (
-              <button
-                key={p}
-                onClick={() => setPeriod(p)}
-                className={`px-2 sm:px-3 py-1.5 sm:py-2 text-xs rounded-md transition-all touch-manipulation min-h-[36px] ${
-                  period === p
-                    ? 'bg-white text-gray-900 shadow-sm'
-                    : 'text-gray-600 hover:text-gray-900 active:bg-gray-200'
-                }`}
-              >
-                {periodLabels[p]}
-              </button>
-            ))}
-          </div>
-        </div>
+        <PeriodFilterWithRefresh
+          value={period}
+          onValueChange={setPeriod}
+          periodLabels={periodLabels}
+          onRefresh={handleRefresh}
+          isRefreshing={isRefreshing}
+        />
       </div>
 
       {/* Quick Stats */}

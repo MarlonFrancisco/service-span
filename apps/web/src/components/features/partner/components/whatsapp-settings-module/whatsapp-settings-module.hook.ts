@@ -12,7 +12,6 @@ import {
 export const useWhatsappSettingsModule = () => {
   const { saveConfig, isSaveConfigPending } = useWhatsappMutation();
   const { activeStore } = usePartnerStore();
-  console.log(activeStore);
   const { whatsappConfig, isWhatsappPending } = useWhatsappQuery(
     activeStore.id,
   );

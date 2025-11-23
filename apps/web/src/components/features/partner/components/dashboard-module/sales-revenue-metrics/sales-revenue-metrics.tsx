@@ -1,4 +1,6 @@
 'use client';
+import type { PeriodFilterValue } from '@/components/features/partner/components/dashboard-module/components/period-filter-with-refresh';
+import { PeriodFilterWithRefresh } from '@/components/features/partner/components/dashboard-module/components/period-filter-with-refresh';
 import { TrendBadge } from '@/components/features/partner/components/dashboard-module/components/trend-badge';
 import { useMetricsQuery } from '@/hooks/use-query/use-metrics-query';
 import { usePartnerStore } from '@/store';
@@ -37,23 +39,17 @@ import {
 import { SalesRevenueMetricsNotFound } from './sales-revenue-metrics-not-found';
 import { SalesRevenueMetricsSkeleton } from './sales-revenue-metrics.skeleton';
 
-type PeriodFilter = 'week' | 'month' | 'quarter';
-
 export function SalesRevenueMetricsModule() {
-  const [periodFilter, setPeriodFilter] = useState<PeriodFilter>('month');
+  const [periodFilter, setPeriodFilter] = useState<PeriodFilterValue>('month');
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const activeStore = usePartnerStore((state) => state.activeStore);
-  const { sales, isPendingSales, isEnabledSales } = useMetricsQuery({
-    storeId: activeStore?.id,
-    period: periodFilter,
-    includeSales: true,
-  });
-
-  const periodLabels = {
-    week: 'Semanal',
-    month: 'Mensal',
-    quarter: 'Trimestral',
-  };
+  const { sales, isPendingSales, isEnabledSales, salesRefetch } =
+    useMetricsQuery({
+      storeId: activeStore?.id,
+      period: periodFilter,
+      includeSales: true,
+    });
 
   const getMedalEmoji = (index: number) => {
     if (index === 0) return '🥇';
@@ -80,6 +76,18 @@ export function SalesRevenueMetricsModule() {
   if (!sales) {
     return <SalesRevenueMetricsNotFound />;
   }
+
+  const handleRefresh = () => {
+    salesRefetch();
+    setIsRefreshing(true);
+    setTimeout(() => setIsRefreshing(false), 2000);
+  };
+
+  const periodLabels = {
+    week: 'Semanal',
+    month: 'Mensal',
+    quarter: 'Trimestral',
+  };
 
   // Stats dinâmicos baseados nos dados reais
   const stats = [
@@ -139,24 +147,12 @@ export function SalesRevenueMetricsModule() {
           </div>
         </div>
 
-        <div className="flex items-center gap-2 w-full sm:w-auto">
-          {/* Period Filter */}
-          <div className="flex items-center gap-0.5 sm:gap-1 bg-gray-100 rounded-lg p-1 flex-1 sm:flex-initial">
-            {(['week', 'month', 'quarter'] as PeriodFilter[]).map((period) => (
-              <button
-                key={period}
-                onClick={() => setPeriodFilter(period)}
-                className={`px-2 sm:px-3 py-1.5 sm:py-2 text-xs rounded-md transition-all touch-manipulation min-h-[36px] ${
-                  periodFilter === period
-                    ? 'bg-white text-gray-900 shadow-sm'
-                    : 'text-gray-600 hover:text-gray-900 active:bg-gray-200'
-                }`}
-              >
-                {periodLabels[period]}
-              </button>
-            ))}
-          </div>
-        </div>
+        <PeriodFilterWithRefresh
+          value={periodFilter}
+          onValueChange={setPeriodFilter}
+          onRefresh={handleRefresh}
+          isRefreshing={isRefreshing}
+        />
       </div>
 
       {/* Goal Progress Card */}
@@ -167,38 +163,57 @@ export function SalesRevenueMetricsModule() {
       >
         <Card className="shadow-lg bg-gradient-to-br from-gray-900 to-gray-800 text-white border-0">
           <CardContent className="p-4 sm:p-5 md:p-6">
-            <div className="flex items-start justify-between mb-3 sm:mb-4">
-              <div className="flex-1 min-w-0">
-                <p className="text-white/70 text-xs mb-1 sm:mb-1.5">
-                  Meta de {periodLabels[periodFilter].toLowerCase()}
-                </p>
-                <div className="flex flex-wrap items-baseline gap-x-2">
-                  <p className="text-2xl sm:text-3xl">
-                    R$ {sales.goal.current.toLocaleString()}
-                  </p>
-                  <span className="text-sm text-white/60">
-                    / R$ {sales.goal.target.toLocaleString()}
-                  </span>
+            {sales.goal.target === 0 ? (
+              // Empty state - Meta não definida
+              <div className="flex flex-col items-center justify-center py-6 text-center">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-white/10 flex items-center justify-center mb-3">
+                  <Target className="h-6 w-6 sm:h-7 sm:w-7 text-white/60" />
                 </div>
+                <p className="text-base sm:text-lg text-white mb-1">
+                  Meta não definida
+                </p>
+                <p className="text-xs text-white/60 max-w-sm">
+                  Defina uma meta {periodLabels[periodFilter].toLowerCase()}{' '}
+                  para acompanhar seu progresso e alcançar seus objetivos
+                </p>
               </div>
-              <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl bg-white/10 flex items-center justify-center flex-shrink-0 ml-2 sm:ml-3">
-                <Target className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
-              </div>
-            </div>
-            <Progress
-              value={sales.goal.percentage}
-              className="h-2 bg-white/20 mb-2.5 sm:mb-3"
-            />
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <p className="text-xs text-white/70">
-                {sales.goal.percentage}% concluído - faltam R${' '}
-                {sales.goal.remaining.toLocaleString()}
-              </p>
-              <Badge className="bg-yellow-500/20 text-yellow-300 border-yellow-500/30 text-xs">
-                <Sparkles className="w-3 h-3 mr-1" />
-                {sales.goal.daysRemaining} dias restantes
-              </Badge>
-            </div>
+            ) : (
+              // Meta definida - Mostrar progresso
+              <>
+                <div className="flex items-start justify-between mb-3 sm:mb-4">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-white/70 text-xs mb-1 sm:mb-1.5">
+                      Meta de {periodLabels[periodFilter].toLowerCase()}
+                    </p>
+                    <div className="flex flex-wrap items-baseline gap-x-2">
+                      <p className="text-2xl sm:text-3xl">
+                        R$ {sales.goal.current.toLocaleString()}
+                      </p>
+                      <span className="text-sm text-white/60">
+                        / R$ {sales.goal.target.toLocaleString()}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl bg-white/10 flex items-center justify-center flex-shrink-0 ml-2 sm:ml-3">
+                    <Target className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
+                  </div>
+                </div>
+                <Progress
+                  value={sales.goal.percentage}
+                  className="h-2 bg-white/20 mb-2.5 sm:mb-3"
+                />
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <p className="text-xs text-white/70">
+                    {sales.goal.percentage}% concluído - faltam R${' '}
+                    {sales.goal.remaining.toLocaleString()}
+                  </p>
+                  <Badge className="bg-yellow-500/20 text-yellow-300 border-yellow-500/30 text-xs">
+                    <Sparkles className="w-3 h-3 mr-1" />
+                    {sales.goal.daysRemaining} dias restantes
+                  </Badge>
+                </div>
+              </>
+            )}
           </CardContent>
         </Card>
       </motion.div>
@@ -413,7 +428,7 @@ export function SalesRevenueMetricsModule() {
             </div>
           </CardHeader>
           <CardContent className="px-3 sm:px-6">
-            <div className="w-full h-[250px]">
+            <div className="w-full h-[300px]">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart
                   data={sales.revenueByDayOfWeek}

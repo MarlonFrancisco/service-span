@@ -1,19 +1,12 @@
 'use client';
 import { TrendBadge } from '@/components/features/partner/components/dashboard-module/components/trend-badge';
-import {
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  ToggleGroup,
-  ToggleGroupItem,
-} from '@repo/ui';
+import { PeriodFilterWithRefresh } from '@/components/features/partner/components/dashboard-module/components/period-filter-with-refresh';
+import type { PeriodFilterValue } from '@/components/features/partner/components/dashboard-module/components/period-filter-with-refresh';
+import { Card, CardContent, CardHeader, CardTitle } from '@repo/ui';
 import {
   Award,
   DollarSign,
   Percent,
-  RefreshCw,
   Star,
   Target,
   UserPlus,
@@ -40,10 +33,9 @@ import { useMetricsQuery } from '@/hooks/use-query/use-metrics-query/use-metrics
 import { usePartnerStore } from '@/store/partner/partner.store';
 import { GeneralMetricsNotFound } from './general-metrics-not-found';
 import { GeneralMetricsSkeleton } from './general-metrics.skeleton';
-type PeriodFilter = 'week' | 'month' | 'quarter';
 
 export function GeneralMetricsModule() {
-  const [periodFilter, setPeriodFilter] = useState<PeriodFilter>('week');
+  const [periodFilter, setPeriodFilter] = useState<PeriodFilterValue>('week');
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const activeStore = usePartnerStore((state) => state.activeStore);
@@ -157,54 +149,16 @@ export function GeneralMetricsModule() {
     setTimeout(() => setIsRefreshing(false), 2000);
   };
 
-  const periodLabels = {
-    week: 'Semanal',
-    month: 'Mensal',
-    quarter: 'Trimestral',
-  };
-
   return (
     <div className="space-y-6">
       {/* Header with Filters and Actions */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div className="flex items-center gap-2 w-full sm:w-auto">
-          {/* Period Filter */}
-          <div className="flex items-center gap-0.5 sm:gap-1 bg-gray-100 rounded-lg p-1 flex-1 sm:flex-initial">
-            <ToggleGroup
-              type="single"
-              value={periodFilter}
-              onValueChange={(value) => {
-                if (value) setPeriodFilter(value as PeriodFilter);
-              }}
-            >
-              {(['week', 'month', 'quarter'] as PeriodFilter[]).map(
-                (period) => (
-                  <ToggleGroupItem
-                    key={period}
-                    value={period}
-                    className="px-2 sm:px-5 py-1.5 sm:py-2 text-xs rounded-md transition-all touch-manipulation min-h-[36px] data-[state=on]:bg-white data-[state=on]:text-gray-900 data-[state=on]:shadow-sm data-[state=off]:text-gray-600 data-[state=off]:hover:text-gray-900 data-[state=off]:active:bg-gray-200"
-                  >
-                    {periodLabels[period]}
-                  </ToggleGroupItem>
-                ),
-              )}
-            </ToggleGroup>
-          </div>
-
-          {/* Refresh Button */}
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleRefresh}
-            disabled={isRefreshing}
-            className="shrink-0 min-h-[36px] min-w-[36px]"
-            aria-label="Atualizar dados"
-          >
-            <RefreshCw
-              className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`}
-            />
-          </Button>
-        </div>
+        <PeriodFilterWithRefresh
+          value={periodFilter}
+          onValueChange={setPeriodFilter}
+          onRefresh={handleRefresh}
+          isRefreshing={isRefreshing}
+        />
       </div>
 
       {/* Quick Stats */}
