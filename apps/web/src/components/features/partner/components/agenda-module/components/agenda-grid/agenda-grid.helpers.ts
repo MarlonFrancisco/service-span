@@ -1,4 +1,5 @@
 import { IBlockedTime } from '@/types/api/blocked-times.types';
+import { IAppointment } from '@/types/api/schedule.types';
 import type { IProfessional } from '@/types/api/users.types';
 
 /**
@@ -46,4 +47,21 @@ export const isBlockedTime = (
   return blockedTimes.find(
     (blockedTime) => blockedTime.date === date && blockedTime.time === time,
   );
+};
+
+export const getSlotSelectionClassName = (
+  isBlocked: boolean,
+  isSelected: boolean,
+  isBlockMode: boolean,
+  appointment: IAppointment | null,
+) => {
+  if (isBlockMode && isSelected && !isBlocked && !appointment) {
+    return 'ring-2 ring-blue-500 ring-inset bg-blue-50 hover:bg-blue-100';
+  }
+
+  if (isBlockMode && isSelected && isBlocked && !appointment) {
+    return 'ring-2 ring-red-500 ring-inset bg-red-50 hover:bg-red-100';
+  }
+
+  return '';
 };

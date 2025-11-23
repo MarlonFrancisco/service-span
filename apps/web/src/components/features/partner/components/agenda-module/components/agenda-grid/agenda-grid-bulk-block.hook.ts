@@ -1,3 +1,4 @@
+import { IBlockedTime } from '@/types/api/blocked-times.types';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type {
   TSelectedSlot,
@@ -52,7 +53,13 @@ export const useAgendaGridBulkBlock = (
    * Add slot to selection
    */
   const addSlotToSelection = useCallback(
-    (professionalId: string, dayIndex: number, time: string, date: string) => {
+    (
+      blockedTime: IBlockedTime | undefined,
+      professionalId: string,
+      dayIndex: number,
+      time: string,
+      date: string,
+    ) => {
       const slotId = getSlotId(professionalId, dayIndex, time);
 
       setSelectedSlots((prev) => {
@@ -62,10 +69,12 @@ export const useAgendaGridBulkBlock = (
       });
 
       selectedSlotsDataRef.current.set(slotId, {
+        id: blockedTime?.id,
         professionalId,
         dayIndex,
         time,
         date,
+        isBlocked: blockedTime ? true : false,
       });
     },
     [getSlotId],
@@ -94,13 +103,13 @@ export const useAgendaGridBulkBlock = (
    */
   const handleSlotMouseDown = useCallback(
     (
+      blockedTime: IBlockedTime | undefined,
       professionalId: string,
       dayIndex: number,
       time: string,
       date: string,
-      isBlocked: boolean,
     ) => {
-      if (!isBlockMode || isBlocked) return;
+      if (!isBlockMode) return;
 
       const slotId = getSlotId(professionalId, dayIndex, time);
 
@@ -112,7 +121,7 @@ export const useAgendaGridBulkBlock = (
       if (selectedSlots.has(slotId)) {
         removeSlotFromSelection(professionalId, dayIndex, time);
       } else {
-        addSlotToSelection(professionalId, dayIndex, time, date);
+        addSlotToSelection(blockedTime, professionalId, dayIndex, time, date);
       }
     },
     [
@@ -129,28 +138,22 @@ export const useAgendaGridBulkBlock = (
    */
   const handleSlotMouseEnter = useCallback(
     (
+      blockedTime: IBlockedTime | undefined,
       professionalId: string,
       dayIndex: number,
       time: string,
       date: string,
-      isBlocked: boolean,
     ) => {
-      if (!isBlockMode || !isDragging || isBlocked) return;
+      if (!isBlockMode || !isDragging) return;
 
       const slotId = getSlotId(professionalId, dayIndex, time);
 
       // Add to selection during drag
       if (!selectedSlots.has(slotId)) {
-        addSlotToSelection(professionalId, dayIndex, time, date);
+        addSlotToSelection(blockedTime, professionalId, dayIndex, time, date);
       }
     },
-    [
-      isBlockMode,
-      isDragging,
-      selectedSlots,
-      getSlotId,
-      addSlotToSelection,
-    ],
+    [isBlockMode, isDragging, selectedSlots, getSlotId, addSlotToSelection],
   );
 
   /**
@@ -160,49 +163,6 @@ export const useAgendaGridBulkBlock = (
     setIsDragging(false);
     dragStartSlotRef.current = null;
   }, []);
-
-  /**
-   * Handle Shift+Click - Range selection
-   */
-  const handleShiftClick = useCallback(
-    (
-      professionalId: string,
-      dayIndex: number,
-      time: string,
-      date: string,
-      isBlocked: boolean,
-    ) => {
-      if (!isBlockMode || isBlocked) return;
-
-      const currentSlotId = getSlotId(professionalId, dayIndex, time);
-
-      if (!lastClickedSlotRef.current) {
-        // No previous selection, just select current
-        addSlotToSelection(professionalId, dayIndex, time, date);
-        lastClickedSlotRef.current = currentSlotId;
-        return;
-      }
-
-      // Parse last clicked slot
-      const [lastProfId, lastDayStr, lastTime] =
-        lastClickedSlotRef.current.split('-');
-      const lastDayIndex = parseInt(lastDayStr ?? '0', 10);
-
-      // Range selection only works on same professional and same day
-      if (professionalId !== lastProfId || dayIndex !== lastDayIndex) {
-        addSlotToSelection(professionalId, dayIndex, time, date);
-        lastClickedSlotRef.current = currentSlotId;
-        return;
-      }
-
-      // Get all time slots from parent hook (need to pass timeSlots array)
-      // For now, select all slots between lastTime and time
-      // This is a simplified version - would need timeSlots array for accurate range
-      addSlotToSelection(professionalId, dayIndex, time, date);
-      lastClickedSlotRef.current = currentSlotId;
-    },
-    [isBlockMode, getSlotId, addSlotToSelection],
-  );
 
   /**
    * Clear all selections
@@ -263,7 +223,6 @@ export const useAgendaGridBulkBlock = (
     handleSlotMouseDown,
     handleSlotMouseEnter,
     handleSlotMouseUp,
-    handleShiftClick,
     clearSelection,
     executeBlockAction,
     selectedSlotsArray,

@@ -18,6 +18,37 @@ export class BlockedTimesService {
     );
   }
 
+  static async createBulk(
+    storeId: string,
+    storeMemberId: string,
+    blockedTimes: Array<{
+      date: Date | string;
+      time: string;
+      isRecurring?: boolean;
+      dayOfWeek?: 0 | 1 | 2 | 3 | 4 | 5 | 6;
+    }>,
+  ) {
+    return await this.apiClient.post<IBlockedTime[]>(
+      `/partner/stores/${storeId}/members/${storeMemberId}/blocked-times/bulk`,
+      { blockedTimes },
+    );
+  }
+
+  static async deleteBulk(
+    storeId: string,
+    storeMemberId: string,
+    blockedTimes: Array<{
+      id: string;
+    }>,
+  ) {
+    return await this.apiClient.post<
+      { id: string; storeMember: { id: string } }[]
+    >(
+      `/partner/stores/${storeId}/members/${storeMemberId}/blocked-times/bulk/delete`,
+      { blockedTimes },
+    );
+  }
+
   static async update(
     storeId: string,
     blockedTimeId: string,

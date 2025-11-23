@@ -66,10 +66,100 @@ export const useBlockedTimeMutations = ({ storeId }: { storeId: string }) => {
       },
     });
 
+  const {
+    mutate: createBulkBlockedTime,
+    isPending: isCreatingBulkBlockedTime,
+  } = useMutation({
+    mutationFn: ({
+      storeMemberId,
+      blockedTimes,
+    }: {
+      storeMemberId: string;
+      blockedTimes: Array<{
+        date: Date | string;
+        time: string;
+        isRecurring?: boolean;
+        dayOfWeek?: 0 | 1 | 2 | 3 | 4 | 5 | 6;
+      }>;
+    }) => BlockedTimesService.createBulk(storeId, storeMemberId, blockedTimes),
+    onSuccess: (data: IBlockedTime[]) => {
+      if (data.length === 0) return;
+
+      queryClient.setQueryData(
+        CACHE_QUERY_KEYS.store(storeId),
+        (old: IStore) => ({
+          ...old,
+          storeMembers: old.storeMembers.map((storeMember) =>
+            storeMember.id === data[0]!.storeMember.id
+              ? {
+                  ...storeMember,
+                  blockedTimes: [...storeMember.blockedTimes, ...data],
+                }
+              : storeMember,
+          ),
+        }),
+      );
+
+      toast.success(
+        `${data.length} ${data.length === 1 ? 'horário bloqueado' : 'horários bloqueados'} ${data.length === 1 ? 'criado' : 'criados'} com sucesso`,
+      );
+    },
+    onError: () => {
+      toast.error('Erro ao criar horários bloqueados');
+    },
+  });
+
+  const {
+    mutate: deleteBulkBlockedTime,
+    isPending: isDeletingBulkBlockedTime,
+  } = useMutation({
+    mutationFn: ({
+      storeMemberId,
+      blockedTimes,
+    }: {
+      storeMemberId: string;
+      blockedTimes: Array<{
+        id: string;
+      }>;
+    }) => BlockedTimesService.deleteBulk(storeId, storeMemberId, blockedTimes),
+    onSuccess: (data: { id: string; storeMember: { id: string } }[]) => {
+      if (data.length === 0) return;
+
+      queryClient.setQueryData(
+        CACHE_QUERY_KEYS.store(storeId),
+        (old: IStore) => ({
+          ...old,
+          storeMembers: old.storeMembers.map((storeMember) =>
+            storeMember.id === data[0]!.storeMember.id
+              ? {
+                  ...storeMember,
+                  blockedTimes: storeMember.blockedTimes.filter(
+                    (blockedTime) =>
+                      !data.some((bt) => bt.id === blockedTime.id),
+                  ),
+                }
+              : storeMember,
+          ),
+        }),
+      );
+
+      toast.success(
+        `${data.length} ${data.length === 1 ? 'horário desbloqueado' : 'horários desbloqueados'} ${data.length === 1 ? 'desbloqueado' : 'desbloqueados'} com sucesso`,
+      );
+    },
+    onError: () => {
+      toast.error('Erro ao desbloquear horários');
+    },
+  });
+
   return {
     createBlockedTime,
+    createBulkBlockedTime,
+    deleteBulkBlockedTime,
     deleteBlockedTime,
     isCreatingBlockedTime,
+    isCreatingBulkBlockedTime,
     isDeletingBlockedTime,
+    isDeletingBulkBlockedTime,
   };
 };

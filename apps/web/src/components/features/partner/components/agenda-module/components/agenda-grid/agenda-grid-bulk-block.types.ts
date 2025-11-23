@@ -1,3 +1,5 @@
+import { IBlockedTime } from '@/types/api/blocked-times.types';
+
 /**
  * ANCR-FA Types for Bulk Block Selection
  * Represents a unique time slot identifier
@@ -8,10 +10,12 @@ export type TSlotId = `${string}-${number}-${string}`; // professionalId-dayInde
  * Slot selection data
  */
 export type TSelectedSlot = {
+  id?: string;
   professionalId: string;
   dayIndex: number;
   time: string;
   date: string;
+  isBlocked: boolean;
 };
 
 /**
@@ -28,15 +32,34 @@ export type TUseBulkBlockConfig = {
 export type TUseBulkBlockReturn = {
   selectedSlots: Set<TSlotId>;
   isDragging: boolean;
-  isSlotSelected: (professionalId: string, dayIndex: number, time: string) => boolean;
-  handleSlotMouseDown: (professionalId: string, dayIndex: number, time: string, date: string, isBlocked: boolean) => void;
-  handleSlotMouseEnter: (professionalId: string, dayIndex: number, time: string, date: string, isBlocked: boolean) => void;
+  isSlotSelected: (
+    professionalId: string,
+    dayIndex: number,
+    time: string,
+  ) => boolean;
+  handleSlotMouseDown: (
+    blockedTime: IBlockedTime | undefined,
+    professionalId: string,
+    dayIndex: number,
+    time: string,
+    date: string,
+  ) => void;
+  handleSlotMouseEnter: (
+    blockedTime: IBlockedTime | undefined,
+    professionalId: string,
+    dayIndex: number,
+    time: string,
+    date: string,
+  ) => void;
   handleSlotMouseUp: () => void;
-  handleShiftClick: (professionalId: string, dayIndex: number, time: string, date: string, isBlocked: boolean) => void;
   clearSelection: () => void;
   executeBlockAction: () => void;
   selectedSlotsArray: TSelectedSlot[];
-  removeSlotFromSelection: (professionalId: string, dayIndex: number, time: string) => void;
+  removeSlotFromSelection: (
+    professionalId: string,
+    dayIndex: number,
+    time: string,
+  ) => void;
 };
 
 /**

@@ -56,7 +56,12 @@ export const useAgendaGrid = () => {
     (state) => state.setIsAddAppointmentOpen,
   );
 
-  const { createBlockedTime, deleteBlockedTime } = useBlockedTimeMutations({
+  const {
+    createBlockedTime,
+    deleteBlockedTime,
+    createBulkBlockedTime,
+    deleteBulkBlockedTime,
+  } = useBlockedTimeMutations({
     storeId: activeStore?.id,
   });
 
@@ -69,18 +74,41 @@ export const useAgendaGrid = () => {
 
       if (!professional) return;
 
-      // Create blocked times for all selected slots
-      slots.forEach((slot) => {
-        createBlockedTime({
-          date: slot.date,
-          time: slot.time,
-          isRecurring: false,
-          dayOfWeek: slot.dayIndex,
-          storeMember: professional,
+      const slotsByAction = slots.reduce(
+        (acc, slot) => {
+          if (slot.isBlocked) {
+            acc.blockedTimes.push(slot);
+          } else {
+            acc.unblockedTimes.push(slot);
+          }
+          return acc;
+        },
+        {
+          blockedTimes: [] as TSelectedSlot[],
+          unblockedTimes: [] as TSelectedSlot[],
+        },
+      );
+      console.log(slotsByAction);
+
+      if (slotsByAction.unblockedTimes.length > 0) {
+        // Create blocked times for all selected slots in bulk
+        createBulkBlockedTime({
+          storeMemberId: professional.id,
+          blockedTimes: slotsByAction.unblockedTimes,
         });
-      });
+      }
+
+      if (slotsByAction.blockedTimes.length > 0) {
+        // Delete blocked times for all selected slots in bulk
+        deleteBulkBlockedTime({
+          storeMemberId: professional.id,
+          blockedTimes: slotsByAction.blockedTimes.map((slot) => ({
+            id: slot.id!,
+          })),
+        });
+      }
     },
-    [createBlockedTime, professionals],
+    [createBulkBlockedTime, deleteBulkBlockedTime, professionals],
   );
 
   // Initialize bulk block hook
@@ -188,7 +216,11 @@ export const useAgendaGrid = () => {
             storeMember: professional,
           });
           // Remove from selection after unblocking
-          bulkBlockHook.removeSlotFromSelection(professional.id, dayIndex, time);
+          bulkBlockHook.removeSlotFromSelection(
+            professional.id,
+            dayIndex,
+            time,
+          );
           return;
         }
 

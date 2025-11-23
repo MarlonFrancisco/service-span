@@ -1,9 +1,12 @@
 import { Card, CardContent } from '@repo/ui';
 import { Lock } from 'lucide-react';
 import { memo } from 'react';
-import { BulkActionToolbar } from '../bulk-action-toolbar';
 import { GRID_CONSTANTS } from '../../agenda-grid.constants';
-import { isBlockedTime } from '../../agenda-grid.helpers';
+import {
+  getSlotSelectionClassName,
+  isBlockedTime,
+} from '../../agenda-grid.helpers';
+import { BulkActionToolbar } from '../bulk-action-toolbar';
 import { useAgendaGridDesktopView } from './agenda-grid-desktop-view.hook';
 import type { TDesktopViewConfig } from './agenda-grid-desktop-view.types';
 
@@ -33,7 +36,6 @@ export const AgendaGridDesktopView = memo(
       handleSlotMouseDown,
       handleSlotMouseEnter,
       handleSlotMouseUp,
-      handleShiftClick,
       clearSelection,
       executeBlockAction,
       selectedSlotsArray,
@@ -43,7 +45,7 @@ export const AgendaGridDesktopView = memo(
     const shouldShowFullDetails = filteredProfessionals.length === 1;
 
     const NonWorkingOverlay = () => (
-      <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-gray-100/60">
+      <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-gray-100/60 h-full">
         <div className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs text-gray-600">
           Dia não útil
         </div>
@@ -54,229 +56,261 @@ export const AgendaGridDesktopView = memo(
       <>
         <Card className="p-0">
           <CardContent className="p-0">
-          <div className="grid grid-cols-8 min-w-[900px]">
-            {/* Time Column */}
-            <div className="border-r border-gray-200 bg-gray-50">
-              <div
-                className="sticky top-0 z-10 flex items-center justify-center border-b border-gray-200 bg-gray-50"
-                style={{ height: slotHeight }}
-                aria-label="Coluna de horários"
-              >
-                <span aria-hidden className="text-gray-400">
-                  &#128337;
-                </span>
-              </div>
-              {timeSlots.map((time, index) => (
+            <div className="grid grid-cols-8 min-w-[900px]">
+              {/* Time Column */}
+              <div className="border-r border-gray-200 bg-gray-50">
                 <div
-                  key={time}
-                  className={`flex items-center justify-end px-3 text-xs text-gray-500 ${index < timeSlots.length - 1 ? 'border-b border-gray-200' : ''}`}
+                  className="sticky top-0 z-10 flex items-center justify-center border-b border-gray-200 bg-gray-50"
                   style={{ height: slotHeight }}
-                  aria-label={`Horário ${time}`}
+                  aria-label="Coluna de horários"
                 >
-                  {time}
+                  <span aria-hidden className="text-gray-400">
+                    &#128337;
+                  </span>
                 </div>
-              ))}
-            </div>
-
-            {/* Day Columns */}
-            {desktopDayData.map((dayData) => {
-              if (!dayData) return null;
-
-              const { label, dayIndex, date, isToday, isWorkingDay } = dayData;
-
-              return (
-                <div
-                  key={`${label}-${dayIndex}`}
-                  className={`border-r border-gray-200 ${!isWorkingDay ? 'bg-gray-50 opacity-60' : ''}`}
-                >
-                  {/* Day Header */}
+                {timeSlots.map((time, index) => (
                   <div
-                    className={`sticky top-0 z-10 flex h-12 flex-col items-center justify-center border-b border-gray-200 px-2 ${isToday ? 'bg-black text-white' : 'bg-gray-50'}`}
+                    key={time}
+                    className={`flex items-center justify-end px-3 text-xs text-gray-500 ${index < timeSlots.length - 1 ? 'border-b border-gray-200' : ''}`}
                     style={{ height: slotHeight }}
-                    role="columnheader"
-                    aria-label={`${label}, ${date.getDate()} ${isToday ? '(Hoje)' : ''}`}
+                    aria-label={`Horário ${time}`}
                   >
-                    <span
-                      className={`text-xs ${isToday ? 'text-white' : 'text-gray-500'}`}
-                    >
-                      {label.substring(0, 3)}
-                    </span>
-                    <span
-                      className={`${isToday ? 'text-white' : 'text-gray-900'} mt-0.5 text-sm`}
-                    >
-                      {date.getDate()}
-                    </span>
+                    {time}
                   </div>
+                ))}
+              </div>
 
-                  {/* Time Slots */}
-                  <div className="relative overflow-hidden">
-                    {!isWorkingDay ? <NonWorkingOverlay /> : null}
+              {/* Day Columns */}
+              {desktopDayData.map((dayData) => {
+                if (!dayData) return null;
 
-                    {filteredProfessionals.map((professional, profIndex) => (
-                      <div
-                        key={professional.id}
-                        className={
-                          profIndex > 0
-                            ? 'pointer-events-none absolute inset-0 opacity-30'
-                            : undefined
-                        }
+                const { label, dayIndex, date, isToday, isWorkingDay } =
+                  dayData;
+
+                return (
+                  <div
+                    key={`${label}-${dayIndex}`}
+                    className={`border-r border-gray-200 ${!isWorkingDay ? 'bg-gray-50 opacity-60' : ''}`}
+                  >
+                    {/* Day Header */}
+                    <div
+                      className={`sticky top-0 z-10 flex h-12 flex-col items-center justify-center border-b border-gray-200 px-2 ${isToday ? 'bg-black text-white' : 'bg-gray-50'}`}
+                      style={{ height: slotHeight }}
+                      role="columnheader"
+                      aria-label={`${label}, ${date.getDate()} ${isToday ? '(Hoje)' : ''}`}
+                    >
+                      <span
+                        className={`text-xs ${isToday ? 'text-white' : 'text-gray-500'}`}
                       >
-                        {timeSlots.map((time, timeIndex) => {
-                          if (isSlotOccupied(professional.id, dayIndex, time)) {
-                            return null;
-                          }
+                        {label.substring(0, 3)}
+                      </span>
+                      <span
+                        className={`${isToday ? 'text-white' : 'text-gray-900'} mt-0.5 text-sm`}
+                      >
+                        {date.getDate()}
+                      </span>
+                    </div>
 
-                          const appointment = getAppointmentForSlot(
-                            professional.id,
-                            dayIndex,
-                            time,
-                          );
+                    {/* Time Slots */}
+                    <div
+                      className="relative overflow-hidden"
+                      style={{ height: slotHeight * timeSlots.length }}
+                    >
+                      {isWorkingDay ? (
+                        filteredProfessionals.map((professional, profIndex) => (
+                          <div
+                            key={professional.id}
+                            className={
+                              profIndex > 0
+                                ? 'pointer-events-none absolute inset-0 opacity-30'
+                                : undefined
+                            }
+                          >
+                            {timeSlots.map((time, timeIndex) => {
+                              if (
+                                isSlotOccupied(professional.id, dayIndex, time)
+                              ) {
+                                return null;
+                              }
 
-                          const blockedTime = isBlockedTime(
-                            professional.blockedTimes,
-                            date.toISOString().split('T')[0] ?? '',
-                            time,
-                          );
-                          const isBlocked = !!blockedTime;
+                              const appointment = getAppointmentForSlot(
+                                professional.id,
+                                dayIndex,
+                                time,
+                              );
 
-                          const slotsSpan = appointment
-                            ? getSlotsSpan(appointment)
-                            : 1;
-                          const isLastSlot = timeIndex === timeSlots.length - 1;
+                              const blockedTime = isBlockedTime(
+                                professional.blockedTimes,
+                                date.toISOString().split('T')[0] ?? '',
+                                time,
+                              );
+                              const isBlocked = !!blockedTime;
 
-                          const classNameForSlot = getSlotClassName({
-                            appointment,
-                            isBlocked,
-                            isWorkingDay,
-                          });
+                              const slotsSpan = appointment
+                                ? getSlotsSpan(appointment)
+                                : 1;
+                              const isLastSlot =
+                                timeIndex === timeSlots.length - 1;
 
-                          const dateStr = date.toISOString().split('T')[0] ?? '';
-                          const isSelected = isSlotSelected(professional.id, dayIndex, time);
+                              const classNameForSlot = getSlotClassName({
+                                appointment,
+                                isBlocked,
+                                isWorkingDay,
+                              });
 
-                          // Selection styling
-                          const selectionClasses = isBlockMode && isSelected && !isBlocked && !appointment
-                            ? 'ring-2 ring-blue-500 ring-inset bg-blue-50 hover:bg-blue-100'
-                            : '';
+                              const dateStr =
+                                date.toISOString().split('T')[0] ?? '';
+                              const isSelected = isSlotSelected(
+                                professional.id,
+                                dayIndex,
+                                time,
+                              );
 
-                          return (
-                            <div
-                              key={`${professional.id}-${time}`}
-                              onClick={(e) => {
-                                if (!isWorkingDay) {
-                                  return;
-                                }
-
-                                // Shift+Click for range selection
-                                if (isBlockMode && e.shiftKey && !isBlocked && !appointment) {
-                                  e.preventDefault();
-                                  handleShiftClick(professional.id, dayIndex, time, dateStr, isBlocked);
-                                  return;
-                                }
-
-                                // Default single-click behavior
-                                handleSlotClick(
-                                  professional,
-                                  dayIndex,
-                                  time,
-                                  blockedTime,
+                              // Selection styling
+                              const selectionClasses =
+                                getSlotSelectionClassName(
+                                  isBlocked,
+                                  isSelected,
+                                  isBlockMode,
+                                  appointment,
                                 );
-                              }}
-                              onMouseDown={(e) => {
-                                if (!isWorkingDay || !isBlockMode || appointment) return;
-                                e.preventDefault();
-                                handleSlotMouseDown(professional.id, dayIndex, time, dateStr, isBlocked);
-                              }}
-                              onMouseEnter={() => {
-                                if (!isWorkingDay || !isBlockMode || appointment) return;
-                                handleSlotMouseEnter(professional.id, dayIndex, time, dateStr, isBlocked);
-                              }}
-                              onMouseUp={handleSlotMouseUp}
-                              onKeyDown={(e) => {
-                                if (!isWorkingDay) return;
-                                if (e.key === 'Enter' || e.key === ' ') {
-                                  e.preventDefault();
-                                  handleSlotClick(
-                                    professional,
-                                    dayIndex,
-                                    time,
-                                    blockedTime,
-                                  );
-                                }
-                              }}
-                              role={
-                                !appointment && isWorkingDay
-                                  ? 'button'
-                                  : undefined
-                              }
-                              tabIndex={
-                                !appointment && isWorkingDay ? 0 : undefined
-                              }
-                              aria-label={
-                                appointment
-                                  ? `Agendamento ${appointment.user.firstName} às ${time}`
-                                  : isBlocked
-                                    ? `Horário bloqueado ${time} - ${professional.user.firstName}`
-                                    : `Agendar às ${time} com ${professional.user.firstName}`
-                              }
-                              aria-pressed={isBlocked}
-                              aria-selected={isSelected}
-                              className={`${!isLastSlot ? 'border-b border-gray-200' : ''} ${classNameForSlot} ${selectionClasses} select-none transition-all`}
-                              style={{ height: slotHeight * slotsSpan }}
-                            >
-                              {isBlocked ? (
-                                <div className="flex h-full items-center justify-center">
-                                  <Lock
-                                    className="h-3.5 w-3.5 text-gray-400"
-                                    aria-hidden="true"
-                                  />
-                                </div>
-                              ) : appointment ? (
-                                <div className="flex h-full flex-col justify-center overflow-hidden">
-                                  <span className="truncate text-xs font-medium">
-                                    {appointment.user.firstName}{' '}
-                                    {appointment.user.lastName}
-                                  </span>
-                                  {shouldShowFullDetails ? (
-                                    <>
-                                      <span className="truncate text-xs text-gray-600">
-                                        {appointment.service.name}
-                                      </span>
-                                      {slotsSpan > 1 ? (
-                                        <span className="mt-0.5 text-[11px] text-gray-500">
-                                          {appointment.startTime} -{' '}
-                                          {appointment.endTime}
-                                        </span>
-                                      ) : null}
-                                    </>
-                                  ) : null}
-                                </div>
-                              ) : (
-                                <span className="text-xs font-medium text-gray-600 flex items-center justify-center h-full">
-                                  {time}
-                                </span>
-                              )}
-                            </div>
-                          );
-                        })}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </CardContent>
-      </Card>
 
-      {/* Bulk Action Toolbar - Shows when slots are selected */}
-      {isBlockMode && (
-        <BulkActionToolbar
-          selectedCount={selectedSlotsArray.length}
-          onBlock={executeBlockAction}
-          onClear={clearSelection}
-        />
-      )}
-    </>
+                              return (
+                                <div
+                                  key={`${professional.id}-${time}`}
+                                  onClick={() => {
+                                    if (!isWorkingDay) {
+                                      return;
+                                    }
+                                    // Default single-click behavior
+                                    handleSlotClick(
+                                      professional,
+                                      dayIndex,
+                                      time,
+                                      blockedTime,
+                                    );
+                                  }}
+                                  onMouseDown={(e) => {
+                                    if (
+                                      !isWorkingDay ||
+                                      !isBlockMode ||
+                                      appointment
+                                    )
+                                      return;
+                                    e.preventDefault();
+                                    handleSlotMouseDown(
+                                      blockedTime,
+                                      professional.id,
+                                      dayIndex,
+                                      time,
+                                      dateStr,
+                                    );
+                                  }}
+                                  onMouseEnter={() => {
+                                    if (
+                                      !isWorkingDay ||
+                                      !isBlockMode ||
+                                      appointment
+                                    )
+                                      return;
+                                    handleSlotMouseEnter(
+                                      blockedTime,
+                                      professional.id,
+                                      dayIndex,
+                                      time,
+                                      dateStr,
+                                    );
+                                  }}
+                                  onMouseUp={handleSlotMouseUp}
+                                  onKeyDown={(e) => {
+                                    if (!isWorkingDay) return;
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                      e.preventDefault();
+                                      handleSlotClick(
+                                        professional,
+                                        dayIndex,
+                                        time,
+                                        blockedTime,
+                                      );
+                                    }
+                                  }}
+                                  role={
+                                    !appointment && isWorkingDay
+                                      ? 'button'
+                                      : undefined
+                                  }
+                                  tabIndex={
+                                    !appointment && isWorkingDay ? 0 : undefined
+                                  }
+                                  aria-label={
+                                    appointment
+                                      ? `Agendamento ${appointment.user.firstName} às ${time}`
+                                      : isBlocked
+                                        ? `Horário bloqueado ${time} - ${professional.user.firstName}`
+                                        : `Agendar às ${time} com ${professional.user.firstName}`
+                                  }
+                                  aria-pressed={isBlocked}
+                                  aria-selected={isSelected}
+                                  className={`${!isLastSlot ? 'border-b border-gray-200' : ''} ${classNameForSlot} ${selectionClasses} select-none transition-all`}
+                                  style={{ height: slotHeight * slotsSpan }}
+                                >
+                                  {isBlocked ? (
+                                    <div className="flex h-full items-center justify-center">
+                                      <Lock
+                                        className="h-3.5 w-3.5 text-gray-400"
+                                        aria-hidden="true"
+                                      />
+                                    </div>
+                                  ) : appointment ? (
+                                    <div className="flex h-full flex-col justify-center overflow-hidden">
+                                      <span className="truncate text-xs font-medium">
+                                        {appointment.user.firstName}{' '}
+                                        {appointment.user.lastName}
+                                      </span>
+                                      {shouldShowFullDetails ? (
+                                        <>
+                                          <span className="truncate text-xs text-gray-600">
+                                            {appointment.service.name}
+                                          </span>
+                                          {slotsSpan > 1 ? (
+                                            <span className="mt-0.5 text-[11px] text-gray-500">
+                                              {appointment.startTime} -{' '}
+                                              {appointment.endTime}
+                                            </span>
+                                          ) : null}
+                                        </>
+                                      ) : null}
+                                    </div>
+                                  ) : (
+                                    <span className="text-xs font-medium text-gray-600 flex items-center justify-center h-full">
+                                      {time}
+                                    </span>
+                                  )}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        ))
+                      ) : (
+                        <NonWorkingOverlay />
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Bulk Action Toolbar - Shows when slots are selected */}
+        {isBlockMode && (
+          <BulkActionToolbar
+            selectedCount={selectedSlotsArray.length}
+            onBlock={executeBlockAction}
+            onClear={clearSelection}
+          />
+        )}
+      </>
     );
   },
 );
