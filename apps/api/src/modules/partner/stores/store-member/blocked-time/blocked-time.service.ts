@@ -1,8 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { BlockedTime } from './blocked-time.entity';
-import { BlockedTimeDto } from './dto/blocked-time.dto';
+import {
+  BlockedTimeDto,
+  CreateBulkBlockedTimeDto,
+  DeleteBulkBlockedTimeDto,
+} from './dto/blocked-time.dto';
 
 @Injectable()
 export class BlockedTimeService {
@@ -14,6 +18,26 @@ export class BlockedTimeService {
   async create(blockedTimeDto: BlockedTimeDto): Promise<BlockedTime> {
     const blockedTime = await this.blockedTimeRepository.save(blockedTimeDto);
     return this.findOne(blockedTime.id, ['storeMember', 'storeMember.user']);
+  }
+
+  async createBulk(
+    storeMemberId: string,
+    createBulkDto: CreateBulkBlockedTimeDto,
+  ): Promise<BlockedTime[]> {
+    const blockedTimesToCreate = createBulkDto.blockedTimes.map((bt) => ({
+      ...bt,
+      storeMember: { id: storeMemberId },
+    }));
+
+    const savedBlockedTimes =
+      await this.blockedTimeRepository.save(blockedTimesToCreate);
+
+    return this.blockedTimeRepository.find({
+      where: {
+        id: In(savedBlockedTimes.map((bt) => bt.id)),
+      },
+      relations: ['storeMember', 'storeMember.user'],
+    });
   }
 
   async findAll(storeMemberId: string): Promise<BlockedTime[]> {
@@ -64,5 +88,22 @@ export class BlockedTimeService {
     if (result.affected === 0) {
       throw new NotFoundException('Blocked time not found');
     }
+  }
+
+  async deleteBulk(
+    storeMemberId: string,
+    deleteBulkDto: DeleteBulkBlockedTimeDto,
+  ): Promise<{ id: string; storeMember: { id: string } }[]> {
+    const blockedTimesToDelete = deleteBulkDto.blockedTimes.map((bt) => ({
+      id: bt.id,
+      storeMember: { id: storeMemberId },
+    }));
+
+    await this.blockedTimeRepository.delete(blockedTimesToDelete);
+
+    return blockedTimesToDelete.map((bt) => ({
+      id: bt.id,
+      storeMember: { id: storeMemberId },
+    }));
   }
 }

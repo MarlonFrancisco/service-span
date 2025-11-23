@@ -8,7 +8,11 @@ import {
   Put,
 } from '@nestjs/common';
 import { BlockedTimeService } from './blocked-time.service';
-import { BlockedTimeDto } from './dto/blocked-time.dto';
+import {
+  BlockedTimeDto,
+  CreateBulkBlockedTimeDto,
+  DeleteBulkBlockedTimeDto,
+} from './dto/blocked-time.dto';
 
 @Controller('partner/stores/:storeId/members/:storeMemberId/blocked-times')
 export class BlockedTimeController {
@@ -30,6 +34,22 @@ export class BlockedTimeController {
         storeMember: { id: storeMemberId },
       }),
     );
+  }
+
+  @Post('bulk')
+  createBulk(
+    @Param('storeMemberId') storeMemberId: string,
+    @Body() createBulkDto: CreateBulkBlockedTimeDto,
+  ) {
+    return this.blockedTimeService.createBulk(storeMemberId, createBulkDto);
+  }
+
+  @Post('bulk/delete')
+  deleteBulk(
+    @Param('storeMemberId') storeMemberId: string,
+    @Body() deleteBulkDto: DeleteBulkBlockedTimeDto,
+  ) {
+    return this.blockedTimeService.deleteBulk(storeMemberId, deleteBulkDto);
   }
 
   @Put(':id')
