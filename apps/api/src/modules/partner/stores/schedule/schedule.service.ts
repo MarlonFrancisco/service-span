@@ -1,7 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Between, In, Repository } from 'typeorm';
 import { calculateEndTime } from '../../../../utils/helpers/schedule.helpers';
+import { normalizePhoneNumber } from '../../../../utils/helpers/user.helpers';
 import { UsersService } from '../../../users/users.service';
 import { Store } from '../store.entity';
 import { WhatsappService } from '../whatsapp/whatsapp.service';
@@ -16,18 +17,23 @@ export class ScheduleService {
     private readonly scheduleRepository: Repository<Schedule>,
     @InjectRepository(Store)
     private readonly storeRepository: Repository<Store>,
-    private readonly userService: UsersService,
+    private readonly usersService: UsersService,
     private readonly whatsappService: WhatsappService,
   ) {}
 
   async create(scheduleDto: CreateSchedulesDto): Promise<Schedule[]> {
-    const user = await this.userService.findByOne({
+    let user = await this.usersService.findByOne({
       email: scheduleDto.user?.email,
-      telephone: scheduleDto.user?.telephone,
+      telephone: normalizePhoneNumber(scheduleDto.user?.telephone),
     });
 
     if (!user) {
-      throw new NotFoundException('User not found');
+      user = await this.usersService.create({
+        email: scheduleDto.user?.email,
+        telephone: normalizePhoneNumber(scheduleDto.user?.telephone),
+        firstName: scheduleDto.user?.firstName,
+        lastName: scheduleDto.user?.lastName,
+      });
     }
 
     scheduleDto.user = { id: user.id };

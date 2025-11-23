@@ -77,15 +77,16 @@ export function filterAvailableTimeSlots(
   blockedTimes: BlockedTime[],
   schedules: Schedule[],
 ): string[] {
-  const selectedDayOfWeek = selectedDate.getDay();
-  const selectedDateStr = selectedDate.toISOString().split('T')[0];
+  const selectedDayOfWeek = new Date(selectedDate).getDay();
+  const selectedDateStr = new Date(selectedDate).toISOString().split('T')[0];
 
   return allSlots.filter((slot) => {
     // Verifica se está bloqueado para esta data específica
     const isBlockedForDate = blockedTimes.some(
       (blocked) =>
         !blocked.isRecurring &&
-        blocked.date.toISOString().split('T')[0] === selectedDateStr &&
+        new Date(blocked.date).toISOString().split('T')[0] ===
+          selectedDateStr &&
         blocked.time === slot,
     );
 
@@ -105,7 +106,7 @@ export function filterAvailableTimeSlots(
     const hasSchedule = schedules.some((schedule) => {
       if (schedule.status === 'cancelled') return false;
 
-      const scheduleDate = schedule.date.toISOString().split('T')[0];
+      const scheduleDate = new Date(schedule.date).toISOString().split('T')[0];
       if (scheduleDate !== selectedDateStr) return false;
 
       const scheduleStartMinutes = timeToMinutes(schedule.startTime);
