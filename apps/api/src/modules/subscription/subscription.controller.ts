@@ -1,8 +1,10 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Headers,
+  Patch,
   Post,
   UseGuards,
 } from '@nestjs/common';
@@ -29,6 +31,21 @@ export class SubscriptionController {
     @CurrentUser() user: JwtPayload,
   ) {
     return this.subscriptionService.create(priceId, user.paymentCustomerId);
+  }
+
+  @Delete()
+  @UseGuards(JwtAuthGuard)
+  async cancel(@CurrentUser() user: JwtPayload) {
+    return this.subscriptionService.cancel(user.sub);
+  }
+
+  @Patch()
+  @UseGuards(JwtAuthGuard)
+  async update(
+    @Body() body: { cancelAtPeriodEnd: boolean },
+    @CurrentUser() user: JwtPayload,
+  ) {
+    return this.subscriptionService.update(user.sub, body.cancelAtPeriodEnd);
   }
 
   @Post('webhook')

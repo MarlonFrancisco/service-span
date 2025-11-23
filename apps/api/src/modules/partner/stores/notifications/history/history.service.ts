@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { UpdateNotificationHistoryDto } from './dto/update-notifications-history.dto';
 import { NotificationsHistory } from './history.entity';
 
 @Injectable()
@@ -16,10 +17,48 @@ export class NotificationsHistoryService {
     return this.notificationsHistoryRepository.save(notificationsHistory);
   }
 
-  async findAll(storeId: string): Promise<NotificationsHistory[]> {
-    return this.notificationsHistoryRepository.find({
-      where: { store: { id: storeId } },
-    });
+  async findAll(
+    storeId: string,
+    page: number = 1,
+    limit: number = 10,
+    filters?: { type?: string; status?: string; search?: string },
+  ) {
+    const { type, status, search } = filters || {};
+    const query = this.notificationsHistoryRepository
+      .createQueryBuilder('notification')
+      .where('notification.storeId = :storeId', { storeId });
+
+    if (type && type !== 'all') {
+      query.andWhere('notification.type = :type', { type });
+    }
+
+    if (status && status !== 'all') {
+      query.andWhere('notification.status = :status', { status });
+    }
+
+    if (search) {
+      query.andWhere(
+        '(notification.title ILIKE :search OR notification.message ILIKE :search OR notification.recipient ILIKE :search)',
+        { search: `%${search}%` },
+      );
+    }
+
+    query
+      .orderBy('notification.timestamp', 'DESC')
+      .skip((page - 1) * limit)
+      .take(limit);
+
+    const [data, total] = await query.getManyAndCount();
+
+    return {
+      data,
+      meta: {
+        total,
+        page: Number(page),
+        limit: Number(limit),
+        totalPages: Math.ceil(total / limit),
+      },
+    };
   }
 
   async findOne(id: string): Promise<NotificationsHistory> {
@@ -28,13 +67,23 @@ export class NotificationsHistoryService {
 
   async update(
     id: string,
-    notificationsHistory: NotificationsHistory,
+    notificationsHistory: UpdateNotificationHistoryDto,
   ): Promise<NotificationsHistory> {
     await this.notificationsHistoryRepository.update(id, notificationsHistory);
     return this.findOne(id);
   }
 
-  async delete(id: string): Promise<void> {
+  async markAllAsRead(storeId: string) {
+    await this.notificationsHistoryRepository.update(
+      { store: { id: storeId }, read: false },
+      { read: true },
+    );
+
+    return await this.findAll(storeId);
+  }
+
+  async delete(id: string): Promise<{ id: string }> {
     await this.notificationsHistoryRepository.delete(id);
+    return { id };
   }
 }

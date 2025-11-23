@@ -4,7 +4,6 @@ import { Between, In, Repository } from 'typeorm';
 import { calculateEndTime } from '../../../../utils/helpers/schedule.helpers';
 import { normalizePhoneNumber } from '../../../../utils/helpers/user.helpers';
 import { UsersService } from '../../../users/users.service';
-import { Store } from '../store.entity';
 import { CreateSchedulesDto } from './dto/create-schedule.dto';
 import { ScheduleDto } from './dto/schedule.dto';
 import { Schedule } from './schedule.entity';
@@ -14,7 +13,6 @@ export class ScheduleService {
   constructor(
     @InjectRepository(Schedule)
     private readonly scheduleRepository: Repository<Schedule>,
-    @InjectRepository(Store)
     private readonly usersService: UsersService,
   ) {}
 
@@ -33,7 +31,7 @@ export class ScheduleService {
       });
     }
 
-    scheduleDto.user = { id: user.id };
+    scheduleDto.user = user;
 
     let endTime = '';
 

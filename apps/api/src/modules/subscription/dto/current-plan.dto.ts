@@ -31,6 +31,7 @@ export class CurrentPlanDto {
   subscriptionStatus: string;
   currentPeriodStart: Date;
   currentPeriodEnd: Date;
+  cancelAtPeriodEnd: boolean;
   nextBillingDate: Date;
   invoices: InvoiceDto[];
   isActive: boolean;
@@ -88,6 +89,7 @@ export class CurrentPlanDto {
       subscription.current_period_start * 1000,
     );
     this.currentPeriodEnd = new Date(subscription.current_period_end * 1000);
+    this.cancelAtPeriodEnd = subscription.cancel_at_period_end;
     this.nextBillingDate = nextBillingDate;
     this.isActive = subscription.status === 'active';
     this.invoices = invoices.map((invoice) => new InvoiceDto(invoice));

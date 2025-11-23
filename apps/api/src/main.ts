@@ -1,4 +1,4 @@
-import type { INestApplication } from '@nestjs/common';
+import { ValidationPipe, type INestApplication } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import express, { json } from 'express';
 import { AppModule } from './modules/app.module';
@@ -15,6 +15,8 @@ export async function createApp(): Promise<INestApplication> {
   }
 
   const app = await NestFactory.create(AppModule);
+
+  app.useGlobalPipes(new ValidationPipe());
 
   const rawBodyMiddleware = express.json({
     verify: (req: any, res, buf) => {

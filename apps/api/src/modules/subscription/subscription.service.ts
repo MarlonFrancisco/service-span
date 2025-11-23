@@ -38,6 +38,49 @@ export class SubscriptionService {
     private readonly configService: ConfigService,
   ) {}
 
+  async cancel(userId: string) {
+    const subscription = await this.subscriptionRepository.findOne({
+      where: {
+        user: { id: userId },
+        status: In(['active', 'paid', 'trialing']),
+      },
+    });
+
+    if (!subscription) {
+      throw new NotFoundException('Subscription not found');
+    }
+
+    const response = await this.stripeService.subscriptions.update(
+      subscription.subscriptionId,
+      {
+        cancel_at_period_end: true,
+      },
+    );
+
+    return { cancelAtPeriodEnd: response.cancel_at_period_end };
+  }
+
+  async update(userId: string, cancelAtPeriodEnd: boolean) {
+    const subscription = await this.subscriptionRepository.findOne({
+      where: {
+        user: { id: userId },
+        status: In(['active', 'paid', 'trialing']),
+      },
+    });
+
+    if (!subscription) {
+      throw new NotFoundException('Subscription not found');
+    }
+
+    const response = await this.stripeService.subscriptions.update(
+      subscription.subscriptionId,
+      {
+        cancel_at_period_end: cancelAtPeriodEnd,
+      },
+    );
+    return { cancelAtPeriodEnd: response.cancel_at_period_end };
+  }
+
   async getCurrentPlan(userId: string): Promise<CurrentPlanDto> {
     try {
       // 1. Buscar subscription ativa do usuário no banco
