@@ -13,8 +13,9 @@ export const useSettings = () => {
   const storeId = usePartnerStore((state) => state.activeStore?.id);
   const { notificationsSettings } = useNotificationsQuery({ storeId });
 
-  const { updateNotificationsSettings, isUpdatingNotificationsSettings } =
-    useNotificationsMutations({ storeId });
+  const { updateNotificationsSettingsMutation } = useNotificationsMutations({
+    storeId,
+  });
 
   const form = useForm<TEmailSettingsFormData>({
     resolver: zodResolver(emailSettingsSchema),
@@ -39,8 +40,16 @@ export const useSettings = () => {
   }, [notificationsSettings, form]);
 
   const handleSubmit = form.handleSubmit(async (data) => {
-    updateNotificationsSettings({ ...data, id: notificationsSettings?.id });
+    updateNotificationsSettingsMutation.mutate({
+      ...data,
+      id: notificationsSettings?.id,
+    });
   });
 
-  return { form, isUpdatingNotificationsSettings, handleSubmit };
+  return {
+    form,
+    isUpdatingNotificationsSettings:
+      updateNotificationsSettingsMutation.isPending,
+    handleSubmit,
+  };
 };

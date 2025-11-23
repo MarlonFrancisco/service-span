@@ -16,7 +16,7 @@ export interface INotificationsHistory {
   type: TNotificationType;
   title: string;
   message: string;
-  timestamp: Date;
+  timestamp: string;
   read: boolean;
   recipient?: string;
   status?: TNotificationStatus;

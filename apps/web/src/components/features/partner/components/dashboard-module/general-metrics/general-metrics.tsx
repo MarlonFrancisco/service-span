@@ -1,7 +1,7 @@
 'use client';
-import { TrendBadge } from '@/components/features/partner/components/dashboard-module/components/trend-badge';
-import { PeriodFilterWithRefresh } from '@/components/features/partner/components/dashboard-module/components/period-filter-with-refresh';
 import type { PeriodFilterValue } from '@/components/features/partner/components/dashboard-module/components/period-filter-with-refresh';
+import { PeriodFilterWithRefresh } from '@/components/features/partner/components/dashboard-module/components/period-filter-with-refresh';
+import { TrendBadge } from '@/components/features/partner/components/dashboard-module/components/trend-badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@repo/ui';
 import {
   Award,
@@ -152,7 +152,7 @@ export function GeneralMetricsModule() {
   return (
     <div className="space-y-6">
       {/* Header with Filters and Actions */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-end gap-4">
         <PeriodFilterWithRefresh
           value={periodFilter}
           onValueChange={setPeriodFilter}

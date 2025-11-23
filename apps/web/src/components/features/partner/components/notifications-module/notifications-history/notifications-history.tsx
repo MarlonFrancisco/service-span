@@ -7,6 +7,12 @@ import {
   CardContent,
   CardHeader,
   Input,
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
   Select,
   SelectContent,
   SelectItem,
@@ -23,6 +29,7 @@ import {
   Icons,
 } from '../notifications-module.utils';
 import { useNotificationsHistory } from './notifications-history.hook';
+import { NotificationsHistorySkeleton } from './notifications-history.skeleton';
 
 export function NotificationsHistory() {
   const {
@@ -37,6 +44,10 @@ export function NotificationsHistory() {
     markAsRead,
     markAllAsRead,
     deleteNotification,
+    page,
+    setPage,
+    totalPages,
+    isLoading,
   } = useNotificationsHistory();
   return (
     <div className="space-y-4">
@@ -110,20 +121,22 @@ export function NotificationsHistory() {
         </CardHeader>
 
         <CardContent className="p-0">
-          <div className="divide-y divide-gray-100">
-            <AnimatePresence mode="popLayout">
-              {notifications.length === 0 ? (
-                <div className="p-12 text-center">
-                  <Icons.Bell className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-gray-900 mb-2">
-                    Nenhuma notificação encontrada
-                  </h3>
-                  <p className="text-gray-600 text-sm">
-                    Tente ajustar os filtros de busca
-                  </p>
-                </div>
-              ) : (
-                notifications.map((notification) => (
+          {isLoading ? (
+            <NotificationsHistorySkeleton />
+          ) : notifications.length === 0 ? (
+            <div className="p-12 text-center">
+              <Icons.Bell className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+              <h3 className="text-gray-900 mb-2">
+                Nenhuma notificação encontrada
+              </h3>
+              <p className="text-gray-600 text-sm">
+                Tente ajustar os filtros de busca
+              </p>
+            </div>
+          ) : (
+            <div className="divide-y divide-gray-100">
+              <AnimatePresence mode="popLayout">
+                {notifications.map((notification) => (
                   <motion.div
                     key={notification.id}
                     initial={{ opacity: 0, y: 20 }}
@@ -171,7 +184,9 @@ export function NotificationsHistory() {
                                 ) : null;
                               })()}
                             <span className="text-xs text-gray-500 whitespace-nowrap">
-                              {formatTimestamp(notification.timestamp)}
+                              {formatTimestamp(
+                                new Date(notification.timestamp),
+                              )}
                             </span>
                           </div>
                         </div>
@@ -215,11 +230,82 @@ export function NotificationsHistory() {
                       </div>
                     </div>
                   </motion.div>
-                ))
-              )}
-            </AnimatePresence>
-          </div>
+                ))}
+              </AnimatePresence>
+            </div>
+          )}
         </CardContent>
+        {totalPages > 1 && (
+          <div className="p-4 border-t border-gray-100">
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    onClick={() => setPage((p) => Math.max(1, p - 1))}
+                    aria-disabled={page === 1}
+                    className={
+                      page === 1
+                        ? 'pointer-events-none opacity-50'
+                        : 'cursor-pointer'
+                    }
+                  />
+                </PaginationItem>
+
+                {(() => {
+                  const maxPagesToShow = 5;
+                  const pages: number[] = [];
+
+                  if (totalPages <= maxPagesToShow) {
+                    // Show all pages
+                    for (let i = 1; i <= totalPages; i++) {
+                      pages.push(i);
+                    }
+                  } else {
+                    // Sliding window logic
+                    let startPage = Math.max(1, page - 5);
+                    const endPage = Math.min(
+                      totalPages,
+                      startPage + maxPagesToShow - 1,
+                    );
+
+                    // Adjust if we're near the end
+                    if (endPage - startPage < maxPagesToShow - 1) {
+                      startPage = Math.max(1, endPage - maxPagesToShow + 1);
+                    }
+
+                    for (let i = startPage; i <= endPage; i++) {
+                      pages.push(i);
+                    }
+                  }
+
+                  return pages.map((p) => (
+                    <PaginationItem key={p}>
+                      <PaginationLink
+                        isActive={page === p}
+                        onClick={() => setPage(p)}
+                        className="cursor-pointer"
+                      >
+                        {p}
+                      </PaginationLink>
+                    </PaginationItem>
+                  ));
+                })()}
+
+                <PaginationItem>
+                  <PaginationNext
+                    onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                    aria-disabled={page === totalPages}
+                    className={
+                      page === totalPages
+                        ? 'pointer-events-none opacity-50'
+                        : 'cursor-pointer'
+                    }
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          </div>
+        )}
       </Card>
     </div>
   );

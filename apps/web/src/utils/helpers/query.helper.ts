@@ -44,9 +44,16 @@ export const CACHE_QUERY_KEYS = {
   ],
   store: (storeId: string) => [`partner/stores/${storeId}`],
   categories: (storeId: string) => [`partner/categories/${storeId}`],
-  notificationsHistory: (storeId: string) => [
-    `partner/stores/${storeId}/notifications/history`,
-  ],
+  notificationsHistory: (
+    storeId: string,
+    params?: {
+      page?: number;
+      limit?: number;
+      type?: string;
+      status?: string;
+      search?: string;
+    },
+  ) => [`partner/stores/${storeId}/notifications/history`, { params }],
   notificationsSettings: (storeId: string) => [
     `partner/stores/${storeId}/notifications/settings`,
   ],

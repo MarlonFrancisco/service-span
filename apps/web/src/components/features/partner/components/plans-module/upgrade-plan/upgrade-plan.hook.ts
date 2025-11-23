@@ -39,8 +39,7 @@ const benefits = [
 export function useUpgradePlan() {
   const { plans: allPlans, isPendingPlans } = usePlansQuery();
   const { currentPlan } = useSubscriptionQuery();
-  const { createSubscription, isCreatingSubscription } =
-    useSubscriptionMutations();
+  const { createSubscriptionMutation } = useSubscriptionMutations();
 
   const [type, setType] = useState<'month' | 'year'>('month');
 
@@ -50,13 +49,13 @@ export function useUpgradePlan() {
 
   const handleSelectPlan = useCallback(
     (planId: string) => {
-      createSubscription(planId, {
+      createSubscriptionMutation.mutate(planId, {
         onSuccess: ({ url }) => {
           window.location.href = url;
         },
       });
     },
-    [createSubscription],
+    [createSubscriptionMutation],
   );
 
   return {
@@ -64,7 +63,7 @@ export function useUpgradePlan() {
     benefits,
     currentPlan,
     isPendingPlans,
-    isCreatingSubscription,
+    isCreatingSubscription: createSubscriptionMutation.isPending,
     handleSelectPlan,
     type,
     setType,

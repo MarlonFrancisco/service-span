@@ -131,7 +131,7 @@ export function AgendaToolbar() {
   }
 
   return (
-    <div className="flex w-full items-center justify-between gap-4 rounded-xl border border-gray-200 bg-white px-4 py-3 shadow-sm md:px-6 md:py-4">
+    <div className="flex w-full items-center justify-between gap-4">
       <div className="flex flex-wrap items-center gap-3 md:gap-4">
         <div className="flex items-center gap-2 bg-gray-50 rounded-lg p-1 border border-gray-200">
           <Button

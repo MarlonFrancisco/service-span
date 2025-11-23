@@ -37,16 +37,21 @@ export const useWhatsappSettings = () => {
     }
   }, [notificationsSettings, form]);
 
-  const { updateNotificationsSettings, isUpdatingNotificationsSettings } =
-    useNotificationsMutations({ storeId });
+  const { updateNotificationsSettingsMutation } = useNotificationsMutations({
+    storeId,
+  });
 
   const handleSubmit = form.handleSubmit(async (data) => {
-    updateNotificationsSettings({ ...data, id: notificationsSettings?.id });
+    updateNotificationsSettingsMutation.mutate({
+      ...data,
+      id: notificationsSettings?.id,
+    });
   });
 
   return {
     form,
-    isUpdatingNotificationsSettings,
+    isUpdatingNotificationsSettings:
+      updateNotificationsSettingsMutation.isPending,
     whatsappConfig,
     handleSubmit,
   };

@@ -15,4 +15,21 @@ export class SubscriptionService {
       '/subscription/current-plan',
     );
   }
+
+  static async cancelSubscription() {
+    return await this.apiClient.delete<{ cancelAtPeriodEnd: boolean }>(
+      '/subscription',
+    );
+  }
+
+  static async updateSubscription({
+    cancelAtPeriodEnd,
+  }: {
+    cancelAtPeriodEnd: boolean;
+  }) {
+    return await this.apiClient.patch<{ cancelAtPeriodEnd: boolean }>(
+      '/subscription',
+      { cancelAtPeriodEnd },
+    );
+  }
 }

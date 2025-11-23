@@ -21,6 +21,7 @@ export interface IInvoice {
 }
 
 export interface IMySubscription {
+  cancelAtPeriodEnd: boolean;
   planId: string;
   planName: string;
   planDescription: string;

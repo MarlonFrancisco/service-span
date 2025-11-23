@@ -7,6 +7,7 @@ import {
   isBlockedTime,
 } from '../../agenda-grid.helpers';
 import { BulkActionToolbar } from '../bulk-action-toolbar';
+import { CurrentTimeLine } from '../current-time-line';
 import { useAgendaGridDesktopView } from './agenda-grid-desktop-view.hook';
 import type { TDesktopViewConfig } from './agenda-grid-desktop-view.types';
 
@@ -56,7 +57,9 @@ export const AgendaGridDesktopView = memo(
       <>
         <Card className="p-0">
           <CardContent className="p-0">
-            <div className="grid grid-cols-8 min-w-[900px]">
+            <div className="relative grid grid-cols-8 min-w-[900px]">
+              {/* Current Time Line */}
+              <CurrentTimeLine timeSlots={timeSlots} />
               {/* Time Column */}
               <div className="border-r border-gray-200 bg-gray-50">
                 <div

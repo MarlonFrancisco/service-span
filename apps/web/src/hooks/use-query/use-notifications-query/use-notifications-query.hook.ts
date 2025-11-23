@@ -8,10 +8,18 @@ export const useNotificationsQuery = ({
   storeId,
   includeNotificationsHistory = false,
   includeNotificationsSettings = false,
+  notificationHistoryParams,
 }: {
   storeId?: string;
   includeNotificationsHistory?: boolean;
   includeNotificationsSettings?: boolean;
+  notificationHistoryParams?: {
+    page?: number;
+    limit?: number;
+    type?: string;
+    status?: string;
+    search?: string;
+  };
 }) => {
   const { data: notificationsSettings } = useQuery<INotificationsSettings>({
     queryKey: CACHE_QUERY_KEYS.notificationsSettings(storeId!),
@@ -19,11 +27,23 @@ export const useNotificationsQuery = ({
     enabled: !!storeId && includeNotificationsSettings,
   });
 
-  const { data: notificationsHistory = [] } = useQuery({
-    queryKey: CACHE_QUERY_KEYS.notificationsHistory(storeId!),
-    queryFn: () => NotificationsHistoryService.getAll(storeId!),
+  const {
+    data: notificationsHistoryData,
+    isLoading: isNotificationsHistoryLoading,
+  } = useQuery({
+    queryKey: CACHE_QUERY_KEYS.notificationsHistory(
+      storeId!,
+      notificationHistoryParams,
+    ),
+    queryFn: () =>
+      NotificationsHistoryService.getAll(storeId!, notificationHistoryParams),
     enabled: !!storeId && includeNotificationsHistory,
   });
 
-  return { notificationsSettings, notificationsHistory };
+  return {
+    notificationsSettings,
+    notificationsHistory: notificationsHistoryData?.data || [],
+    notificationsMeta: notificationsHistoryData?.meta,
+    isNotificationsHistoryLoading,
+  };
 };

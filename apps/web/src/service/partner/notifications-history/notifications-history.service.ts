@@ -5,9 +5,37 @@ export class NotificationsHistoryService {
   static apiClient = apiClient;
   static headers?: HeadersInit;
 
-  static async getAll(storeId: string) {
-    return await this.apiClient.get<INotificationsHistory[]>(
-      `/partner/stores/${storeId}/notifications/history`,
+  static async getAll(
+    storeId: string,
+    params?: {
+      page?: number;
+      limit?: number;
+      type?: string;
+      status?: string;
+      search?: string;
+    },
+  ) {
+    const queryParams = new URLSearchParams();
+    if (params) {
+      if (params.page) queryParams.append('page', params.page.toString());
+      if (params.limit) queryParams.append('limit', params.limit.toString());
+      if (params.type && params.type !== 'all')
+        queryParams.append('type', params.type);
+      if (params.status && params.status !== 'all')
+        queryParams.append('status', params.status);
+      if (params.search) queryParams.append('search', params.search);
+    }
+
+    return await this.apiClient.get<{
+      data: INotificationsHistory[];
+      meta: {
+        total: number;
+        page: number;
+        limit: number;
+        totalPages: number;
+      };
+    }>(
+      `/partner/stores/${storeId}/notifications/history?${queryParams.toString()}`,
       {
         headers: this.headers,
       },
@@ -29,12 +57,20 @@ export class NotificationsHistoryService {
 
   static async update(
     storeId: string,
-    notificationId: string,
-    notification: Partial<INotificationsHistory>,
+    notificationsHistory: Partial<INotificationsHistory>,
   ) {
-    return await this.apiClient.put<INotificationsHistory>(
-      `/partner/stores/${storeId}/notifications/history/${notificationId}`,
-      notification,
+    return await this.apiClient.patch<INotificationsHistory>(
+      `/partner/stores/${storeId}/notifications/history/${notificationsHistory.id}`,
+      notificationsHistory,
+      {
+        headers: this.headers,
+      },
+    );
+  }
+
+  static async markAllAsRead(storeId: string) {
+    return await this.apiClient.post<INotificationsHistory[]>(
+      `/partner/stores/${storeId}/notifications/history/mark-all-as-read`,
       {
         headers: this.headers,
       },
