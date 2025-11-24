@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { NotificationModule } from 'src/modules/notification';
+import { NotificationModule } from '../../../notification/notification.module';
 import { UsersModule } from '../../../users/users.module';
 import { NotificationsHistoryModule } from '../notifications/history/history.module';
 import { Store } from '../store.entity';

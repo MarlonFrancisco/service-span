@@ -1,4 +1,3 @@
-import { NotificationService } from 'src/modules/notification/notification.service';
 import {
   DataSource,
   EntitySubscriberInterface,
@@ -6,6 +5,7 @@ import {
   InsertEvent,
   UpdateEvent,
 } from 'typeorm';
+import { NotificationService } from '../../../notification/notification.service';
 import { NotificationsHistory } from '../notifications/history/history.entity';
 import { NotificationsHistoryService } from '../notifications/history/history.service';
 import { Schedule } from './schedule.entity';
