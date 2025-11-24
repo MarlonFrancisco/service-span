@@ -40,7 +40,6 @@ export interface IMySubscription {
   storeMembersLength: number;
   maxStores: number;
   maxUsers: number;
-  maxSchedules: number;
   rankTier: string;
   smsReminder: boolean;
 }
