@@ -5,8 +5,6 @@ import type { TUsePlanOverviewCardConfig } from './plan-overview-card.types';
 
 export const usePlanOverviewCard = ({
   nextBillingDate,
-  schedulesLength,
-  maxSchedules,
   storesLength,
   maxStores,
   storeMembersLength,
@@ -25,11 +23,6 @@ export const usePlanOverviewCard = ({
       : 'Indefinida';
   }, [nextBillingDate]);
 
-  const usagePercentage = useMemo(
-    () => calculatePercentage(schedulesLength, maxSchedules),
-    [schedulesLength, maxSchedules],
-  );
-
   const storesUsagePercentage = useMemo(
     () => calculatePercentage(storesLength, maxStores),
     [storesLength, maxStores],
@@ -40,24 +33,14 @@ export const usePlanOverviewCard = ({
     [storeMembersLength, maxUsers],
   );
 
-  const isSchedulesUnlimited = useMemo(
-    () => isUnlimited(maxSchedules),
-    [maxSchedules],
-  );
-
-  const isStoresUnlimited = useMemo(
-    () => isUnlimited(maxStores),
-    [maxStores],
-  );
+  const isStoresUnlimited = useMemo(() => isUnlimited(maxStores), [maxStores]);
 
   const isUsersUnlimited = useMemo(() => isUnlimited(maxUsers), [maxUsers]);
 
   return {
     formattedNextBillingDate,
-    usagePercentage,
     storesUsagePercentage,
     usersUsagePercentage,
-    isSchedulesUnlimited,
     isStoresUnlimited,
     isUsersUnlimited,
   };

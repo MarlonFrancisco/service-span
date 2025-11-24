@@ -15,8 +15,11 @@ import {
 } from '@repo/ui';
 import { ChevronDown } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import {
+  useIsMenuItemActive,
+  useIsSubMenuItemActive,
+} from '../../admin-sidebar.hook';
 import { IMenuItem } from '../../admin-sidebar.types';
-import { useIsMenuItemActive, useIsSubMenuItemActive } from '../../admin-sidebar.hook';
 
 interface AdminSidebarMenuItemWithSubmenuProps {
   item: IMenuItem;
@@ -29,11 +32,6 @@ export function AdminSidebarMenuItemWithSubmenu({
   activeModule,
   isCollapsed,
 }: AdminSidebarMenuItemWithSubmenuProps) {
-  const router = useRouter();
-  const Icon = item.icon;
-  const isActive = useIsMenuItemActive(item.id, activeModule);
-  const submenu = item.submenu || [];
-
   if (isCollapsed) {
     return <CollapsedSubmenuItem item={item} activeModule={activeModule} />;
   }
@@ -65,9 +63,7 @@ function CollapsedSubmenuItem({
             }`}
           >
             <Icon
-              className={`h-4 w-4 ${
-                isActive ? 'text-white' : 'text-gray-400'
-              }`}
+              className={`h-4 w-4 ${isActive ? 'text-white' : 'text-gray-400'}`}
             />
           </button>
         </PopoverTrigger>
@@ -83,7 +79,10 @@ function CollapsedSubmenuItem({
             <div className="h-px bg-gray-100" />
             {submenu.map((subItem) => {
               const SubIcon = subItem.icon;
-              const isSubActive = useIsSubMenuItemActive(subItem.id, activeModule);
+              const isSubActive = useIsSubMenuItemActive(
+                subItem.id,
+                activeModule,
+              );
               return (
                 <button
                   key={subItem.id}
@@ -133,9 +132,7 @@ function ExpandedSubmenuItem({
             }
           >
             <Icon
-              className={`h-4 w-4 ${
-                isActive ? 'text-white' : 'text-gray-400'
-              }`}
+              className={`h-4 w-4 ${isActive ? 'text-white' : 'text-gray-400'}`}
             />
             <span>{item.label}</span>
             <ChevronDown
@@ -149,7 +146,10 @@ function ExpandedSubmenuItem({
           <SidebarMenuSub>
             {submenu.map((subItem) => {
               const SubIcon = subItem.icon;
-              const isSubActive = useIsSubMenuItemActive(subItem.id, activeModule);
+              const isSubActive = useIsSubMenuItemActive(
+                subItem.id,
+                activeModule,
+              );
               return (
                 <SidebarMenuSubItem
                   key={subItem.id}

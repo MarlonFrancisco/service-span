@@ -5,7 +5,6 @@ export type TPlanOverviewCardConfig = {
   cancelAtPeriodEnd: boolean;
   nextBillingDate?: Date;
   schedulesLength: number;
-  maxSchedules: number;
   storesLength: number;
   maxStores: number;
   storeMembersLength: number;
@@ -18,7 +17,6 @@ export type TUsePlanOverviewCardConfig = Pick<
   TPlanOverviewCardConfig,
   | 'nextBillingDate'
   | 'schedulesLength'
-  | 'maxSchedules'
   | 'storesLength'
   | 'maxStores'
   | 'storeMembersLength'

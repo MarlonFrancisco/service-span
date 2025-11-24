@@ -3,8 +3,8 @@
 import { SidebarMenuButton, SidebarMenuItem } from '@repo/ui';
 import { ChevronRight } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { IMenuItem } from '../../admin-sidebar.types';
 import { useIsMenuItemActive } from '../../admin-sidebar.hook';
+import { IMenuItem } from '../../admin-sidebar.types';
 
 interface AdminSidebarMenuItemProps {
   item: IMenuItem;
@@ -29,12 +29,9 @@ export function AdminSidebarMenuItem({
 
   return (
     <SidebarMenuItem>
-      <SidebarMenuButton
-        isActive={isActive}
-        onClick={handleClick}
-      >
+      <SidebarMenuButton isActive={isActive} onClick={handleClick}>
         <Icon />
-        <span>{item.label}</span>
+        <span className="text-sm">{item.label}</span>
         {isActive && !isCollapsed && (
           <ChevronRight className="h-3.5 w-3.5 ml-auto" />
         )}

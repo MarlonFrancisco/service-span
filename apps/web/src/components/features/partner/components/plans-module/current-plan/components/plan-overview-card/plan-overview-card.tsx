@@ -1,5 +1,6 @@
 'use client';
 
+import { useSubscriptionQuery } from '@/hooks/use-query/use-subscription-query';
 import {
   Badge,
   Button,
@@ -10,7 +11,6 @@ import {
   Progress,
   Separator,
 } from '@repo/ui';
-import { useSubscriptionQuery } from '@/hooks/use-query/use-subscription-query';
 import { Mail, RefreshCw, Shield, XCircle } from 'lucide-react';
 import { motion } from 'motion/react';
 import { usePlanOverviewCard } from './plan-overview-card.hook';
@@ -28,16 +28,13 @@ export function PlanOverviewCard({
 
   const {
     formattedNextBillingDate,
-    usagePercentage,
     storesUsagePercentage,
     usersUsagePercentage,
-    isSchedulesUnlimited,
     isStoresUnlimited,
     isUsersUnlimited,
   } = usePlanOverviewCard({
     nextBillingDate: currentPlan?.nextBillingDate,
     schedulesLength: currentPlan?.schedulesLength || 0,
-    maxSchedules: currentPlan?.maxSchedules || 0,
     storesLength: currentPlan?.storesLength || 0,
     maxStores: currentPlan?.maxStores || 0,
     storeMembersLength: currentPlan?.storeMembersLength || 0,
@@ -153,17 +150,10 @@ export function PlanOverviewCard({
                       <span className="text-sm text-gray-600">
                         Agendamentos este mês
                       </span>
-                      {isSchedulesUnlimited ? (
-                        <Badge>Ilimitado</Badge>
-                      ) : (
-                        <span className="text-sm text-gray-900">
-                          {currentPlan.schedulesLength}/{currentPlan.maxSchedules}
-                        </span>
-                      )}
+                      <span className="text-sm text-gray-900">
+                        {currentPlan.schedulesLength}
+                      </span>
                     </div>
-                    {!isSchedulesUnlimited && (
-                      <Progress value={usagePercentage} className="h-2" />
-                    )}
                   </div>
 
                   <div>
@@ -180,10 +170,7 @@ export function PlanOverviewCard({
                       )}
                     </div>
                     {!isStoresUnlimited && (
-                      <Progress
-                        value={storesUsagePercentage}
-                        className="h-2"
-                      />
+                      <Progress value={storesUsagePercentage} className="h-2" />
                     )}
                   </div>
 
@@ -196,15 +183,13 @@ export function PlanOverviewCard({
                         <Badge>Ilimitado</Badge>
                       ) : (
                         <span className="text-sm text-gray-900">
-                          {currentPlan.storeMembersLength}/{currentPlan.maxUsers}
+                          {currentPlan.storeMembersLength}/
+                          {currentPlan.maxUsers}
                         </span>
                       )}
                     </div>
                     {!isUsersUnlimited && (
-                      <Progress
-                        value={usersUsagePercentage}
-                        className="h-2"
-                      />
+                      <Progress value={usersUsagePercentage} className="h-2" />
                     )}
                   </div>
                 </div>
