@@ -1,3 +1,44 @@
+## 0.10.0 (2025-11-24)
+
+### Feat
+
+- **api/partner**: add review subscriber for automatic notification history
+- **ui**: export pagination component
+- **api**: implement notifications history management and subscription control
+- **web/partner**: enhance current plan module with payment history and notification improvements
+- **web/partner**: implement bulk block operations in agenda module
+- **api/partner**: add bulk operations for blocked-time creation and deletion
+- **web/partner**: implement whatsapp business api integration with notifications settings
+- **api/whatsapp-bot**: implement service selection with interactive list and database integration
+- **api**: implement whatsapp integration with business api and bot
+- **api**: improve managering plans and subscriptions
+- **web**: improve plan feature
+- **api/subscription**: updates subscription.service.ts with improvements, adjustments and error handling
+- **api/subscription**: add invoice payment handlers with email notifications and webhook verification
+
+### Fix
+
+- **api**: resolve circular dependency in TypeORM entities
+- **api/whatsapp**: flow chat bot
+- **web/partner**: add empty states to dashboard metrics and fix store cache invalidation
+- **api/whatsapp**: manager flow
+- **api**: import module
+- **http-client**: resolve response content-type
+- **api/subscription**: change cancel url
+- **api/users**: get subscription user
+- **api/users**: on get subscription the subscription is the possible undefined
+
+### Refactor
+
+- **web**: remove footer section from roi calculator
+- **web/partner**: remove maxSchedules field from subscription interface
+- **web/partner**: simplify admin sidebar components and remove unlimited plan support
+- **api/subscription**: remove schedule limits from plans metadata
+- **web/partner**: reorganize pricing page with bento grid benefits layout
+- **api**: rename upstash module to upstash-search for better clarity
+- **web/partner**: extract period filter component and add refresh to metrics modules
+- **api/whatsapp**: improve config handling and webhook integration
+
 ## 0.9.0 (2025-11-15)
 
 ### Feat
