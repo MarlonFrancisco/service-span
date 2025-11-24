@@ -36,7 +36,6 @@ export class CurrentPlanDto {
   invoices: InvoiceDto[];
   isActive: boolean;
 
-  maxSchedules: number;
   maxStores: number;
   maxUsers: number;
   rankTier: string;
@@ -102,11 +101,6 @@ export class CurrentPlanDto {
       product.metadata.PRO_LIMIT === 'UNLIMITED'
         ? 0
         : parseInt(product.metadata.PRO_LIMIT);
-
-    this.maxSchedules =
-      product.metadata.SCHEDULE_LIMIT === 'UNLIMITED'
-        ? 0
-        : parseInt(product.metadata.SCHEDULE_LIMIT);
 
     this.rankTier = product.metadata.RANK_TIER;
 
