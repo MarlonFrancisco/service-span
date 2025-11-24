@@ -441,35 +441,6 @@ export function ROICalculator() {
               })}
             </div>
           </div>
-
-          {/* Footer info */}
-          <div className="pt-6 border-t border-gray-200">
-            <div className="flex items-center justify-center gap-3 text-center">
-              <div className="flex items-center gap-2">
-                <div className="p-1.5 bg-gray-100 rounded">
-                  <TrendingUp className="h-3.5 w-3.5 text-gray-900" />
-                </div>
-                <div className="text-left">
-                  <div className="text-sm text-gray-900">Dados reais</div>
-                  <div className="text-xs text-gray-500">
-                    +1.000 negócios analisados
-                  </div>
-                </div>
-              </div>
-              <div className="h-8 w-px bg-gray-200" />
-              <div className="flex items-center gap-2">
-                <div className="p-1.5 bg-gray-100 rounded">
-                  <Check className="h-3.5 w-3.5 text-gray-900" />
-                </div>
-                <div className="text-left">
-                  <div className="text-sm text-gray-900">
-                    Resultados típicos
-                  </div>
-                  <div className="text-xs text-gray-500">30-60 dias de uso</div>
-                </div>
-              </div>
-            </div>
-          </div>
         </CardContent>
       </Card>
 
