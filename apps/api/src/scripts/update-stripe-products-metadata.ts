@@ -12,13 +12,16 @@ if (!stripeKey) {
 
 const stripe = new Stripe(stripeKey);
 
-interface ProductMetadata extends Stripe.ProductUpdateParams {
-  productId: string;
+interface ProductMetadata {
+  productName: string;
+  metadata: Record<string, string>;
+  marketing_features: Array<{ name: string }>;
+  description: string;
 }
 
 const productsMetadata: ProductMetadata[] = [
   {
-    productId: 'prod_TR5FejhpnItfNp', // Starter
+    productName: 'Starter',
     metadata: {
       UNIT_LIMIT: '1',
       PRO_LIMIT: '1',
@@ -28,6 +31,10 @@ const productsMetadata: ProductMetadata[] = [
       DISPLAY_ORDER: '1',
       IS_RECOMMENDED: 'false',
       TRIAL_PERIOD_DAYS: '7',
+      DASHBOARD_GENERAL_ACCESS: 'false',
+      DASHBOARD_SALES_ACCESS: 'false',
+      DASHBOARD_OPERATIONAL_ACCESS: 'false',
+      DASHBOARD_CUSTOMERS_ACCESS: 'false',
     },
     marketing_features: [
       { name: '1 Loja' },
@@ -38,7 +45,7 @@ const productsMetadata: ProductMetadata[] = [
     description: 'Plano ideal para profissionais começando',
   },
   {
-    productId: 'prod_TR5Fq5jyCFu8jB', // Professional
+    productName: 'Professional',
     metadata: {
       UNIT_LIMIT: '2',
       PRO_LIMIT: '5',
@@ -47,6 +54,10 @@ const productsMetadata: ProductMetadata[] = [
       WHATSAPP_INTEGRATION: 'false',
       DISPLAY_ORDER: '2',
       IS_RECOMMENDED: 'false',
+      DASHBOARD_GENERAL_ACCESS: 'false',
+      DASHBOARD_SALES_ACCESS: 'false',
+      DASHBOARD_OPERATIONAL_ACCESS: 'false',
+      DASHBOARD_CUSTOMERS_ACCESS: 'false',
     },
     marketing_features: [
       { name: 'Até 2 Lojas' },
@@ -57,7 +68,7 @@ const productsMetadata: ProductMetadata[] = [
     description: 'Para profissionais que querem escalar',
   },
   {
-    productId: 'prod_TR5FGo8Di9giHr', // Business
+    productName: 'Business',
     metadata: {
       UNIT_LIMIT: '5',
       PRO_LIMIT: '20',
@@ -66,6 +77,11 @@ const productsMetadata: ProductMetadata[] = [
       WHATSAPP_INTEGRATION: 'false',
       DISPLAY_ORDER: '3',
       IS_RECOMMENDED: 'true',
+
+      DASHBOARD_GENERAL_ACCESS: 'true',
+      DASHBOARD_SALES_ACCESS: 'false',
+      DASHBOARD_OPERATIONAL_ACCESS: 'false',
+      DASHBOARD_CUSTOMERS_ACCESS: 'false',
     },
     marketing_features: [
       { name: 'Até 5 Lojas' },
@@ -77,7 +93,7 @@ const productsMetadata: ProductMetadata[] = [
     description: 'Para empresas estabelecidas',
   },
   {
-    productId: 'prod_TR5FiVMjU2IKST', // Enterprise
+    productName: 'Enterprise',
     metadata: {
       UNIT_LIMIT: 'UNLIMITED',
       PRO_LIMIT: 'UNLIMITED',
@@ -86,6 +102,11 @@ const productsMetadata: ProductMetadata[] = [
       WHATSAPP_INTEGRATION: 'true',
       DISPLAY_ORDER: '4',
       IS_RECOMMENDED: 'false',
+
+      DASHBOARD_GENERAL_ACCESS: 'true',
+      DASHBOARD_SALES_ACCESS: 'true',
+      DASHBOARD_OPERATIONAL_ACCESS: 'true',
+      DASHBOARD_CUSTOMERS_ACCESS: 'true',
     },
     marketing_features: [
       { name: 'Lojas Ilimitadas' },
@@ -107,21 +128,36 @@ async function updateProductsMetadata() {
   );
   console.log(`📋 Total de produtos a atualizar: ${productsMetadata.length}\n`);
 
+  // Listar todos os produtos da Stripe
+  console.log('📡 Buscando produtos da Stripe...\n');
+  const stripeProducts = await stripe.products.list({
+    limit: 100,
+    active: true,
+  });
+
   let successCount = 0;
   let errorCount = 0;
 
   for (const {
-    productId,
+    productName,
     metadata,
     marketing_features,
     description,
   } of productsMetadata) {
     try {
-      console.log(`📦 Atualizando produto ${productId}...`);
+      console.log(`📦 Buscando produto "${productName}"...`);
 
-      await stripe.products.retrieve(productId);
+      // Encontrar o produto pelo nome
+      const product = stripeProducts.data.find((p) => p.name === productName);
 
-      const updatedProduct = await stripe.products.update(productId, {
+      if (!product) {
+        throw new Error(`Produto "${productName}" não encontrado na Stripe`);
+      }
+
+      console.log(`   Encontrado: ${product.id}`);
+      console.log(`   Atualizando...`);
+
+      const updatedProduct = await stripe.products.update(product.id, {
         metadata,
         marketing_features,
         description,
@@ -147,7 +183,7 @@ async function updateProductsMetadata() {
       console.log('');
     } catch (error) {
       errorCount++;
-      console.error(`❌ Erro ao atualizar produto ${productId}:`);
+      console.error(`❌ Erro ao atualizar produto "${productName}":`);
 
       if (error instanceof Stripe.errors.StripeError) {
         console.error(`   Tipo: ${error.type}`);

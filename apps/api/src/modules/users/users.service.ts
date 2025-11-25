@@ -93,11 +93,10 @@ export class UsersService {
     await this.userRepository.update(id, { updatedAt: new Date() });
   }
 
-  async getSubscription(id: string) {
+  async getUserDetails(id: string) {
     const user = await this.userRepository.findOne({
       where: { id },
       relations: [
-        'subscriptions',
         'favorites',
         'favorites.store',
         'favorites.store.gallery',
@@ -118,13 +117,7 @@ export class UsersService {
       ],
     });
 
-    return {
-      ...user,
-      isSubscribed: user.subscriptions.some((subscription) =>
-        ['active', 'paid', 'trialing'].includes(subscription.status),
-      ),
-      subscriptions: undefined,
-    };
+    return user;
   }
 
   async updateAvatar(id: string, avatar: string): Promise<User> {

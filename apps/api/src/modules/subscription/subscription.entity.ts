@@ -26,4 +26,18 @@ export class Subscription extends BaseEntity {
 
   @Column({ type: 'date', nullable: true })
   currentPeriodStart: Date;
+
+  @Column({ type: 'jsonb', nullable: true })
+  features: {
+    PRO_LIMIT: number;
+    RANK_TIER: 'TIER_1' | 'TIER_2' | 'TIER_3';
+    SCHEDULE_LIMIT: number;
+    SMS_REMINDER: boolean;
+    UNIT_LIMIT: number;
+    WHATSAPP_INTEGRATION: boolean;
+    DASHBOARD_GENERAL_ACCESS: boolean;
+    DASHBOARD_SALES_ACCESS: boolean;
+    DASHBOARD_OPERATIONAL_ACCESS: boolean;
+    DASHBOARD_CUSTOMERS_ACCESS: boolean;
+  };
 }

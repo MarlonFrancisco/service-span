@@ -20,7 +20,7 @@ export class UsersController {
 
   @Get('/me')
   async getUser(@CurrentUser() user: JwtPayload) {
-    return await this.usersService.getSubscription(user.sub);
+    return await this.usersService.getUserDetails(user.sub);
   }
 
   @Patch('/me/avatar')

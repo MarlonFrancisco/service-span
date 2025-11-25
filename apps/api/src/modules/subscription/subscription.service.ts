@@ -6,12 +6,15 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 
-import { In, type Repository } from 'typeorm';
+import { In, LessThanOrEqual, MoreThanOrEqual, type Repository } from 'typeorm';
 
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import Stripe from 'stripe';
-import { getSubscriptionPeriodDate } from '../../utils';
+import {
+  getSubscriptionPeriodDate,
+  normalizeSubscriptionMetadata,
+} from '../../utils';
 import { NotificationService } from '../notification';
 import { ScheduleService } from '../partner/stores/schedule/schedule.service';
 import { StoresService } from '../partner/stores/stores.services';
@@ -83,11 +86,14 @@ export class SubscriptionService {
 
   async getCurrentPlan(userId: string): Promise<CurrentPlanDto> {
     try {
+      const currentDate = new Date();
       // 1. Buscar subscription ativa do usuário no banco
       const subscription = await this.subscriptionRepository.findOne({
         where: {
           user: { id: userId },
           status: In(['active', 'paid', 'trialing']),
+          currentPeriodStart: LessThanOrEqual(currentDate),
+          currentPeriodEnd: MoreThanOrEqual(currentDate),
         },
         relations: ['user'],
       });
@@ -112,8 +118,6 @@ export class SubscriptionService {
       const price = await this.stripeService.prices.retrieve(
         subscription.priceId,
       );
-
-      const currentDate = new Date();
 
       const nextBillingDate = new Date(stripeSubscription.start_date * 1000);
 
@@ -216,6 +220,12 @@ export class SubscriptionService {
         relations: ['user'],
       });
 
+      const productDetails = await this.stripeService.products.retrieve(
+        customerSubscription.productId,
+      );
+
+      const features = normalizeSubscriptionMetadata(productDetails.metadata);
+
       if (currentSubscription) {
         await this.stripeService.subscriptions.cancel(
           currentSubscription.subscriptionId,
@@ -227,6 +237,7 @@ export class SubscriptionService {
         const newSubscription = await this.subscriptionRepository.create({
           ...customerSubscription,
           user: currentSubscription.user,
+          features,
         });
 
         await this.subscriptionRepository.save(newSubscription);
@@ -239,6 +250,7 @@ export class SubscriptionService {
       const newSubscription = await this.subscriptionRepository.create({
         ...customerSubscription,
         user,
+        features,
       });
 
       await this.subscriptionRepository.save(newSubscription);
@@ -256,12 +268,19 @@ export class SubscriptionService {
         relations: ['user'],
       });
 
+      const productDetails = await this.stripeService.products.retrieve(
+        customerSubscription.productId,
+      );
+
+      const features = normalizeSubscriptionMetadata(productDetails.metadata);
+
       await this.subscriptionRepository.update(subscription.id, {
         status: customerSubscription.status,
         currentPeriodStart: customerSubscription.currentPeriodStart,
         currentPeriodEnd: customerSubscription.currentPeriodEnd,
         priceId: customerSubscription.priceId,
         productId: customerSubscription.productId,
+        features,
       });
     } catch (error) {
       throw new InternalServerErrorException(error);

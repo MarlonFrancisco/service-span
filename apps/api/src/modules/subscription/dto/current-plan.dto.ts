@@ -1,4 +1,5 @@
 import type Stripe from 'stripe';
+import { normalizeSubscriptionMetadata } from '../../../utils';
 
 export class InvoiceDto {
   id: string;
@@ -27,7 +28,18 @@ export class CurrentPlanDto {
   price: number;
   billingPeriod: 'month' | 'year';
   marketingFeatures: string[];
-  features: Stripe.Metadata;
+  features: {
+    PRO_LIMIT: number;
+    RANK_TIER: 'TIER_1' | 'TIER_2' | 'TIER_3';
+    SCHEDULE_LIMIT: number;
+    SMS_REMINDER: boolean;
+    UNIT_LIMIT: number;
+    WHATSAPP_INTEGRATION: boolean;
+    DASHBOARD_GENERAL_ACCESS: boolean;
+    DASHBOARD_SALES_ACCESS: boolean;
+    DASHBOARD_OPERATIONAL_ACCESS: boolean;
+    DASHBOARD_CUSTOMERS_ACCESS: boolean;
+  };
   subscriptionStatus: string;
   currentPeriodStart: Date;
   currentPeriodEnd: Date;
@@ -82,7 +94,7 @@ export class CurrentPlanDto {
     this.marketingFeatures = Array.isArray(product.marketing_features)
       ? product.marketing_features.map((f) => f.name || '')
       : [];
-    this.features = product.metadata;
+    this.features = normalizeSubscriptionMetadata(product.metadata);
     this.subscriptionStatus = subscription.status;
     this.currentPeriodStart = new Date(
       subscription.current_period_start * 1000,

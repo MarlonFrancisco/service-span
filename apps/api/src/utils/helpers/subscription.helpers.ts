@@ -1,3 +1,5 @@
+import type { Stripe } from 'stripe';
+
 export const getSubscriptionPeriodDate = (
   periodStart: number,
   periodEnd: number,
@@ -8,5 +10,21 @@ export const getSubscriptionPeriodDate = (
   return {
     currentPeriodStart,
     currentPeriodEnd,
+  };
+};
+
+export const normalizeSubscriptionMetadata = (metadata: Stripe.Metadata) => {
+  return {
+    PRO_LIMIT: parseInt(metadata.PRO_LIMIT || '0'),
+    RANK_TIER: metadata.RANK_TIER as 'TIER_1' | 'TIER_2' | 'TIER_3',
+    SCHEDULE_LIMIT: parseInt(metadata.SCHEDULE_LIMIT || '0'),
+    SMS_REMINDER: metadata.SMS_REMINDER === 'true',
+    UNIT_LIMIT: parseInt(metadata.UNIT_LIMIT || '0'),
+    WHATSAPP_INTEGRATION: metadata.WHATSAPP_INTEGRATION === 'true',
+    DASHBOARD_GENERAL_ACCESS: metadata.DASHBOARD_GENERAL_ACCESS === 'true',
+    DASHBOARD_SALES_ACCESS: metadata.DASHBOARD_SALES_ACCESS === 'true',
+    DASHBOARD_OPERATIONAL_ACCESS:
+      metadata.DASHBOARD_OPERATIONAL_ACCESS === 'true',
+    DASHBOARD_CUSTOMERS_ACCESS: metadata.DASHBOARD_CUSTOMERS_ACCESS === 'true',
   };
 };

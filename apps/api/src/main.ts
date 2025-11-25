@@ -16,7 +16,7 @@ export async function createApp(): Promise<INestApplication> {
 
   const app = await NestFactory.create(AppModule);
 
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 
   const rawBodyMiddleware = express.json({
     verify: (req: any, res, buf) => {
