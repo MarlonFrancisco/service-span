@@ -31,7 +31,6 @@ export class CurrentPlanDto {
   features: {
     PRO_LIMIT: number;
     RANK_TIER: 'TIER_1' | 'TIER_2' | 'TIER_3';
-    SCHEDULE_LIMIT: number;
     SMS_REMINDER: boolean;
     UNIT_LIMIT: number;
     WHATSAPP_INTEGRATION: boolean;
@@ -47,11 +46,6 @@ export class CurrentPlanDto {
   nextBillingDate: Date;
   invoices: InvoiceDto[];
   isActive: boolean;
-
-  maxStores: number;
-  maxUsers: number;
-  rankTier: string;
-  smsReminder: boolean;
 
   schedulesLength: number;
   storesLength: number;
@@ -102,21 +96,11 @@ export class CurrentPlanDto {
     this.currentPeriodEnd = new Date(subscription.current_period_end * 1000);
     this.cancelAtPeriodEnd = subscription.cancel_at_period_end;
     this.nextBillingDate = nextBillingDate;
-    this.isActive = subscription.status === 'active';
+
+    this.isActive = ['active', 'trialing', 'paid'].includes(
+      subscription.status,
+    );
     this.invoices = invoices.map((invoice) => new InvoiceDto(invoice));
-
-    this.maxStores =
-      product.metadata.UNIT_LIMIT === 'UNLIMITED'
-        ? 0
-        : parseInt(product.metadata.UNIT_LIMIT);
-    this.maxUsers =
-      product.metadata.PRO_LIMIT === 'UNLIMITED'
-        ? 0
-        : parseInt(product.metadata.PRO_LIMIT);
-
-    this.rankTier = product.metadata.RANK_TIER;
-
-    this.smsReminder = product.metadata.SMS_REMINDER === 'true';
 
     this.schedulesLength = schedulesLength;
     this.storesLength = storesLength;

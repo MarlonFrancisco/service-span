@@ -237,15 +237,15 @@ export const DashboardCustomersQueries = {
       SELECT
         CASE
           WHEN total_spent > 1000 THEN 'VIPs'
-          WHEN NULLIF(months_since_first, 0) > 0 AND (total_visits / NULLIF(months_since_first, 1)) >= 4 THEN 'VIPs'
-          WHEN NULLIF(months_since_first, 0) > 0 AND (total_visits / NULLIF(months_since_first, 1)) >= 2 THEN 'Frequentes'
-          WHEN NULLIF(months_since_first, 0) > 0 AND (total_visits / NULLIF(months_since_first, 1)) >= 1 THEN 'Regulares'
+          WHEN months_since_first > 0 AND (total_visits / GREATEST(months_since_first, 1)) >= 4 THEN 'VIPs'
+          WHEN months_since_first > 0 AND (total_visits / GREATEST(months_since_first, 1)) >= 2 THEN 'Frequentes'
+          WHEN months_since_first > 0 AND (total_visits / GREATEST(months_since_first, 1)) >= 1 THEN 'Regulares'
           WHEN total_visits >= 2 THEN 'Ocasionais'
           ELSE 'Novos'
         END as segment,
         total_spent,
         total_visits,
-        COALESCE(NULLIF(months_since_first, 0), 1) as monthly_visits_calc,
+        GREATEST(months_since_first, 1) as monthly_visits_calc,
         last_visit,
         (CURRENT_DATE - last_visit) as days_since_last
       FROM customer_stats

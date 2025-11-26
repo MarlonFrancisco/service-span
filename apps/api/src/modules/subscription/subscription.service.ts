@@ -216,7 +216,10 @@ export class SubscriptionService {
   }: CustomerSubscriptionCreatedDto) {
     try {
       const currentSubscription = await this.subscriptionRepository.findOne({
-        where: { user: { paymentCustomerId }, status: In(['active', 'paid']) },
+        where: {
+          user: { paymentCustomerId },
+          status: In(['active', 'trialing', 'paid']),
+        },
         relations: ['user'],
       });
 

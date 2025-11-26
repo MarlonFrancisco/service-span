@@ -31,7 +31,6 @@ export class Subscription extends BaseEntity {
   features: {
     PRO_LIMIT: number;
     RANK_TIER: 'TIER_1' | 'TIER_2' | 'TIER_3';
-    SCHEDULE_LIMIT: number;
     SMS_REMINDER: boolean;
     UNIT_LIMIT: number;
     WHATSAPP_INTEGRATION: boolean;

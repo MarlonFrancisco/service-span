@@ -25,14 +25,12 @@ export class ScheduleController {
     @Param('storeId') storeId: string,
     @Body() schedule: CreateSchedulesDto,
   ) {
-    return this.scheduleService.create(
-      new CreateSchedulesDto({ ...schedule, store: { id: storeId } }),
-    );
+    return this.scheduleService.create({ ...schedule, store: { id: storeId } });
   }
 
   @Put(':id')
   update(@Param('id') id: string, @Body() schedule: ScheduleDto) {
-    return this.scheduleService.update(new ScheduleDto({ ...schedule, id }));
+    return this.scheduleService.update({ ...schedule, id });
   }
 
   @Delete(':id')

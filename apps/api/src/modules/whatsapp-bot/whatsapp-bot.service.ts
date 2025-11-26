@@ -16,7 +16,6 @@ import {
 import { CategoryService } from '../partner/stores/category/category.service';
 import { Service } from '../partner/stores/category/service/service.entity';
 import { ServiceService } from '../partner/stores/category/service/service.service';
-import { CreateSchedulesDto } from '../partner/stores/schedule/dto/create-schedule.dto';
 import { ScheduleService } from '../partner/stores/schedule/schedule.service';
 import { StoreMember } from '../partner/stores/store-member/store-member.entity';
 import { StoreMemberService } from '../partner/stores/store-member/store-member.service';
@@ -482,21 +481,21 @@ export class WhatsappBotService {
     try {
       const [firstName, lastName] = userName.split(' ');
 
-      await this.scheduleService.create(
-        new CreateSchedulesDto({
-          storeId: this.config.store.id,
-          storeMember: { id: storeMember.id },
-          services: [{ id: service.id, duration: service.duration }],
-          user: {
-            telephone: from,
-            firstName,
-            lastName,
-          },
-          date,
-          store: { id: this.config.store.id },
-          startTime: time,
-        }),
-      );
+      await this.scheduleService.create({
+        store: { id: this.config.store.id },
+        storeMember: { id: storeMember.id },
+        services: [{ id: service.id, duration: service.duration }],
+        user: {
+          telephone: from,
+          firstName,
+          lastName,
+        },
+        date,
+        startTime: time,
+        endTime: time,
+        notes: '',
+        status: 'scheduled',
+      });
 
       await this.clearSession(from);
 

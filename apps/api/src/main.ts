@@ -16,7 +16,7 @@ export async function createApp(): Promise<INestApplication> {
 
   const app = await NestFactory.create(AppModule);
 
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
+  app.useGlobalPipes(new ValidationPipe());
 
   const rawBodyMiddleware = express.json({
     verify: (req: any, res, buf) => {
@@ -30,7 +30,7 @@ export async function createApp(): Promise<INestApplication> {
   app.use(rawBodyMiddleware);
 
   // Aumenta o limite de payload para uploads de imagens (padrão: 100kb)
-  app.use(json({ limit: '5mb' }));
+  app.use(json({ limit: '10mb' }));
 
   app.getHttpAdapter().getInstance().set('trust proxy', true);
 
