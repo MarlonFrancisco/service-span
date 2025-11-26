@@ -7,6 +7,7 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
+import { plainToInstance } from 'class-transformer';
 import { CategoryDto } from './category.dto';
 import { CategoryService } from './category.service';
 
@@ -30,7 +31,7 @@ export class CategoryController {
     @Body() category: CategoryDto,
   ) {
     return this.categoryService.create(
-      new CategoryDto({ ...category, store: { id: storeId } }),
+      plainToInstance(CategoryDto, { ...category, store: { id: storeId } }),
     );
   }
 
@@ -41,7 +42,7 @@ export class CategoryController {
     @Body() category: CategoryDto,
   ) {
     return this.categoryService.update(
-      new CategoryDto({ ...category, id, store: { id: storeId } }),
+      plainToInstance(CategoryDto, { ...category, id, store: { id: storeId } }),
     );
   }
 

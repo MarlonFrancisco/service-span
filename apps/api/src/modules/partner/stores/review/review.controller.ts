@@ -7,6 +7,7 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
+import { plainToInstance } from 'class-transformer';
 import { Public } from '../../../auth/decorators/public.decorator';
 import { ReviewDto } from './dto/review.dto';
 import { ReviewService } from './review.service';
@@ -18,7 +19,7 @@ export class ReviewController {
   @Post()
   async create(@Param('storeId') storeId: string, @Body() review: ReviewDto) {
     return this.reviewService.create(
-      new ReviewDto({ ...review, store: { id: storeId } }),
+      plainToInstance(ReviewDto, { ...review, store: { id: storeId } }),
     );
   }
 

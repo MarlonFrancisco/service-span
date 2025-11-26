@@ -7,6 +7,7 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
+import { plainToInstance } from 'class-transformer';
 import { BlockedTimeService } from './blocked-time.service';
 import {
   BlockedTimeDto,
@@ -29,7 +30,7 @@ export class BlockedTimeController {
     @Body() blockedTime: BlockedTimeDto,
   ) {
     return this.blockedTimeService.create(
-      new BlockedTimeDto({
+      plainToInstance(BlockedTimeDto, {
         ...blockedTime,
         storeMember: { id: storeMemberId },
       }),
@@ -55,7 +56,7 @@ export class BlockedTimeController {
   @Put(':id')
   update(@Param('id') id: string, @Body() blockedTime: BlockedTimeDto) {
     return this.blockedTimeService.update(
-      new BlockedTimeDto({ ...blockedTime, id }),
+      plainToInstance(BlockedTimeDto, { ...blockedTime, id }),
     );
   }
 

@@ -7,6 +7,7 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
+import { plainToInstance } from 'class-transformer';
 import { StoreMemberDto } from './dto/store-member.dto';
 import { StoreMemberService } from './store-member.service';
 
@@ -25,7 +26,7 @@ export class StoreMemberController {
     @Body() storeMemberDto: StoreMemberDto,
   ) {
     return this.storeMemberService.create(
-      new StoreMemberDto({ ...storeMemberDto, store: { id: storeId } }),
+      plainToInstance(StoreMemberDto, { ...storeMemberDto, store: { id: storeId } }),
     );
   }
 
@@ -36,7 +37,7 @@ export class StoreMemberController {
     @Body() storeMemberDto: StoreMemberDto,
   ) {
     return this.storeMemberService.update(
-      new StoreMemberDto({ ...storeMemberDto, id, store: { id: storeId } }),
+      plainToInstance(StoreMemberDto, { ...storeMemberDto, id, store: { id: storeId } }),
     );
   }
 

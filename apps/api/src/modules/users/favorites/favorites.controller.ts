@@ -7,6 +7,7 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
+import { plainToInstance } from 'class-transformer';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { FavoriteDto } from './dto/favorite.dto';
 import { FavoritesService } from './favorites.service';
@@ -19,7 +20,7 @@ export class FavoritesController {
   @Post()
   async create(@Body() favorite: FavoriteDto, @Param('userId') userId: string) {
     return this.favoritesService.create(
-      new FavoriteDto({ ...favorite, user: { id: userId } }),
+      plainToInstance(FavoriteDto, { ...favorite, user: { id: userId } }),
     );
   }
 

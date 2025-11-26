@@ -4,7 +4,8 @@ import sharp from 'sharp';
 import { Repository, UpdateResult } from 'typeorm';
 import { StorageService } from '../../../storage/storage.service';
 import { Store } from '../store.entity';
-import { GalleryDto } from './dto/gallery.dto';
+import { CreateGalleryDto } from './dto/create-gallery.dto';
+import { UpdateGalleryDto } from './dto/update-gallery.dto';
 import { Gallery } from './gallery.entity';
 
 @Injectable()
@@ -15,7 +16,7 @@ export class GalleryService {
     private readonly storageService: StorageService,
   ) {}
 
-  async create(galleryDto: GalleryDto): Promise<Gallery> {
+  async create(galleryDto: CreateGalleryDto): Promise<Gallery> {
     let gallery = this.galleryRepository.create(galleryDto);
 
     gallery = await this.galleryRepository.save(gallery);
@@ -41,7 +42,7 @@ export class GalleryService {
     return this.galleryRepository.findOne({ where: { id } });
   }
 
-  async update(gallery: GalleryDto): Promise<UpdateResult> {
+  async update(gallery: UpdateGalleryDto): Promise<UpdateResult> {
     return await this.galleryRepository.update(gallery.id, gallery);
   }
 
@@ -58,7 +59,7 @@ export class GalleryService {
     return { id, store: { id: storeId } as Store };
   }
 
-  async updateMainImage(gallery: GalleryDto): Promise<Gallery> {
+  async updateMainImage(gallery: UpdateGalleryDto): Promise<Gallery> {
     const image = await this.galleryRepository.findOne({
       where: { store: { id: gallery.store.id }, isMain: true },
     });

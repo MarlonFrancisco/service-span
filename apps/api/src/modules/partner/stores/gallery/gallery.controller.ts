@@ -7,7 +7,8 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import { GalleryDto } from './dto/gallery.dto';
+import { CreateGalleryDto } from './dto/create-gallery.dto';
+import { UpdateGalleryDto } from './dto/update-gallery.dto';
 import { GalleryService } from './gallery.service';
 
 @Controller('partner/stores/:storeId/gallery')
@@ -22,22 +23,25 @@ export class GalleryController {
   @Post()
   async create(
     @Param('storeId') storeId: string,
-    @Body() galleryDto: GalleryDto,
+    @Body() galleryDto: CreateGalleryDto,
   ) {
-    return this.galleryService.create(
-      new GalleryDto({ ...galleryDto, store: { id: storeId } }),
-    );
+    return this.galleryService.create({
+      ...galleryDto,
+      store: { id: storeId },
+    });
   }
 
   @Patch(':id')
   async update(
     @Param('storeId') storeId: string,
     @Param('id') id: string,
-    @Body() image: GalleryDto,
+    @Body() image: UpdateGalleryDto,
   ) {
-    return await this.galleryService.updateMainImage(
-      new GalleryDto({ ...image, id, store: { id: storeId } }),
-    );
+    return await this.galleryService.updateMainImage({
+      ...image,
+      id,
+      store: { id: storeId },
+    });
   }
 
   @Delete(':id')

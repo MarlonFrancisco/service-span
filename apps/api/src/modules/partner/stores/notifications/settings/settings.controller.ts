@@ -1,4 +1,5 @@
 import { Body, Controller, Get, Param, Put } from '@nestjs/common';
+import { plainToInstance } from 'class-transformer';
 import { NotificationsSettingsDto } from './dto/settings.dto';
 import { NotificationsSettings } from './settings.entity';
 import { NotificationsSettingsService } from './settings.service';
@@ -22,7 +23,7 @@ export class NotificationsSettingsController {
     @Body() notificationsSettings: NotificationsSettingsDto,
   ): Promise<NotificationsSettings> {
     return this.notificationsSettingsService.update(
-      new NotificationsSettingsDto({
+      plainToInstance(NotificationsSettingsDto, {
         ...notificationsSettings,
         store: { id: storeId },
       }),

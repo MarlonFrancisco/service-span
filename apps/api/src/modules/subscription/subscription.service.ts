@@ -152,7 +152,7 @@ export class SubscriptionService {
         },
       });
 
-      return new CurrentPlanDto({
+      return CurrentPlanDto.fromStripe({
         product,
         price,
         subscription: stripeSubscription,
@@ -404,13 +404,13 @@ export class SubscriptionService {
         ),
       'customer.subscription.created': async () =>
         this.handleCustomerSubscriptionCreated(
-          new CustomerSubscriptionCreatedDto(
+          CustomerSubscriptionCreatedDto.fromStripe(
             event.data as Stripe.CustomerSubscriptionCreatedEvent.Data,
           ),
         ),
       'customer.subscription.updated': async () =>
         this.handleCustomerSubscriptionUpdated(
-          new CustomerSubscriptionUpdateDto(
+          CustomerSubscriptionUpdateDto.fromStripe(
             event.data as Stripe.CustomerSubscriptionUpdatedEvent.Data,
           ),
         ),

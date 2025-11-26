@@ -1,8 +1,13 @@
-export class LoginFirstStepDto {
-  email?: string;
-  telephone?: string;
+import { IsEmail, IsOptional, IsString, ValidateIf } from 'class-validator';
 
-  constructor(data: Partial<LoginFirstStepDto>) {
-    Object.assign(this, data);
-  }
+export class LoginFirstStepDto {
+  @IsEmail()
+  @IsOptional()
+  @ValidateIf((o) => !o.telephone || o.email)
+  email?: string;
+
+  @IsString()
+  @IsOptional()
+  @ValidateIf((o) => !o.email || o.telephone)
+  telephone?: string;
 }

@@ -7,6 +7,7 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
+import { plainToInstance } from 'class-transformer';
 import { ServiceDto } from './service.dto';
 import { ServiceService } from './service.service';
 
@@ -31,7 +32,7 @@ export class ServiceController {
     @Body() service: ServiceDto,
   ) {
     return this.serviceService.create(
-      new ServiceDto({
+      plainToInstance(ServiceDto, {
         ...service,
         store: { id: storeId },
         category: { id: categoryId },
@@ -41,7 +42,7 @@ export class ServiceController {
 
   @Put(':id')
   async update(@Param('id') id: string, @Body() service: ServiceDto) {
-    return this.serviceService.update(new ServiceDto({ ...service, id }));
+    return this.serviceService.update(plainToInstance(ServiceDto, { ...service, id }));
   }
 
   @Delete(':id')

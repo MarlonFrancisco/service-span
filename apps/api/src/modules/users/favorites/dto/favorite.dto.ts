@@ -1,14 +1,16 @@
+import { IsObject, IsOptional, IsString } from 'class-validator';
 import type { Store } from '../../../partner/stores/store.entity';
 import type { User } from '../../../users/user.entity';
 
 export class FavoriteDto {
+  @IsString()
+  @IsOptional()
   id: string;
-  user: Partial<User>;
-  store: Partial<Store>;
 
-  constructor(data: Partial<FavoriteDto>) {
-    this.id = data.id;
-    this.user = data.user;
-    this.store = data.store;
-  }
+  @IsObject()
+  user: Partial<User>;
+
+  @IsObject()
+  @IsOptional()
+  store: Partial<Store>;
 }

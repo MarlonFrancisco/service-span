@@ -1,12 +1,23 @@
-export class RegisterDto {
-  email: string;
-  telephone: string;
-  firstName: string;
-  lastName: string;
-  acceptedTerms: boolean;
-  paymentCustomerId: string;
+import { IsString, IsEmail, IsBoolean, IsOptional } from 'class-validator';
 
-  constructor(data: Partial<RegisterDto>) {
-    Object.assign(this, data);
-  }
+export class RegisterDto {
+  @IsEmail()
+  email: string;
+
+  @IsString()
+  @IsOptional()
+  telephone: string;
+
+  @IsString()
+  firstName: string;
+
+  @IsString()
+  lastName: string;
+
+  @IsBoolean()
+  acceptedTerms: boolean;
+
+  @IsString()
+  @IsOptional()
+  paymentCustomerId: string;
 }

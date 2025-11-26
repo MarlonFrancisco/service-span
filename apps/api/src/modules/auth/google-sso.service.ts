@@ -1,5 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { plainToInstance } from 'class-transformer';
 import { OAuth2Client } from 'google-auth-library';
 import { UsersService } from '../users';
 import { AuthService } from './auth.service';
@@ -58,7 +59,7 @@ export class GoogleSSOService extends OAuth2Client {
       isNewUser = true;
 
       user = await this.usersService.create(
-        new RegisterDto({
+        plainToInstance(RegisterDto, {
           email: userInfo.email,
           firstName: userInfo.given_name,
           lastName: userInfo.family_name,

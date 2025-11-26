@@ -34,7 +34,7 @@ export class PlansService {
         return aOrder - bOrder;
       })
       .map(
-        ({ product, price }) => new PlanDto(product, price, subscriptions.data),
+        ({ product, price }) => PlanDto.fromStripe(product, price, subscriptions.data),
       );
 
     return plans.reduce(

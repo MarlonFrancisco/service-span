@@ -7,6 +7,7 @@ import {
   Post,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { plainToInstance } from 'class-transformer';
 import { SaveWhatsappConfigDto } from './dto/save-whatsapp-config.dto';
 import { WhatsappService } from './whatsapp.service';
 
@@ -23,7 +24,7 @@ export class WhatsappController {
     @Param('storeId') storeId: string,
   ) {
     const config = await this.whatsappService.save(
-      new SaveWhatsappConfigDto({
+      plainToInstance(SaveWhatsappConfigDto, {
         ...body,
         store: { id: storeId },
         webhookVerifyToken: this.configService.get('WHATSAPP_VERIFY_TOKEN'),

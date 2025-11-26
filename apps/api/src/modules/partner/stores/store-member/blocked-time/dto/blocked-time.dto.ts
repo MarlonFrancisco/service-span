@@ -1,43 +1,71 @@
+import { IsArray, IsBoolean, IsDate, IsNumber, IsObject, IsOptional, IsString, Max, Min, ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer';
 import type { StoreMember } from '../../store-member.entity';
 
 export class BlockedTimeDto {
+  @IsString()
+  @IsOptional()
   id: string;
-  date: Date;
-  time: string;
-  isRecurring?: boolean;
-  dayOfWeek?: 0 | 1 | 2 | 3 | 4 | 5 | 6;
-  storeMember: Partial<StoreMember>;
 
-  constructor(data: Partial<BlockedTimeDto>) {
-    this.id = data.id;
-    this.date = data.date;
-    this.time = data.time;
-    this.isRecurring = data.isRecurring ?? false;
-    this.dayOfWeek = data.dayOfWeek;
-    this.storeMember = data.storeMember;
-  }
+  @IsDate()
+  @Type(() => Date)
+  date: Date;
+
+  @IsString()
+  time: string;
+
+  @IsBoolean()
+  @IsOptional()
+  isRecurring?: boolean;
+
+  @IsNumber()
+  @IsOptional()
+  @Min(0)
+  @Max(6)
+  dayOfWeek?: 0 | 1 | 2 | 3 | 4 | 5 | 6;
+
+  @IsObject()
+  storeMember: Partial<StoreMember>;
+}
+
+class BlockedTimeItemDto {
+  @IsString()
+  @IsOptional()
+  id?: string;
+
+  @IsDate()
+  @Type(() => Date)
+  date: Date;
+
+  @IsString()
+  time: string;
+
+  @IsBoolean()
+  @IsOptional()
+  isRecurring?: boolean;
+
+  @IsNumber()
+  @IsOptional()
+  @Min(0)
+  @Max(6)
+  dayOfWeek?: 0 | 1 | 2 | 3 | 4 | 5 | 6;
 }
 
 export class CreateBulkBlockedTimeDto {
-  blockedTimes: Array<{
-    id?: string;
-    date: Date;
-    time: string;
-    isRecurring?: boolean;
-    dayOfWeek?: 0 | 1 | 2 | 3 | 4 | 5 | 6;
-  }>;
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => BlockedTimeItemDto)
+  blockedTimes: BlockedTimeItemDto[];
+}
 
-  constructor(data: Partial<CreateBulkBlockedTimeDto>) {
-    this.blockedTimes = data.blockedTimes;
-  }
+class DeleteBlockedTimeItemDto {
+  @IsString()
+  id: string;
 }
 
 export class DeleteBulkBlockedTimeDto {
-  blockedTimes: Array<{
-    id: string;
-  }>;
-
-  constructor(data: Partial<DeleteBulkBlockedTimeDto>) {
-    this.blockedTimes = data.blockedTimes;
-  }
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => DeleteBlockedTimeItemDto)
+  blockedTimes: DeleteBlockedTimeItemDto[];
 }

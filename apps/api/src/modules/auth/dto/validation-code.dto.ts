@@ -1,9 +1,16 @@
-export class ValidationCodeDto {
-  code: string;
-  email?: string;
-  telephone?: string;
+import { IsEmail, IsOptional, IsString, ValidateIf } from 'class-validator';
 
-  constructor(data: Partial<ValidationCodeDto>) {
-    Object.assign(this, data);
-  }
+export class ValidationCodeDto {
+  @IsString()
+  code: string;
+
+  @IsEmail()
+  @IsOptional()
+  @ValidateIf((o) => !o.telephone || o.email)
+  email?: string;
+
+  @IsString()
+  @IsOptional()
+  @ValidateIf((o) => !o.email || o.telephone)
+  telephone?: string;
 }

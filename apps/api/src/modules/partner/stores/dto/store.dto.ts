@@ -1,66 +1,109 @@
+import { IsArray, IsBoolean, IsEmail, IsNumber, IsObject, IsOptional, IsString, ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer';
 import type { User } from '../../../users/user.entity';
 import type { Gallery } from '../gallery/gallery.entity';
 
+class BusinessDaysDto {
+  @IsBoolean()
+  monday: boolean;
+
+  @IsBoolean()
+  tuesday: boolean;
+
+  @IsBoolean()
+  wednesday: boolean;
+
+  @IsBoolean()
+  thursday: boolean;
+
+  @IsBoolean()
+  friday: boolean;
+
+  @IsBoolean()
+  saturday: boolean;
+
+  @IsBoolean()
+  sunday: boolean;
+}
+
 export class StoreDto {
+  @IsObject()
+  @IsOptional()
   owner: Partial<User>;
+
+  @IsString()
   name: string;
+
+  @IsString()
   description: string;
+
+  @IsArray()
+  @IsString({ each: true })
   amenities: string[];
+
+  @IsString()
   address: string;
+
+  @IsString()
   city: string;
+
+  @IsString()
   state: string;
+
+  @IsString()
   zipCode: string;
+
+  @IsString()
   telephone: string;
+
+  @IsEmail()
   email: string;
+
+  @IsString()
+  @IsOptional()
   website: string;
+
+  @IsString()
+  @IsOptional()
   instagram: string;
+
+  @IsString()
+  @IsOptional()
   facebook: string;
+
+  @IsBoolean()
   isActive: boolean;
+
+  @IsArray()
+  @IsOptional()
   storeMembers?: User[];
+
+  @IsArray()
+  @IsOptional()
   gallery?: Gallery[];
 
+  @IsNumber()
   weeklyGoal: number;
+
+  @IsNumber()
   monthlyGoal: number;
+
+  @IsNumber()
   quarterlyGoal: number;
 
+  @IsString()
   openTime: string;
-  closeTime: string;
-  lunchStartTime: string;
-  lunchEndTime: string;
-  businessDays: {
-    monday: boolean;
-    tuesday: boolean;
-    wednesday: boolean;
-    thursday: boolean;
-    friday: boolean;
-    saturday: boolean;
-    sunday: boolean;
-  };
 
-  constructor(data: Partial<StoreDto>) {
-    this.name = data.name;
-    this.description = data.description;
-    this.amenities = data.amenities;
-    this.address = data.address;
-    this.city = data.city;
-    this.state = data.state;
-    this.zipCode = data.zipCode;
-    this.telephone = data.telephone;
-    this.email = data.email;
-    this.website = data.website;
-    this.instagram = data.instagram;
-    this.facebook = data.facebook;
-    this.isActive = data.isActive;
-    this.storeMembers = data.storeMembers;
-    this.gallery = data.gallery;
-    this.owner = data.owner;
-    this.openTime = data.openTime;
-    this.closeTime = data.closeTime;
-    this.lunchStartTime = data.lunchStartTime;
-    this.lunchEndTime = data.lunchEndTime;
-    this.businessDays = data.businessDays;
-    this.weeklyGoal = data.weeklyGoal;
-    this.monthlyGoal = data.monthlyGoal;
-    this.quarterlyGoal = data.quarterlyGoal;
-  }
+  @IsString()
+  closeTime: string;
+
+  @IsString()
+  lunchStartTime: string;
+
+  @IsString()
+  lunchEndTime: string;
+
+  @ValidateNested()
+  @Type(() => BusinessDaysDto)
+  businessDays: BusinessDaysDto;
 }

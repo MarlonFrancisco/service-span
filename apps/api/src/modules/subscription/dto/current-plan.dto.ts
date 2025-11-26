@@ -1,33 +1,62 @@
+import { IsArray, IsBoolean, IsDate, IsEnum, IsNumber, IsObject, IsString, ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer';
 import type Stripe from 'stripe';
 import { normalizeSubscriptionMetadata } from '../../../utils';
 
 export class InvoiceDto {
+  @IsString()
   id: string;
+
+  @IsDate()
   date: Date;
+
+  @IsNumber()
   amount: number;
+
+  @IsEnum(['paid', 'pending', 'failed', 'uncollectible', 'open', 'draft'])
   status: 'paid' | 'pending' | 'failed' | 'uncollectible' | 'open' | 'draft';
+
+  @IsString()
   invoiceNumber: string;
+
+  @IsString()
   pdfUrl: string | null;
 
-  constructor(invoice: Stripe.Invoice) {
-    this.id = invoice.id;
-    this.date = new Date(invoice.created * 1000);
+  static fromStripe(invoice: Stripe.Invoice): InvoiceDto {
+    const dto = new InvoiceDto();
+    dto.id = invoice.id;
+    dto.date = new Date(invoice.created * 1000);
     // Use amount_paid se pago, caso contrário use total
-    this.amount =
+    dto.amount =
       (invoice.status === 'paid' ? invoice.amount_paid : invoice.total) / 100;
-    this.status = invoice.status as any;
-    this.invoiceNumber = invoice.number || '';
-    this.pdfUrl = invoice.invoice_pdf;
+    dto.status = invoice.status as any;
+    dto.invoiceNumber = invoice.number || '';
+    dto.pdfUrl = invoice.invoice_pdf;
+    return dto;
   }
 }
 
 export class CurrentPlanDto {
+  @IsString()
   planId: string;
+
+  @IsString()
   planName: string;
+
+  @IsString()
   planDescription: string;
+
+  @IsNumber()
   price: number;
+
+  @IsEnum(['month', 'year'])
   billingPeriod: 'month' | 'year';
+
+  @IsArray()
+  @IsString({ each: true })
   marketingFeatures: string[];
+
+  @IsObject()
   features: {
     PRO_LIMIT: number;
     RANK_TIER: 'TIER_1' | 'TIER_2' | 'TIER_3';
@@ -39,19 +68,40 @@ export class CurrentPlanDto {
     DASHBOARD_OPERATIONAL_ACCESS: boolean;
     DASHBOARD_CUSTOMERS_ACCESS: boolean;
   };
+
+  @IsString()
   subscriptionStatus: string;
+
+  @IsDate()
   currentPeriodStart: Date;
+
+  @IsDate()
   currentPeriodEnd: Date;
+
+  @IsBoolean()
   cancelAtPeriodEnd: boolean;
+
+  @IsDate()
   nextBillingDate: Date;
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => InvoiceDto)
   invoices: InvoiceDto[];
+
+  @IsBoolean()
   isActive: boolean;
 
+  @IsNumber()
   schedulesLength: number;
+
+  @IsNumber()
   storesLength: number;
+
+  @IsNumber()
   storeMembersLength: number;
 
-  constructor(data: {
+  static fromStripe(data: {
     product: Stripe.Product;
     price: Stripe.Price;
     subscription: Stripe.Subscription & {
@@ -63,7 +113,7 @@ export class CurrentPlanDto {
     storesLength: number;
     storeMembersLength: number;
     nextBillingDate: Date;
-  }) {
+  }): CurrentPlanDto {
     const {
       product,
       price,
@@ -75,35 +125,38 @@ export class CurrentPlanDto {
       nextBillingDate,
     } = data;
 
-    this.planId = product.id;
-    this.planName = product.name;
-    this.planDescription = product.description || '';
-    this.price = (price.unit_amount || 0) / 100; // Converter de centavos para reais
+    const dto = new CurrentPlanDto();
+    dto.planId = product.id;
+    dto.planName = product.name;
+    dto.planDescription = product.description || '';
+    dto.price = (price.unit_amount || 0) / 100; // Converter de centavos para reais
     // Validar que interval é month ou year (pode ser week ou day)
     const interval = price.recurring?.interval || 'month';
-    this.billingPeriod = (interval === 'year' ? 'year' : 'month') as
+    dto.billingPeriod = (interval === 'year' ? 'year' : 'month') as
       | 'month'
       | 'year';
     // Extrair features registrados no Stripe (marketing_features)
-    this.marketingFeatures = Array.isArray(product.marketing_features)
+    dto.marketingFeatures = Array.isArray(product.marketing_features)
       ? product.marketing_features.map((f) => f.name || '')
       : [];
-    this.features = normalizeSubscriptionMetadata(product.metadata);
-    this.subscriptionStatus = subscription.status;
-    this.currentPeriodStart = new Date(
+    dto.features = normalizeSubscriptionMetadata(product.metadata);
+    dto.subscriptionStatus = subscription.status;
+    dto.currentPeriodStart = new Date(
       subscription.current_period_start * 1000,
     );
-    this.currentPeriodEnd = new Date(subscription.current_period_end * 1000);
-    this.cancelAtPeriodEnd = subscription.cancel_at_period_end;
-    this.nextBillingDate = nextBillingDate;
+    dto.currentPeriodEnd = new Date(subscription.current_period_end * 1000);
+    dto.cancelAtPeriodEnd = subscription.cancel_at_period_end;
+    dto.nextBillingDate = nextBillingDate;
 
-    this.isActive = ['active', 'trialing', 'paid'].includes(
+    dto.isActive = ['active', 'trialing', 'paid'].includes(
       subscription.status,
     );
-    this.invoices = invoices.map((invoice) => new InvoiceDto(invoice));
+    dto.invoices = invoices.map((invoice) => InvoiceDto.fromStripe(invoice));
 
-    this.schedulesLength = schedulesLength;
-    this.storesLength = storesLength;
-    this.storeMembersLength = storeMembersLength;
+    dto.schedulesLength = schedulesLength;
+    dto.storesLength = storesLength;
+    dto.storeMembersLength = storeMembersLength;
+
+    return dto;
   }
 }

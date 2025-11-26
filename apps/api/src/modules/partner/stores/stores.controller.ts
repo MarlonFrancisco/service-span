@@ -8,6 +8,7 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
+import { plainToInstance } from 'class-transformer';
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 import { Public } from '../../auth/decorators/public.decorator';
 import { StoreDto } from './dto/store.dto';
@@ -36,13 +37,13 @@ export class StoresController {
   ) {
     createStoreDto['owner'] = { id: userId };
 
-    return this.storesService.create(new StoreDto(createStoreDto));
+    return this.storesService.create(plainToInstance(StoreDto, createStoreDto));
   }
 
   @Put(':id')
   @UseGuards(StoreOwnerGuard)
   async updateStore(@Param('id') id: string, @Body() updateStoreDto: unknown) {
-    return this.storesService.update(id, new StoreDto(updateStoreDto));
+    return this.storesService.update(id, plainToInstance(StoreDto, updateStoreDto));
   }
 
   @Delete(':id')
