@@ -92,7 +92,6 @@ export const storeFormSchema = z.object({
           firstName: z.string(),
           lastName: z.string(),
           telephone: z.string().nullable(),
-          isSubscribed: z.boolean().default(false),
           avatar: z.string().nullable(),
         }),
       }),

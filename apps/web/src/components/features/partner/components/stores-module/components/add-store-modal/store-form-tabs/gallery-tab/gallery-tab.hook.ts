@@ -10,40 +10,53 @@ export const useGalleryTab = () => {
   const gallery = form.watch('gallery');
 
   const onGalleryChange = async (images: IStoreGallery[]) => {
-    const promises = images.map((image) =>
-      createImage({
-        storeId: form.getValues('id')!,
-        image: { url: image.url, isMain: image.isMain },
-      }),
+    images.forEach((image) =>
+      createImage(
+        {
+          storeId: form.getValues('id')!,
+          image: { url: image.url, isMain: image.isMain },
+        },
+        {
+          onSuccess: (data) => {
+            form.setValue('gallery', [...gallery, data]);
+          },
+        },
+      ),
     );
-
-    await Promise.all(promises).then((images) => {
-      form.setValue('gallery', [...gallery, ...images]);
-    });
   };
 
   const onChangeMainImage = async (image: IStoreGallery) => {
-    await updateMainImage({
-      storeId: form.getValues('id')!,
-      imageId: image.id,
-    }).then(() => {
-      form.setValue(
-        'gallery',
-        gallery.map((img) => ({
-          ...img,
-          isMain: img.id === image.id,
-        })),
-      );
-    });
+    await updateMainImage(
+      {
+        storeId: form.getValues('id')!,
+        imageId: image.id,
+      },
+      {
+        onSuccess: () => {
+          form.setValue(
+            'gallery',
+            gallery.map((img) => ({
+              ...img,
+              isMain: img.id === image.id,
+            })),
+          );
+        },
+      },
+    );
   };
 
   const onDeleteImage = (imageId: string) => {
-    deleteImage({ storeId: form.getValues('id')!, imageId }).then(() => {
-      form.setValue(
-        'gallery',
-        gallery.filter((img) => img.id !== imageId),
-      );
-    });
+    deleteImage(
+      { storeId: form.getValues('id')!, imageId },
+      {
+        onSuccess: () => {
+          form.setValue(
+            'gallery',
+            gallery.filter((img) => img.id !== imageId),
+          );
+        },
+      },
+    );
   };
 
   return {

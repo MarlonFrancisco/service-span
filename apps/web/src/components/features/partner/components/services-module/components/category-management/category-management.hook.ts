@@ -1,4 +1,4 @@
-import { useServicesMutations } from '@/hooks';
+import { useCategoryMutations } from '@/hooks/use-mutations/use-category-mutations/use-category-mutations.hook';
 import { usePartnerStore, useServicesStore } from '@/store';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect } from 'react';
@@ -15,14 +15,10 @@ export const useCategoryManagement = () => {
   );
   const activeStore = usePartnerStore((state) => state.activeStore);
 
-  const {
-    updateCategory,
-    createCategory,
-    isCreatingCategory,
-    isUpdatingCategory,
-  } = useServicesMutations({
-    storeId: activeStore.id,
-  });
+  const { updateCategoryMutation, createCategoryMutation } =
+    useCategoryMutations({
+      storeId: activeStore.id,
+    });
 
   const form = useForm<TCategoryFormData>({
     resolver: zodResolver(categoryFormSchema),
@@ -60,9 +56,12 @@ export const useCategoryManagement = () => {
         };
 
         if (category.id) {
-          updateCategory(data, { onSettled });
+          updateCategoryMutation.mutate(data, { onSettled });
         } else {
-          createCategory({ ...data, id: undefined }, { onSettled });
+          createCategoryMutation.mutate(
+            { ...data, id: undefined },
+            { onSettled },
+          );
         }
       },
       (errors) => {
@@ -78,8 +77,8 @@ export const useCategoryManagement = () => {
     isCategoryModalOpen,
     category,
     form,
-    isCreatingCategory,
-    isUpdatingCategory,
+    isCreatingCategory: createCategoryMutation.isPending,
+    isUpdatingCategory: updateCategoryMutation.isPending,
     handleClose,
     handleSubmit,
   };

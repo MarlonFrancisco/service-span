@@ -43,14 +43,17 @@ export const INITIAL_PROFESSIONAL: IProfessional = {
     firstName: '',
     lastName: '',
     telephone: '',
-    isSubscribed: true,
     avatar: '',
+    favorites: [],
+    schedules: [],
+    createdAt: new Date(),
   },
   role: 'professional',
   createdAt: new Date(),
   isActive: true,
   blockedTimes: [],
   services: [],
+  schedules: [],
 };
 
 export const MOCK_STORES: IStore[] = [

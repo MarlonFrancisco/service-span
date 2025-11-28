@@ -1,4 +1,4 @@
-import { useServicesMutations } from '@/hooks';
+import { useCategoryMutations } from '@/hooks/use-mutations/use-category-mutations/use-category-mutations.hook';
 import { usePartnerStore, useServicesStore } from '@/store';
 import { ICategory } from '@/types/api/service.types';
 import { useFormContext } from 'react-hook-form';
@@ -10,7 +10,7 @@ export const useCategoryList = () => {
     (state) => state.setCategoryModalParams,
   );
   const activeStore = usePartnerStore((state) => state.activeStore);
-  const { deleteCategory } = useServicesMutations({
+  const { deleteCategoryMutation } = useCategoryMutations({
     storeId: activeStore.id,
   });
 
@@ -22,7 +22,7 @@ export const useCategoryList = () => {
   };
 
   const handleDelete = (category: ICategory) => {
-    deleteCategory(category.id);
+    deleteCategoryMutation.mutate(category.id);
   };
 
   return { categories, handleEdit, handleDelete };
