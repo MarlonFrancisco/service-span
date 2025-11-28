@@ -1,10 +1,10 @@
 'use client';
-import { useStoresQuery } from '@/hooks/use-query/use-stores-query/use-stores-query.hook';
+import { useStoreQuery } from '@/hooks/use-query/use-store-query';
 import { useParams } from 'next/navigation';
 
 export const useGetStore = () => {
   const params = useParams();
   const storeId = params.id as string;
-  const { store } = useStoresQuery({ storeId });
+  const { store } = useStoreQuery({ storeId });
   return store;
 };

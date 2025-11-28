@@ -1,5 +1,6 @@
 'use client';
 
+import { useStoreQuery } from '@/hooks/use-query/use-store-query';
 import { useStoresQuery } from '@/hooks/use-query/use-stores-query/use-stores-query.hook';
 import { useServicesStore } from '@/store';
 import { usePartnerStore } from '@/store/partner';
@@ -15,18 +16,18 @@ export const usePartner = () => {
     MODULE_CONFIG[pathname as keyof typeof MODULE_CONFIG] ||
     MODULE_CONFIG['/partner/dashboard'];
 
-  const { stores } = useStoresQuery({ includeStores: true });
+  const { stores } = useStoresQuery();
 
-  const { store: activeStore } = useStoresQuery({ storeId: stores[0]?.id });
+  const { store } = useStoreQuery({ storeId: stores[0]?.id || '' });
 
-  const showStoreSelector = currentModule?.showStoreSelector && !!activeStore;
+  const showStoreSelector = currentModule?.showStoreSelector && !!store?.id;
 
   useEffect(() => {
-    if (activeStore) {
-      setActiveStore(activeStore);
-      useServicesStore.setState({ services: activeStore.services });
+    if (store?.id) {
+      setActiveStore(store);
+      useServicesStore.setState({ services: store.services });
     }
-  }, [activeStore, setActiveStore]);
+  }, [store, setActiveStore]);
 
   return {
     currentModule,

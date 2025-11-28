@@ -36,8 +36,6 @@ export function PlanOverviewCard({
 
   if (!currentPlan?.isActive) return null;
 
-  console.log('currentPlan', currentPlan);
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}

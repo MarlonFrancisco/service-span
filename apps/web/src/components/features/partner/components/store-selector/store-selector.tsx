@@ -7,7 +7,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import { useState } from 'react';
 
 export function StoreSelector() {
-  const { stores } = useStoresQuery({ includeStores: true });
+  const { stores } = useStoresQuery();
   const activeStore = usePartnerStore((state) => state.activeStore);
   const setActiveStore = usePartnerStore((state) => state.setActiveStore);
   const [isOpen, setIsOpen] = useState(false);

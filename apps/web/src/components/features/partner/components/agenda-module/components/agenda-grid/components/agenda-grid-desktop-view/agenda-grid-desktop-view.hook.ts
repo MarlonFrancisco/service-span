@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
-import type { useAgendaGrid } from '../../agenda-grid.hook';
 import { isToday } from '../../agenda-grid.helpers';
+import type { useAgendaGrid } from '../../agenda-grid.hook';
 
 /**
  * Hook para Desktop View

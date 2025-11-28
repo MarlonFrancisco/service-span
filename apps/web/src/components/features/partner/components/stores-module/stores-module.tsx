@@ -11,9 +11,8 @@ import { StoreDetailsDrawer } from './components/store-details-drawer';
 import { StoresModuleSkeleton } from './stores-module.skeleton';
 
 export const StoresModule = () => {
-  const { stores } = useStoresQuery({ includeStores: true });
+  const { stores, isPendingStores } = useStoresQuery();
   const { setIsAddModalOpen } = useStoresStore();
-  const { isPendingStores } = useStoresQuery({ includeStores: true });
 
   if (isPendingStores) {
     return <StoresModuleSkeleton />;

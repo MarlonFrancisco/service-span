@@ -5,7 +5,7 @@ import { motion } from 'motion/react';
 import { useMemo } from 'react';
 
 export const StatsCards = () => {
-  const { stores } = useStoresQuery({ includeStores: true });
+  const { stores } = useStoresQuery();
 
   const totalStores = useMemo(() => stores.length, [stores]);
   const activeStores = useMemo(
