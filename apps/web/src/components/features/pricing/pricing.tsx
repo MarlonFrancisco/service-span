@@ -4,20 +4,13 @@ import { PlanCard } from '@/components/ui';
 import { Badge, Card, Carousel, CarouselContent, CarouselItem } from '@repo/ui';
 import {
   BarChart3,
-  Bell,
   Building2,
   Calendar,
-  Clock,
   History,
-  Link,
   Monitor,
-  Shield,
-  ShieldAlert,
   Sliders,
   Sparkles,
   Star,
-  TrendingUp,
-  Users,
   Zap,
   type LucideIcon,
 } from 'lucide-react';
@@ -72,27 +65,6 @@ const benefits: Benefit[] = [
     medium: true,
   },
   {
-    icon: TrendingUp,
-    title: 'Cresça mais rápido',
-    description:
-      'Agendamentos online 24/7 para capturar clientes a qualquer hora.',
-    medium: true,
-  },
-  {
-    icon: ShieldAlert,
-    title: 'Proteção contra no-shows',
-    description:
-      'Sistema inteligente que identifica e gerencia clientes com alta taxa de faltas, protegendo seu negócio.',
-    medium: true,
-  },
-  {
-    icon: Link,
-    title: 'Checkout personalizado',
-    description:
-      'Link curto personalizado com o checkout da loja para agendamentos, intuitivo e fácil de compartilhar nas redes sociais.',
-    medium: true,
-  },
-  {
     icon: Star,
     title: 'Sistema de avaliações',
     description:
@@ -115,28 +87,6 @@ const benefits: Benefit[] = [
     title: 'Histórico completo',
     description:
       'Rastreamento de todos os agendamentos e histórico detalhado de cada cliente.',
-  },
-  {
-    icon: Users,
-    title: 'Fidelize clientes',
-    description: 'Experiência premium que seus clientes vão amar e recomendar.',
-  },
-  {
-    icon: Clock,
-    title: 'Economize tempo',
-    description:
-      'Reduza até 15h semanais gastas com gestão manual de agendamentos.',
-  },
-  {
-    icon: Shield,
-    title: 'Segurança garantida',
-    description: 'Dados protegidos com criptografia de ponta a ponta.',
-  },
-  {
-    icon: Bell,
-    title: 'Notificações em tempo real',
-    description:
-      'Alertas instantâneos para novos agendamentos, cancelamentos e atualizações importantes.',
   },
 ];
 
