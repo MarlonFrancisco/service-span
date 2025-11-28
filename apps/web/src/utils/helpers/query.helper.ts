@@ -7,13 +7,21 @@ const makeQueryClient = () => {
         refetchOnWindowFocus: false,
         staleTime: 5 * 60 * 1000,
         retry: (failureCount, error) => {
-          const cause = error.cause as { response: { status: number } };
+          // Extract status from error cause
+          let status: number | undefined;
 
-          if (cause?.response?.status === 404) {
+          if (error instanceof Error && error.cause) {
+            const cause = error.cause as { response?: { status: number } };
+            status = cause?.response?.status;
+          }
+
+          // Don't retry 404 errors
+          if (status === 404) {
             return false;
           }
 
-          return failureCount < 1;
+          // Retry other errors up to 2 times
+          return failureCount < 2;
         },
       },
     },
