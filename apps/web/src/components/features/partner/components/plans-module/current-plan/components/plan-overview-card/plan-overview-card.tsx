@@ -32,16 +32,11 @@ export function PlanOverviewCard({
     usersUsagePercentage,
     isStoresUnlimited,
     isUsersUnlimited,
-  } = usePlanOverviewCard({
-    nextBillingDate: currentPlan?.nextBillingDate,
-    schedulesLength: currentPlan?.schedulesLength || 0,
-    storesLength: currentPlan?.storesLength || 0,
-    maxStores: currentPlan?.maxStores || 0,
-    storeMembersLength: currentPlan?.storeMembersLength || 0,
-    maxUsers: currentPlan?.maxUsers || 0,
-  });
+  } = usePlanOverviewCard();
 
-  if (!currentPlan) return null;
+  if (!currentPlan?.isActive) return null;
+
+  console.log('currentPlan', currentPlan);
 
   return (
     <motion.div
@@ -165,7 +160,8 @@ export function PlanOverviewCard({
                         <Badge>Ilimitado</Badge>
                       ) : (
                         <span className="text-sm text-gray-900">
-                          {currentPlan.storesLength}/{currentPlan.maxStores}
+                          {currentPlan.storesLength}/
+                          {currentPlan.features.PRO_LIMIT}
                         </span>
                       )}
                     </div>
@@ -177,14 +173,14 @@ export function PlanOverviewCard({
                   <div>
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-sm text-gray-600">
-                        Usuários ativos
+                        Profissionais ativos
                       </span>
                       {isUsersUnlimited ? (
                         <Badge>Ilimitado</Badge>
                       ) : (
                         <span className="text-sm text-gray-900">
                           {currentPlan.storeMembersLength}/
-                          {currentPlan.maxUsers}
+                          {currentPlan.features.UNIT_LIMIT}
                         </span>
                       )}
                     </div>

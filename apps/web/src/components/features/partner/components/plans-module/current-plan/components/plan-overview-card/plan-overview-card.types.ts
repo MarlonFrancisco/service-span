@@ -12,13 +12,3 @@ export type TPlanOverviewCardConfig = {
   onCancelReactivateClick: () => void;
   delay?: number;
 };
-
-export type TUsePlanOverviewCardConfig = Pick<
-  TPlanOverviewCardConfig,
-  | 'nextBillingDate'
-  | 'schedulesLength'
-  | 'storesLength'
-  | 'maxStores'
-  | 'storeMembersLength'
-  | 'maxUsers'
->;

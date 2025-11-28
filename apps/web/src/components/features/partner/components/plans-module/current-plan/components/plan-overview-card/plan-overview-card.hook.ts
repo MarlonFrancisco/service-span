@@ -1,15 +1,17 @@
 'use client';
 
+import { useSubscriptionQuery } from '@/hooks/use-query/use-subscription-query';
 import { useMemo } from 'react';
-import type { TUsePlanOverviewCardConfig } from './plan-overview-card.types';
 
-export const usePlanOverviewCard = ({
-  nextBillingDate,
-  storesLength,
-  maxStores,
-  storeMembersLength,
-  maxUsers,
-}: TUsePlanOverviewCardConfig) => {
+export const usePlanOverviewCard = () => {
+  const { currentPlan } = useSubscriptionQuery();
+
+  const nextBillingDate = currentPlan?.nextBillingDate;
+  const storesLength = currentPlan?.storesLength || 0;
+  const maxStores = currentPlan?.features.PRO_LIMIT || 0;
+  const storeMembersLength = currentPlan?.storeMembersLength || 0;
+  const maxUsers = currentPlan?.features.UNIT_LIMIT || 0;
+
   const calculatePercentage = (current: number, max: number) => {
     if (max === 0) return 0;
     return Math.min((current / max) * 100, 100);

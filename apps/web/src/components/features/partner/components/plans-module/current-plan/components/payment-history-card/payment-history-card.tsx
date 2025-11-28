@@ -1,7 +1,7 @@
 'use client';
 
-import { Badge, Card, CardContent, CardHeader, CardTitle } from '@repo/ui';
 import { useSubscriptionQuery } from '@/hooks/use-query/use-subscription-query';
+import { Badge, Card, CardContent, CardHeader, CardTitle } from '@repo/ui';
 import { Calendar, Download, FileText } from 'lucide-react';
 import { motion } from 'motion/react';
 import { usePaymentHistoryCard } from './payment-history-card.hook';
@@ -14,9 +14,7 @@ export function PaymentHistoryCard({ delay = 0.2 }: PaymentHistoryCardProps) {
   const { currentPlan } = useSubscriptionQuery();
   const { downloadPDF, getStatusBadge, formatDate } = usePaymentHistoryCard();
 
-  if (!currentPlan) return null;
-
-  const paymentHistory = currentPlan.invoices || [];
+  const paymentHistory = currentPlan?.invoices || [];
 
   return (
     <motion.div

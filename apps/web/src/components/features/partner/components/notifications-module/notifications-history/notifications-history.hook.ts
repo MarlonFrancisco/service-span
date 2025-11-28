@@ -16,6 +16,17 @@ export const useNotificationsHistory = () => {
     setPage(1);
   }, [searchQuery, filterType, filterStatus]);
 
+  const notificationHistoryParams = useMemo(
+    () => ({
+      page,
+      limit: 5,
+      type: filterType,
+      status: filterStatus,
+      search: searchQuery,
+    }),
+    [page, filterType, filterStatus, searchQuery],
+  );
+
   const {
     notificationsHistory,
     notificationsMeta,
@@ -23,13 +34,7 @@ export const useNotificationsHistory = () => {
   } = useNotificationsQuery({
     storeId: activeStore.id,
     includeNotificationsHistory: true,
-    notificationHistoryParams: {
-      page,
-      limit: 5,
-      type: filterType,
-      status: filterStatus,
-      search: searchQuery,
-    },
+    notificationHistoryParams,
   });
 
   const {
@@ -38,6 +43,7 @@ export const useNotificationsHistory = () => {
     markAllAsReadNotificationsHistoryMutation,
   } = useNotificationsMutations({
     storeId: activeStore.id,
+    notificationHistoryParams,
   });
 
   const markAsRead = useCallback(
