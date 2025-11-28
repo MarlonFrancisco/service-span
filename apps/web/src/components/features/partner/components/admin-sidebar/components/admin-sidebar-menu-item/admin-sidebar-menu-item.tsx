@@ -27,6 +27,10 @@ export function AdminSidebarMenuItem({
     }
   };
 
+  if (!item.isActive) {
+    return null;
+  }
+
   return (
     <SidebarMenuItem>
       <SidebarMenuButton isActive={isActive} onClick={handleClick}>

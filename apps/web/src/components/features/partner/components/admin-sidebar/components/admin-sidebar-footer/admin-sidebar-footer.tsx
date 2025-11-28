@@ -1,7 +1,6 @@
 'use client';
 
 import { useSubscriptionQuery } from '@/hooks/use-query/use-subscription-query';
-import { IMySubscription } from '@/types/api/payment.types';
 import { Button, SidebarFooter } from '@repo/ui';
 import { CreditCard } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -11,55 +10,29 @@ interface AdminSidebarFooterProps {
 }
 
 export function AdminSidebarFooter({ isCollapsed }: AdminSidebarFooterProps) {
-  if (isCollapsed) {
-    return <AdminSidebarFooterCollapsed />;
-  }
-
-  return <AdminSidebarFooterExpanded />;
-}
-
-function AdminSidebarFooterCollapsed() {
   const { currentPlan } = useSubscriptionQuery();
 
-  if (!currentPlan) {
-    return null;
-  }
-
-  return <AdminSidebarFooterCollapsedLimited />;
-}
-
-function AdminSidebarFooterCollapsedLimited() {
-  return (
-    <SidebarFooter className="border-t border-gray-100 p-4">
-      <div className="flex flex-col items-center gap-2">
-        <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-gray-900 to-gray-700 flex items-center justify-center relative">
-          <CreditCard className="h-4 w-4 text-white" />
-        </div>
-      </div>
-    </SidebarFooter>
-  );
-}
-
-function AdminSidebarFooterExpanded() {
-  const { currentPlan } = useSubscriptionQuery();
-
-  if (!currentPlan) {
-    return null;
-  }
-
-  return <AdminSidebarFooterExpandedLimited currentPlan={currentPlan} />;
-}
-
-function AdminSidebarFooterExpandedLimited({
-  currentPlan,
-}: {
-  currentPlan: IMySubscription;
-}) {
   const router = useRouter();
 
   const handleUpgradeClick = () => {
     router.push('/partner/plans/upgrade');
   };
+
+  if (!currentPlan) {
+    return null;
+  }
+
+  if (isCollapsed) {
+    return (
+      <SidebarFooter className="border-t border-gray-100 p-4">
+        <div className="flex flex-col items-center gap-2">
+          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-gray-900 to-gray-700 flex items-center justify-center relative">
+            <CreditCard className="h-4 w-4 text-white" />
+          </div>
+        </div>
+      </SidebarFooter>
+    );
+  }
 
   return (
     <SidebarFooter className="border-t border-gray-100 p-4">

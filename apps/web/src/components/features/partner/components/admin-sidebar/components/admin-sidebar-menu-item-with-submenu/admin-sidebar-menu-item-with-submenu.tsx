@@ -32,6 +32,10 @@ export function AdminSidebarMenuItemWithSubmenu({
   activeModule,
   isCollapsed,
 }: AdminSidebarMenuItemWithSubmenuProps) {
+  if (!item.isActive) {
+    return null;
+  }
+
   if (isCollapsed) {
     return <CollapsedSubmenuItem item={item} activeModule={activeModule} />;
   }
@@ -50,6 +54,10 @@ function CollapsedSubmenuItem({
   const Icon = item.icon;
   const isActive = useIsMenuItemActive(item.id, activeModule);
   const submenu = item.submenu || [];
+
+  if (!item.isActive) {
+    return null;
+  }
 
   return (
     <SidebarMenuItem>
@@ -77,27 +85,30 @@ function CollapsedSubmenuItem({
               {item.label}
             </div>
             <div className="h-px bg-gray-100" />
-            {submenu.map((subItem) => {
-              const SubIcon = subItem.icon;
-              const isSubActive = useIsSubMenuItemActive(
-                subItem.id,
-                activeModule,
-              );
-              return (
-                <button
-                  key={subItem.id}
-                  className={`flex w-full items-center gap-2 rounded-lg px-2 py-2 text-sm transition-colors ${
-                    isSubActive
-                      ? 'bg-gray-100 text-gray-900'
-                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                  }`}
-                  onClick={() => router.push(subItem.url)}
-                >
-                  <SubIcon className="h-4 w-4" />
-                  <span>{subItem.label}</span>
-                </button>
-              );
-            })}
+            {submenu
+              .filter((subItem) => subItem.isActive)
+              .map((subItem) => {
+                const SubIcon = subItem.icon;
+                const isSubActive = useIsSubMenuItemActive(
+                  subItem.id,
+                  activeModule,
+                );
+
+                return (
+                  <button
+                    key={subItem.id}
+                    className={`flex w-full items-center gap-2 rounded-lg px-2 py-2 text-sm transition-colors ${
+                      isSubActive
+                        ? 'bg-gray-100 text-gray-900'
+                        : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                    }`}
+                    onClick={() => router.push(subItem.url)}
+                  >
+                    <SubIcon className="h-4 w-4" />
+                    <span>{subItem.label}</span>
+                  </button>
+                );
+              })}
           </div>
         </PopoverContent>
       </Popover>
@@ -116,6 +127,10 @@ function ExpandedSubmenuItem({
   const Icon = item.icon;
   const isActive = useIsMenuItemActive(item.id, activeModule);
   const submenu = item.submenu || [];
+
+  if (!item.isActive) {
+    return null;
+  }
 
   return (
     <Collapsible
@@ -144,31 +159,33 @@ function ExpandedSubmenuItem({
         </CollapsibleTrigger>
         <CollapsibleContent>
           <SidebarMenuSub>
-            {submenu.map((subItem) => {
-              const SubIcon = subItem.icon;
-              const isSubActive = useIsSubMenuItemActive(
-                subItem.id,
-                activeModule,
-              );
-              return (
-                <SidebarMenuSubItem
-                  key={subItem.id}
-                  onClick={() => router.push(subItem.url)}
-                >
-                  <SidebarMenuSubButton
-                    isActive={isSubActive}
-                    className={
-                      isSubActive
-                        ? 'bg-gray-100 text-gray-900'
-                        : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                    }
+            {submenu
+              .filter((subItem) => subItem.isActive)
+              .map((subItem) => {
+                const SubIcon = subItem.icon;
+                const isSubActive = useIsSubMenuItemActive(
+                  subItem.id,
+                  activeModule,
+                );
+                return (
+                  <SidebarMenuSubItem
+                    key={subItem.id}
+                    onClick={() => router.push(subItem.url)}
                   >
-                    <SubIcon className="h-4 w-4" />
-                    <span>{subItem.label}</span>
-                  </SidebarMenuSubButton>
-                </SidebarMenuSubItem>
-              );
-            })}
+                    <SidebarMenuSubButton
+                      isActive={isSubActive}
+                      className={
+                        isSubActive
+                          ? 'bg-gray-100 text-gray-900'
+                          : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                      }
+                    >
+                      <SubIcon className="h-4 w-4" />
+                      <span>{subItem.label}</span>
+                    </SidebarMenuSubButton>
+                  </SidebarMenuSubItem>
+                );
+              })}
           </SidebarMenuSub>
         </CollapsibleContent>
       </SidebarMenuItem>
