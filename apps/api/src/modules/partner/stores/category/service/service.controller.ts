@@ -41,8 +41,18 @@ export class ServiceController {
   }
 
   @Put(':id')
-  async update(@Param('id') id: string, @Body() service: ServiceDto) {
-    return this.serviceService.update(plainToInstance(ServiceDto, { ...service, id }));
+  async update(
+    @Param('id') id: string,
+    @Param('categoryId') categoryId: string,
+    @Body() service: ServiceDto,
+  ) {
+    return this.serviceService.update(
+      plainToInstance(ServiceDto, {
+        ...service,
+        id,
+        category: { id: categoryId },
+      }),
+    );
   }
 
   @Delete(':id')

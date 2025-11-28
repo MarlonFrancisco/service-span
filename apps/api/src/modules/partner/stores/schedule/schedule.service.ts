@@ -17,19 +17,12 @@ export class ScheduleService {
   ) {}
 
   async create(scheduleDto: CreateSchedulesDto): Promise<Schedule[]> {
-    let user = await this.usersService.findByOne({
+    const user = await this.usersService.upsert({
       email: scheduleDto.user?.email,
       telephone: normalizePhoneNumber(scheduleDto.user?.telephone),
+      firstName: scheduleDto.user?.firstName,
+      lastName: scheduleDto.user?.lastName,
     });
-
-    if (!user) {
-      user = await this.usersService.create({
-        email: scheduleDto.user?.email,
-        telephone: normalizePhoneNumber(scheduleDto.user?.telephone),
-        firstName: scheduleDto.user?.firstName,
-        lastName: scheduleDto.user?.lastName,
-      });
-    }
 
     scheduleDto.user = user;
 
@@ -53,8 +46,7 @@ export class ScheduleService {
     });
 
     const savedSchedules = await this.scheduleRepository.save(schedules);
-
-    return this.scheduleRepository.find({
+    return await this.scheduleRepository.find({
       where: { id: In(savedSchedules.map((schedule) => schedule.id)) },
       relations: ['storeMember', 'storeMember.user', 'user', 'service'],
     });

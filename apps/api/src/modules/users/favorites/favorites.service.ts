@@ -23,9 +23,9 @@ export class FavoritesService {
     return this.favoriteRepository.findOne({ where: { id } });
   }
 
-  async update(favorite: FavoriteDto): Promise<Favorite> {
+  async update(favorite: FavoriteDto): Promise<FavoriteDto> {
     await this.favoriteRepository.update(favorite.id, favorite);
-    return this.findOne(favorite.id);
+    return favorite;
   }
 
   async delete(id: string): Promise<void> {

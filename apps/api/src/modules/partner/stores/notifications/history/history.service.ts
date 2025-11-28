@@ -68,9 +68,9 @@ export class NotificationsHistoryService {
   async update(
     id: string,
     notificationsHistory: UpdateNotificationHistoryDto,
-  ): Promise<NotificationsHistory> {
+  ): Promise<UpdateNotificationHistoryDto> {
     await this.notificationsHistoryRepository.update(id, notificationsHistory);
-    return this.findOne(id);
+    return notificationsHistory;
   }
 
   async markAllAsRead(storeId: string) {
@@ -79,7 +79,7 @@ export class NotificationsHistoryService {
       { read: true },
     );
 
-    return await this.findAll(storeId);
+    return storeId;
   }
 
   async delete(id: string): Promise<{ id: string }> {
