@@ -12,7 +12,6 @@ export interface IUser {
   firstName: string;
   lastName: string;
   telephone: string;
-  isSubscribed: boolean;
   avatar?: string;
   favorites: IFavorite[];
   schedules: IAppointment[];

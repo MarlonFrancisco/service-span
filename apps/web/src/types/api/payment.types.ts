@@ -27,7 +27,20 @@ export interface IMySubscription {
   planDescription: string;
   price: number;
   billingPeriod: 'month' | 'year';
-  features: string[];
+  features: {
+    DISPLAY_ORDER: number;
+    IS_RECOMMENDED: boolean;
+    PRO_LIMIT: number;
+    RANK_TIER: 'TIER_1' | 'TIER_2' | 'TIER_3';
+    SCHEDULE_LIMIT: number;
+    SMS_REMINDER: boolean;
+    UNIT_LIMIT: number;
+    WHATSAPP_INTEGRATION: boolean;
+    DASHBOARD_GENERAL_ACCESS: boolean;
+    DASHBOARD_SALES_ACCESS: boolean;
+    DASHBOARD_OPERATIONAL_ACCESS: boolean;
+    DASHBOARD_CUSTOMERS_ACCESS: boolean;
+  };
   subscriptionStatus: 'active' | 'inactive';
   currentPeriodStart: Date;
   currentPeriodEnd: Date;
@@ -38,10 +51,6 @@ export interface IMySubscription {
   schedulesLength: number;
   storesLength: number;
   storeMembersLength: number;
-  maxStores: number;
-  maxUsers: number;
-  rankTier: string;
-  smsReminder: boolean;
 }
 
 export type IPlansResponse = {
