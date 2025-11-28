@@ -10,18 +10,24 @@ const makeQueryClient = () => {
           // Extract status from error cause
           let status: number | undefined;
 
+          console.log('Retry attempt:', { failureCount, error, errorType: error?.constructor?.name });
+
           if (error instanceof Error && error.cause) {
             const cause = error.cause as { response?: { status: number } };
             status = cause?.response?.status;
+            console.log('Extracted status from error.cause:', status);
           }
 
           // Don't retry 404 errors
           if (status === 404) {
+            console.log('Not retrying 404 error');
             return false;
           }
 
           // Retry other errors up to 2 times
-          return failureCount < 2;
+          const shouldRetry = failureCount < 2;
+          console.log('Retrying error:', { shouldRetry, failureCount, status });
+          return shouldRetry;
         },
       },
     },
