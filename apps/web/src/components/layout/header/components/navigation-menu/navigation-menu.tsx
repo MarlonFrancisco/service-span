@@ -1,3 +1,4 @@
+import { useSubscriptionQuery } from '@/hooks/use-query/use-subscription-query';
 import { useUserQuery } from '@/hooks/use-query/use-user-query';
 import { useAuthStore } from '@/store/auth/auth.store';
 import { useIsMobile } from '@repo/ui';
@@ -7,7 +8,8 @@ import { NAVIGATION_ITEMS } from '../../header.constants';
 
 export const NavigationMenu = () => {
   const openAuthAction = useAuthStore((state) => state.openAuthAction);
-  const { isLoggedIn, user } = useUserQuery();
+  const { currentPlan } = useSubscriptionQuery();
+  const { isLoggedIn } = useUserQuery();
 
   const isMobile = useIsMobile();
 
@@ -20,7 +22,7 @@ export const NavigationMenu = () => {
 
     if (isMobile) {
       items.unshift(
-        user?.isSubscribed
+        currentPlan?.isActive
           ? {
               href: '/partner',
               label: 'Meu painel',
@@ -46,7 +48,7 @@ export const NavigationMenu = () => {
     }
 
     return items;
-  }, [isLoggedIn, handleAuth, isMobile, user?.isSubscribed]);
+  }, [isLoggedIn, handleAuth, isMobile, currentPlan?.isActive]);
 
   return (
     <nav className="mt-px font-display text-5xl font-medium tracking-tight text-white">

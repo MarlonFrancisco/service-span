@@ -1,4 +1,4 @@
-import { useUserQuery } from '@/hooks/use-query/use-user-query';
+import { useSubscriptionQuery } from '@/hooks/use-query/use-subscription-query';
 import { Button } from '@repo/ui';
 import { useRouter } from 'next/navigation';
 import type { TPartnerButtonConfig } from './partner-button.types';
@@ -8,10 +8,10 @@ export const PartnerButton = ({
   ...props
 }: TPartnerButtonConfig) => {
   const router = useRouter();
-  const { user } = useUserQuery();
+  const { currentPlan } = useSubscriptionQuery();
 
   const handleClick = () => {
-    if (user?.isSubscribed) {
+    if (currentPlan?.isActive) {
       router.push('/partner');
     } else {
       router.push('/partner/plans');
@@ -32,7 +32,7 @@ export const PartnerButton = ({
         onClick={handleClick}
         {...props}
       >
-        {user?.isSubscribed ? 'Meu painel' : 'Seja um parceiro'}
+        {currentPlan?.isActive ? 'Meu painel' : 'Seja um parceiro'}
       </Button>
     </div>
   );

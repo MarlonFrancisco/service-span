@@ -162,14 +162,13 @@ export default async function RootLayout({
   const userIdentification = cookieStore.get('user_identification')?.value;
 
   if (userIdentification) {
+    UsersService.headers = {
+      Cookie: `access_token=${cookieStore.get('access_token')?.value}`,
+    };
+
     await queryClient.prefetchQuery({
       queryKey: CACHE_QUERY_KEYS.user(userIdentification),
-      queryFn: () =>
-        UsersService.getUser({
-          headers: {
-            Cookie: `access_token=${cookieStore.get('access_token')?.value}`,
-          },
-        }),
+      queryFn: () => UsersService.getUser(),
     });
   }
 
