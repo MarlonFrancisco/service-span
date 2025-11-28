@@ -71,7 +71,7 @@ export const useAppointmentDetailsMutations = () => {
       }) => {
         return ScheduleService.update(storeId, scheduleId, { status });
       },
-      onSuccess: (data: IAppointment) => {
+      onSuccess: (data) => {
         // Update cache with optimistic update
         queryClient.setQueryData(
           CACHE_QUERY_KEYS.schedules(storeId),

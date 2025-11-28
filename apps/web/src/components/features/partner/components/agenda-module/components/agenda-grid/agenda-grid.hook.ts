@@ -88,7 +88,6 @@ export const useAgendaGrid = () => {
           unblockedTimes: [] as TSelectedSlot[],
         },
       );
-      console.log(slotsByAction);
 
       if (slotsByAction.unblockedTimes.length > 0) {
         // Create blocked times for all selected slots in bulk
