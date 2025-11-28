@@ -66,6 +66,27 @@ export class UsersService {
     return this.userRepository.save(user);
   }
 
+  /**
+   * Cria ou atualiza usuário em uma única operação (otimizado para serverless)
+   * Usa upsert para evitar múltiplas queries (findByOne + create)
+   */
+  async upsert(userData: Partial<User>): Promise<User> {
+    // Tenta encontrar usuário existente por telefone ou email
+    const existingUser = await this.userRepository.findOne({
+      where: [
+        { telephone: userData.telephone },
+        { email: userData.email },
+      ],
+    });
+
+    if (existingUser) {
+      return existingUser;
+    }
+
+    // Se não existe, cria novo (com Stripe customer)
+    return this.create(userData);
+  }
+
   async update(id: string, userData: Partial<User>): Promise<User> {
     await this.userRepository.update(id, userData);
     const user = await this.findById(id);

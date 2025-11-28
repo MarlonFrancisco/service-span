@@ -19,6 +19,7 @@
     "products:update": "ts-node -O '{\"module\":\"commonjs\"}' src/scripts/update-stripe-products-metadata.ts"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.0.2",
     "@nestjs/cli": "^11.0.0",
     "@nestjs/common": "^11.0.0",
     "@nestjs/config": "^4.0.2",
