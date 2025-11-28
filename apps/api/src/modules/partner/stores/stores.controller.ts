@@ -11,7 +11,8 @@ import {
 import { plainToInstance } from 'class-transformer';
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 import { Public } from '../../auth/decorators/public.decorator';
-import { StoreDto } from './dto/store.dto';
+import { CreateStoreDto } from './dto/create-store.dto';
+import { UpdateStoreDto } from './dto/update-store.dto';
 import { StoreOwnerGuard } from './guards';
 import { StoresService } from './stores.services';
 
@@ -32,18 +33,26 @@ export class StoresController {
 
   @Post()
   async createStore(
-    @Body() createStoreDto: unknown,
+    @Body() createStoreDto: CreateStoreDto,
     @CurrentUser('sub') userId: string,
   ) {
     createStoreDto['owner'] = { id: userId };
 
-    return this.storesService.create(plainToInstance(StoreDto, createStoreDto));
+    return this.storesService.create(
+      plainToInstance(CreateStoreDto, createStoreDto),
+    );
   }
 
   @Put(':id')
   @UseGuards(StoreOwnerGuard)
-  async updateStore(@Param('id') id: string, @Body() updateStoreDto: unknown) {
-    return this.storesService.update(id, plainToInstance(StoreDto, updateStoreDto));
+  async updateStore(
+    @Param('id') id: string,
+    @Body() updateStoreDto: UpdateStoreDto,
+  ) {
+    return this.storesService.update(
+      id,
+      plainToInstance(UpdateStoreDto, updateStoreDto),
+    );
   }
 
   @Delete(':id')

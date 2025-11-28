@@ -1,62 +1,58 @@
-import { IsArray, IsBoolean, IsEmail, IsNumber, IsObject, IsOptional, IsString, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
+import {
+  IsArray,
+  IsBoolean,
+  IsEmail,
+  IsNumber,
+  IsObject,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
 import type { User } from '../../../users/user.entity';
 import type { Gallery } from '../gallery/gallery.entity';
+import { Store } from '../store.entity';
 
-class BusinessDaysDto {
-  @IsBoolean()
-  monday: boolean;
-
-  @IsBoolean()
-  tuesday: boolean;
-
-  @IsBoolean()
-  wednesday: boolean;
-
-  @IsBoolean()
-  thursday: boolean;
-
-  @IsBoolean()
-  friday: boolean;
-
-  @IsBoolean()
-  saturday: boolean;
-
-  @IsBoolean()
-  sunday: boolean;
-}
-
-export class StoreDto {
+export class UpdateStoreDto {
   @IsObject()
   @IsOptional()
   owner: Partial<User>;
 
   @IsString()
+  @IsOptional()
   name: string;
 
   @IsString()
+  @IsOptional()
   description: string;
 
   @IsArray()
   @IsString({ each: true })
+  @IsOptional()
   amenities: string[];
 
   @IsString()
+  @IsOptional()
   address: string;
 
   @IsString()
+  @IsOptional()
   city: string;
 
   @IsString()
+  @IsOptional()
   state: string;
 
   @IsString()
+  @IsOptional()
   zipCode: string;
 
   @IsString()
+  @IsOptional()
   telephone: string;
 
   @IsEmail()
+  @IsOptional()
   email: string;
 
   @IsString()
@@ -83,27 +79,36 @@ export class StoreDto {
   gallery?: Gallery[];
 
   @IsNumber()
+  @IsOptional()
   weeklyGoal: number;
 
   @IsNumber()
+  @IsOptional()
   monthlyGoal: number;
 
   @IsNumber()
+  @IsOptional()
   quarterlyGoal: number;
 
   @IsString()
+  @IsOptional()
   openTime: string;
 
   @IsString()
+  @IsOptional()
   closeTime: string;
 
   @IsString()
+  @IsOptional()
   lunchStartTime: string;
 
   @IsString()
+  @IsOptional()
   lunchEndTime: string;
 
+  @IsObject()
+  @IsOptional()
   @ValidateNested()
-  @Type(() => BusinessDaysDto)
-  businessDays: BusinessDaysDto;
+  @Type(() => Store['businessDays'])
+  businessDays: Store['businessDays'];
 }
