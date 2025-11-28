@@ -36,10 +36,11 @@ export class StoresController {
     @Body() createStoreDto: CreateStoreDto,
     @CurrentUser('sub') userId: string,
   ) {
-    createStoreDto['owner'] = { id: userId };
-
     return this.storesService.create(
-      plainToInstance(CreateStoreDto, createStoreDto),
+      plainToInstance(CreateStoreDto, {
+        ...createStoreDto,
+        owner: { id: userId },
+      }),
     );
   }
 

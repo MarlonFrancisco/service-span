@@ -9,32 +9,25 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
-        const isDevelopment =
-          configService.get<string>('NODE_ENV') === 'development';
+        neonServerless.neonConfig.pipelineConnect = 'password';
 
-        // Configuração Neon Serverless para produção
-        if (!isDevelopment) {
-          // Habilita pipelining para conexões mais rápidas
-          neonServerless.neonConfig.pipelineConnect = 'password';
-
-          return {
-            type: 'postgres',
-            url: configService.get<string>('DB_URL'),
-            entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-            synchronize: configService.get<boolean>('DB_SYNCHRONIZE', false),
-            logging: configService.get<boolean>('DB_LOGGING', false),
-            ssl: true,
-            autoLoadEntities: true,
-            // Passa o módulo @neondatabase/serverless como driver (substitui o pg)
-            driver: neonServerless,
-            extra: {
-              // Pool pequeno para serverless (conexões são leves via WebSocket)
-              max: 5,
-              connectionTimeoutMillis: 10000,
-              idleTimeoutMillis: 30000,
-            },
-          };
-        }
+        return {
+          type: 'postgres',
+          url: configService.get<string>('DB_URL'),
+          entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+          synchronize: configService.get<boolean>('DB_SYNCHRONIZE', false),
+          logging: configService.get<boolean>('DB_LOGGING', false),
+          ssl: true,
+          autoLoadEntities: true,
+          // Passa o módulo @neondatabase/serverless como driver (substitui o pg)
+          driver: neonServerless,
+          extra: {
+            // Pool pequeno para serverless (conexões são leves via WebSocket)
+            max: 5,
+            connectionTimeoutMillis: 10000,
+            idleTimeoutMillis: 30000,
+          },
+        };
 
         // Configuração para desenvolvimento (usa driver padrão pg)
         return {

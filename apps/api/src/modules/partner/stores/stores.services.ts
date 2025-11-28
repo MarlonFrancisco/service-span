@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateStoreDto } from './dto/create-store.dto';
@@ -38,7 +38,7 @@ export class StoresService {
   }
 
   async findOne(id: string, ownerId?: string): Promise<Store> {
-    return this.storesRepository.findOne({
+    const store = await this.storesRepository.findOne({
       where: { id, owner: { id: ownerId } },
       relations: [
         'gallery',
@@ -53,6 +53,12 @@ export class StoresService {
         'reviews',
       ],
     });
+
+    if (!store) {
+      throw new NotFoundException('Store not found');
+    }
+
+    return store;
   }
 
   async update(id: string, storeDto: UpdateStoreDto): Promise<UpdateStoreDto> {

@@ -35,7 +35,6 @@ export class StoreOwnerGuard implements CanActivate {
     if (!user || !user.sub) {
       throw new ForbiddenException('User not authenticated');
     }
-
     // Verifica se é owner ou manager
     const store = await this.storesService.findOne(storeId as string, user.sub);
 
