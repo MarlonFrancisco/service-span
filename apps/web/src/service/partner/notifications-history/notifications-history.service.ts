@@ -1,4 +1,7 @@
-import { INotificationsHistory } from '@/types/api/stores.types';
+import {
+  INotificationsHistory,
+  INotificationsHistoryResponse,
+} from '@/types/api/notifications.types';
 import { apiClient } from '../../api';
 
 export class NotificationsHistoryService {
@@ -26,15 +29,7 @@ export class NotificationsHistoryService {
       if (params.search) queryParams.append('search', params.search);
     }
 
-    return await this.apiClient.get<{
-      data: INotificationsHistory[];
-      meta: {
-        total: number;
-        page: number;
-        limit: number;
-        totalPages: number;
-      };
-    }>(
+    return await this.apiClient.get<INotificationsHistoryResponse>(
       `/partner/stores/${storeId}/notifications/history?${queryParams.toString()}`,
       {
         headers: this.headers,

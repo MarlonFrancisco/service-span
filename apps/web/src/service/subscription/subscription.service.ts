@@ -3,6 +3,7 @@ import { apiClient } from '../api';
 
 export class SubscriptionService {
   static readonly apiClient = apiClient;
+  static headers?: HeadersInit;
 
   static async createSubscription(priceId: string) {
     return await this.apiClient.post<{ url: string }>('/subscription', {
@@ -13,6 +14,9 @@ export class SubscriptionService {
   static async getCurrentPlan() {
     return await this.apiClient.get<IMySubscription>(
       '/subscription/current-plan',
+      {
+        headers: this.headers,
+      },
     );
   }
 

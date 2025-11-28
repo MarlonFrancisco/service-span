@@ -4,6 +4,7 @@ const makeQueryClient = () => {
   return new QueryClient({
     defaultOptions: {
       queries: {
+        refetchOnWindowFocus: false,
         staleTime: 5 * 60 * 1000,
         retry: (failureCount, error) => {
           const cause = error.cause as { response: { status: number } };
@@ -12,7 +13,7 @@ const makeQueryClient = () => {
             return false;
           }
 
-          return failureCount < 3;
+          return failureCount < 1;
         },
       },
     },
