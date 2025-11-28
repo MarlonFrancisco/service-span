@@ -43,12 +43,7 @@ export function NotFound({
   };
 
   return (
-    <Empty
-      className={cn(
-        'min-h-[calc(100vh-156px)] flex items-center justify-center',
-        className,
-      )}
-    >
+    <Empty className={cn('flex items-center justify-center', className)}>
       <EmptyHeader>
         <EmptyMedia variant="icon">
           <Icon className="h-6 w-6" />
