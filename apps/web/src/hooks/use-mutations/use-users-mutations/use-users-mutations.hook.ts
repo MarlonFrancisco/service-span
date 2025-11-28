@@ -10,12 +10,12 @@ export const useUsersMutations = () => {
 
   const { mutate: updateAvatar, isPending: isUpdatingAvatar } = useMutation({
     mutationFn: (avatar: string) => UsersService.updateAvatar(avatar),
-    onSuccess: (data: IUser) => {
+    onSuccess: (data) => {
       queryClient.setQueryData(
         CACHE_QUERY_KEYS.user(cookies.get('user_identification')!),
         (old: IUser) => ({
           ...old,
-          avatar: data.avatar,
+          ...data,
         }),
       );
       toast.success('Avatar atualizado com sucesso');

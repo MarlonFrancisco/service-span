@@ -1,6 +1,5 @@
 import { NotificationsHistoryService } from '@/service/partner/notifications-history';
 import { NotificationsSettingsService } from '@/service/partner/notifications-settings';
-import { INotificationsSettings } from '@/types/api/stores.types';
 import { CACHE_QUERY_KEYS } from '@/utils/helpers/query.helper';
 import { useQuery } from '@tanstack/react-query';
 
@@ -21,7 +20,7 @@ export const useNotificationsQuery = ({
     search?: string;
   };
 }) => {
-  const { data: notificationsSettings } = useQuery<INotificationsSettings>({
+  const { data: notificationsSettings } = useQuery({
     queryKey: CACHE_QUERY_KEYS.notificationsSettings(storeId!),
     queryFn: () => NotificationsSettingsService.get(storeId!),
     enabled: !!storeId && includeNotificationsSettings,

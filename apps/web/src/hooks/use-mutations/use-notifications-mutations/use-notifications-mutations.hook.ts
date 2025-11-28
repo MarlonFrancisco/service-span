@@ -1,15 +1,20 @@
+import { TUseNotificationsMutationsConfig } from '@/hooks/use-mutations/use-notifications-mutations/use-notifications-mutations.types';
 import { NotificationsHistoryService } from '@/service/partner/notifications-history';
 import { NotificationsSettingsService } from '@/service/partner/notifications-settings';
 import {
   INotificationsHistory,
+  INotificationsHistoryResponse,
   INotificationsSettings,
-} from '@/types/api/stores.types';
-import { CACHE_QUERY_KEYS, getQueryClient } from '@/utils/helpers/query.helper';
-import { useMutation } from '@tanstack/react-query';
+} from '@/types/api/notifications.types';
+import { CACHE_QUERY_KEYS } from '@/utils/helpers/query.helper';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
-export const useNotificationsMutations = ({ storeId }: { storeId: string }) => {
-  const queryClient = getQueryClient();
+export const useNotificationsMutations = ({
+  storeId,
+  notificationHistoryParams,
+}: TUseNotificationsMutationsConfig) => {
+  const queryClient = useQueryClient();
 
   const updateNotificationsSettingsMutation = useMutation({
     mutationFn: (notificationsSettings: Partial<INotificationsSettings>) =>
@@ -34,9 +39,14 @@ export const useNotificationsMutations = ({ storeId }: { storeId: string }) => {
       NotificationsHistoryService.update(storeId, notificationsHistory),
     onSuccess: (data) => {
       queryClient.setQueryData(
-        CACHE_QUERY_KEYS.notificationsHistory(storeId),
-        (old: INotificationsHistory[]) =>
-          old.map((n) => (n.id === data.id ? data : n)),
+        CACHE_QUERY_KEYS.notificationsHistory(
+          storeId,
+          notificationHistoryParams,
+        ),
+        (old: INotificationsHistoryResponse) => ({
+          ...old,
+          data: old.data.map((n) => (n.id === data.id ? { ...n, ...data } : n)),
+        }),
       );
       toast.success('Histórico de notificações atualizado com sucesso');
     },
@@ -47,10 +57,16 @@ export const useNotificationsMutations = ({ storeId }: { storeId: string }) => {
 
   const markAllAsReadNotificationsHistoryMutation = useMutation({
     mutationFn: () => NotificationsHistoryService.markAllAsRead(storeId),
-    onSuccess: (data) => {
+    onSuccess: () => {
       queryClient.setQueryData(
-        CACHE_QUERY_KEYS.notificationsHistory(storeId),
-        data,
+        CACHE_QUERY_KEYS.notificationsHistory(
+          storeId,
+          notificationHistoryParams,
+        ),
+        (old: INotificationsHistoryResponse) => ({
+          ...old,
+          data: old.data.map((n) => ({ ...n, read: true })),
+        }),
       );
       toast.success('Todas as notificações marcadas como lidas');
     },
@@ -64,8 +80,14 @@ export const useNotificationsMutations = ({ storeId }: { storeId: string }) => {
       NotificationsHistoryService.delete(storeId, notificationId),
     onSuccess: (data) => {
       queryClient.setQueryData(
-        CACHE_QUERY_KEYS.notificationsHistory(storeId),
-        (old: INotificationsHistory[]) => old.filter((n) => n.id !== data.id),
+        CACHE_QUERY_KEYS.notificationsHistory(
+          storeId,
+          notificationHistoryParams,
+        ),
+        (old: INotificationsHistoryResponse) => ({
+          ...old,
+          data: old.data.filter((n) => n.id !== data.id),
+        }),
       );
       toast.success('Histórico de notificações excluído com sucesso');
     },

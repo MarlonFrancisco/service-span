@@ -53,7 +53,7 @@ export const useStoreMutations = () => {
     },
   });
 
-  const { mutateAsync: updateMainImage, isPending: isUpdatingMainImage } =
+  const { mutate: updateMainImage, isPending: isUpdatingMainImage } =
     useMutation({
       mutationFn: (data: { storeId: string; imageId: string }) =>
         GalleryService.update(data.storeId, data.imageId),
@@ -74,9 +74,12 @@ export const useStoreMutations = () => {
         );
         toast.success('Imagem principal atualizada com sucesso');
       },
+      onError: () => {
+        toast.error('Erro ao atualizar imagem principal');
+      },
     });
 
-  const { mutateAsync: createImage, isPending: isCreatingImage } = useMutation({
+  const { mutate: createImage, isPending: isCreatingImage } = useMutation({
     mutationFn: (data: { storeId: string; image: Omit<IStoreGallery, 'id'> }) =>
       GalleryService.create(data.storeId, data.image),
     onSuccess: (data) => {
@@ -92,9 +95,12 @@ export const useStoreMutations = () => {
       );
       toast.success('Imagem adicionada com sucesso');
     },
+    onError: () => {
+      toast.error('Erro ao adicionar imagem');
+    },
   });
 
-  const { mutateAsync: deleteImage, isPending: isDeletingImage } = useMutation({
+  const { mutate: deleteImage, isPending: isDeletingImage } = useMutation({
     mutationFn: (data: { storeId: string; imageId: string }) =>
       GalleryService.delete(data.storeId, data.imageId),
     onSuccess: (data) => {
@@ -109,6 +115,9 @@ export const useStoreMutations = () => {
         ),
       );
       toast.success('Imagem excluída com sucesso');
+    },
+    onError: () => {
+      toast.error('Erro ao excluir imagem');
     },
   });
 

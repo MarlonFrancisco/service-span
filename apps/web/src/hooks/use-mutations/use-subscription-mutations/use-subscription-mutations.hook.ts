@@ -41,7 +41,7 @@ export const useSubscriptionMutations = () => {
         CACHE_QUERY_KEYS.currentPlan(),
         (old: IMySubscription) => ({
           ...old,
-          cancelAtPeriodEnd: data.cancelAtPeriodEnd,
+          ...data,
         }),
       );
       toast.success('Plano atualizado com sucesso');
