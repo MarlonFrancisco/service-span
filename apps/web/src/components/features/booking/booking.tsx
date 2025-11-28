@@ -11,6 +11,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { STEPS } from './booking.constants';
 import { BookingFormSchema, TBookingFormData } from './booking.schema';
 import { TBookingStep } from './booking.types';
+import { BookingNotFound } from './components/booking-not-found';
 import { BookingSidebar } from './components/booking-sidebar';
 import { BookingSkeleton } from './components/booking-skeleton';
 import { BusinessShowcase } from './components/business-showcase';
@@ -24,7 +25,7 @@ import { StepIndicator } from './components/step-indicator';
 export function BookingFlow() {
   const params = useParams();
 
-  const { isPendingStore } = useStoresQuery({
+  const { storeQuery } = useStoresQuery({
     storeId: params.id as string,
   });
 
@@ -126,10 +127,19 @@ export function BookingFlow() {
     }
   };
 
-  if (isPendingStore) {
+  if (storeQuery.isPending) {
     return (
       <Header showSearchBar logoProps={{ className: 'hidden lg:block' }}>
         <BookingSkeleton />
+        <Footer />
+      </Header>
+    );
+  }
+
+  if (storeQuery.isError) {
+    return (
+      <Header showSearchBar logoProps={{ className: 'hidden lg:block' }}>
+        <BookingNotFound />
         <Footer />
       </Header>
     );
