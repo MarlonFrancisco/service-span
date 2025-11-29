@@ -109,6 +109,8 @@ export class SubscriptionService {
           subscription.subscriptionId,
         );
 
+      console.log(subscription.subscriptionId, 'stripeSubscription');
+
       // 3. Buscar detalhes do produto e preço do Stripe
       const product = await this.stripeService.products.retrieve(
         subscription.productId,
