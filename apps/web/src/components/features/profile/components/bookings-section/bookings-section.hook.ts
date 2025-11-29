@@ -30,7 +30,7 @@ export const useBookingsSection = () => {
 
   const pastBookings = useMemo(() => {
     return (
-      user?.schedules?.filter((schedule) => schedule.status !== 'scheduled') ??
+      user?.schedules?.filter((schedule) => schedule.status === 'completed') ??
       []
     );
   }, [user?.schedules]);

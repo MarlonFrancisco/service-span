@@ -73,6 +73,7 @@ export const BookingsSection = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -20 }}
+        className="space-y-8"
       >
         {/* Upcoming Bookings */}
         {upcomingBookings.length > 0 && (
@@ -101,10 +102,11 @@ export const BookingsSection = () => {
                       <div className="flex flex-col lg:flex-row">
                         {/* Enhanced Image Section */}
                         <div className="relative lg:w-80 xl:w-96 h-64 lg:h-auto overflow-hidden flex-shrink-0">
-                          <img
+                          <ImageWithFallback
                             src={booking.store.gallery[0]?.url ?? ''}
                             alt={booking.store.name ?? ''}
-                            className="w-full h-full object-cover"
+                            fill
+                            sizes="(min-width: 768px) 300px, 200px"
                           />
                           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
                         </div>
