@@ -22,13 +22,34 @@ export class StoresController {
 
   @Get()
   async getStores(@CurrentUser('sub') userId: string) {
-    return this.storesService.findAll(userId);
+    return this.storesService.findAll(userId, {
+      relations: [
+        'gallery',
+        'storeMembers',
+        'storeMembers.user',
+        'storeMembers.services',
+        'services',
+      ],
+    });
   }
 
   @Public()
   @Get(':id')
   async getStore(@Param('id') id: string) {
-    return this.storesService.findOne(id);
+    return this.storesService.findOne(id, {
+      relations: [
+        'gallery',
+        'storeMembers',
+        'storeMembers.user',
+        'storeMembers.services',
+        'storeMembers.blockedTimes',
+        'storeMembers.schedules',
+        'services',
+        'services.category',
+        'schedules',
+        'reviews',
+      ],
+    });
   }
 
   @Post()

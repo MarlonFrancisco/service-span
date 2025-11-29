@@ -44,6 +44,7 @@ export class CreateStoreDto {
   telephone: string;
 
   @IsEmail()
+  @IsOptional()
   email: string;
 
   @IsString()
@@ -70,12 +71,15 @@ export class CreateStoreDto {
   gallery?: Gallery[];
 
   @IsNumber()
+  @IsOptional()
   weeklyGoal: number;
 
   @IsNumber()
+  @IsOptional()
   monthlyGoal: number;
 
   @IsNumber()
+  @IsOptional()
   quarterlyGoal: number;
 
   @IsString()

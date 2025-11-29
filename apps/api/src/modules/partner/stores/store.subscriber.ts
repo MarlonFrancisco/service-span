@@ -1,3 +1,4 @@
+import { availableToIndexStore } from 'src/utils/helpers/search.helpers';
 import {
   DataSource,
   EntitySubscriberInterface,
@@ -12,11 +13,13 @@ import {
   IStoreSearchMetadata,
 } from '../../search/search.types';
 import { Store } from './store.entity';
+import { StoresService } from './stores.services';
 
 @EventSubscriber()
 export class StoreSubscriber implements EntitySubscriberInterface<Store> {
   constructor(
     dataSource: DataSource,
+    private readonly storeService: StoresService,
     private readonly searchService: SearchService,
   ) {
     dataSource.subscribers.push(this);
@@ -39,6 +42,7 @@ export class StoreSubscriber implements EntitySubscriberInterface<Store> {
         state: store.state,
         zipCode: store.zipCode,
         services: store.services,
+        categories: store.categories,
         openTime: store.openTime,
         closeTime: store.closeTime,
         businessDays: store.businessDays,
@@ -59,21 +63,54 @@ export class StoreSubscriber implements EntitySubscriberInterface<Store> {
   }
 
   afterInsert(event: InsertEvent<Store>): void {
-    const store = event.entity;
-    const { content, metadata } = this.mountStoreSearchIndex(store as Store);
+    const { id: storeId } = event.entity;
+    void this.storeService
+      .findOne(storeId, {
+        relations: [
+          'gallery',
+          'storeMembers',
+          'services',
+          'reviews',
+          'owner',
+          'categories',
+        ],
+      })
+      .then((store) => {
+        if (availableToIndexStore(store)) {
+          const { content, metadata } = this.mountStoreSearchIndex(store);
 
-    void this.searchService.indexStore(store.id, content, metadata);
+          void this.searchService.indexStore(storeId, content, metadata);
+        }
+      });
   }
 
-  afterUpdate(event: UpdateEvent<Store>): void {
-    const store = event.entity;
-    const { content, metadata } = this.mountStoreSearchIndex(store as Store);
+  async afterUpdate(event: UpdateEvent<Store>): Promise<void> {
+    const { id: storeId } = event.entity;
 
-    void this.searchService.indexStore(store.id, content, metadata);
+    void this.storeService
+      .findOne(storeId, {
+        relations: [
+          'gallery',
+          'storeMembers',
+          'services',
+          'reviews',
+          'owner',
+          'categories',
+        ],
+      })
+      .then((store) => {
+        if (availableToIndexStore(store)) {
+          const { content, metadata } = this.mountStoreSearchIndex(store);
+
+          void this.searchService.indexStore(storeId, content, metadata);
+        } else {
+          void this.searchService.deleteStoreIndex(storeId);
+        }
+      });
   }
 
-  afterRemove(event: RemoveEvent<Store>): void {
-    const store = event.entity;
-    void this.searchService.deleteStoreIndex(store.id);
+  async afterRemove(event: RemoveEvent<Store>): Promise<void> {
+    const { id: storeId } = event.entity;
+    void this.searchService.deleteStoreIndex(storeId);
   }
 }

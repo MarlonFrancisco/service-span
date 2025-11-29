@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindOptionsSelect, Repository } from 'typeorm';
 import { CreateStoreDto } from './dto/create-store.dto';
 import { UpdateStoreDto } from './dto/update-store.dto';
 import { Store } from './store.entity';
@@ -24,34 +24,28 @@ export class StoresService {
     };
   }
 
-  async findAll(userId: string): Promise<Store[]> {
+  async findAll(
+    userId: string,
+    config: { relations?: string[] } = {},
+  ): Promise<Store[]> {
     return this.storesRepository.find({
       where: { owner: { id: userId } },
-      relations: [
-        'gallery',
-        'storeMembers',
-        'storeMembers.user',
-        'storeMembers.services',
-        'services',
-      ],
+      relations: config.relations,
     });
   }
 
-  async findOne(id: string, ownerId?: string): Promise<Store> {
+  async findOne(
+    id: string,
+    config: {
+      ownerId?: string;
+      relations?: string[];
+      select?: FindOptionsSelect<Store>;
+    } = {},
+  ): Promise<Store> {
     const store = await this.storesRepository.findOne({
-      where: { id, owner: { id: ownerId } },
-      relations: [
-        'gallery',
-        'storeMembers',
-        'storeMembers.user',
-        'storeMembers.services',
-        'storeMembers.blockedTimes',
-        'storeMembers.schedules',
-        'services',
-        'services.category',
-        'schedules',
-        'reviews',
-      ],
+      where: { id, owner: { id: config.ownerId } },
+      relations: config.relations,
+      select: config.select,
     });
 
     if (!store) {

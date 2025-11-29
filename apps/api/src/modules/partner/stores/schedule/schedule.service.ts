@@ -69,7 +69,7 @@ export class ScheduleService {
   }
 
   async delete(id: string): Promise<{ id: string }> {
-    await this.scheduleRepository.delete(id);
+    await this.scheduleRepository.update(id, { status: 'cancelled' });
     return { id };
   }
 
