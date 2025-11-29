@@ -22,9 +22,19 @@ export class HttpClientService {
       headers['x-vercel-protection-bypass'] = vercelBypassToken;
     }
 
-    const response = await fetch(url, { ...config, headers });
+    try {
+      const response = await fetch(url, { ...config, headers });
 
-    return response.json();
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message);
+      }
+
+      return response.json();
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
   }
 
   public get<T>(endpoint: string, config?: RequestInit) {
