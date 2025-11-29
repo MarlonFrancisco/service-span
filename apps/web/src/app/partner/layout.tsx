@@ -1,6 +1,8 @@
 import { Partner } from '@/components/features/partner';
 import { StoreService } from '@/service/store';
 import { SubscriptionService } from '@/service/subscription';
+import { IMySubscription } from '@/types/api';
+import { IStore } from '@/types/api/stores.types';
 import { CACHE_QUERY_KEYS, getQueryClient } from '@/utils/helpers/query.helper';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { cookies } from 'next/headers';
@@ -25,34 +27,36 @@ export default async function PartnerLayout({ children }: PartnerLayoutProps) {
     Cookie: `access_token=${accessToken}`,
   };
 
-  try {
-    const subscription = await SubscriptionService.getCurrentPlan();
+  const requestsPromises = [
+    SubscriptionService.getCurrentPlan(),
+    StoreService.getAll(),
+  ];
 
-    if (!subscription?.isActive) {
-      return redirect('/pricing');
-    }
+  const results = await Promise.all(requestsPromises);
 
-    await queryClient.prefetchQuery({
+  const [subscription, stores] = results as [IMySubscription, IStore[]];
+
+  if (!subscription?.isActive) {
+    redirect('/pricing');
+  }
+
+  const queriesPromises = [
+    queryClient.prefetchQuery({
       queryKey: CACHE_QUERY_KEYS.currentPlan(),
       queryFn: () => subscription,
-    });
-  } catch {
-    return redirect('/pricing');
-  }
+    }),
+    queryClient.prefetchQuery({
+      queryKey: CACHE_QUERY_KEYS.stores(),
+      queryFn: () => stores,
+    }),
+  ];
 
-  const stores = await StoreService.getAll();
+  await Promise.all(queriesPromises);
 
-  await queryClient.prefetchQuery({
-    queryKey: CACHE_QUERY_KEYS.stores(),
-    queryFn: () => stores,
+  queryClient.prefetchQuery({
+    queryKey: CACHE_QUERY_KEYS.store(stores[0]!.id),
+    queryFn: () => StoreService.get(stores[0]!.id),
   });
-
-  if (stores?.length) {
-    await queryClient.prefetchQuery({
-      queryKey: CACHE_QUERY_KEYS.store(stores[0]!.id),
-      queryFn: () => StoreService.get(stores[0]!.id),
-    });
-  }
 
   const dehydratedState = dehydrate(queryClient);
 
