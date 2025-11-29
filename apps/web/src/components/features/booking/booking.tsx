@@ -1,6 +1,6 @@
 'use client';
 import { Footer, Header } from '@/components/layout';
-import { useStoresQuery } from '@/hooks/use-query/use-stores-query/use-stores-query.hook';
+import { useStoreQuery } from '@/hooks/use-query/use-store-query';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Card } from '@repo/ui';
 import { AlertTriangle } from 'lucide-react';
@@ -25,7 +25,7 @@ import { StepIndicator } from './components/step-indicator';
 export function BookingFlow() {
   const params = useParams();
 
-  const { storeQuery } = useStoresQuery({
+  const { isPendingStore, isError } = useStoreQuery({
     storeId: params.id as string,
   });
 
@@ -127,7 +127,7 @@ export function BookingFlow() {
     }
   };
 
-  if (storeQuery.isPending) {
+  if (isPendingStore) {
     return (
       <Header showSearchBar logoProps={{ className: 'hidden lg:block' }}>
         <BookingSkeleton />
@@ -136,7 +136,7 @@ export function BookingFlow() {
     );
   }
 
-  if (storeQuery.isError) {
+  if (isError) {
     return (
       <Header showSearchBar logoProps={{ className: 'hidden lg:block' }}>
         <BookingNotFound />
