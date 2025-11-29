@@ -1,3 +1,4 @@
+import type { Category } from '../partner/stores/category/category.entity';
 import type { Service } from '../partner/stores/category/service/service.entity';
 import type { Gallery } from '../partner/stores/gallery/gallery.entity';
 import type { Review } from '../partner/stores/review/review.entity';
@@ -10,6 +11,7 @@ export interface IStoreSearchContent {
   state: string;
   zipCode: string;
   services: Service[];
+  categories: Category[];
   openTime: string;
   closeTime: string;
   businessDays: {

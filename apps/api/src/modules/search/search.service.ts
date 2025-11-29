@@ -68,4 +68,23 @@ export class SearchService {
       throw error;
     }
   }
+
+  async searchStore({ storeId }: { storeId: string }) {
+    try {
+      const results = await this.upstashService.search(STORES_INDEX, '', {
+        limit: 100,
+        filter: JSON.stringify({
+          id: {
+            $eq: storeId,
+          },
+          isActive: true,
+        }),
+      });
+
+      return results;
+    } catch (error) {
+      this.logger.error('Search failed:', error);
+      throw error;
+    }
+  }
 }
