@@ -51,6 +51,10 @@ export const useStoreMutations = () => {
       ]);
       toast.success('Loja adicionada com sucesso');
     },
+    onError: (error) => {
+      console.error(error.message);
+      toast.error('Erro ao adicionar loja');
+    },
   });
 
   const { mutate: updateMainImage, isPending: isUpdatingMainImage } =

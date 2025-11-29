@@ -3,10 +3,14 @@ import { CACHE_QUERY_KEYS } from '@/utils/helpers/query.helper';
 import { useQuery } from '@tanstack/react-query';
 
 export const useStoresQuery = () => {
-  const { data: stores = [], isPending: isPendingStores } = useQuery({
+  const {
+    data: stores = [],
+    isPending: isPendingStores,
+    isError,
+  } = useQuery({
     queryKey: CACHE_QUERY_KEYS.stores(),
     queryFn: () => StoreService.getAll(),
   });
 
-  return { stores, isPendingStores };
+  return { stores, isPendingStores, isError };
 };
