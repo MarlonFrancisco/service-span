@@ -119,7 +119,7 @@ export function AgendaToolbar() {
                   aria-label="Visualização em grade"
                   className="flex-1 data-[state=on]:bg-white data-[state=on]:shadow-sm"
                 >
-                  <Grid3X3 className="h-4 w-4" />
+                  <Grid3X3 className="h-4 w-4 mr-1.5" />
                   Semana
                 </ToggleGroupItem>
                 <ToggleGroupItem
@@ -127,7 +127,7 @@ export function AgendaToolbar() {
                   aria-label="Visualização do dia"
                   className="flex-1 data-[state=on]:bg-white data-[state=on]:shadow-sm"
                 >
-                  <Calendar className="h-4 w-4" />
+                  <Calendar className="h-4 w-4 mr-1.5" />
                   Dia
                 </ToggleGroupItem>
               </ToggleGroup>
@@ -180,16 +180,14 @@ export function AgendaToolbar() {
             aria-label="Visualização em grade semanal"
             className="px-3 data-[state=on]:bg-white data-[state=on]:shadow-sm"
           >
-            <Grid3X3 className="h-4 w-4 mr-2" />
-            Semana
+            <Grid3X3 className="h-4 w-4" />
           </ToggleGroupItem>
           <ToggleGroupItem
             value="day"
             aria-label="Visualização do dia"
             className="px-3 data-[state=on]:bg-white data-[state=on]:shadow-sm"
           >
-            <Calendar className="h-4 w-4 mr-2" />
-            Dia
+            <Calendar className="h-4 w-4" />
           </ToggleGroupItem>
         </ToggleGroup>
 
