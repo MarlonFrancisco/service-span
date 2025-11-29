@@ -1,11 +1,13 @@
 import type { IAppointment } from '@/types/api/schedule.types';
 import type { IService } from '@/types/api/service.types';
-import { TWorkingDays } from '@/types/api/stores.types';
+import type { TWorkingDays } from '@/types/api/stores.types';
 import type { IProfessional } from '@/types/api/users.types';
 
 export type TSelectedProfessionalId = 'all' | string;
 
 export type TWorkingDayKey = keyof TWorkingDays;
+
+export type TAgendaViewMode = 'grid' | 'day';
 
 export interface IAgendaState {
   currentWeek: number;
@@ -16,6 +18,7 @@ export interface IAgendaState {
   isFocusMode: boolean;
   isBlockMode: boolean;
   selectedDayIndex: number;
+  viewMode: TAgendaViewMode;
   appointments: IAppointment[];
   professionals: IProfessional[];
   services: IService[];
@@ -37,6 +40,7 @@ export interface IAgendaActions {
   setIsFocusMode: (isFocusMode: boolean) => void;
   setIsBlockMode: (isBlockMode: boolean) => void;
   setSelectedDayIndex: (index: number) => void;
+  setViewMode: (viewMode: TAgendaViewMode) => void;
 }
 
 export type IAgendaStore = IAgendaState & IAgendaActions;

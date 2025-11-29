@@ -7,12 +7,16 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+  ToggleGroup,
+  ToggleGroupItem,
   useIsMobile,
 } from '@repo/ui';
 import {
+  Calendar,
   CalendarDays,
   ChevronLeft,
   ChevronRight,
+  Grid3X3,
   Lock,
   Maximize2,
   Plus,
@@ -27,6 +31,7 @@ export function AgendaToolbar() {
     monthYear,
     currentWeek,
     isBlockMode,
+    viewMode,
     selectedProfessional,
     professionals,
     handlePreviousWeek,
@@ -34,6 +39,7 @@ export function AgendaToolbar() {
     handleToday,
     handleToggleBlockMode,
     handleEnterFocusMode,
+    handleViewModeChange,
     handleOpenAddAppointment,
     handleProfessionalChange,
   } = useAgendaToolbar();
@@ -99,6 +105,33 @@ export function AgendaToolbar() {
                 </SelectContent>
               </Select>
 
+              {/* View Mode Toggle */}
+              <ToggleGroup
+                type="single"
+                value={viewMode}
+                onValueChange={(value) => {
+                  if (value) handleViewModeChange(value as 'grid' | 'day');
+                }}
+                className="w-full justify-center bg-gray-100 rounded-lg p-1"
+              >
+                <ToggleGroupItem
+                  value="grid"
+                  aria-label="Visualização em grade"
+                  className="flex-1 data-[state=on]:bg-white data-[state=on]:shadow-sm"
+                >
+                  <Grid3X3 className="h-4 w-4" />
+                  Semana
+                </ToggleGroupItem>
+                <ToggleGroupItem
+                  value="day"
+                  aria-label="Visualização do dia"
+                  className="flex-1 data-[state=on]:bg-white data-[state=on]:shadow-sm"
+                >
+                  <Calendar className="h-4 w-4" />
+                  Dia
+                </ToggleGroupItem>
+              </ToggleGroup>
+
               <div className="grid grid-cols-3 gap-2">
                 <Button
                   variant="outline"
@@ -133,6 +166,33 @@ export function AgendaToolbar() {
   return (
     <div className="flex w-full items-center justify-between gap-4">
       <div className="flex flex-wrap items-center gap-3 md:gap-4">
+        {/* View Mode Toggle */}
+        <ToggleGroup
+          type="single"
+          value={viewMode}
+          onValueChange={(value) => {
+            if (value) handleViewModeChange(value as 'grid' | 'day');
+          }}
+          className="bg-gray-100 rounded-lg p-1 border border-gray-200"
+        >
+          <ToggleGroupItem
+            value="grid"
+            aria-label="Visualização em grade semanal"
+            className="px-3 data-[state=on]:bg-white data-[state=on]:shadow-sm"
+          >
+            <Grid3X3 className="h-4 w-4 mr-2" />
+            Semana
+          </ToggleGroupItem>
+          <ToggleGroupItem
+            value="day"
+            aria-label="Visualização do dia"
+            className="px-3 data-[state=on]:bg-white data-[state=on]:shadow-sm"
+          >
+            <Calendar className="h-4 w-4 mr-2" />
+            Dia
+          </ToggleGroupItem>
+        </ToggleGroup>
+
         <div className="flex items-center gap-2 bg-gray-50 rounded-lg p-1 border border-gray-200">
           <Button
             variant="outline"

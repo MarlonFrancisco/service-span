@@ -1,4 +1,5 @@
 import { usePartnerStore } from '@/store';
+import type { TAgendaViewMode } from '@/store/admin/agenda';
 import {
   formatMonthYear,
   selectWeekDates,
@@ -14,6 +15,8 @@ export function useAgendaToolbar() {
   const isBlockMode = useAgendaStore((state) => state.isBlockMode);
   const setIsBlockMode = useAgendaStore((state) => state.setIsBlockMode);
   const setIsFocusMode = useAgendaStore((state) => state.setIsFocusMode);
+  const viewMode = useAgendaStore((state) => state.viewMode);
+  const setViewMode = useAgendaStore((state) => state.setViewMode);
   const selectedProfessional = useAgendaStore(
     (state) => state.selectedProfessional,
   );
@@ -59,6 +62,13 @@ export function useAgendaToolbar() {
     setIsFocusMode(true);
   }, [setIsFocusMode]);
 
+  const handleViewModeChange = useCallback(
+    (mode: TAgendaViewMode) => {
+      setViewMode(mode);
+    },
+    [setViewMode],
+  );
+
   const handleOpenAddAppointment = useCallback(() => {
     setIsAddAppointmentOpen({ isAddAppointmentOpen: true });
   }, [setIsAddAppointmentOpen]);
@@ -75,6 +85,7 @@ export function useAgendaToolbar() {
     monthYear,
     currentWeek,
     isBlockMode,
+    viewMode,
     selectedProfessional,
     professionals,
 
@@ -84,6 +95,7 @@ export function useAgendaToolbar() {
     handleToday,
     handleToggleBlockMode,
     handleEnterFocusMode,
+    handleViewModeChange,
     handleOpenAddAppointment,
     handleProfessionalChange,
   };

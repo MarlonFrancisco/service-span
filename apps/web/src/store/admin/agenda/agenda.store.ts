@@ -15,6 +15,7 @@ export const useAgendaStore = create<IAgendaStore>((set) => ({
   isFocusMode: false,
   isBlockMode: false,
   selectedDayIndex: 0,
+  viewMode: 'grid',
   appointments: [],
   professionals: [],
   services: [],
@@ -30,6 +31,6 @@ export const useAgendaStore = create<IAgendaStore>((set) => ({
     set({ detailsAppointment }),
   setIsFocusMode: (isFocusMode) => set({ isFocusMode }),
   setIsBlockMode: (isBlockMode) => set({ isBlockMode }),
-
   setSelectedDayIndex: (selectedDayIndex) => set({ selectedDayIndex }),
+  setViewMode: (viewMode) => set({ viewMode }),
 }));

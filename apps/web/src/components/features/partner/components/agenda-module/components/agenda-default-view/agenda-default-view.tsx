@@ -1,6 +1,8 @@
+import { useAgendaStore } from '@/store/admin/agenda';
 import { Button } from '@repo/ui';
 import { Plus } from 'lucide-react';
 import { AddAppointmentResponsive } from '../add-appointment-responsive/add-appointment-responsive';
+import { AgendaDayView } from '../agenda-day-view';
 import { AgendaGrid } from '../agenda-grid';
 import { AgendaToolbar } from '../agenda-toolbar/agenda-toolbar';
 import { AppointmentDetailsResponsive } from '../appointment-details-responsive/appointment-details-responsive';
@@ -9,6 +11,7 @@ import { useAgendaDefaultView } from './agenda-default-view.hook';
 
 export function AgendaDefaultView() {
   const { handleOpenAddAppointment } = useAgendaDefaultView();
+  const viewMode = useAgendaStore((state) => state.viewMode);
 
   const sharedOverlays = (
     <>
@@ -24,7 +27,7 @@ export function AgendaDefaultView() {
 
       <BlockModeAlert />
 
-      <AgendaGrid />
+      {viewMode === 'grid' ? <AgendaGrid /> : <AgendaDayView />}
 
       <Button
         onClick={handleOpenAddAppointment}
