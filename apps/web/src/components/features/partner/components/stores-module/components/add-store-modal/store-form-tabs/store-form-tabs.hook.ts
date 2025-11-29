@@ -29,18 +29,18 @@ export const useStoreFormTabs = () => {
     form.handleSubmit(
       (data) => {
         const fn = isEditingStore ? updateStore : addStore;
-        fn(
-          {
-            ...data,
-            gallery: undefined,
-            storeMembers: undefined,
-          },
-          {
-            onSuccess: () => {
-              setIsAddModalOpen({ isOpen: false });
-            },
-          },
+        const normalizeData = Object.fromEntries(
+          Object.entries(data).filter(
+            ([key, value]) =>
+              value !== '' && !['gallery', 'storeMembers'].includes(key),
+          ),
         );
+
+        fn(normalizeData, {
+          onSuccess: () => {
+            setIsAddModalOpen({ isOpen: false });
+          },
+        });
       },
       (errors) => {
         const firstError = Object.values(errors)[0]?.message;

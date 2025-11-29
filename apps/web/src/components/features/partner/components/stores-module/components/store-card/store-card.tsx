@@ -54,7 +54,7 @@ export const StoreCard = ({ store, index }: TStoreCardConfig) => {
   } = useStoreCard(store);
 
   const orderedGallery = useMemo(
-    () => orderGalleryByMainImage(store.gallery),
+    () => orderGalleryByMainImage(store.gallery || []),
     [store.gallery],
   );
 

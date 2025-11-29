@@ -63,40 +63,36 @@ export const storeFormSchema = z.object({
     .optional()
     .or(z.literal('')),
 
-  amenities: z
-    .array(z.string().max(30, 'Comodidade deve ter no máximo 30 caracteres'))
-    .default([]),
+  amenities: z.array(
+    z.string().max(30, 'Comodidade deve ter no máximo 30 caracteres'),
+  ),
 
-  isActive: z.boolean().default(true),
+  isActive: z.boolean(),
 
-  gallery: z
-    .array(
-      z.object({
+  gallery: z.array(
+    z.object({
+      id: z.string(),
+      url: z.string(),
+      isMain: z.boolean().optional(),
+    }),
+  ),
+
+  storeMembers: z.array(
+    z.object({
+      id: z.string(),
+      role: z.enum(['professional', 'manager', 'owner']),
+      isActive: z.boolean(),
+      createdAt: z.date().or(z.string()),
+      user: z.object({
         id: z.string(),
-        url: z.string(),
-        isMain: z.boolean().optional().default(false),
+        email: z.string().email('Email inválido'),
+        firstName: z.string(),
+        lastName: z.string(),
+        telephone: z.string().nullable(),
+        avatar: z.string().nullable(),
       }),
-    )
-    .default([]),
-
-  storeMembers: z
-    .array(
-      z.object({
-        id: z.string(),
-        role: z.enum(['professional', 'manager', 'owner']),
-        isActive: z.boolean().default(false),
-        createdAt: z.date().or(z.string()),
-        user: z.object({
-          id: z.string(),
-          email: z.string().email('Email inválido'),
-          firstName: z.string(),
-          lastName: z.string(),
-          telephone: z.string().nullable(),
-          avatar: z.string().nullable(),
-        }),
-      }),
-    )
-    .default([]),
+    }),
+  ),
 
   openTime: z.string().regex(/^\d{2}:\d{2}$/, 'Formato deve ser HH:MM'),
   closeTime: z.string().regex(/^\d{2}:\d{2}$/, 'Formato deve ser HH:MM'),
@@ -113,23 +109,15 @@ export const storeFormSchema = z.object({
 
   businessDays: z
     .object({
-      monday: z.boolean().default(false),
-      tuesday: z.boolean().default(false),
-      wednesday: z.boolean().default(false),
-      thursday: z.boolean().default(false),
-      friday: z.boolean().default(false),
-      saturday: z.boolean().default(false),
-      sunday: z.boolean().default(false),
+      monday: z.boolean(),
+      tuesday: z.boolean(),
+      wednesday: z.boolean(),
+      thursday: z.boolean(),
+      friday: z.boolean(),
+      saturday: z.boolean(),
+      sunday: z.boolean(),
     })
-    .default({
-      monday: false,
-      tuesday: false,
-      wednesday: false,
-      thursday: false,
-      friday: false,
-      saturday: false,
-      sunday: false,
-    }),
+    .optional(),
 
   blockedTimes: z.array(z.any()).optional(),
 });
