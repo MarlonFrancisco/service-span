@@ -1,9 +1,8 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
 import { UpstashSearchService } from './upstash-search.service';
 
 @Module({
-  imports: [ConfigModule],
+  imports: [],
   providers: [UpstashSearchService],
   exports: [UpstashSearchService],
 })

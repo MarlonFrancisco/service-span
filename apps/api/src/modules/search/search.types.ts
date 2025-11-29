@@ -1,3 +1,7 @@
+import type { Service } from '../partner/stores/category/service/service.entity';
+import type { Gallery } from '../partner/stores/gallery/gallery.entity';
+import type { Review } from '../partner/stores/review/review.entity';
+
 export interface IStoreSearchContent {
   name: string;
   description: string;
@@ -5,6 +9,18 @@ export interface IStoreSearchContent {
   city: string;
   state: string;
   zipCode: string;
+  services: Service[];
+  openTime: string;
+  closeTime: string;
+  businessDays: {
+    monday: boolean;
+    tuesday: boolean;
+    wednesday: boolean;
+    thursday: boolean;
+    friday: boolean;
+    saturday: boolean;
+    sunday: boolean;
+  };
 }
 
 export interface IStoreSearchMetadata {
@@ -16,4 +32,6 @@ export interface IStoreSearchMetadata {
   instagram: string;
   facebook: string;
   amenities: string[];
+  gallery: Gallery[];
+  reviews: Review[];
 }

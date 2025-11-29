@@ -15,14 +15,9 @@ export class SearchService {
    */
   async indexStore(
     storeId: string,
-    content: Record<string, IStoreSearchContent>,
-    metadata: Record<string, IStoreSearchMetadata>,
+    content: Record<keyof IStoreSearchContent, any>,
+    metadata: Record<keyof IStoreSearchMetadata, any>,
   ) {
-    if (!this.upstashService.isAvailable()) {
-      this.logger.warn('Upstash service not available, skipping index');
-      return;
-    }
-
     try {
       await this.upstashService.upsert(STORES_INDEX, [
         { id: storeId, content, metadata },
