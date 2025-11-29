@@ -1,8 +1,4 @@
 import {
-  IStoreSearchContent,
-  IStoreSearchMetadata,
-} from 'src/modules/search/search.types';
-import {
   DataSource,
   EntitySubscriberInterface,
   EventSubscriber,
@@ -11,6 +7,10 @@ import {
   UpdateEvent,
 } from 'typeorm';
 import { SearchService } from '../../search/search.service';
+import {
+  IStoreSearchContent,
+  IStoreSearchMetadata,
+} from '../../search/search.types';
 import { Store } from './store.entity';
 
 @EventSubscriber()
