@@ -38,7 +38,7 @@ export class ReviewSubscriber implements EntitySubscriberInterface<Review> {
         history.recipient = review.user.email;
       }
 
-      await this.notificationsHistoryService.create(history);
+      void this.notificationsHistoryService.create(history);
     }
   }
 }

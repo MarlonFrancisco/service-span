@@ -73,10 +73,7 @@ export class UsersService {
   async upsert(userData: Partial<User>): Promise<User> {
     // Tenta encontrar usuário existente por telefone ou email
     const existingUser = await this.userRepository.findOne({
-      where: [
-        { telephone: userData.telephone },
-        { email: userData.email },
-      ],
+      where: [{ telephone: userData.telephone }, { email: userData.email }],
     });
 
     if (existingUser) {
@@ -137,6 +134,10 @@ export class UsersService {
         'createdAt',
       ],
     });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
 
     return user;
   }

@@ -6,7 +6,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 
-import { In, LessThanOrEqual, MoreThanOrEqual, type Repository } from 'typeorm';
+import { In, MoreThanOrEqual, type Repository } from 'typeorm';
 
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -92,7 +92,6 @@ export class SubscriptionService {
         where: {
           user: { id: userId },
           status: In(['active', 'paid', 'trialing']),
-          currentPeriodStart: LessThanOrEqual(currentDate),
           currentPeriodEnd: MoreThanOrEqual(currentDate),
         },
         relations: ['user'],
