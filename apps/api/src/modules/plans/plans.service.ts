@@ -2,11 +2,32 @@ import { Injectable } from '@nestjs/common';
 import { StripeService } from '../stripe';
 import { PlanDto } from './plans.dto';
 
+// Supported currencies for plans
+const SUPPORTED_CURRENCIES = [
+  'BRL',
+  // 'USD',
+  // 'EUR',
+  // 'MXN',
+  // 'ARS',
+  // 'CLP',
+  // 'COP',
+  // 'PEN',
+  // 'GBP',
+];
+
 @Injectable()
 export class PlansService {
   constructor(private readonly stripe: StripeService) {}
 
-  async findAll(paymentCustomerId?: string) {
+  /**
+   * Get all available plans, optionally filtered by currency
+   * @param paymentCustomerId - Stripe customer ID (optional)
+   * @param currency - Filter plans by currency (defaults to BRL for backwards compatibility)
+   * @returns Plans grouped by interval (month/year)
+   */
+  async findAll(paymentCustomerId?: string, currency: string = 'BRL') {
+    const normalizedCurrency = currency.toUpperCase();
+
     const subscriptions = await this.stripe.subscriptions.list({
       customer: paymentCustomerId,
       limit: 1,
@@ -15,7 +36,12 @@ export class PlansService {
     const responseProducts = await this.stripe.products.list({
       active: true,
     });
-    const responsePrices = await this.stripe.prices.list({ active: true });
+    const responsePrices = await this.stripe.prices.list({
+      active: true,
+      ...(SUPPORTED_CURRENCIES.includes(normalizedCurrency) && {
+        currency: normalizedCurrency.toLowerCase(),
+      }),
+    });
 
     const plans = responsePrices.data
       .map((price) => {
@@ -33,17 +59,16 @@ export class PlansService {
         const bOrder = parseInt(b.product.metadata.DISPLAY_ORDER || '0');
         return aOrder - bOrder;
       })
-      .map(
-        ({ product, price }) => PlanDto.fromStripe(product, price, subscriptions.data),
+      .map(({ product, price }) =>
+        PlanDto.fromStripe(product, price, subscriptions.data),
       );
 
     return plans.reduce(
       (acc, plan) => {
         acc[plan.interval].push(plan);
-
         return acc;
       },
-      { month: [], year: [] },
+      { month: [] as PlanDto[], year: [] as PlanDto[] },
     );
   }
 }
