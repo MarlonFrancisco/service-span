@@ -1,0 +1,40 @@
+{
+  "name": "@repo/shared",
+  "version": "0.0.0",
+  "private": true,
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./constants": {
+      "import": "./dist/constants/index.js",
+      "require": "./dist/constants/index.js",
+      "default": "./dist/constants/index.js"
+    },
+    "./validators": {
+      "import": "./dist/validators/index.js",
+      "require": "./dist/validators/index.js",
+      "default": "./dist/validators/index.js"
+    },
+    "./formatters": {
+      "import": "./dist/formatters/index.js",
+      "require": "./dist/formatters/index.js",
+      "default": "./dist/formatters/index.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -b -v",
+    "dev": "tsc -b -v --watch"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "@types/node": "^24.7.2",
+    "typescript": "^5.9.3"
+  }
+}
+
