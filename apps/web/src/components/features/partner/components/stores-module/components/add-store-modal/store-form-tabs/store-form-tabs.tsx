@@ -1,5 +1,13 @@
 import { Button, Spinner, Tabs, TabsList, TabsTrigger } from '@repo/ui';
-import { CheckCircle2, Clock, Globe2, Images, Users } from 'lucide-react';
+import {
+  Building2,
+  CheckCircle2,
+  Clock,
+  Globe2,
+  Images,
+  Phone,
+  Users,
+} from 'lucide-react';
 import { FormProvider } from 'react-hook-form';
 import { AddProfessionalModal } from '../../add-professional-modal';
 import { BasicInfoTab } from './basic-info-tab';
@@ -28,6 +36,7 @@ export const StoreFormTabs = () => {
                 value="basic"
                 className="px-4 sm:px-6 h-9 data-[state=active]:bg-white data-[state=active]:shadow-sm text-xs sm:text-sm"
               >
+                <Building2 className="h-4 w-4 mr-2" />
                 Informações Básicas
               </TabsTrigger>
               <TabsTrigger
@@ -41,6 +50,7 @@ export const StoreFormTabs = () => {
                 value="contact"
                 className="px-4 sm:px-6 h-9 data-[state=active]:bg-white data-[state=active]:shadow-sm text-xs sm:text-sm"
               >
+                <Phone className="h-4 w-4 mr-2" />
                 Contato & Redes
               </TabsTrigger>
               <TabsTrigger
