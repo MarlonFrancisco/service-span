@@ -58,6 +58,9 @@ export class CurrentPlanDto {
   @IsNumber()
   price: number;
 
+  @IsString()
+  currency: string;
+
   @IsEnum(['month', 'year'])
   billingPeriod: 'month' | 'year';
 
@@ -139,6 +142,7 @@ export class CurrentPlanDto {
     dto.planName = product.name;
     dto.planDescription = product.description || '';
     dto.price = (price.unit_amount || 0) / 100; // Converter de centavos para reais
+    dto.currency = price.currency || 'BRL';
     // Validar que interval é month ou year (pode ser week ou day)
     const interval = price.recurring?.interval || 'month';
     dto.billingPeriod = (interval === 'year' ? 'year' : 'month') as

@@ -29,6 +29,7 @@ export interface IMySubscription {
   planName: string;
   planDescription: string;
   price: number;
+  currency: TCurrencyCode;
   billingPeriod: 'month' | 'year';
   features: {
     DISPLAY_ORDER: number;
