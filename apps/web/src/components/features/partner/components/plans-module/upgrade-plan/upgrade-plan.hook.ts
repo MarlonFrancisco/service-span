@@ -37,15 +37,15 @@ const benefits = [
 ];
 
 export function useUpgradePlan() {
-  const { plans: allPlans, isPendingPlans } = usePlansQuery();
+  const { data, isPendingPlans } = usePlansQuery();
   const { currentPlan } = useSubscriptionQuery();
   const { createSubscriptionMutation } = useSubscriptionMutations();
 
   const [type, setType] = useState<'month' | 'year'>('month');
 
   const filteredPlans = useMemo(() => {
-    return allPlans?.[type] || [];
-  }, [allPlans, type]);
+    return data?.[type] || [];
+  }, [data, type]);
 
   const handleSelectPlan = useCallback(
     (planId: string) => {

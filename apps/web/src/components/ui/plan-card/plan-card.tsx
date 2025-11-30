@@ -1,9 +1,10 @@
-import { formatPrice, formatPriceBRL } from '@/utils/helpers/price.helper';
+import { formatPriceByCountry } from '@/utils/helpers/price.helper';
+import { formatPriceByCurrency } from '@repo/shared/formatters';
 import { Badge, Button, Card } from '@repo/ui';
 import { Check } from 'lucide-react';
 import { motion } from 'motion/react';
 import { usePlanCard } from './plan-card.hook';
-import { IPlanCardProps } from './plan-card.types';
+import { TPlanCardConfig } from './plan-card.types';
 
 export const PlanCard = ({
   plan,
@@ -13,7 +14,7 @@ export const PlanCard = ({
   customButtonText,
   onSelectPlan,
   isLoading = false,
-}: IPlanCardProps) => {
+}: TPlanCardConfig) => {
   const { handleCreateSubscription } = usePlanCard({ priceId: plan.priceId });
 
   const hasDiscount = plan.discount > 0;
@@ -67,7 +68,7 @@ export const PlanCard = ({
           {hasDiscount && (
             <div className="flex items-center gap-2 mb-2">
               <span className="text-sm text-gray-500 line-through">
-                {formatPriceBRL(originalPrice)}
+                {formatPriceByCountry(originalPrice)}
               </span>
               <Badge
                 variant="outline"
@@ -79,7 +80,7 @@ export const PlanCard = ({
           )}
           <div className="flex items-baseline gap-2">
             <span className="text-4xl text-gray-900">
-              {formatPrice(priceInReais)}
+              {formatPriceByCurrency(priceInReais, plan.currency)}
             </span>
             <span className="text-gray-600">
               /{plan.interval === 'month' ? 'mês' : 'ano'}
@@ -87,7 +88,8 @@ export const PlanCard = ({
           </div>
           {hasTrial && !isCurrentPlan && (
             <p className="text-sm text-gray-500 mt-2">
-              {trialPeriodDays} dias grátis, depois {formatPrice(priceInReais)}/
+              {trialPeriodDays} dias grátis, depois{' '}
+              {formatPriceByCountry(priceInReais)}/
               {plan.interval === 'month' ? 'mês' : 'ano'}
             </p>
           )}

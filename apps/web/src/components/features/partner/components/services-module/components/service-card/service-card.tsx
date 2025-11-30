@@ -1,5 +1,7 @@
 'use client';
+import { usePartnerStore } from '@/store';
 import { IService } from '@/types/api/service.types';
+import { formatStorePrice } from '@repo/shared/formatters';
 import { Badge, Button, Card, CardContent, useIsMobile } from '@repo/ui';
 import { Clock, DollarSign, Edit, Trash2 } from 'lucide-react';
 import { motion } from 'motion/react';
@@ -7,6 +9,7 @@ import { useServiceCard } from './service-card.hook';
 
 export function ServiceCard({ service }: { service: IService }) {
   const isMobile = useIsMobile();
+  const { activeStore } = usePartnerStore();
   const { handleEdit, handleDelete, handleToggleStatus } = useServiceCard({
     service,
   });
@@ -62,7 +65,13 @@ export function ServiceCard({ service }: { service: IService }) {
             </div>
             <div className="flex items-center gap-2 text-gray-700">
               <DollarSign className="h-4 w-4 text-gray-500 flex-shrink-0" />
-              <span>R$ {service.price.toFixed(2)}</span>
+              <span>
+                {formatStorePrice(
+                  service.price,
+                  activeStore.currency,
+                  activeStore.country,
+                )}
+              </span>
             </div>
           </div>
 

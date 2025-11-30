@@ -3,14 +3,20 @@ import { useSubscriptionQuery } from '@/hooks/use-query/use-subscription-query';
 import { useMemo, useState } from 'react';
 
 export const usePricing = () => {
-  const { plans, isPendingPlans } = usePlansQuery();
+  const { data, isPendingPlans } = usePlansQuery();
   const { currentPlan } = useSubscriptionQuery();
 
   const [type, setType] = useState<'month' | 'year'>('month');
 
   const filteredPlans = useMemo(() => {
-    return plans?.[type] || [];
-  }, [plans, type]);
+    return data?.[type] || [];
+  }, [data, type]);
 
-  return { plans: filteredPlans, isPendingPlans, type, setType, currentPlan };
+  return {
+    plans: filteredPlans,
+    isPendingPlans,
+    type,
+    setType,
+    currentPlan,
+  };
 };

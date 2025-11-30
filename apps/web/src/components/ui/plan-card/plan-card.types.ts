@@ -1,6 +1,6 @@
 import { IPlan } from '@/types/api/payment.types';
 
-export interface IPlanCardProps {
+export type TPlanCardConfig = {
   plan: IPlan;
   index: number;
   trialPeriodDays: number;
@@ -8,4 +8,4 @@ export interface IPlanCardProps {
   customButtonText?: string;
   onSelectPlan?: (priceId: string) => void;
   isLoading?: boolean;
-}
+};
