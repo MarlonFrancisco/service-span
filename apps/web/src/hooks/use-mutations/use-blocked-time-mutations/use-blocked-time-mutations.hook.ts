@@ -104,7 +104,8 @@ export const useBlockedTimeMutations = ({ storeId }: { storeId: string }) => {
         `${data.length} ${data.length === 1 ? 'horário bloqueado' : 'horários bloqueados'} ${data.length === 1 ? 'criado' : 'criados'} com sucesso`,
       );
     },
-    onError: () => {
+    onError: (error) => {
+      console.error(error);
       toast.error('Erro ao criar horários bloqueados');
     },
   });
