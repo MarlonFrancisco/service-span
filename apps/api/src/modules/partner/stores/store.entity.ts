@@ -66,7 +66,16 @@ export class Store extends BaseEntity {
     sunday: boolean;
   };
 
-  // location
+  // location & internationalization
+
+  @Column({ type: 'char', length: 2, default: 'BR', nullable: true })
+  country: string;
+
+  @Column({ type: 'char', length: 3, default: 'BRL', nullable: true })
+  currency: string;
+
+  @Column({ type: 'varchar', default: 'America/Sao_Paulo', nullable: true })
+  timezone: string;
 
   @Column({ type: 'varchar', nullable: true })
   address: string;

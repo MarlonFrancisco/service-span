@@ -53,6 +53,9 @@ export class User extends BaseEntity {
   })
   acceptedTerms: boolean;
 
+  @Column({ type: 'char', length: 2, default: 'BR', nullable: true })
+  country: string;
+
   @OneToMany(() => Subscription, (subscription) => subscription.user)
   subscriptions: Subscription[];
 
