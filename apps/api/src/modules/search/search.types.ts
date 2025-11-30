@@ -6,6 +6,7 @@ import type { Review } from '../partner/stores/review/review.entity';
 export interface IStoreSearchContent {
   name: string;
   description: string;
+  country: string;
   address: string;
   city: string;
   state: string;
@@ -34,6 +35,7 @@ export interface IStoreSearchMetadata {
   instagram: string;
   facebook: string;
   amenities: string[];
+  currency: string;
   gallery: Gallery[];
   reviews: Review[];
 }

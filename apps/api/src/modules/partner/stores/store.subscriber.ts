@@ -1,4 +1,3 @@
-import { availableToIndexStore } from 'src/utils/helpers/search.helpers';
 import {
   DataSource,
   EntitySubscriberInterface,
@@ -7,6 +6,7 @@ import {
   RemoveEvent,
   UpdateEvent,
 } from 'typeorm';
+import { availableToIndexStore } from '../../../utils/helpers/search.helpers';
 import { SearchService } from '../../search/search.service';
 import {
   IStoreSearchContent,
@@ -37,6 +37,7 @@ export class StoreSubscriber implements EntitySubscriberInterface<Store> {
       content: {
         name: store.name,
         description: store.description,
+        country: store.country,
         address: store.address,
         city: store.city,
         state: store.state,
@@ -58,6 +59,7 @@ export class StoreSubscriber implements EntitySubscriberInterface<Store> {
         amenities: store.amenities,
         gallery: store.gallery,
         reviews: store.reviews,
+        currency: store.currency,
       },
     };
   }
