@@ -1,29 +1,17 @@
-export interface IGalleryItem {
-  id: string;
-  url: string;
-}
-
-export interface IServiceItem {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-}
-
-export interface IReviewItem {
-  id: string;
-  rating: number;
-  comment: string;
-}
+import { TCountryCode, TCurrencyCode } from '@repo/shared/constants';
+import { IReview } from '../reviews.types';
+import { IService } from './service.types';
+import { IStoreGallery } from './stores.types';
 
 export interface IStoreSearchContent {
   name: string;
   description: string;
+  country: TCountryCode;
   address: string;
   city: string;
   state: string;
   zipCode: string;
-  services: IServiceItem[];
+  services: IService[];
   openTime: string;
   closeTime: string;
   businessDays: {
@@ -46,8 +34,10 @@ export interface IStoreSearchMetadata {
   instagram: string;
   facebook: string;
   amenities: string[];
-  gallery: IGalleryItem[];
-  reviews: IReviewItem[];
+  currency: TCurrencyCode;
+  timezone: string;
+  gallery: IStoreGallery[];
+  reviews: IReview[];
 }
 
 export interface ISearchResult {

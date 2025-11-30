@@ -1,3 +1,4 @@
+import { TCountryCode, TCurrencyCode } from '@repo/shared/constants';
 import { IReview } from '../reviews.types';
 import {
   INotificationsHistory,
@@ -35,6 +36,9 @@ export interface IStore extends TWorkingHours {
   id: string;
   name: string;
   description: string;
+  country: TCountryCode;
+  currency: TCurrencyCode;
+  timezone: string;
   address: string;
   city: string;
   state: string;

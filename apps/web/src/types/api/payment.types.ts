@@ -1,3 +1,5 @@
+import { TCurrencyCode } from '@repo/shared/constants';
+
 export interface IPlan {
   id: string;
   priceId: string;
@@ -9,6 +11,7 @@ export interface IPlan {
   interval: 'month' | 'year';
   discount: number;
   trialPeriodDays: number;
+  currency: TCurrencyCode;
 }
 
 export interface IInvoice {

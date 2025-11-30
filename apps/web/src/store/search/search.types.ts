@@ -1,36 +1,25 @@
-export interface IStoreSearchListItem {
-  id: string;
-  name: string;
+import { IStore } from '@/types/api/stores.types';
+
+export interface IStoreSearchListItem
+  extends Omit<
+    IStore,
+    | 'ownerId'
+    | 'createdAt'
+    | 'notificationsHistory'
+    | 'notificationsSettings'
+    | 'storeMembers'
+    | 'schedules'
+    | 'categories'
+    | 'lunchStartTime'
+    | 'lunchEndTime'
+    | 'gallery'
+  > {
+  gallery: string[];
+  price: string;
+  location: string;
   rating: number;
   reviewCount: number;
-  location: string;
-  price: string;
-  images: string[];
-  description: string;
-  phone: string;
-  address: string;
-  city: string;
-  state: string;
-  zipCode: string;
-  openTime: string;
-  closeTime: string;
-  businessDays: {
-    monday: boolean;
-    tuesday: boolean;
-    wednesday: boolean;
-    thursday: boolean;
-    friday: boolean;
-    saturday: boolean;
-    sunday: boolean;
-  };
   isFavorite?: boolean;
-  services?: Array<{
-    id: string;
-    name: string;
-    description: string;
-    price: number | string;
-  }>;
-  reviews?: Array<{ id: string; rating: number; comment: string }>;
 }
 
 export interface ISearchStore {
