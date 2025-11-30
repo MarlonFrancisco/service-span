@@ -28,7 +28,12 @@ export class StoresController {
         'storeMembers',
         'storeMembers.user',
         'storeMembers.services',
+        'storeMembers.blockedTimes',
+        'storeMembers.schedules',
         'services',
+        'services.category',
+        'schedules',
+        'reviews',
       ],
     });
   }
