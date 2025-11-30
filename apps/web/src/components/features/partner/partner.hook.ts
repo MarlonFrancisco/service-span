@@ -11,6 +11,7 @@ import { useEffect } from 'react';
 export const usePartner = () => {
   const pathname = usePathname();
   const setActiveStore = usePartnerStore((state) => state.setActiveStore);
+  const activeStore = usePartnerStore((state) => state.activeStore);
 
   const currentModule =
     MODULE_CONFIG[pathname as keyof typeof MODULE_CONFIG] ||
@@ -18,9 +19,12 @@ export const usePartner = () => {
 
   const { stores } = useStoresQuery();
 
-  const { store } = useStoreQuery({ storeId: stores[0]?.id || '' });
+  const { store } = useStoreQuery({
+    storeId: activeStore.id || stores[0]?.id || '',
+  });
 
-  const showStoreSelector = currentModule?.showStoreSelector && !!store?.id;
+  const showStoreSelector =
+    currentModule?.showStoreSelector && !!activeStore?.id;
 
   useEffect(() => {
     if (store?.id) {
