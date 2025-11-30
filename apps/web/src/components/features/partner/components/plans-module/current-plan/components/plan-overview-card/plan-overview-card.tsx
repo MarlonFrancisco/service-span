@@ -1,6 +1,7 @@
 'use client';
 
 import { useSubscriptionQuery } from '@/hooks/use-query/use-subscription-query';
+import { formatPriceByCurrency } from '@repo/shared/formatters';
 import {
   Badge,
   Button,
@@ -54,8 +55,11 @@ export function PlanOverviewCard({
                   Plano {currentPlan.planName}
                 </CardTitle>
                 <p className="text-sm text-gray-600">
-                  R$ {currentPlan.price}/
-                  {currentPlan.billingPeriod === 'month' ? 'mês' : 'ano'}
+                  {formatPriceByCurrency(
+                    currentPlan.price,
+                    currentPlan.currency,
+                  )}
+                  /{currentPlan.billingPeriod === 'month' ? 'mês' : 'ano'}
                 </p>
               </div>
             </div>
@@ -115,7 +119,12 @@ export function PlanOverviewCard({
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-gray-600">Valor</span>
-                  <span className="text-gray-900">R$ {currentPlan.price}</span>
+                  <span className="text-gray-900">
+                    {formatPriceByCurrency(
+                      currentPlan.price,
+                      currentPlan.currency,
+                    )}
+                  </span>
                 </div>
               </div>
 
@@ -159,7 +168,7 @@ export function PlanOverviewCard({
                       ) : (
                         <span className="text-sm text-gray-900">
                           {currentPlan.storesLength}/
-                          {currentPlan.features.PRO_LIMIT}
+                          {currentPlan.features.UNIT_LIMIT}
                         </span>
                       )}
                     </div>
@@ -178,7 +187,7 @@ export function PlanOverviewCard({
                       ) : (
                         <span className="text-sm text-gray-900">
                           {currentPlan.storeMembersLength}/
-                          {currentPlan.features.UNIT_LIMIT}
+                          {currentPlan.features.PRO_LIMIT}
                         </span>
                       )}
                     </div>

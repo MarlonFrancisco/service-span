@@ -8,9 +8,9 @@ export const usePlanOverviewCard = () => {
 
   const nextBillingDate = currentPlan?.nextBillingDate;
   const storesLength = currentPlan?.storesLength || 0;
-  const maxStores = currentPlan?.features.PRO_LIMIT || 0;
+  const maxStores = currentPlan?.features.UNIT_LIMIT || 0;
   const storeMembersLength = currentPlan?.storeMembersLength || 0;
-  const maxUsers = currentPlan?.features.UNIT_LIMIT || 0;
+  const maxUsers = currentPlan?.features.PRO_LIMIT || 0;
 
   const calculatePercentage = (current: number, max: number) => {
     if (max === 0) return 0;
