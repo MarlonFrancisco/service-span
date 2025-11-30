@@ -1,3 +1,4 @@
+import { TCurrencyCode } from '@repo/shared/constants';
 import { isServer, QueryClient } from '@tanstack/react-query';
 
 const makeQueryClient = () => {
@@ -30,7 +31,7 @@ export const CACHE_QUERY_KEYS = {
   reviews: (storeId: string) => [`partner/stores/${storeId}/reviews`],
   recommendationStores: () => ['recommendation/popular-stores'],
   user: (userIdentification: string) => ['user', { userIdentification }],
-  plans: () => ['plans'],
+  plans: (currency: TCurrencyCode) => ['plans', { currency }],
   currentPlan: () => ['subscription/current-plan'],
   stores: () => ['partner/stores'],
   schedules: (storeId: string) => [`partner/schedules/${storeId}`],
