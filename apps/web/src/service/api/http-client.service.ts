@@ -25,11 +25,6 @@ export class HttpClientService {
     try {
       const response = await fetch(url, { ...config, headers });
 
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message);
-      }
-
       return response.json();
     } catch (error) {
       console.error(error);
