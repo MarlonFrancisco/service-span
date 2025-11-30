@@ -2,8 +2,10 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UsersService } from '../../../users/users.service';
+import { Service } from '../category/service/service.entity';
 import { Store } from '../store.entity';
-import { StoreMemberDto } from './dto/store-member.dto';
+import { CreateStoreMemberDto } from './dto/create-store-member.dto';
+import { UpdateStoreMemberDto } from './dto/update-store-member.dto';
 import { StoreMember } from './store-member.entity';
 
 @Injectable()
@@ -52,7 +54,7 @@ export class StoreMemberService {
     });
   }
 
-  async create(storeMemberDto: StoreMemberDto): Promise<StoreMember> {
+  async create(storeMemberDto: CreateStoreMemberDto): Promise<StoreMember> {
     const user = await this.userService.findByOne({
       email: storeMemberDto.user?.email,
     });
@@ -83,50 +85,25 @@ export class StoreMemberService {
     });
   }
 
-  async update(storeMemberDto: Partial<StoreMemberDto>): Promise<StoreMember> {
-    const storeMember = await this.storeMemberRepository.findOne({
+  async update(storeMemberDto: UpdateStoreMemberDto): Promise<StoreMember> {
+    const storeMember = await this.storeMemberRepository.findOneOrFail({
       where: { id: storeMemberDto.id },
-      relations: ['services'],
+      relations: ['services', 'user', 'store', 'blockedTimes'],
     });
 
-    await this.storeMemberRepository.update(storeMemberDto.id, {
-      role: storeMemberDto.role,
-    });
-
-    const services = storeMemberDto.services;
-
-    if (services) {
-      const nextServiceIds = services.map((service) => service.id);
-      const currentServiceIds =
-        storeMember.services?.map((service) => service.id) ?? [];
-      const toAdd = nextServiceIds.filter(
-        (id) => !currentServiceIds.includes(id),
-      );
-      const toRemove = currentServiceIds.filter(
-        (id) => !nextServiceIds.includes(id),
-      );
-
-      if (toAdd.length) {
-        await this.storeMemberRepository
-          .createQueryBuilder()
-          .relation(StoreMember, 'services')
-          .of(storeMember.id)
-          .add(toAdd);
-      }
-
-      if (toRemove.length) {
-        await this.storeMemberRepository
-          .createQueryBuilder()
-          .relation(StoreMember, 'services')
-          .of(storeMember.id)
-          .remove(toRemove);
-      }
+    if (storeMemberDto.role) {
+      storeMember.role = storeMemberDto.role;
     }
 
-    return this.storeMemberRepository.findOne({
-      where: { id: storeMemberDto.id },
-      relations: ['user', 'services', 'store', 'blockedTimes'],
-    });
+    if (storeMemberDto.services) {
+      storeMember.services = storeMemberDto.services as Service[];
+    }
+
+    if (storeMemberDto.isActive) {
+      storeMember.isActive = storeMemberDto.isActive;
+    }
+
+    return this.storeMemberRepository.save(storeMember);
   }
 
   async delete(

@@ -33,6 +33,18 @@ export class UpdateStoreDto {
 
   @IsString()
   @IsOptional()
+  country: string;
+
+  @IsString()
+  @IsOptional()
+  currency: string;
+
+  @IsString()
+  @IsOptional()
+  timezone: string;
+
+  @IsString()
+  @IsOptional()
   address: string;
 
   @IsString()

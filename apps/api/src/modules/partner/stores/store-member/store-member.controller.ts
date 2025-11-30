@@ -8,7 +8,8 @@ import {
   Put,
 } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
-import { StoreMemberDto } from './dto/store-member.dto';
+import { CreateStoreMemberDto } from './dto/create-store-member.dto';
+import { UpdateStoreMemberDto } from './dto/update-store-member.dto';
 import { StoreMemberService } from './store-member.service';
 
 @Controller('partner/stores/:storeId/members')
@@ -23,10 +24,13 @@ export class StoreMemberController {
   @Post()
   async create(
     @Param('storeId') storeId: string,
-    @Body() storeMemberDto: StoreMemberDto,
+    @Body() storeMemberDto: CreateStoreMemberDto,
   ) {
     return this.storeMemberService.create(
-      plainToInstance(StoreMemberDto, { ...storeMemberDto, store: { id: storeId } }),
+      plainToInstance(CreateStoreMemberDto, {
+        ...storeMemberDto,
+        store: { id: storeId },
+      }),
     );
   }
 
@@ -34,10 +38,14 @@ export class StoreMemberController {
   async update(
     @Param('storeId') storeId: string,
     @Param('id') id: string,
-    @Body() storeMemberDto: StoreMemberDto,
+    @Body() storeMemberDto: UpdateStoreMemberDto,
   ) {
     return this.storeMemberService.update(
-      plainToInstance(StoreMemberDto, { ...storeMemberDto, id, store: { id: storeId } }),
+      plainToInstance(UpdateStoreMemberDto, {
+        ...storeMemberDto,
+        id,
+        store: { id: storeId },
+      }),
     );
   }
 

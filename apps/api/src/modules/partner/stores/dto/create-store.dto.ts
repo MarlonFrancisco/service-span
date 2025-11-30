@@ -29,6 +29,18 @@ export class CreateStoreDto {
   amenities: string[];
 
   @IsString()
+  @IsOptional()
+  country: string;
+
+  @IsString()
+  @IsOptional()
+  currency: string;
+
+  @IsString()
+  @IsOptional()
+  timezone: string;
+
+  @IsString()
   address: string;
 
   @IsString()
