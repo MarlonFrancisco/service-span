@@ -14,6 +14,7 @@ export function AdminSidebarFooter({ isCollapsed }: AdminSidebarFooterProps) {
     storesUsage,
     professionalsUsage,
     isNearLimit,
+    isAtLimit,
     handleUpgradeClick,
   } = useAdminSidebarFooter();
 
@@ -71,11 +72,13 @@ export function AdminSidebarFooter({ isCollapsed }: AdminSidebarFooterProps) {
                 </div>
                 {!storesUsage.isUnlimited && (
                   <Progress
-                    value={storesUsage.percentage}
+                    value={Math.min(storesUsage.percentage, 100)}
                     className={
-                      storesUsage.percentage >= 80
-                        ? 'h-1.5 [&>div]:bg-amber-500'
-                        : 'h-1.5 [&>div]:bg-gray-900'
+                      storesUsage.percentage >= 100
+                        ? 'h-1.5 [&>div]:bg-red-500'
+                        : storesUsage.percentage >= 80
+                          ? 'h-1.5 [&>div]:bg-amber-500'
+                          : 'h-1.5 [&>div]:bg-gray-900'
                     }
                   />
                 )}
@@ -105,11 +108,13 @@ export function AdminSidebarFooter({ isCollapsed }: AdminSidebarFooterProps) {
                 </div>
                 {!professionalsUsage.isUnlimited && (
                   <Progress
-                    value={professionalsUsage.percentage}
+                    value={Math.min(professionalsUsage.percentage, 100)}
                     className={
-                      professionalsUsage.percentage >= 80
-                        ? 'h-1.5 [&>div]:bg-amber-500'
-                        : 'h-1.5 [&>div]:bg-gray-900'
+                      professionalsUsage.percentage >= 100
+                        ? 'h-1.5 [&>div]:bg-red-500'
+                        : professionalsUsage.percentage >= 80
+                          ? 'h-1.5 [&>div]:bg-amber-500'
+                          : 'h-1.5 [&>div]:bg-gray-900'
                     }
                   />
                 )}
@@ -124,8 +129,19 @@ export function AdminSidebarFooter({ isCollapsed }: AdminSidebarFooterProps) {
             )}
           </div>
 
-          {/* Warning Message */}
-          {isNearLimit && (
+          {/* Warning/Error Messages */}
+          {isAtLimit && (
+            <div className="bg-red-50 border border-red-200 rounded-lg p-2">
+              <p className="text-xs font-medium text-red-800">
+                Limite do plano atingido!
+              </p>
+              <p className="text-xs text-red-600 mt-0.5">
+                Faça upgrade para continuar criando
+              </p>
+            </div>
+          )}
+
+          {!isAtLimit && isNearLimit && (
             <div className="bg-amber-50 border border-amber-200 rounded-lg p-2">
               <p className="text-xs text-amber-800">
                 Você está próximo do limite do seu plano

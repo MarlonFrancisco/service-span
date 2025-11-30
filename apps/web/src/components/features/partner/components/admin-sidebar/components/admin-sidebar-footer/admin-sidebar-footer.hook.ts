@@ -49,8 +49,21 @@ export const useAdminSidebarFooter = () => {
     if (!storesUsage || !professionalsUsage) return false;
     if (storesUsage.isUnlimited && professionalsUsage.isUnlimited) return false;
     return (
-      (!storesUsage.isUnlimited && storesUsage.percentage >= 80) ||
-      (!professionalsUsage.isUnlimited && professionalsUsage.percentage >= 80)
+      (!storesUsage.isUnlimited &&
+        storesUsage.percentage >= 80 &&
+        storesUsage.percentage < 100) ||
+      (!professionalsUsage.isUnlimited &&
+        professionalsUsage.percentage >= 80 &&
+        professionalsUsage.percentage < 100)
+    );
+  }, [storesUsage, professionalsUsage]);
+
+  const isAtLimit = useMemo(() => {
+    if (!storesUsage || !professionalsUsage) return false;
+    if (storesUsage.isUnlimited && professionalsUsage.isUnlimited) return false;
+    return (
+      (!storesUsage.isUnlimited && storesUsage.percentage >= 100) ||
+      (!professionalsUsage.isUnlimited && professionalsUsage.percentage >= 100)
     );
   }, [storesUsage, professionalsUsage]);
 
@@ -59,6 +72,7 @@ export const useAdminSidebarFooter = () => {
     storesUsage,
     professionalsUsage,
     isNearLimit,
+    isAtLimit,
     handleUpgradeClick,
   };
 };
