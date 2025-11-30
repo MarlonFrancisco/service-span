@@ -1,9 +1,21 @@
 'use client';
 
+import { LocaleDialog } from '@/components/layout/locale-dialog';
+import { useLocaleStore } from '@/store/locale';
+import { COUNTRIES, CURRENCIES } from '@repo/shared/constants';
+import { getFlagEmoji } from '@repo/ui';
+import { Globe } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useState } from 'react';
 
 export const Footer = () => {
+  const [isLocaleOpen, setIsLocaleOpen] = useState(false);
+  const { country, currency } = useLocaleStore();
+
+  const countryData = COUNTRIES[country];
+  const currencyData = CURRENCIES[currency];
+
   return (
     <footer>
       <div className="max-w-7xl mx-auto px-6 py-16">
@@ -134,16 +146,36 @@ export const Footer = () => {
         </div>
 
         {/* Bottom Section */}
-        <div className="mt-16 pt-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center gap-4">
+        <div className="mt-16 pt-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center gap-6">
           {/* Logo */}
           <Link href="/">
             <Image src="/logo.png" alt="ServiceSnap" width={200} height={62} />
           </Link>
 
-          {/* Copyright */}
-          <p className="text-sm text-gray-600">© ServiceSnap Inc. 2025</p>
+          {/* Locale Selector & Copyright */}
+          <div className="flex flex-col md:flex-row items-center gap-4 md:gap-6">
+            {/* Locale Button */}
+            <button
+              type="button"
+              onClick={() => setIsLocaleOpen(true)}
+              className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 transition-colors"
+            >
+              <Globe className="h-4 w-4" />
+              <span>{getFlagEmoji(country)}</span>
+              <span>{countryData?.nativeName}</span>
+              <span className="text-gray-400">·</span>
+              <span>
+                {currencyData?.symbol} {currency}
+              </span>
+            </button>
+
+            {/* Copyright */}
+            <p className="text-sm text-gray-600">© ServiceSnap Inc. 2025</p>
+          </div>
         </div>
       </div>
+
+      <LocaleDialog open={isLocaleOpen} onOpenChange={setIsLocaleOpen} />
     </footer>
   );
 };
