@@ -41,11 +41,11 @@ export function StoreDetailsDrawer() {
           <div className="space-y-4 pb-6">
             {/* Images */}
             <ImageCarousel
-              images={selectedStore.images}
+              images={selectedStore.gallery}
               alt={selectedStore.name}
               className="w-full rounded-t-none rounded-b-none!"
-              showCounter={selectedStore.images.length > 1}
-              showFullscreenButton={selectedStore.images.length > 1}
+              showCounter={selectedStore.gallery.length > 1}
+              showFullscreenButton={selectedStore.gallery.length > 1}
               aspectRatio={16 / 9}
             />
 
@@ -119,10 +119,10 @@ export function StoreDetailsDrawer() {
                 <div className="flex items-center gap-3 text-sm">
                   <Phone className="h-4 w-4 text-gray-400 shrink-0" />
                   <a
-                    href={`tel:${selectedStore.phone}`}
+                    href={`tel:${selectedStore.telephone}`}
                     className="text-blue-600 hover:underline font-normal"
                   >
-                    {selectedStore.phone}
+                    {selectedStore.telephone}
                   </a>
                 </div>
 

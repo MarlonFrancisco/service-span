@@ -23,10 +23,8 @@ export function StoreCard({ store, isSelected, onClick }: StoreCardProps) {
     (state) => state.setMobileDrawerOpen,
   );
 
-  const { name, rating, reviewCount, location, price, images, services } =
+  const { name, rating, reviewCount, location, price, gallery, services } =
     store;
-
-  const allImages = images;
 
   const handleSchedule = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -70,15 +68,15 @@ export function StoreCard({ store, isSelected, onClick }: StoreCardProps) {
           {/* Image */}
           <div className="relative w-32 aspect-square flex-shrink-0 rounded-xl overflow-hidden bg-gray-100">
             <ImageWithFallback
-              src={allImages[0] || '/placeholder.png'}
+              src={gallery[0] || '/placeholder.png'}
               alt={name}
               fill
               sizes="128px"
               className="object-cover"
             />
-            {allImages.length > 1 && (
+            {gallery.length > 1 && (
               <div className="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-0.5 rounded-full z-10">
-                1/{allImages.length}
+                1/{gallery.length}
               </div>
             )}
           </div>
@@ -171,9 +169,9 @@ export function StoreCard({ store, isSelected, onClick }: StoreCardProps) {
         <div className="2xl:w-96 flex-shrink-0">
           <div className="h-48 2xl:h-80 relative overflow-hidden">
             <ImageCarousel
-              images={allImages}
+              images={gallery}
               alt={name}
-              showCounter={allImages.length > 1}
+              showCounter={gallery.length > 1}
               showFullscreenButton={false}
               rounded={false}
               className="h-full"

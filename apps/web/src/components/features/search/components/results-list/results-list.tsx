@@ -3,14 +3,13 @@
 import { useSearchQuery } from '@/hooks/use-query/use-search-query';
 import useSearchStore from '@/store/search/search.store';
 import { IStoreSearchListItem } from '@/store/search/search.types';
-import { formatPriceBRL } from '@/utils/helpers/price.helper';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { formatStorePrice } from '@/utils/helpers/price.helper';
+import { useSearchParams } from 'next/navigation';
 import { useEffect, useMemo } from 'react';
 import { ResultsListSkeleton } from './results-list-skeleton';
 import { VirtualizedResultsList } from './virtualized-results-list';
 
 export function ResultsList() {
-  const router = useRouter();
   const params = useSearchParams();
   const { data, isPending } = useSearchQuery({
     query: params.get('query')!,
@@ -35,7 +34,7 @@ export function ResultsList() {
               ) / result.content.services.length;
 
             const price = averagePrice
-              ? `Média de ${formatPriceBRL(averagePrice)}`
+              ? `Média de ${formatStorePrice(averagePrice, result.metadata.currency, result.content.country)}`
               : 'A consultar';
 
             return {
@@ -45,7 +44,7 @@ export function ResultsList() {
               reviewCount: reviews.length,
               location: `${result.content.city}, ${result.content.state}`,
               price,
-              images: result.metadata.gallery.map((image) => image.url),
+              gallery: result.metadata.gallery.map((image) => image.url),
               description: result.content.description,
               phone: result.metadata.telephone,
               address: result.content.address,
@@ -59,8 +58,10 @@ export function ResultsList() {
               businessDays: result.content.businessDays,
               isActive: true,
               amenities: result.metadata.amenities,
-              storeMembers: [],
-              schedules: [],
+              country: result.content.country,
+              currency: result.metadata.currency,
+              timezone: result.metadata.timezone,
+              telephone: result.metadata.telephone,
             };
           })
         : [],

@@ -1,26 +1,23 @@
 'use client';
 
-import useSearchStore from '@/store/search/search.store';
-import { formatBusinessHours } from '@/utils/helpers/business-hours.helper';
 import { Badge, Button, Card, Separator } from '@repo/ui';
-import { Calendar, Clock, MapPin, Phone, Star } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { Calendar, Clock, MapPin, MessageCircle, Star } from 'lucide-react';
 import { ImageCarousel } from '../image-carousel';
+import { useServicePreview } from './service-preview.hook';
 
 export function ServicePreview() {
-  const selectedStore = useSearchStore((state) => state.selectedStore);
-  const router = useRouter();
+  const {
+    selectedStore,
+    formattedPrice,
+    formattedHours,
+    whatsAppLink,
+    showCarouselControls,
+    hasReviews,
+    displayReviews,
+    handleBookingClick,
+  } = useServicePreview();
 
-  if (!selectedStore) {
-    return (
-      <Card className="p-8 h-fit flex items-center justify-center border-gray-200">
-        <div className="text-center text-gray-500">
-          <Calendar className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-          <p className="text-sm">Selecione um serviço para ver os detalhes</p>
-        </div>
-      </Card>
-    );
-  }
+  if (!selectedStore) return null;
 
   return (
     <Card className="h-fit border-gray-200 shadow-lg pt-0">
@@ -28,11 +25,11 @@ export function ServicePreview() {
         {/* Header com carousel de imagens */}
         <div className="space-y-4">
           <ImageCarousel
-            images={selectedStore.images}
+            images={selectedStore.gallery}
             alt={selectedStore.name}
             className="w-full rounded-b-none!"
-            showCounter={selectedStore.images.length > 1}
-            showFullscreenButton={selectedStore.images.length > 1}
+            showCounter={showCarouselControls}
+            showFullscreenButton={showCarouselControls}
             aspectRatio={3 / 2}
           />
 
@@ -42,7 +39,7 @@ export function ServicePreview() {
                 {selectedStore.name}
               </h3>
               <Badge className="bg-black text-white shrink-0 text-xs font-medium">
-                {selectedStore.price}
+                {formattedPrice}
               </Badge>
             </div>
 
@@ -77,15 +74,20 @@ export function ServicePreview() {
           <h4 className="text-sm font-semibold text-gray-900">Informações</h4>
 
           <div className="space-y-3">
-            <div className="flex items-center gap-3 text-sm">
-              <Phone className="h-4 w-4 text-gray-400 shrink-0" />
-              <a
-                href={`tel:${selectedStore.phone}`}
-                className="text-blue-600 hover:underline"
-              >
-                {selectedStore.phone}
-              </a>
-            </div>
+            <a
+              href={whatsAppLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-3 text-sm px-4 py-2.5 bg-green-50 hover:bg-green-100 rounded-lg transition-colors group border border-green-200"
+            >
+              <MessageCircle className="h-4 w-4 text-green-600 shrink-0 group-hover:scale-110 transition-transform" />
+              <div className="flex flex-col">
+                <span className="text-green-700 font-medium">WhatsApp</span>
+                <span className="text-green-600 text-xs">
+                  {selectedStore.telephone}
+                </span>
+              </div>
+            </a>
 
             <div className="flex items-start gap-3 text-sm">
               <MapPin className="h-4 w-4 text-gray-400 mt-0.5 shrink-0" />
@@ -102,13 +104,7 @@ export function ServicePreview() {
 
             <div className="flex items-center gap-3 text-sm text-gray-600">
               <Clock className="h-4 w-4 text-gray-400 shrink-0" />
-              <span>
-                {formatBusinessHours(
-                  selectedStore.openTime,
-                  selectedStore.closeTime,
-                  selectedStore.businessDays,
-                )}
-              </span>
+              <span>{formattedHours}</span>
             </div>
           </div>
         </div>
@@ -122,7 +118,7 @@ export function ServicePreview() {
           </h4>
 
           <div className="space-y-2.5">
-            {selectedStore.reviews?.slice(0, 3).map((review) => (
+            {displayReviews.map((review) => (
               <div key={review.id} className="p-3 bg-gray-50 rounded-lg">
                 <div className="flex items-center gap-2 mb-1.5">
                   <div className="flex">
@@ -143,7 +139,7 @@ export function ServicePreview() {
               </div>
             ))}
 
-            {!selectedStore.reviews?.length && (
+            {!hasReviews && (
               <div className="p-3 bg-gray-50 rounded-lg text-center">
                 <span className="text-sm text-gray-500">
                   Nenhuma avaliação disponível
@@ -158,7 +154,7 @@ export function ServicePreview() {
           <Button
             className="w-full bg-black hover:bg-gray-800 text-white font-medium"
             size="lg"
-            onClick={() => router.push(`/booking/${selectedStore.id}`)}
+            onClick={handleBookingClick}
           >
             <Calendar className="h-5 w-5 mr-2" />
             Ver Agenda e Agendar
