@@ -1,3 +1,4 @@
+import { COUNTRY_CODES, CURRENCY_CODES } from '@repo/shared/constants';
 import { z } from 'zod';
 
 // Schema para validação de CEP
@@ -16,6 +17,28 @@ const urlSchema = z.string().url('URL inválida').optional().or(z.literal(''));
 // Schema principal do formulário de loja
 export const storeFormSchema = z.object({
   id: z.string().optional(),
+
+  // Region & Currency
+  country: z
+    .string()
+    .min(2, 'Selecione um país')
+    .refine(
+      (val) => COUNTRY_CODES.includes(val as (typeof COUNTRY_CODES)[number]),
+      {
+        message: 'País inválido',
+      },
+    ),
+  currency: z
+    .string()
+    .min(3, 'Selecione uma moeda')
+    .refine(
+      (val) => CURRENCY_CODES.includes(val as (typeof CURRENCY_CODES)[number]),
+      {
+        message: 'Moeda inválida',
+      },
+    ),
+  timezone: z.string().min(1, 'Timezone é obrigatório'),
+
   name: z
     .string()
     .min(3, 'Nome deve ter no mínimo 3 caracteres')

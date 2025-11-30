@@ -1,5 +1,5 @@
 import { Button, Spinner, Tabs, TabsList, TabsTrigger } from '@repo/ui';
-import { CheckCircle2, Clock, Images, Users } from 'lucide-react';
+import { CheckCircle2, Clock, Globe2, Images, Users } from 'lucide-react';
 import { FormProvider } from 'react-hook-form';
 import { AddProfessionalModal } from '../../add-professional-modal';
 import { BasicInfoTab } from './basic-info-tab';
@@ -7,6 +7,7 @@ import { BusinessHoursTab } from './business-hours-tab/business-hours-tab';
 import { ContactTab } from './contact-tab';
 import { GalleryTab } from './gallery-tab';
 import { ProfessionalTab } from './professionals-tab/professional-tab';
+import { RegionTab } from './region-tab';
 import { useStoreFormTabs } from './store-form-tabs.hook';
 
 export const StoreFormTabs = () => {
@@ -28,6 +29,13 @@ export const StoreFormTabs = () => {
                 className="px-4 sm:px-6 h-9 data-[state=active]:bg-white data-[state=active]:shadow-sm text-xs sm:text-sm"
               >
                 Informações Básicas
+              </TabsTrigger>
+              <TabsTrigger
+                value="region"
+                className="px-4 sm:px-6 h-9 data-[state=active]:bg-white data-[state=active]:shadow-sm text-xs sm:text-sm"
+              >
+                <Globe2 className="h-4 w-4 mr-2" />
+                Região & Moeda
               </TabsTrigger>
               <TabsTrigger
                 value="contact"
@@ -65,6 +73,8 @@ export const StoreFormTabs = () => {
           <div className="flex-1 overflow-y-auto bg-gray-50">
             <div className="px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
               <BasicInfoTab />
+
+              <RegionTab />
 
               <ContactTab />
 
