@@ -190,6 +190,9 @@ importers:
       '@hookform/resolvers':
         specifier: ^5.2.2
         version: 5.2.2(react-hook-form@7.64.0)
+      '@repo/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
       '@repo/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -362,6 +365,21 @@ importers:
       typescript-eslint:
         specifier: ^8.37.0
         version: 8.39.0(eslint@9.32.0)(typescript@5.8.2)
+
+  packages/shared:
+    devDependencies:
+      '@repo/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
+      '@repo/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      '@types/node':
+        specifier: ^24.7.2
+        version: 24.7.2
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
 
   packages/typescript-config:
     dependencies:

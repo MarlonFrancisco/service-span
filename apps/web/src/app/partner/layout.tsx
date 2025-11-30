@@ -49,14 +49,14 @@ export default async function PartnerLayout({ children }: PartnerLayoutProps) {
       queryKey: CACHE_QUERY_KEYS.stores(),
       queryFn: () => stores,
     }),
+    queryClient.prefetchQuery({
+      queryKey: CACHE_QUERY_KEYS.store(stores[0]?.id || ''),
+      queryFn: () =>
+        stores[0]?.id ? StoreService.get(stores[0].id) : undefined,
+    }),
   ];
 
   await Promise.all(queriesPromises);
-
-  queryClient.prefetchQuery({
-    queryKey: CACHE_QUERY_KEYS.store(stores[0]!.id),
-    queryFn: () => StoreService.get(stores[0]!.id),
-  });
 
   const dehydratedState = dehydrate(queryClient);
 

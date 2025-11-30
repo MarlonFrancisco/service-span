@@ -175,7 +175,7 @@ export default async function RootLayout({
   const dehydratedState = dehydrate(queryClient);
 
   return (
-    <html lang="pt-BR">
+    <html lang="pt-BR" suppressHydrationWarning>
       <body
         className={`${monaSans.variable} ${geistSans.variable} ${geistMono.variable}`}
       >
