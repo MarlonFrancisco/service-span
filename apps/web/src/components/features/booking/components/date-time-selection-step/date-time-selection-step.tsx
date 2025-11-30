@@ -1,5 +1,7 @@
 'use client';
 import { generateTimeSlots } from '@/store/admin/agenda/agenda.helpers';
+import { TWorkingDays } from '@/types/api/stores.types';
+import { formatStorePrice } from '@/utils/helpers/price.helper';
 import { Button, Calendar as CalendarComponent, Card } from '@repo/ui';
 import { Calendar, Clock } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
@@ -93,15 +95,12 @@ export function DateTimeSelectionStep() {
   };
 
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL',
-    }).format(price);
+    return formatStorePrice(price, store!.currency, store!.country);
   };
 
   const getDayOfWeekKey = (date: Date) => {
     const dayIndex = date.getDay();
-    const dayKeys: Record<number, keyof typeof store.businessDays> = {
+    const dayKeys: Record<number, string> = {
       0: 'sunday',
       1: 'monday',
       2: 'tuesday',
@@ -125,7 +124,7 @@ export function DateTimeSelectionStep() {
     // Disable if it's not a business day
     if (store?.businessDays) {
       const dayKey = getDayOfWeekKey(date);
-      if (!store.businessDays[dayKey]) {
+      if (!store.businessDays[dayKey as keyof TWorkingDays]) {
         return true;
       }
     }

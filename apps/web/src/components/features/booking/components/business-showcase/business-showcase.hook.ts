@@ -3,6 +3,7 @@
 import { useFavoritesMutations } from '@/hooks/use-mutations/use-favorites-mutations/use-favorites-mutations.hook';
 import { useUserQuery } from '@/hooks/use-query/use-user-query';
 import { TWorkingDays } from '@/types/api/stores.types';
+import { orderGalleryByMainImage } from '@/utils/helpers/gallery.helper';
 import { useCallback, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { useGetStore } from '../../booking.hook';
@@ -40,15 +41,10 @@ export const useBusinessShowcase = () => {
   const data: BusinessShowcaseData | null = useMemo(() => {
     if (!selectedStore) return null;
 
-    const images =
-      selectedStore.gallery?.map((item: { url: string }) => item.url) || [];
-
-    const reviewCount = selectedStore.reviews?.length || 0;
+    const reviewCount = selectedStore.reviews.length;
     const totalRating =
-      selectedStore.reviews?.reduce(
-        (sum, review) => sum + parseFloat(review.rating),
-        0,
-      ) || 0;
+      selectedStore.reviews?.reduce((sum, review) => sum + review.rating, 0) ||
+      0;
 
     const averageRating = reviewCount > 0 ? totalRating / reviewCount : 0;
 
@@ -57,7 +53,6 @@ export const useBusinessShowcase = () => {
     return {
       businessName: selectedStore.name,
       businessAddress,
-      images,
       averageRating,
       reviewCount,
       description: selectedStore.description || '',
@@ -123,6 +118,23 @@ export const useBusinessShowcase = () => {
     user,
   ]);
 
+  const { allImages, mainGalleryImage, rightSideGalleryImages } =
+    useMemo(() => {
+      const allImages = orderGalleryByMainImage(
+        selectedStore?.gallery || [],
+      ).map((item: { url: string }) => item.url);
+      const mainGalleryImage = allImages[0] || '';
+      const rightSideGalleryImages = ['', '', '', ''].map(
+        (_, index) => allImages[index + 1] || '',
+      );
+
+      return {
+        allImages,
+        mainGalleryImage,
+        rightSideGalleryImages,
+      };
+    }, [selectedStore?.gallery]);
+
   return {
     data,
     showAllPhotos,
@@ -130,6 +142,9 @@ export const useBusinessShowcase = () => {
     isFavorite,
     isLoggedIn,
     selectedStore,
+    allImages,
+    rightSideGalleryImages,
+    mainGalleryImage,
     handleImageClick,
     handleCloseGallery,
     handleShare,

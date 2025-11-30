@@ -6,9 +6,7 @@ import { lazy, Suspense } from 'react';
 import { HeroSection } from './components';
 import { FeaturesSkeleton } from './components/features-skeleton';
 import { RecommendationsSkeleton } from './components/recomendations/components/recommendations-skeleton';
-import { useHomepage } from './homepage.hook';
 
-// Lazy load heavy components
 const Recomendations = lazy(() =>
   import('./components/recomendations').then((module) => ({
     default: module.Recomendations,
@@ -22,8 +20,6 @@ const Features = lazy(() =>
 );
 
 export const Homepage = () => {
-  useHomepage();
-
   return (
     <Header>
       <motion.div className="pt-12">

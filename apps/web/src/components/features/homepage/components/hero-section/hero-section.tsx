@@ -10,7 +10,7 @@ import {
 
 export const HeroSection = () => {
   return (
-    <section className="relative text-center fade-in max-w-7xl mx-auto px-6 mb-55 md:mb-50">
+    <section className="relative text-center fade-in max-w-7xl mx-auto px-6 mb-55 md:mb-20">
       {/* Hero Badge */}
       <HeroBadge />
 

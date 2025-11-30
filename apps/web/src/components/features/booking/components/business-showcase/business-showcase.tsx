@@ -26,6 +26,9 @@ export function BusinessShowcase() {
     isFavorite,
     isLoggedIn,
     selectedStore,
+    rightSideGalleryImages,
+    mainGalleryImage,
+    allImages,
     handleImageClick,
     handleShare,
     handleCloseGallery,
@@ -39,7 +42,6 @@ export function BusinessShowcase() {
   const {
     businessName,
     businessAddress,
-    images,
     averageRating,
     reviewCount,
     description,
@@ -98,7 +100,7 @@ export function BusinessShowcase() {
             {/* Main Image - Left Side */}
             <div className="col-span-2 relative group cursor-pointer overflow-hidden">
               <ImageWithFallback
-                src={images[0] || ''}
+                src={mainGalleryImage}
                 fill
                 sizes="(min-width: 768px) 300px, (min-width: 1368px) 500px, (min-width: 1920px) 600px, 150px"
                 alt={businessName}
@@ -109,7 +111,7 @@ export function BusinessShowcase() {
 
             {/* Right Side Grid */}
             <div className="col-span-2 grid grid-cols-2 gap-1">
-              {images.slice(1, 5).map((image: string, index: number) => (
+              {rightSideGalleryImages?.map((image: string, index: number) => (
                 <div
                   key={index}
                   className="relative group cursor-pointer overflow-hidden"
@@ -137,7 +139,7 @@ export function BusinessShowcase() {
               }}
             >
               <CarouselContent>
-                {images.map((image: string, index: number) => (
+                {allImages.map((image: string, index: number) => (
                   <CarouselItem key={index}>
                     <div className="relative h-64">
                       <ImageWithFallback
@@ -153,14 +155,14 @@ export function BusinessShowcase() {
                 ))}
               </CarouselContent>
 
-              {images.length > 1 && (
+              {allImages.length > 1 && (
                 <>
                   <CarouselPrevious className="left-2 bg-white/90 hover:bg-white border-0 shadow-lg" />
                   <CarouselNext className="right-2 bg-white/90 hover:bg-white border-0 shadow-lg" />
 
                   {/* Photo Counter */}
                   <div className="absolute bottom-3 right-3 bg-black/70 backdrop-blur-sm text-white px-3 py-1.5 rounded-full text-sm pointer-events-none">
-                    1 / {images.length}
+                    1 / {allImages.length}
                   </div>
 
                   {/* View All Button */}
@@ -179,14 +181,14 @@ export function BusinessShowcase() {
           </div>
 
           {/* Show All Photos Button - Bottom Right (Desktop Only) */}
-          {!showAllPhotos && images.length > 0 && (
+          {!showAllPhotos && allImages.length > 0 && (
             <Button
               variant="outline"
               className="hidden md:flex absolute bottom-4 right-4 bg-white text-black border-black hover:bg-gray-100 rounded-lg shadow-lg"
               onClick={() => handleImageClick(0)}
             >
               <Images className="h-4 w-4 mr-2" />
-              Ver todas ({images.length})
+              Ver todas ({allImages.length})
             </Button>
           )}
         </div>
@@ -258,7 +260,7 @@ export function BusinessShowcase() {
         <ImageGallery
           isOpen={showAllPhotos}
           onClose={handleCloseGallery}
-          images={images}
+          images={allImages}
           businessName={businessName}
           currentIndex={selectedImageIndex}
         />

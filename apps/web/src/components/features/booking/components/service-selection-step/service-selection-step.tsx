@@ -1,5 +1,6 @@
 'use client';
 import { ICategory, IService } from '@/types/api/service.types';
+import { formatStorePrice } from '@/utils/helpers/price.helper';
 import { Badge, Button } from '@repo/ui';
 import { Check, Minus, Plus } from 'lucide-react';
 import { useState } from 'react';
@@ -94,10 +95,7 @@ export function ServiceSelectionStep() {
   };
 
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL',
-    }).format(price);
+    return formatStorePrice(price, store!.currency, store!.country);
   };
 
   return (

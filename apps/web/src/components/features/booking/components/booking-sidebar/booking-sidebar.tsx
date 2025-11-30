@@ -1,3 +1,4 @@
+import { formatStorePrice } from '@/utils/helpers/price.helper';
 import { Badge, Card, Separator } from '@repo/ui';
 import { Calendar, Clock, MapPin, Phone, User } from 'lucide-react';
 import { TBookingStep } from '../../booking.types';
@@ -14,7 +15,7 @@ export function BookingSidebar({
   totalDuration,
   currentStep,
 }: BookingSidebarProps) {
-  const { data, formatters, state } = useBookingSidebar(
+  const { data, formatters, state, store } = useBookingSidebar(
     totalPrice,
     totalDuration,
     currentStep,
@@ -100,7 +101,11 @@ export function BookingSidebar({
                         </div>
                       </div>
                       <span className="text-sm text-[#1a2b4c] ml-2">
-                        {formatPrice(service.price * service.quantity)}
+                        {formatStorePrice(
+                          service.price * service.quantity,
+                          store!.currency,
+                          store!.country,
+                        )}
                       </span>
                     </div>
                   ))}

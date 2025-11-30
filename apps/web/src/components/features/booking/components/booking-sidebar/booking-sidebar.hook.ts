@@ -1,5 +1,7 @@
 'use client';
 
+import { formatStorePrice } from '@/utils/helpers/price.helper';
+import { COUNTRIES } from '@repo/shared/constants';
 import { useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { useGetStore } from '../../booking.hook';
@@ -36,11 +38,7 @@ export const useBookingSidebar = (
   totalPrice: number,
   totalDuration: number,
   currentStep: TBookingStep,
-): {
-  data: BookingSidebarData;
-  formatters: BookingSidebarFormatters;
-  state: BookingSidebarState;
-} => {
+) => {
   const store = useGetStore();
   const { watch } = useFormContext<TBookingFormData>();
   const selectedServices = watch('selectedServices');
@@ -78,13 +76,14 @@ export const useBookingSidebar = (
     ],
   );
 
-  const formatters: BookingSidebarFormatters = useMemo(
-    () => ({
+  const formatters: BookingSidebarFormatters = useMemo(() => {
+    const countryCode = store!.country;
+    const currencyCode = store!.currency;
+    const locale = COUNTRIES[countryCode].locale;
+
+    return {
       formatPrice: (price: number) => {
-        return new Intl.NumberFormat('pt-BR', {
-          style: 'currency',
-          currency: 'BRL',
-        }).format(price);
+        return formatStorePrice(price, currencyCode, countryCode);
       },
 
       formatDuration: (minutes: number) => {
@@ -99,16 +98,15 @@ export const useBookingSidebar = (
       },
 
       formatFullDate: (date: Date) => {
-        return new Intl.DateTimeFormat('pt-BR', {
+        return new Intl.DateTimeFormat(locale, {
           weekday: 'long',
           year: 'numeric',
           month: 'long',
           day: 'numeric',
         }).format(date);
       },
-    }),
-    [],
-  );
+    };
+  }, [store!.country, store!.currency]);
 
   const state: BookingSidebarState = useMemo(
     () => ({
@@ -135,6 +133,7 @@ export const useBookingSidebar = (
   );
 
   return {
+    store,
     data,
     formatters,
     state,

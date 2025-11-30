@@ -2,9 +2,10 @@ import { ImageWithFallback } from '@/components/ui/image-with-fallback';
 import { useFavoritesMutations } from '@/hooks/use-mutations/use-favorites-mutations';
 import { useUserQuery } from '@/hooks/use-query/use-user-query';
 import { IRecommendationStore } from '@/types/api/recomendation.types';
-import { formatPrice } from '@/utils/helpers/price.helper';
+import { formatStorePrice } from '@/utils/helpers/price.helper';
 import { Heart, Star } from 'lucide-react';
 import { motion } from 'motion/react';
+import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 
 interface RecommendationCardProps {
@@ -12,6 +13,7 @@ interface RecommendationCardProps {
 }
 
 export const RecommendationCard = ({ store }: RecommendationCardProps) => {
+  const router = useRouter();
   const { isLoggedIn, user } = useUserQuery();
   const { createFavorite, deleteFavorite } = useFavoritesMutations();
   const [isHeartAnimating, setIsHeartAnimating] = useState(false);
@@ -46,6 +48,10 @@ export const RecommendationCard = ({ store }: RecommendationCardProps) => {
     ) / store.metadata.reviews.length || 0
   ).toFixed(1);
 
+  const handleBooking = () => {
+    router.push(`/booking/${store.id}`);
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -53,6 +59,7 @@ export const RecommendationCard = ({ store }: RecommendationCardProps) => {
       viewport={{ once: true }}
       transition={{ duration: 0.3 }}
       className="h-full select-none"
+      onClick={handleBooking}
     >
       <div className="group cursor-pointer h-full flex flex-col max-w-full">
         {/* Image Section */}
@@ -120,13 +127,13 @@ export const RecommendationCard = ({ store }: RecommendationCardProps) => {
           <div className="mt-1">
             <p className="text-sm">
               <span className="font-semibold text-gray-900">
-                {formatPrice(
+                {formatStorePrice(
                   store.content.services.reduce(
                     (sum, service) => sum + service.price,
                     0,
                   ) / store.content.services.length,
-                  'BRL',
-                  'pt-BR',
+                  store.metadata.currency,
+                  store.content.country,
                 )}
               </span>
               <span className="text-gray-600"> / serviço</span>

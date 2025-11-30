@@ -1,4 +1,5 @@
 import useSearchStore from '@/store/search/search.store';
+import { formatStorePrice } from '@/utils/helpers/price.helper';
 import {
   Badge,
   Drawer,
@@ -34,11 +35,13 @@ export function MobileBookingDrawer({
   const businessAddress = selectedStore
     ? `${selectedStore.address}, ${selectedStore.city} - ${selectedStore.state}`
     : '';
+
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL',
-    }).format(price);
+    return formatStorePrice(
+      price,
+      selectedStore?.currency,
+      selectedStore?.country,
+    );
   };
 
   const formatDuration = (minutes: number) => {
@@ -53,7 +56,13 @@ export function MobileBookingDrawer({
   };
 
   const formatFullDate = (date: Date) => {
-    return new Intl.DateTimeFormat('pt-BR', {
+    const locale =
+      selectedStore?.country === 'BR'
+        ? 'pt-BR'
+        : selectedStore?.country === 'US'
+          ? 'en-US'
+          : selectedStore?.country || 'pt-BR';
+    return new Intl.DateTimeFormat(locale, {
       weekday: 'long',
       year: 'numeric',
       month: 'long',
