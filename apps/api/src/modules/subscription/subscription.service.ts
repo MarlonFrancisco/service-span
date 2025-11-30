@@ -109,8 +109,6 @@ export class SubscriptionService {
           subscription.subscriptionId,
         );
 
-      console.log(subscription.subscriptionId, 'stripeSubscription');
-
       // 3. Buscar detalhes do produto e preço do Stripe
       const product = await this.stripeService.products.retrieve(
         subscription.productId,
@@ -177,11 +175,32 @@ export class SubscriptionService {
     }
   }
 
-  async create(priceId: string, paymentCustomerId: string) {
+  /**
+   * Create a subscription checkout session
+   * @param priceId - Stripe price ID (currency is defined in the price)
+   * @param paymentCustomerId - Stripe customer ID
+   * @param expectedCurrency - Optional: validate that the price matches expected currency
+   * @returns Checkout session URL
+   */
+  async create(
+    priceId: string,
+    paymentCustomerId: string,
+    expectedCurrency?: string,
+  ) {
     const price = await this.stripeService.prices.retrieve(priceId);
     const product = await this.stripeService.products.retrieve(
       price.product as string,
     );
+
+    // Validate currency if provided
+    if (
+      expectedCurrency &&
+      price.currency.toUpperCase() !== expectedCurrency.toUpperCase()
+    ) {
+      throw new BadRequestException(
+        `Price currency (${price.currency.toUpperCase()}) does not match expected currency (${expectedCurrency.toUpperCase()})`,
+      );
+    }
 
     const hasSubscription = await this.subscriptionRepository.findOne({
       where: { user: { paymentCustomerId } },
@@ -208,6 +227,7 @@ export class SubscriptionService {
 
     return {
       url: session.url,
+      currency: price.currency.toUpperCase(),
     };
   }
 

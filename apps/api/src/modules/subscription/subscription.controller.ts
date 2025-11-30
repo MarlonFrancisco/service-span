@@ -27,10 +27,14 @@ export class SubscriptionController {
   @Post()
   @UseGuards(JwtAuthGuard)
   async create(
-    @Body({ transform: (value) => value.priceId }) priceId: string,
+    @Body() body: { priceId: string; currency?: string },
     @CurrentUser() user: JwtPayload,
   ) {
-    return this.subscriptionService.create(priceId, user.paymentCustomerId);
+    return this.subscriptionService.create(
+      body.priceId,
+      user.paymentCustomerId,
+      body.currency,
+    );
   }
 
   @Delete()

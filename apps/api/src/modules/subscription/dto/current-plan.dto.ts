@@ -1,5 +1,14 @@
-import { IsArray, IsBoolean, IsDate, IsEnum, IsNumber, IsObject, IsString, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
+import {
+  IsArray,
+  IsBoolean,
+  IsDate,
+  IsEnum,
+  IsNumber,
+  IsObject,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
 import type Stripe from 'stripe';
 import { normalizeSubscriptionMetadata } from '../../../utils';
 
@@ -139,18 +148,15 @@ export class CurrentPlanDto {
     dto.marketingFeatures = Array.isArray(product.marketing_features)
       ? product.marketing_features.map((f) => f.name || '')
       : [];
+
     dto.features = normalizeSubscriptionMetadata(product.metadata);
     dto.subscriptionStatus = subscription.status;
-    dto.currentPeriodStart = new Date(
-      subscription.current_period_start * 1000,
-    );
+    dto.currentPeriodStart = new Date(subscription.current_period_start * 1000);
     dto.currentPeriodEnd = new Date(subscription.current_period_end * 1000);
     dto.cancelAtPeriodEnd = subscription.cancel_at_period_end;
     dto.nextBillingDate = nextBillingDate;
 
-    dto.isActive = ['active', 'trialing', 'paid'].includes(
-      subscription.status,
-    );
+    dto.isActive = ['active', 'trialing', 'paid'].includes(subscription.status);
     dto.invoices = invoices.map((invoice) => InvoiceDto.fromStripe(invoice));
 
     dto.schedulesLength = schedulesLength;
