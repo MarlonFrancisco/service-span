@@ -10,13 +10,7 @@ async function migrateStoresToSearch() {
   });
 
   // Initialize database connection using pg client directly
-  const pgClient = new Client({
-    host: process.env.DB_HOST || 'localhost',
-    port: parseInt(process.env.DB_PORT || '5432'),
-    user: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-  });
+  const pgClient = new Client(process.env.DB_URL);
 
   await pgClient.connect();
 

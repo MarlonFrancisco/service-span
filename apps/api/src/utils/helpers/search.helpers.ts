@@ -1,8 +1,8 @@
+import type { Store } from '../../modules/partner/stores/store.entity';
 import type {
   IStoreSearchContent,
   IStoreSearchMetadata,
-} from 'src/modules/search/search.types';
-import type { Store } from '../../modules/partner/stores/store.entity';
+} from '../../modules/search/search.types';
 
 export const availableToIndexStore = (store: Store): boolean => {
   return (

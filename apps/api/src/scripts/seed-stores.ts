@@ -92,11 +92,7 @@ async function seedStoresSimple() {
     // Create connection without loading entities to avoid circular dependencies
     connection = await createConnection({
       type: 'postgres',
-      host: process.env.DB_HOST || 'localhost',
-      port: parseInt(process.env.DB_PORT || '5432'),
-      username: process.env.DB_USERNAME || 'postgres',
-      password: process.env.DB_PASSWORD || 'postgres',
-      database: process.env.DB_DATABASE || 'service_snap',
+      url: process.env.DB_URL,
     });
 
     console.log('✅ Database connection established');
@@ -281,7 +277,12 @@ async function seedStoresSimple() {
             `INSERT INTO users (id, email, telephone, first_name, last_name, accepted_terms, created_at, updated_at)
              VALUES (gen_random_uuid(), $1, $2, $3, $4, true, NOW(), NOW())
              RETURNING id`,
-            [memberEmail, mockMember.phone, mockMember.name.split(' ')[0], mockMember.name.split(' ')[1] || ''],
+            [
+              memberEmail,
+              mockMember.phone,
+              mockMember.name.split(' ')[0],
+              mockMember.name.split(' ')[1] || '',
+            ],
           );
           memberId = result[0].id;
         } else {
@@ -307,7 +308,9 @@ async function seedStoresSimple() {
           );
 
           if (serviceResult.length === 0) {
-            console.warn(`⚠️  Service "${serviceName}" not found for member "${mockMember.name}" in store "${mockStore.name}"`);
+            console.warn(
+              `⚠️  Service "${serviceName}" not found for member "${mockMember.name}" in store "${mockStore.name}"`,
+            );
             continue;
           }
 
@@ -349,7 +352,9 @@ async function seedStoresSimple() {
         );
 
         if (serviceResult.length === 0) {
-          console.warn(`⚠️  Service "${mockSchedule.serviceName}" not found in store "${mockStore.name}", skipping schedule`);
+          console.warn(
+            `⚠️  Service "${mockSchedule.serviceName}" not found in store "${mockStore.name}", skipping schedule`,
+          );
           continue;
         }
 
@@ -364,14 +369,16 @@ async function seedStoresSimple() {
         );
 
         if (storeMemberResult.length === 0) {
-          console.warn(`⚠️  Store member with email "${mockSchedule.storeMemberEmail}" not found in store "${mockStore.name}", skipping schedule`);
+          console.warn(
+            `⚠️  Store member with email "${mockSchedule.storeMemberEmail}" not found in store "${mockStore.name}", skipping schedule`,
+          );
           continue;
         }
 
         const storeMemberId = storeMemberResult[0].id;
 
         // Find or create customer user
-        let customerResult = await connection.query(
+        const customerResult = await connection.query(
           'SELECT id FROM users WHERE email = $1',
           [mockSchedule.customerEmail],
         );

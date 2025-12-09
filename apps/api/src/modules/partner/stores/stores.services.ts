@@ -1,11 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { SearchService } from 'src/modules/search/search.service';
+import type { FindOptionsSelect, Repository } from 'typeorm';
 import {
   availableToIndexStore,
   mountStoreSearchIndex,
-} from 'src/utils/helpers/search.helpers';
-import { FindOptionsSelect, Repository } from 'typeorm';
+} from '../../../utils/helpers/search.helpers';
+import { SearchService } from '../../search/search.service';
 import { CreateStoreDto } from './dto/create-store.dto';
 import { UpdateStoreDto } from './dto/update-store.dto';
 import { Store } from './store.entity';
