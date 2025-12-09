@@ -10,7 +10,6 @@ import { ReviewModule } from './review';
 import { ScheduleModule } from './schedule';
 import { StoreMemberModule } from './store-member/store-member.module';
 import { Store } from './store.entity';
-import { StoreSubscriber } from './store.subscriber';
 import { StoresController } from './stores.controller';
 import { StoresService } from './stores.services';
 
@@ -27,13 +26,7 @@ import { StoresService } from './stores.services';
     SearchModule,
   ],
   controllers: [StoresController],
-  providers: [
-    StoresService,
-    StoreAccessGuard,
-    StoreOwnerGuard,
-    StoreRoleGuard,
-    StoreSubscriber,
-  ],
+  providers: [StoresService, StoreAccessGuard, StoreOwnerGuard, StoreRoleGuard],
   exports: [StoresService],
 })
 export class StoresModule {}
