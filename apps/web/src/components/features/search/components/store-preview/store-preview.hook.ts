@@ -5,7 +5,7 @@ import { generateStoreWhatsAppLink } from '@/utils/helpers/whatsapp.helper';
 import { useRouter } from 'next/navigation';
 import { useCallback } from 'react';
 
-export function useServicePreview() {
+export function useStorePreview() {
   const selectedStore = useSearchStore((state) => state.selectedStore);
   const router = useRouter();
 
@@ -42,9 +42,7 @@ export function useServicePreview() {
 
   const hasReviews = selectedStore && selectedStore.reviews?.length > 0;
 
-  const displayReviews = selectedStore
-    ? selectedStore.reviews.slice(0, 3)
-    : [];
+  const displayReviews = selectedStore ? selectedStore.reviews.slice(0, 3) : [];
 
   return {
     selectedStore,

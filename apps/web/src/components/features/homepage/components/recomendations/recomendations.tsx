@@ -19,7 +19,7 @@ export const Recomendations = () => {
   }
 
   return (
-    <div className="mb-10">
+    <div className="mb-10 select-none">
       <CarouselSection
         title="Populares hoje"
         subtitle="Os serviços mais agendados nas últimas 24h"

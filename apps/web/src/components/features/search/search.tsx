@@ -6,7 +6,7 @@ import { useSearchQuery } from '@/hooks/use-query/use-search-query';
 import { cn } from '@repo/ui/index';
 import { Search } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { ResultsList, ServicePreview, StoreDetailsDrawer } from './components';
+import { ResultsList, StoreDetailsDrawer, StorePreview } from './components';
 
 export function SearchResults() {
   const router = useRouter();
@@ -46,7 +46,7 @@ export function SearchResults() {
           <div className="hidden lg:block col-span-5 xl:col-span-5">
             <div className="sticky top-28">
               <div className="slide-up">
-                <ServicePreview />
+                <StorePreview />
               </div>
             </div>
           </div>

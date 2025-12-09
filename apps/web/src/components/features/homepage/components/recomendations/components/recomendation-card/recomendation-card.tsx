@@ -1,10 +1,7 @@
 import { StoreCard } from '@/components/ui/store-card';
-import { useFavoritesMutations } from '@/hooks/use-mutations/use-favorites-mutations';
-import { useUserQuery } from '@/hooks/use-query/use-user-query';
 import { IRecommendationStore } from '@/types/api/recomendation.types';
 import { formatStorePrice } from '@/utils/helpers/price.helper';
 import { useRouter } from 'next/navigation';
-import { useMemo } from 'react';
 
 interface RecommendationCardProps {
   store: IRecommendationStore;
@@ -12,14 +9,6 @@ interface RecommendationCardProps {
 
 export const RecommendationCard = ({ store }: RecommendationCardProps) => {
   const router = useRouter();
-  const { isLoggedIn, user } = useUserQuery();
-  const { createFavorite, deleteFavorite } = useFavoritesMutations();
-
-  const favorited = useMemo(() => {
-    return user?.favorites.find((favorite) => favorite.store.id === store.id);
-  }, [user?.favorites, store.id]);
-
-  const isFavorited = Boolean(favorited);
 
   const rating = Number(
     (
@@ -41,22 +30,6 @@ export const RecommendationCard = ({ store }: RecommendationCardProps) => {
     router.push(`/booking/${store.id}`);
   };
 
-  const handleFavoriteClick = (newIsFavorite: boolean) => {
-    if (!isLoggedIn || !user) return;
-
-    if (!newIsFavorite && favorited) {
-      deleteFavorite({
-        id: favorited.id,
-        user: { id: user.id },
-      });
-    } else if (newIsFavorite) {
-      createFavorite({
-        store: { id: store.id },
-        user: { id: user.id },
-      });
-    }
-  };
-
   return (
     <StoreCard
       store={{
@@ -71,11 +44,8 @@ export const RecommendationCard = ({ store }: RecommendationCardProps) => {
           id: s.id,
           name: s.name,
         })),
-        isFavorite: isFavorited,
       }}
       onClick={handleClick}
-      onFavoriteClick={handleFavoriteClick}
-      showFavoriteButton={isLoggedIn}
       showAvailabilityBadge={false}
       showServiceBadge
     />

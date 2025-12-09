@@ -4,6 +4,7 @@ import useSearchStore from '@/store/search/search.store';
 import { IStoreSearchListItem } from '@/store/search/search.types';
 import { cn } from '@repo/ui/index';
 import { motion } from 'motion/react';
+import { useSearchParams } from 'next/navigation';
 import { StoreCard } from '../store-card';
 
 interface VirtualizedResultsListProps {
@@ -16,16 +17,18 @@ export function VirtualizedResultsList({
   const selectedStore = useSearchStore((state) => state.selectedStore);
   const setSelectedStore = useSearchStore((state) => state.setSelectedStore);
 
+  const query = useSearchParams().get('query');
+
   return (
     <div className="space-y-6">
       {/* Results Header - Estilo Airbnb */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-2">
         <div>
           <p className="text-sm text-gray-600 mb-1">
-            {stores.length > 100 ? 'Mais de 100' : stores.length} serviços
+            {stores.length > 100 ? 'Mais de 100' : stores.length} lojas
           </p>
-          <h1 className="text-2xl md:text-[28px] font-semibold text-gray-900 leading-tight">
-            Profissionais próximos a você
+          <h1 className="text-2xl font-semibold text-gray-900 leading-tight">
+            Resultados para "{query}"
           </h1>
         </div>
       </div>

@@ -32,11 +32,6 @@ export function StoreCard({
     }
   };
 
-  const handleFavoriteClick = (isFavorite: boolean) => {
-    // TODO: Implementar persistência do favorito
-    console.log('Favorite:', isFavorite, store.id);
-  };
-
   return (
     <BaseStoreCard
       store={{
@@ -48,12 +43,9 @@ export function StoreCard({
         price: store.price,
         gallery: store.gallery,
         services: store.services,
-        isFavorite: store.isFavorite,
       }}
       isSelected={isSelected}
       onClick={handleClick}
-      onFavoriteClick={handleFavoriteClick}
-      showFavoriteButton
       showAvailabilityBadge
       showServiceBadge
     />

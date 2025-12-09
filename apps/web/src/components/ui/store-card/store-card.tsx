@@ -2,30 +2,28 @@
 
 import { ImageCarousel } from '@/components/ui/image-carousel';
 import { Badge } from '@repo/ui';
+import { cn } from '@repo/ui/index';
 import { Heart, MapPin, Star } from 'lucide-react';
 import { motion } from 'motion/react';
-import { useState } from 'react';
+import { useStoreCardFavorite } from './store-card.hook';
 import { StoreCardProps } from './store-card.types';
 
 export function StoreCard({
   store,
   isSelected = false,
   onClick,
-  onFavoriteClick,
-  showFavoriteButton = true,
   showAvailabilityBadge = true,
   showServiceBadge = true,
 }: StoreCardProps) {
-  const [isFavorite, setIsFavorite] = useState(store.isFavorite || false);
+  const { isLoggedIn, isFavorite, isAnimating, toggleFavorite } =
+    useStoreCardFavorite(store.id);
 
   const { name, rating, reviewCount, location, price, gallery, services } =
     store;
 
   const handleFavorite = (e: React.MouseEvent) => {
     e.stopPropagation();
-    const newValue = !isFavorite;
-    setIsFavorite(newValue);
-    onFavoriteClick?.(newValue);
+    toggleFavorite();
   };
 
   const handleClick = () => {
@@ -45,7 +43,10 @@ export function StoreCard({
       tabIndex={0}
       aria-label={`${name} - ${rating} estrelas, ${reviewCount} avaliações`}
       aria-pressed={isSelected}
-      className="group cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 rounded-xl"
+      className={cn(
+        'group cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 rounded-2xl p-3 -m-3 transition-colors duration-200',
+        isSelected && 'bg-gray-300/70',
+      )}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
       initial={{ opacity: 0 }}
@@ -64,14 +65,16 @@ export function StoreCard({
           aspectRatio={1}
         />
 
-        {/* Botão Favoritar - Estilo Airbnb */}
-        {showFavoriteButton && (
-          <button
+        {/* Botão Favoritar - Estilo Airbnb (só mostra se logado) */}
+        {isLoggedIn && (
+          <motion.button
             onClick={handleFavorite}
             aria-label={
               isFavorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos'
             }
             className="absolute top-3 right-3 z-20 p-2 rounded-full transition-transform hover:scale-110 active:scale-95"
+            animate={isAnimating ? { scale: [1, 1.3, 1] } : { scale: 1 }}
+            transition={{ duration: 0.6 }}
           >
             <Heart
               className={`h-6 w-6 drop-shadow-md transition-colors ${
@@ -80,7 +83,7 @@ export function StoreCard({
                   : 'fill-black/40 text-white stroke-[1.5]'
               }`}
             />
-          </button>
+          </motion.button>
         )}
 
         {/* Badge de Disponibilidade */}

@@ -35,10 +35,10 @@ export function CarouselSection<T>({
   showViewAll = true,
   onViewAllClick,
   viewAllText = 'Ver todos',
-  itemClassName = 'basis-[85%] sm:basis-[45%] md:basis-[32%] lg:basis-[24%] xl:basis-[19%]',
+  itemClassName = 'basis-[85%] sm:basis-[45%] md:basis-[32%] lg:basis-[24%] xl:basis-[13%]',
   showNavigation = true,
   loop = true,
-  containerClassName = 'px-4 w-full max-w-7xl md:px-6 mx-auto',
+  containerClassName = 'px-4 w-full md:px-6 mx-auto',
 }: CarouselSectionProps<T>) {
   return (
     <section className={containerClassName}>

@@ -19,7 +19,6 @@ export interface IStoreSearchListItem
   location: string;
   rating: number;
   reviewCount: number;
-  isFavorite?: boolean;
 }
 
 export interface ISearchStore {

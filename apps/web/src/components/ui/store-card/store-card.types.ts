@@ -7,7 +7,6 @@ export interface IStoreCardData {
   price: string;
   gallery: string[];
   services?: Array<{ id: string; name: string }>;
-  isFavorite?: boolean;
 }
 
 export interface StoreCardProps {
@@ -17,10 +16,6 @@ export interface StoreCardProps {
   isSelected?: boolean;
   /** Callback quando o card é clicado */
   onClick?: () => void;
-  /** Callback quando o botão de favoritar é clicado */
-  onFavoriteClick?: (isFavorite: boolean) => void;
-  /** Mostra o botão de favoritar */
-  showFavoriteButton?: boolean;
   /** Mostra o badge de disponibilidade */
   showAvailabilityBadge?: boolean;
   /** Mostra o badge do serviço principal */
