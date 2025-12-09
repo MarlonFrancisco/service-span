@@ -1,4 +1,4 @@
-import { useCategoryMutations } from '@/hooks/use-mutations/use-category-mutations/use-category-mutations.hook';
+import { useCategoryMutations } from '@/hooks/partner/use-category-mutations/use-category-mutations.hook';
 import { usePartnerStore, useServicesStore } from '@/store';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect } from 'react';

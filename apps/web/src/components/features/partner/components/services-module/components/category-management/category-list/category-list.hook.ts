@@ -1,4 +1,4 @@
-import { useCategoryMutations } from '@/hooks/use-mutations/use-category-mutations/use-category-mutations.hook';
+import { useCategoryMutations } from '@/hooks/partner/use-category-mutations/use-category-mutations.hook';
 import { usePartnerStore, useServicesStore } from '@/store';
 import { ICategory } from '@/types/api/service.types';
 import { useFormContext } from 'react-hook-form';

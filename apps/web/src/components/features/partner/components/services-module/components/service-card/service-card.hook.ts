@@ -1,4 +1,4 @@
-import { useServicesMutations } from '@/hooks/use-mutations/use-services-mutations/use-services-mutations.hook';
+import { useServicesMutations } from '@/hooks/partner/use-services-mutations/use-services-mutations.hook';
 import { usePartnerStore, useServicesStore } from '@/store';
 import { IService } from '@/types/api/service.types';
 

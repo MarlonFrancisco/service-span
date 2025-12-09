@@ -1,4 +1,4 @@
-import { useStoreMutations } from '@/hooks/use-mutations/use-store-mutations/use-store-mutations.hook';
+import { useStoreMutations } from '@/hooks/partner/store/use-store-mutations/use-store-mutations.hook';
 import { useStoresStore } from '@/store';
 import { IProfessional } from '@/types/api';
 import { useCallback } from 'react';

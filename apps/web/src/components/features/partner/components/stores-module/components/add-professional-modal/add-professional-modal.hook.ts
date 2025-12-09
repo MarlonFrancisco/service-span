@@ -1,6 +1,6 @@
-import { useStoreMutations } from '@/hooks/use-mutations/use-store-mutations/use-store-mutations.hook';
+import { useStoreMemberMutations } from '@/hooks/partner/store/use-store-member-mutations/use-store-member-mutations.hook';
 import { useServicesStore, useStoresStore } from '@/store';
-import { IUser } from '@/types/api';
+import { IProfessional, IUser } from '@/types/api';
 import { IService } from '@/types/api/service.types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useIsMobile } from '@repo/ui/index';
@@ -16,12 +16,8 @@ import {
 export const useAddProfessionalModal = () => {
   const { isAddProfessional, professional, setIsAddProfessional } =
     useStoresStore();
-  const {
-    createStoreMember,
-    updateStoreMember,
-    isCreatingStoreMember,
-    isUpdatingStoreMember,
-  } = useStoreMutations();
+  const { createStoreMemberMutation, updateStoreMemberMutation } =
+    useStoreMemberMutations();
 
   const storeForm = useFormContext<TStoreFormSchema>();
 
@@ -69,7 +65,9 @@ export const useAddProfessionalModal = () => {
     const asyncFn = async () => {
       const data = form.getValues();
 
-      const fn = isEditing ? updateStoreMember : createStoreMember;
+      const fn = isEditing
+        ? updateStoreMemberMutation.mutate
+        : createStoreMemberMutation.mutate;
 
       fn(
         {
@@ -84,14 +82,12 @@ export const useAddProfessionalModal = () => {
           },
         },
         {
-          onSuccess: (professional) => {
+          onSuccess: (prof: IProfessional) => {
             const oldProfessionals = storeForm.getValues('storeMembers');
 
             const professionals = isEditing
-              ? oldProfessionals.map((p) =>
-                  p.id === professional.id ? professional : p,
-                )
-              : [...oldProfessionals, professional];
+              ? oldProfessionals.map((p) => (p.id === prof.id ? prof : p))
+              : [...oldProfessionals, prof];
 
             storeForm.setValue('storeMembers', professionals);
 
@@ -110,8 +106,8 @@ export const useAddProfessionalModal = () => {
   }, [
     form,
     storeForm,
-    createStoreMember,
-    updateStoreMember,
+    createStoreMemberMutation,
+    updateStoreMemberMutation,
     isEditing,
     setIsAddProfessional,
   ]);
@@ -128,7 +124,9 @@ export const useAddProfessionalModal = () => {
     isMobile,
     services,
     selectedServices,
-    isLoading: isCreatingStoreMember || isUpdatingStoreMember,
+    isLoading:
+      createStoreMemberMutation.isPending ||
+      updateStoreMemberMutation.isPending,
     addService,
     removeService,
     handleSubmit,

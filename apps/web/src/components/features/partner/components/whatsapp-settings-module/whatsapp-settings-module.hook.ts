@@ -1,4 +1,4 @@
-import { useWhatsappMutation } from '@/hooks/use-mutations/use-whatsapp-mutations';
+import { useWhatsappMutation } from '@/hooks/partner';
 import { useWhatsappQuery } from '@/hooks/use-query/use-whatsapp-query';
 import { usePartnerStore } from '@/store';
 import { zodResolver } from '@hookform/resolvers/zod';

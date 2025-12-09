@@ -1,4 +1,4 @@
-import { useStoreMutations } from '@/hooks/use-mutations/use-store-mutations/use-store-mutations.hook';
+import { useStoreMutations } from '@/hooks/partner/store/use-store-mutations/use-store-mutations.hook';
 import { useStoresStore } from '@/store';
 import {
   Badge,
@@ -30,7 +30,7 @@ export const StoreDetailsDrawer = () => {
     setViewDetailsStore,
     setIsAddModalOpen,
   } = useStoresStore();
-  const { deleteStore } = useStoreMutations();
+  const { deleteStoreMutation } = useStoreMutations();
 
   if (!store?.id) return null;
 
@@ -181,7 +181,7 @@ export const StoreDetailsDrawer = () => {
             <Button
               variant="outline"
               onClick={() => {
-                deleteStore(store.id!);
+                deleteStoreMutation.mutate(store.id!);
               }}
               className="min-h-[48px] text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200"
             >

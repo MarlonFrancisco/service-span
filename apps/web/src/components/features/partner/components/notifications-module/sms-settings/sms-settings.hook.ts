@@ -1,4 +1,4 @@
-import { useNotificationsMutations } from '@/hooks/use-mutations/use-notifications-mutations/use-notifications-mutations.hook';
+import { useNotificationsMutations } from '@/hooks/partner/use-notifications-mutations/use-notifications-mutations.hook';
 import { useNotificationsQuery } from '@/hooks/use-query/use-notifications-query/use-notifications-query.hook';
 import { usePartnerStore } from '@/store';
 import { zodResolver } from '@hookform/resolvers/zod';

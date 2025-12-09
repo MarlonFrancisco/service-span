@@ -1,4 +1,4 @@
-import { useStoreMutations } from '@/hooks/use-mutations/use-store-mutations/use-store-mutations.hook';
+import { useStoreMutations } from '@/hooks/partner/store/use-store-mutations/use-store-mutations.hook';
 import { useStoresStore } from '@/store/admin/stores';
 import { IStore } from '@/types/api/stores.types';
 import { useCallback } from 'react';
@@ -6,27 +6,26 @@ import { useCallback } from 'react';
 export const useStoreCard = (store: IStore) => {
   const { setIsAddModalOpen, setViewDetailsStore } = useStoresStore();
 
-  const { updateStore, deleteStore, isUpdatingStore, isDeletingStore } =
-    useStoreMutations();
+  const { updateStoreMutation, deleteStoreMutation } = useStoreMutations();
 
   const handleEditStore = useCallback(async () => {
     setIsAddModalOpen({ isOpen: true, store });
   }, [setIsAddModalOpen, store]);
 
   const handleToggleStatus = useCallback(() => {
-    updateStore({ id: store.id!, isActive: !store.isActive });
-  }, [updateStore, store]);
+    updateStoreMutation.mutate({ id: store.id!, isActive: !store.isActive });
+  }, [updateStoreMutation, store]);
 
   const handleDeleteStore = useCallback(async () => {
-    deleteStore(store.id!);
-  }, [deleteStore, store]);
+    deleteStoreMutation.mutate(store.id!);
+  }, [deleteStoreMutation, store]);
 
   const handleViewDetails = useCallback(() => {
     setViewDetailsStore({ isOpen: true, store });
   }, [setViewDetailsStore, store]);
 
   return {
-    isLoading: isUpdatingStore || isDeletingStore,
+    isLoading: updateStoreMutation.isPending || deleteStoreMutation.isPending,
     handleEditStore,
     handleToggleStatus,
     handleDeleteStore,

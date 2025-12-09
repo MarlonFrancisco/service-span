@@ -1,6 +1,6 @@
 'use client';
 
-import { useSubscriptionMutations } from '@/hooks/use-mutations/use-subscription-mutations';
+import { useSubscriptionMutations } from '@/hooks';
 import { useSubscriptionQuery } from '@/hooks/use-query/use-subscription-query';
 import { useCallback, useMemo, useState } from 'react';
 

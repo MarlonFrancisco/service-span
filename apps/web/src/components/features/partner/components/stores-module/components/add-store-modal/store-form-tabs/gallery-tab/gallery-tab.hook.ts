@@ -1,17 +1,18 @@
-import { useStoreMutations } from '@/hooks/use-mutations/use-store-mutations/use-store-mutations.hook';
+import { useGalleryMutations } from '@/hooks/partner/store/use-gallery-mutations/use-gallery-mutations.hook';
 import { IStoreGallery } from '@/types/api/stores.types';
 import { useFormContext } from 'react-hook-form';
 import { TStoreFormSchema } from '../store-form.schema';
 
 export const useGalleryTab = () => {
-  const { createImage, deleteImage, updateMainImage } = useStoreMutations();
+  const { createImageMutation, deleteImageMutation, updateMainImageMutation } =
+    useGalleryMutations();
   const form = useFormContext<TStoreFormSchema>();
 
   const gallery = form.watch('gallery');
 
   const onGalleryChange = async (images: IStoreGallery[]) => {
     images.forEach((image) =>
-      createImage(
+      createImageMutation.mutate(
         {
           storeId: form.getValues('id')!,
           image: { url: image.url, isMain: image.isMain },
@@ -26,7 +27,7 @@ export const useGalleryTab = () => {
   };
 
   const onChangeMainImage = async (image: IStoreGallery) => {
-    await updateMainImage(
+    await updateMainImageMutation.mutate(
       {
         storeId: form.getValues('id')!,
         imageId: image.id,
@@ -46,7 +47,7 @@ export const useGalleryTab = () => {
   };
 
   const onDeleteImage = (imageId: string) => {
-    deleteImage(
+    deleteImageMutation.mutate(
       { storeId: form.getValues('id')!, imageId },
       {
         onSuccess: () => {

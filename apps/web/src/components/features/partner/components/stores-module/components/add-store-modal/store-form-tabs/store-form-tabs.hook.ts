@@ -1,4 +1,4 @@
-import { useStoreMutations } from '@/hooks/use-mutations/use-store-mutations/use-store-mutations.hook';
+import { useStoreMutations } from '@/hooks/partner/store/use-store-mutations/use-store-mutations.hook';
 import { useStoresStore } from '@/store/admin/stores';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useCallback, useEffect } from 'react';
