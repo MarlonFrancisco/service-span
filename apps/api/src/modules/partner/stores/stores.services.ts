@@ -1,5 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { SearchService } from 'src/modules/search/search.service';
+import {
+  availableToIndexStore,
+  mountStoreSearchIndex,
+} from 'src/utils/helpers/search.helpers';
 import { FindOptionsSelect, Repository } from 'typeorm';
 import { CreateStoreDto } from './dto/create-store.dto';
 import { UpdateStoreDto } from './dto/update-store.dto';
@@ -10,11 +15,13 @@ export class StoresService {
   constructor(
     @InjectRepository(Store)
     private readonly storesRepository: Repository<Store>,
+    private readonly searchService: SearchService,
   ) {}
 
   async create(storeDto: CreateStoreDto): Promise<Store> {
     const store = this.storesRepository.create(storeDto);
     const savedStore = await this.storesRepository.save(store);
+
     return {
       ...savedStore,
       gallery: [],
@@ -57,16 +64,37 @@ export class StoresService {
 
   async update(id: string, storeDto: UpdateStoreDto): Promise<UpdateStoreDto> {
     await this.storesRepository.update(id, storeDto);
+
+    void this.findOne(id, {
+      relations: [
+        'gallery',
+        'storeMembers',
+        'services',
+        'reviews',
+        'owner',
+        'categories',
+      ],
+    }).then((store) => {
+      if (availableToIndexStore(store)) {
+        const { content, metadata } = mountStoreSearchIndex(store);
+
+        void this.searchService.indexStore(id, content, metadata);
+      } else {
+        void this.searchService.deleteStoreIndex(id);
+      }
+    });
+
     return storeDto;
   }
 
   async delete(id: string): Promise<void> {
+    void this.searchService.deleteStoreIndex(id);
     await this.storesRepository.delete(id);
   }
 
   async getActiveStores(userId: string): Promise<Store[]> {
     return this.storesRepository.find({
-      where: { owner: { id: userId } },
+      where: { owner: { id: userId }, isActive: true },
       relations: ['storeMembers'],
     });
   }
