@@ -1,4 +1,4 @@
-import { useScheduleMutations } from '@/hooks/use-mutations/use-schedule-mutations';
+import { useScheduleMutations } from '@/hooks';
 import { useUserQuery } from '@/hooks/use-query/use-user-query';
 import { IAppointment } from '@/types/api/schedule.types';
 import { IUser } from '@/types/api/users.types';

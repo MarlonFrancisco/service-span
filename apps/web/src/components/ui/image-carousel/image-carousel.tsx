@@ -12,10 +12,11 @@ import {
   CarouselPrevious,
   type CarouselApi,
 } from '@repo/ui';
+import { cn } from '@repo/ui/index';
 import { Maximize2 } from 'lucide-react';
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 
-interface ImageCarouselProps {
+export interface ImageCarouselProps {
   images: string[];
   alt: string;
   className?: string;
@@ -36,12 +37,19 @@ export function ImageCarousel({
 }: ImageCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFullscreenOpen, setIsFullscreenOpen] = useState(false);
+  const carouselApiRef = useRef<CarouselApi | null>(null);
 
   const handleSelectChange = useCallback((api: CarouselApi) => {
     if (api) {
       setCurrentIndex(api.selectedScrollSnap());
     }
   }, []);
+
+  const goToSlide = (index: number) => {
+    if (carouselApiRef.current) {
+      carouselApiRef.current.scrollTo(index);
+    }
+  };
 
   if (!images || images.length === 0) {
     return (
@@ -53,10 +61,38 @@ export function ImageCarousel({
     );
   }
 
+  // Limitar a exibição de dots (estilo Airbnb mostra no máximo 5)
+  const maxDots = 5;
+  const totalImages = images.length;
+  const showDots = totalImages > 1;
+
+  // Calcular quais dots mostrar (sliding window como Airbnb)
+  const getVisibleDots = () => {
+    if (totalImages <= maxDots) {
+      return images.map((_, i) => i);
+    }
+
+    const halfMax = Math.floor(maxDots / 2);
+    let start = currentIndex - halfMax;
+    let end = currentIndex + halfMax;
+
+    if (start < 0) {
+      start = 0;
+      end = maxDots - 1;
+    } else if (end >= totalImages) {
+      end = totalImages - 1;
+      start = totalImages - maxDots;
+    }
+
+    return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+  };
+
+  const visibleDots = getVisibleDots();
+
   return (
     <>
       <div
-        className={`relative ${rounded ? 'rounded-xl' : ''} ${className}`}
+        className={cn('relative', rounded && 'rounded-xl', className)}
         style={{ overflow: 'hidden' }}
       >
         <Carousel
@@ -65,6 +101,7 @@ export function ImageCarousel({
             loop: images.length > 1,
           }}
           setApi={(api: CarouselApi) => {
+            carouselApiRef.current = api;
             if (api) {
               api.on('select', () => handleSelectChange(api));
             }
@@ -82,6 +119,7 @@ export function ImageCarousel({
                       fill
                       sizes="(min-width: 728px) 350px, 150px"
                       loading="lazy"
+                      className="object-cover"
                     />
                   </AspectRatio>
                 </div>
@@ -89,11 +127,27 @@ export function ImageCarousel({
             ))}
           </CarouselContent>
 
-          {/* Navigation Buttons */}
+          {/* Navigation Buttons - Estilo Airbnb */}
           {images.length > 1 && (
             <>
-              <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 p-0 bg-white/80 hover:bg-white shadow-sm rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
-              <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 p-0 bg-white/80 hover:bg-white shadow-sm rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
+              <CarouselPrevious
+                className={cn(
+                  'absolute left-2 top-1/2 -translate-y-1/2',
+                  'w-8 h-8 p-0 bg-white hover:bg-white hover:scale-105',
+                  'shadow-md rounded-full border border-gray-200',
+                  'opacity-0 group-hover:opacity-100 transition-all duration-200',
+                  'disabled:opacity-0',
+                )}
+              />
+              <CarouselNext
+                className={cn(
+                  'absolute right-2 top-1/2 -translate-y-1/2',
+                  'w-8 h-8 p-0 bg-white hover:bg-white hover:scale-105',
+                  'shadow-md rounded-full border border-gray-200',
+                  'opacity-0 group-hover:opacity-100 transition-all duration-200',
+                  'disabled:opacity-0',
+                )}
+              />
             </>
           )}
 
@@ -119,27 +173,36 @@ export function ImageCarousel({
             </button>
           )}
 
-          {/* Dot Indicators */}
-          {images.length > 1 && images.length <= 10 && (
-            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2 z-10">
-              {images.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => {
-                    // Navigate to specific slide
-                    const carousel = document.querySelector('[role="region"]');
-                    if (carousel) {
-                      carousel.scrollLeft =
-                        (carousel.scrollWidth / images.length) * index;
-                    }
-                  }}
-                  className={`w-2 h-2 rounded-full transition-all ${
-                    index === currentIndex
-                      ? 'bg-white'
-                      : 'bg-white/50 hover:bg-white/70'
-                  }`}
-                />
-              ))}
+          {/* Dot Indicators - Estilo Airbnb Elegante */}
+          {showDots && (
+            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-[6px] z-10">
+              {visibleDots.map((dotIndex) => {
+                const isActive = dotIndex === currentIndex;
+                const isEdge =
+                  totalImages > maxDots &&
+                  (dotIndex === visibleDots[0] ||
+                    dotIndex === visibleDots[visibleDots.length - 1]);
+                const isNotAtEnd =
+                  isEdge && dotIndex !== 0 && dotIndex !== totalImages - 1;
+
+                return (
+                  <button
+                    key={dotIndex}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      goToSlide(dotIndex);
+                    }}
+                    aria-label={`Ir para imagem ${dotIndex + 1}`}
+                    className={cn(
+                      'rounded-full transition-all duration-200',
+                      isActive
+                        ? 'w-[7px] h-[7px] bg-white'
+                        : 'w-[6px] h-[6px] bg-white/60 hover:bg-white/80',
+                      isNotAtEnd && 'w-[5px] h-[5px] opacity-70',
+                    )}
+                  />
+                );
+              })}
             </div>
           )}
         </Carousel>

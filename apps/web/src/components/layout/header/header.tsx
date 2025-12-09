@@ -90,7 +90,7 @@ export const Header = ({
         </motion.div>
       </header>
 
-      <div className="rounded-tl-[40px] rounded-tr-[40px] bg-background pt-40 md:pt-50">
+      <div className="rounded-tl-[40px] rounded-tr-[40px] bg-background pt-40 md:pt-40">
         {children}
       </div>
     </div>

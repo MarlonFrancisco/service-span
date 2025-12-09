@@ -19,9 +19,10 @@ export function SearchResults() {
 
   return (
     <Header showSearchBar logoProps={{ className: 'hidden lg:block' }}>
-      <div className="max-w-8xl h-full mx-auto px-3 sm:px-6 md:px-8 lg:px-12 py-5">
+      <div className="max-w-8xl h-full mx-auto px-4 sm:px-6 md:px-10 xl:px-12">
+        {/* Estado vazio */}
         <NotFound
-          className={cn('hidden', !hasResults && 'flex')}
+          className={cn('hidden py-20', !hasResults && 'flex')}
           icon={Search}
           title="Nenhum resultado encontrado"
           description="Tente novamente com outros termos de busca."
@@ -29,21 +30,20 @@ export function SearchResults() {
           onAction={() => router.push('/')}
         />
 
+        {/* Layout com Preview */}
         <div
           className={cn(
-            'grid grid-cols-12 gap-0 lg:gap-12 min-h-[calc(100vh-180px)]',
+            'grid grid-cols-12 gap-0 lg:gap-10 min-h-[calc(100vh-180px)]',
             !hasResults && 'hidden',
           )}
         >
-          {/* Results Column */}
-          <div className="col-span-12 lg:col-span-7">
-            <div>
-              <ResultsList />
-            </div>
+          {/* Coluna de Resultados */}
+          <div className="col-span-12 lg:col-span-7 xl:col-span-7">
+            <ResultsList />
           </div>
 
-          {/* Preview Column */}
-          <div className="hidden lg:block col-span-5">
+          {/* Coluna de Preview - Desktop */}
+          <div className="hidden lg:block col-span-5 xl:col-span-5">
             <div className="sticky top-28">
               <div className="slide-up">
                 <ServicePreview />

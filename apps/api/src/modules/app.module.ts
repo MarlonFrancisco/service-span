@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 
 import { AuthModule } from './auth';
+import { CacheModule } from './cache';
 import { DatabaseModule } from './database';
 import { NotificationModule } from './notification';
 import { PartnerRoutesGuard } from './partner/guards';
@@ -21,6 +22,7 @@ import { WhatsappBotModule } from './whatsapp-bot';
       isGlobal: true,
       envFilePath: ['.env.local', '.env'],
     }),
+    CacheModule,
     AuthModule,
     DatabaseModule,
     SubscriptionModule,
