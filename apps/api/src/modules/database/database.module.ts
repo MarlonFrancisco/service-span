@@ -14,7 +14,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
           entities: [__dirname + '/../**/*.entity{.ts,.js}'],
           synchronize: configService.get<boolean>('DB_SYNCHRONIZE', false),
           logging: configService.get<boolean>('DB_LOGGING', false),
-          ssl: { rejectUnauthorized: false },
+          ssl: false,
           autoLoadEntities: true,
           extra: {
             max: 5,
