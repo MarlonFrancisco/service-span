@@ -35,6 +35,9 @@ export enum BotState {
   CONFIRM_BOOKING = 'CONFIRM_BOOKING',
 }
 
+// TTL de 15 minutos em milissegundos (cache-manager v5+ usa ms)
+const SESSION_TTL_MS = 15 * 60 * 1000; // 900000ms = 15 minutos
+
 @Injectable()
 export class WhatsappBotService {
   private readonly logger = new Logger(WhatsappBotService.name);
@@ -46,7 +49,7 @@ export class WhatsappBotService {
     private readonly serviceService: ServiceService,
     private readonly storeMemberService: StoreMemberService,
     private readonly scheduleService: ScheduleService,
-    @Inject(CACHE_MANAGER) private readonly redis: Cache,
+    @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
   ) {}
 
   async handleIncomingMessage(
@@ -62,7 +65,8 @@ export class WhatsappBotService {
     if (!text) return;
 
     const sessionKey = `whatsapp:session:${from}`;
-    const state = (await this.redis.get<BotState>(sessionKey)) || BotState.MENU;
+    const state =
+      (await this.cacheManager.get<BotState>(sessionKey)) || BotState.MENU;
 
     this.logger.log(`Processing message from ${from} in state ${state}`);
 
@@ -107,10 +111,10 @@ export class WhatsappBotService {
         accessToken: this.config.accessToken,
       });
 
-      await this.redis.set(
+      await this.cacheManager.set(
         `whatsapp:session:${from}`,
         BotState.SELECT_SERVICE,
-        900, // 15 mins TTL
+        SESSION_TTL_MS,
       );
     } else {
       await this.sendMenu(from);
@@ -130,14 +134,14 @@ export class WhatsappBotService {
         );
       }
 
-      await this.redis.set(
+      await this.cacheManager.set(
         `whatsapp:session:${from}:service`,
         JSON.stringify({
           id: service.id,
           name: service.name,
           duration: service.duration,
         }),
-        900,
+        SESSION_TTL_MS,
       );
 
       const storeMembers = await this.storeMemberService.findStoreMembers(
@@ -149,10 +153,10 @@ export class WhatsappBotService {
       );
 
       if (storeMembersWithService.length > 0) {
-        await this.redis.set(
+        await this.cacheManager.set(
           `whatsapp:session:${from}`,
           BotState.SELECT_STORE_MEMBER,
-          900,
+          SESSION_TTL_MS,
         );
 
         await this.whatsappService.sendInteractiveList({
@@ -207,7 +211,7 @@ export class WhatsappBotService {
       );
     }
 
-    await this.redis.set(
+    await this.cacheManager.set(
       `whatsapp:session:${from}:storeMember`,
       JSON.stringify({
         id: storeMember.id,
@@ -218,10 +222,14 @@ export class WhatsappBotService {
         blockedTimes: storeMember.blockedTimes,
         schedules: storeMember.schedules,
       }),
-      900,
+      SESSION_TTL_MS,
     );
 
-    await this.redis.set(`whatsapp:session:${from}`, BotState.SELECT_DATE, 900);
+    await this.cacheManager.set(
+      `whatsapp:session:${from}`,
+      BotState.SELECT_DATE,
+      SESSION_TTL_MS,
+    );
 
     await this.whatsappService.sendText(
       this.config.phoneNumberId,
@@ -244,14 +252,14 @@ export class WhatsappBotService {
       return;
     }
 
-    await this.redis.set(
+    await this.cacheManager.set(
       `whatsapp:session:${from}:date`,
       result.date.toISOString(),
-      900,
+      SESSION_TTL_MS,
     );
 
     // Busca storeMember selecionado do Redis (já contém schedules e blockedTimes)
-    const storeMember = await this.redis.get<StoreMember>(
+    const storeMember = await this.cacheManager.get<StoreMember>(
       `whatsapp:session:${from}:storeMember`,
     );
 
@@ -287,13 +295,17 @@ export class WhatsappBotService {
     );
 
     // Armazena os slots disponíveis no Redis para validação posterior
-    await this.redis.set(
+    await this.cacheManager.set(
       `whatsapp:session:${from}:availableSlots`,
       JSON.stringify(availableSlots),
-      900,
+      SESSION_TTL_MS,
     );
 
-    await this.redis.set(`whatsapp:session:${from}`, BotState.SELECT_TIME, 900);
+    await this.cacheManager.set(
+      `whatsapp:session:${from}`,
+      BotState.SELECT_TIME,
+      SESSION_TTL_MS,
+    );
 
     // Envia mensagem com horários disponíveis
     const message = formatTimeSlotsForMessage(availableSlots);
@@ -306,7 +318,7 @@ export class WhatsappBotService {
   }
 
   private async handleTimeState(from: string, text: string) {
-    const availableSlots = await this.redis.get<string[]>(
+    const availableSlots = await this.cacheManager.get<string[]>(
       `whatsapp:session:${from}:availableSlots`,
     );
 
@@ -351,22 +363,26 @@ export class WhatsappBotService {
     }
 
     // Salva o horário no Redis
-    await this.redis.set(`whatsapp:session:${from}:time`, selectedTime, 900);
+    await this.cacheManager.set(
+      `whatsapp:session:${from}:time`,
+      selectedTime,
+      SESSION_TTL_MS,
+    );
 
-    await this.redis.set(
+    await this.cacheManager.set(
       `whatsapp:session:${from}`,
       BotState.CONFIRM_BOOKING,
-      900,
+      SESSION_TTL_MS,
     );
 
     // Recupera informações para resumo
-    const service = await this.redis.get<Service>(
+    const service = await this.cacheManager.get<Service>(
       `whatsapp:session:${from}:service`,
     );
-    const storeMember = await this.redis.get<StoreMember>(
+    const storeMember = await this.cacheManager.get<StoreMember>(
       `whatsapp:session:${from}:storeMember`,
     );
-    const dateData = await this.redis.get<string>(
+    const dateData = await this.cacheManager.get<string>(
       `whatsapp:session:${from}:date`,
     );
 
@@ -435,16 +451,16 @@ export class WhatsappBotService {
     }
 
     // Recupera todas as informações da sessão
-    const service = await this.redis.get<Service>(
+    const service = await this.cacheManager.get<Service>(
       `whatsapp:session:${from}:service`,
     );
-    const storeMember = await this.redis.get<StoreMember>(
+    const storeMember = await this.cacheManager.get<StoreMember>(
       `whatsapp:session:${from}:storeMember`,
     );
-    const dateData = await this.redis.get<string>(
+    const dateData = await this.cacheManager.get<string>(
       `whatsapp:session:${from}:date`,
     );
-    const timeData = await this.redis.get<string>(
+    const timeData = await this.cacheManager.get<string>(
       `whatsapp:session:${from}:time`,
     );
 
@@ -525,12 +541,12 @@ export class WhatsappBotService {
    * Limpa todas as chaves da sessão do Redis para um usuário
    */
   private async clearSession(from: string): Promise<void> {
-    void this.redis.del(`whatsapp:session:${from}`);
-    void this.redis.del(`whatsapp:session:${from}:service`);
-    void this.redis.del(`whatsapp:session:${from}:storeMember`);
-    void this.redis.del(`whatsapp:session:${from}:date`);
-    void this.redis.del(`whatsapp:session:${from}:time`);
-    void this.redis.del(`whatsapp:session:${from}:availableSlots`);
+    void this.cacheManager.del(`whatsapp:session:${from}`);
+    void this.cacheManager.del(`whatsapp:session:${from}:service`);
+    void this.cacheManager.del(`whatsapp:session:${from}:storeMember`);
+    void this.cacheManager.del(`whatsapp:session:${from}:date`);
+    void this.cacheManager.del(`whatsapp:session:${from}:time`);
+    void this.cacheManager.del(`whatsapp:session:${from}:availableSlots`);
   }
 
   private async sendMenu(from: string) {

@@ -33,10 +33,7 @@ import { redisStore } from 'cache-manager-ioredis-yet';
             port: parseInt(url.port) || 6379,
             password: url.password || undefined,
             username: url.username || undefined,
-            db: url.pathname ? parseInt(url.pathname.substring(1)) : 0,
-            lazyConnect: false,
-            enableOfflineQueue: false,
-            maxRetriesPerRequest: 3,
+            db: 0,
           };
 
           logger.log(
