@@ -65,23 +65,62 @@ export class NotificationService {
 
   async invoicePaid(to: string, invoiceId: string, currentPeriodEnd: string) {
     const template = await fs.readFile(
-      path.join(process.cwd(), 'src', 'templates', 'invoice-paid.hbs'),
+      path.join(__dirname, '../../templates', 'invoice-paid.hbs'),
       'utf8',
     );
 
-    const body = handlebars.compile(template)({ invoiceId, currentPeriodEnd });
+    const body = handlebars.compile(template)({
+      invoiceId,
+      currentPeriodEnd: new Date(currentPeriodEnd).toLocaleDateString('pt-BR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+      }),
+      currentYear: new Date().getFullYear(),
+    });
 
     return this.sendEmail(to, 'Pagamento Recebido - Assinatura Ativa', body);
   }
 
   async paymentFailed(to: string, invoiceId: string, attemptCount: number) {
     const template = await fs.readFile(
-      path.join(process.cwd(), 'src', 'templates', 'payment-failed.hbs'),
+      path.join(__dirname, '../../templates', 'payment-failed.hbs'),
       'utf8',
     );
 
-    const body = handlebars.compile(template)({ invoiceId, attemptCount });
+    const body = handlebars.compile(template)({
+      invoiceId,
+      attemptCount,
+      currentYear: new Date().getFullYear(),
+    });
 
     return this.sendEmail(to, 'Pagamento Falhou - Assinatura Inativa', body);
+  }
+
+  async scheduleConfirmation(
+    to: string,
+    data: {
+      storeName: string;
+      customerName: string;
+      serviceName: string;
+      professionalName: string;
+      scheduleDate: string;
+      price: string;
+      storeLocation: string;
+      storeAddress: string;
+      calendarLink: string;
+      rescheduleLink: string;
+      storePhone: string;
+      currentYear: number;
+    },
+  ) {
+    const template = await fs.readFile(
+      path.join(__dirname, '../../templates', 'schedule-confirmed.hbs'),
+      'utf8',
+    );
+
+    const body = handlebars.compile(template)(data);
+
+    return this.sendEmail(to, 'Agendamento Confirmado', body);
   }
 }

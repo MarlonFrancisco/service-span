@@ -1,19 +1,250 @@
-<html>
+<html lang='pt-BR'>
   <head>
     <meta charset='UTF-8' />
-    <title>Payment Received</title>
-    <style>
-      body { font-family: Arial, sans-serif; line-height: 1.6; }
+    <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+    <meta http-equiv='X-UA-Compatible' content='IE=edge' />
+    <title>Pagamento Confirmado</title>
+    <!--[if mso]>
+  <noscript>
+    <xml>
+      <o:OfficeDocumentSettings>
+        <o:PixelsPerInch>96</o:PixelsPerInch>
+      </o:OfficeDocumentSettings>
+    </xml>
+  </noscript>
+  <![endif]-->
+    <style type='text/css'>
+      body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust:
+      100%; } table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; } img {
+      -ms-interpolation-mode: bicubic; border: 0; height: auto; line-height:
+      100%; outline: none; text-decoration: none; } body { height: 100%
+      !important; margin: 0 !important; padding: 0 !important; width: 100%
+      !important; } a[x-apple-data-detectors] { color: inherit !important;
+      text-decoration: none !important; font-size: inherit !important;
+      font-family: inherit !important; font-weight: inherit !important;
+      line-height: inherit !important; } @media only screen and (max-width:
+      600px) { .mobile-padding { padding: 20px !important; } .mobile-stack {
+      display: block !important; width: 100% !important; } }
     </style>
   </head>
-  <body>
-    <div style='font-family: Arial, sans-serif; line-height: 1.6;'>
-      <h1 style='color: #333;'>Payment Received</h1>
-      <p>Your subscription payment has been processed successfully.</p>
-      <p><strong>Invoice ID:</strong> {{invoiceId}}</p>
-      <p><strong>Next Billing Date:</strong> {{currentPeriodEnd}}</p>
-      <p>Your subscription is active and you have full access to all features.</p>
-      <p>If you have any questions, please contact our support team.</p>
-    </div>
+  <body style='margin: 0; padding: 0; background-color: #f4f4f4;'>
+    <!-- Wrapper Table -->
+    <table
+      role='presentation'
+      cellpadding='0'
+      cellspacing='0'
+      border='0'
+      width='100%'
+      style='background-color: #f4f4f4;'
+    >
+      <tr>
+        <td align='center' style='padding: 40px 20px;'>
+          <!-- Email Container -->
+          <table
+            role='presentation'
+            cellpadding='0'
+            cellspacing='0'
+            border='0'
+            width='600'
+            style='max-width: 600px; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);'
+          >
+
+            <!-- Header -->
+            <tr>
+              <td
+                align='center'
+                style='background-color: #1e293b; padding: 40px 20px;'
+              >
+                <!-- Icon -->
+                <table
+                  role='presentation'
+                  cellpadding='0'
+                  cellspacing='0'
+                  border='0'
+                >
+                  <tr>
+                    <td align='center' style='padding-bottom: 20px;'>
+                      <table
+                        role='presentation'
+                        cellpadding='0'
+                        cellspacing='0'
+                        border='0'
+                        style='background-color: #ffffff; border-radius: 4px; overflow: hidden;'
+                      >
+                        <tr>
+                          <td
+                            align='center'
+                            style='background-color: #10b981; padding: 2px 8px;'
+                          >
+                            <span
+                              style='font-family: Arial, sans-serif; font-size: 10px; color: #ffffff; text-transform: uppercase;'
+                            >PAGO</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td
+                            align='center'
+                            style='padding: 4px 10px 6px 10px;'
+                          >
+                            <span
+                              style='font-family: Arial, sans-serif; font-size: 18px; font-weight: bold; color: #1e293b;'
+                            >✓</span>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+                <h1
+                  style='margin: 0; font-family: Arial, sans-serif; font-size: 28px; font-weight: bold; color: #ffffff;'
+                >Pagamento Recebido!</h1>
+                <p
+                  style='margin: 10px 0 0 0; font-family: Arial, sans-serif; font-size: 16px; color: #5eead4;'
+                >ServiceSnap</p>
+              </td>
+            </tr>
+
+            <!-- Body Content -->
+            <tr>
+              <td style='padding: 40px 40px 30px 40px;' class='mobile-padding'>
+                <!-- Greeting -->
+                <p
+                  style='margin: 0 0 30px 0; font-family: Arial, sans-serif; font-size: 18px; color: #374151; text-align: center;'
+                >
+                  Olá, seu pagamento foi processado com sucesso e sua assinatura
+                  está ativa.
+                </p>
+
+                <!-- Details Card -->
+                <table
+                  role='presentation'
+                  cellpadding='0'
+                  cellspacing='0'
+                  border='0'
+                  width='100%'
+                  style='border: 1px solid #e5e7eb; border-radius: 8px;'
+                >
+                  <tr>
+                    <td style='padding: 25px;'>
+                      <!-- Row 1 -->
+                      <table
+                        role='presentation'
+                        cellpadding='0'
+                        cellspacing='0'
+                        border='0'
+                        width='100%'
+                      >
+                        <tr>
+                          <td
+                            width='50%'
+                            valign='top'
+                            class='mobile-stack'
+                            style='padding-bottom: 20px;'
+                          >
+                            <p
+                              style='margin: 0 0 5px 0; font-family: Arial, sans-serif; font-size: 14px; color: #6b7280;'
+                            >ID da Fatura:</p>
+                            <p
+                              style='margin: 0; font-family: Arial, sans-serif; font-size: 16px; font-weight: bold; color: #1e293b;'
+                            >{{invoiceId}}</p>
+                          </td>
+                          <td
+                            width='50%'
+                            valign='top'
+                            class='mobile-stack'
+                            style='padding-bottom: 20px;'
+                          >
+                            <p
+                              style='margin: 0 0 5px 0; font-family: Arial, sans-serif; font-size: 14px; color: #6b7280;'
+                            >Próxima Cobrança:</p>
+                            <p
+                              style='margin: 0; font-family: Arial, sans-serif; font-size: 16px; font-weight: bold; color: #1e293b;'
+                            >{{currentPeriodEnd}}</p>
+                          </td>
+                        </tr>
+                      </table>
+
+                      <!-- Status Row -->
+                      <table
+                        role='presentation'
+                        cellpadding='0'
+                        cellspacing='0'
+                        border='0'
+                        width='100%'
+                      >
+                        <tr>
+                          <td
+                            style='border-top: 1px solid #e5e7eb; padding-top: 20px;'
+                          >
+                            <p
+                              style='margin: 0 0 5px 0; font-family: Arial, sans-serif; font-size: 14px; color: #6b7280;'
+                            >Status:</p>
+                            <p
+                              style='margin: 0; font-family: Arial, sans-serif; font-size: 16px; font-weight: bold; color: #10b981;'
+                            >Ativo</p>
+                          </td>
+                        </tr>
+                      </table>
+
+                    </td>
+                  </tr>
+                </table>
+
+                <!-- Action Buttons -->
+                <table
+                  role='presentation'
+                  cellpadding='0'
+                  cellspacing='0'
+                  border='0'
+                  width='100%'
+                  style='margin-top: 30px;'
+                >
+                  <tr>
+                    <td align='center'>
+                      <table
+                        role='presentation'
+                        cellpadding='0'
+                        cellspacing='0'
+                        border='0'
+                      >
+                        <tr>
+                          <td>
+                            <a
+                              href='#'
+                              target='_blank'
+                              style='display: inline-block; padding: 14px 24px; background-color: #1e293b; color: #ffffff; font-family: Arial, sans-serif; font-size: 14px; font-weight: bold; text-decoration: none; border-radius: 6px;'
+                            >
+                              Acessar Minha Conta
+                            </a>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <!-- Footer -->
+            <tr>
+              <td
+                style='border-top: 1px solid #e5e7eb; padding: 30px 40px; text-align: center;'
+              >
+                <p
+                  style='margin: 0; font-family: Arial, sans-serif; font-size: 12px; color: #9ca3af;'
+                >
+                  &copy;
+                  {{currentYear}}
+                  ServiceSnap
+                </p>
+              </td>
+            </tr>
+
+          </table>
+          <!-- End Email Container -->
+        </td>
+      </tr>
+    </table>
+    <!-- End Wrapper Table -->
   </body>
 </html>

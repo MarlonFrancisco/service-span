@@ -1,3 +1,4 @@
+import { ConfigService } from '@nestjs/config';
 import {
   DataSource,
   EntitySubscriberInterface,
@@ -16,6 +17,7 @@ export class ScheduleSubscriber implements EntitySubscriberInterface<Schedule> {
     dataSource: DataSource,
     private readonly notificationsHistoryService: NotificationsHistoryService,
     private readonly notificationService: NotificationService,
+    private readonly configService: ConfigService,
   ) {
     dataSource.subscribers.push(this);
   }
@@ -25,30 +27,61 @@ export class ScheduleSubscriber implements EntitySubscriberInterface<Schedule> {
   }
 
   async afterInsert(event: InsertEvent<Schedule>) {
-    const schedule = event.entity;
+    const schedule = await event.manager.findOne(Schedule, {
+      where: { id: event.entity.id },
+      relations: [
+        'store',
+        'user',
+        'service',
+        'storeMember',
+        'storeMember.user',
+      ],
+    });
 
-    if (schedule.store) {
-      const history = new NotificationsHistory();
-      history.type = 'booking';
-      history.title = 'Novo Agendamento';
-      history.message = `Agendamento criado para ${schedule.date} às ${schedule.startTime}`;
-      history.timestamp = new Date();
-      history.read = false;
-      history.store = schedule.store;
-      history.status = 'sent';
+    if (!schedule || !schedule.store) return;
 
-      if (schedule.user?.email) {
-        history.recipient = schedule.user.email;
+    const history = new NotificationsHistory();
+    history.type = 'booking';
+    history.title = 'Novo Agendamento';
+    history.message = `Agendamento criado para ${schedule.date} às ${schedule.startTime}`;
+    history.timestamp = new Date();
+    history.read = false;
+    history.store = schedule.store;
+    history.status = 'sent';
 
-        await this.notificationService.sendEmail(
-          schedule.user.email,
-          'Novo Agendamento',
-          `Seu agendamento para ${schedule.date} às ${schedule.startTime} foi criado.`,
-        );
-      }
+    if (schedule.user?.email) {
+      history.recipient = schedule.user.email;
 
-      await this.notificationsHistoryService.create(history);
+      const price = schedule.service?.price
+        ? new Intl.NumberFormat('pt-BR', {
+            style: 'currency',
+            currency: 'BRL',
+          }).format(Number(schedule.service.price))
+        : 'Sob consulta';
+
+      const date = new Date(schedule.date);
+      const formattedDate = new Intl.DateTimeFormat('pt-BR').format(date);
+
+      const frontendUrl = this.configService.get<string>('FRONTEND_URL');
+
+      await this.notificationService.scheduleConfirmation(schedule.user.email, {
+        storeName: schedule.store.name || 'Loja',
+        customerName: schedule.user.firstName || 'Cliente',
+        serviceName: schedule.service?.name || 'Serviço',
+        professionalName:
+          schedule.storeMember?.user?.firstName || 'Profissional',
+        scheduleDate: `${formattedDate} às ${schedule.startTime}`,
+        price,
+        storeLocation: schedule.store.city || '',
+        storeAddress: schedule.store.address || '',
+        calendarLink: ``,
+        rescheduleLink: `${frontendUrl}/profile`,
+        storePhone: schedule.store.telephone || '',
+        currentYear: new Date().getFullYear(),
+      });
     }
+
+    await this.notificationsHistoryService.create(history);
   }
 
   async afterUpdate(event: UpdateEvent<Schedule>) {

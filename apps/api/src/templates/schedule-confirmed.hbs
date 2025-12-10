@@ -3,7 +3,7 @@
     <meta charset='UTF-8' />
     <meta name='viewport' content='width=device-width, initial-scale=1.0' />
     <meta http-equiv='X-UA-Compatible' content='IE=edge' />
-    <title>Falha no Pagamento</title>
+    <title>Sua Reserva está Confirmada!</title>
     <!--[if mso]>
   <noscript>
     <xml>
@@ -55,7 +55,7 @@
                 align='center'
                 style='background-color: #1e293b; padding: 40px 20px;'
               >
-                <!-- Icon -->
+                <!-- Calendar Icon -->
                 <table
                   role='presentation'
                   cellpadding='0'
@@ -78,7 +78,7 @@
                           >
                             <span
                               style='font-family: Arial, sans-serif; font-size: 10px; color: #ffffff; text-transform: uppercase;'
-                            >ERRO</span>
+                            >Jul</span>
                           </td>
                         </tr>
                         <tr>
@@ -88,7 +88,7 @@
                           >
                             <span
                               style='font-family: Arial, sans-serif; font-size: 18px; font-weight: bold; color: #1e293b;'
-                            >!</span>
+                            >17</span>
                           </td>
                         </tr>
                       </table>
@@ -97,10 +97,10 @@
                 </table>
                 <h1
                   style='margin: 0; font-family: Arial, sans-serif; font-size: 28px; font-weight: bold; color: #ffffff;'
-                >Falha no Pagamento</h1>
+                >Sua Reserva está Confirmada!</h1>
                 <p
-                  style='margin: 10px 0 0 0; font-family: Arial, sans-serif; font-size: 16px; color: #ef4444;'
-                >Ação Necessária</p>
+                  style='margin: 10px 0 0 0; font-family: Arial, sans-serif; font-size: 16px; color: #5eead4;'
+                >{{storeName}}</p>
               </td>
             </tr>
 
@@ -111,7 +111,9 @@
                 <p
                   style='margin: 0 0 30px 0; font-family: Arial, sans-serif; font-size: 18px; color: #374151; text-align: center;'
                 >
-                  Olá, não conseguimos processar o pagamento da sua assinatura.
+                  Olá
+                  <strong style='color: #1e293b;'>{{customerName}}</strong>,
+                  tudo pronto para seu atendimento!
                 </p>
 
                 <!-- Details Card -->
@@ -125,7 +127,7 @@
                 >
                   <tr>
                     <td style='padding: 25px;'>
-                      <!-- Row 1 -->
+                      <!-- Service and Professional Row -->
                       <table
                         role='presentation'
                         cellpadding='0'
@@ -142,10 +144,10 @@
                           >
                             <p
                               style='margin: 0 0 5px 0; font-family: Arial, sans-serif; font-size: 14px; color: #6b7280;'
-                            >ID da Fatura:</p>
+                            >Serviço:</p>
                             <p
                               style='margin: 0; font-family: Arial, sans-serif; font-size: 16px; font-weight: bold; color: #1e293b;'
-                            >{{invoiceId}}</p>
+                            >{{serviceName}}</p>
                           </td>
                           <td
                             width='50%'
@@ -155,15 +157,53 @@
                           >
                             <p
                               style='margin: 0 0 5px 0; font-family: Arial, sans-serif; font-size: 14px; color: #6b7280;'
-                            >Tentativas:</p>
+                            >Profissional:</p>
                             <p
                               style='margin: 0; font-family: Arial, sans-serif; font-size: 16px; font-weight: bold; color: #1e293b;'
-                            >{{attemptCount}}</p>
+                            >{{professionalName}}</p>
                           </td>
                         </tr>
                       </table>
 
-                      <!-- Status Row -->
+                      <!-- Date and Price Row -->
+                      <table
+                        role='presentation'
+                        cellpadding='0'
+                        cellspacing='0'
+                        border='0'
+                        width='100%'
+                      >
+                        <tr>
+                          <td
+                            width='50%'
+                            valign='top'
+                            class='mobile-stack'
+                            style='padding-bottom: 20px;'
+                          >
+                            <p
+                              style='margin: 0 0 5px 0; font-family: Arial, sans-serif; font-size: 14px; color: #6b7280;'
+                            >Data e Hora:</p>
+                            <p
+                              style='margin: 0; font-family: Arial, sans-serif; font-size: 16px; font-weight: bold; color: #1e293b;'
+                            >{{scheduleDate}}</p>
+                          </td>
+                          <td
+                            width='50%'
+                            valign='top'
+                            class='mobile-stack'
+                            style='padding-bottom: 20px;'
+                          >
+                            <p
+                              style='margin: 0 0 5px 0; font-family: Arial, sans-serif; font-size: 14px; color: #6b7280;'
+                            >Valor:</p>
+                            <p
+                              style='margin: 0; font-family: Arial, sans-serif; font-size: 16px; font-weight: bold; color: #1e293b;'
+                            >{{price}}</p>
+                          </td>
+                        </tr>
+                      </table>
+
+                      <!-- Divider -->
                       <table
                         role='presentation'
                         cellpadding='0'
@@ -177,14 +217,16 @@
                           >
                             <p
                               style='margin: 0 0 5px 0; font-family: Arial, sans-serif; font-size: 14px; color: #6b7280;'
-                            >Status:</p>
+                            >Endereço:</p>
                             <p
-                              style='margin: 0; font-family: Arial, sans-serif; font-size: 16px; font-weight: bold; color: #ef4444;'
-                            >Falhou</p>
+                              style='margin: 0; font-family: Arial, sans-serif; font-size: 16px; font-weight: bold; color: #1e293b;'
+                            >{{storeLocation}}</p>
+                            <p
+                              style='margin: 5px 0 0 0; font-family: Arial, sans-serif; font-size: 14px; color: #6b7280;'
+                            >{{storeAddress}}</p>
                           </td>
                         </tr>
                       </table>
-
                     </td>
                   </tr>
                 </table>
@@ -207,13 +249,24 @@
                         border='0'
                       >
                         <tr>
-                          <td>
+                          <!-- Add to Calendar Button -->
+                          <td style='padding-right: 10px;'>
                             <a
-                              href='#'
+                              href='{{calendarLink}}'
                               target='_blank'
                               style='display: inline-block; padding: 14px 24px; background-color: #ef4444; color: #ffffff; font-family: Arial, sans-serif; font-size: 14px; font-weight: bold; text-decoration: none; border-radius: 6px;'
                             >
-                              Atualizar Pagamento
+                              &#128197; Adicionar ao Calendário
+                            </a>
+                          </td>
+                          <!-- Cancel/Reschedule Button -->
+                          <td style='padding-left: 10px;'>
+                            <a
+                              href='{{rescheduleLink}}'
+                              target='_blank'
+                              style='display: inline-block; padding: 14px 24px; background-color: #ffffff; color: #374151; font-family: Arial, sans-serif; font-size: 14px; font-weight: bold; text-decoration: none; border-radius: 6px; border: 1px solid #d1d5db;'
+                            >
+                              &#128260; Cancelar ou Reagendar
                             </a>
                           </td>
                         </tr>
@@ -234,7 +287,7 @@
                 >
                   &copy;
                   {{currentYear}}
-                  ServiceSnap
+                  ServiceSnap - Agendamentos Inteligentes
                 </p>
               </td>
             </tr>

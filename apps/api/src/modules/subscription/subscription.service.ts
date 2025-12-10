@@ -341,11 +341,11 @@ export class SubscriptionService {
       });
 
       if (!subscription) {
-        this.logger.warn(
+        this.logger.error(
           `[SubscriptionService.handleInvoicePaid] Subscription not found for ID: ${subscriptionId}`,
         );
 
-        return new NotFoundException('Subscription not found');
+        throw new NotFoundException('Subscription not found');
       }
 
       const { currentPeriodEnd } = getSubscriptionPeriodDate(
@@ -358,9 +358,9 @@ export class SubscriptionService {
 
       await this.subscriptionRepository.save(subscription);
 
-      await this.notificationService.invoicePaid(
+      void this.notificationService.invoicePaid(
         subscription.user.email,
-        subscription.subscriptionId,
+        invoiceData.object.id,
         subscription.currentPeriodEnd.toISOString(),
       );
     } catch (error) {
