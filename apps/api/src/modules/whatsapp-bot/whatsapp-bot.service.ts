@@ -1,6 +1,5 @@
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import type { Cache } from 'cache-manager';
 import {
   extractNumberFromText,
@@ -42,7 +41,6 @@ export class WhatsappBotService {
   private config: WhatsappConfig;
 
   constructor(
-    private readonly configService: ConfigService,
     private readonly whatsappService: WhatsappService,
     private readonly categoryService: CategoryService,
     private readonly serviceService: ServiceService,
@@ -527,12 +525,12 @@ export class WhatsappBotService {
    * Limpa todas as chaves da sessão do Redis para um usuário
    */
   private async clearSession(from: string): Promise<void> {
-    await this.redis.del(`whatsapp:session:${from}`);
-    await this.redis.del(`whatsapp:session:${from}:service`);
-    await this.redis.del(`whatsapp:session:${from}:storeMember`);
-    await this.redis.del(`whatsapp:session:${from}:date`);
-    await this.redis.del(`whatsapp:session:${from}:time`);
-    await this.redis.del(`whatsapp:session:${from}:availableSlots`);
+    void this.redis.del(`whatsapp:session:${from}`);
+    void this.redis.del(`whatsapp:session:${from}:service`);
+    void this.redis.del(`whatsapp:session:${from}:storeMember`);
+    void this.redis.del(`whatsapp:session:${from}:date`);
+    void this.redis.del(`whatsapp:session:${from}:time`);
+    void this.redis.del(`whatsapp:session:${from}:availableSlots`);
   }
 
   private async sendMenu(from: string) {

@@ -349,8 +349,8 @@ export class SubscriptionService {
       }
 
       const { currentPeriodEnd } = getSubscriptionPeriodDate(
-        invoiceData.object.period_start,
-        invoiceData.object.period_end,
+        invoiceData.object.lines.data[0].period.start,
+        invoiceData.object.lines.data[0].period.end,
       );
 
       subscription.status = invoiceData.object.status as TSubscriptionStatus;

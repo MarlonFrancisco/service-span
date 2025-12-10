@@ -14,6 +14,7 @@ export class CreateStoreMemberDto {
   user: Partial<User>;
 
   @IsObject()
+  @IsOptional()
   store: Partial<Store>;
 
   @IsEnum(['owner', 'manager', 'professional'])
