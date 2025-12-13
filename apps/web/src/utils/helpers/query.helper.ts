@@ -1,12 +1,14 @@
 import { TCurrencyCode } from '@repo/shared/constants';
 import { isServer, QueryClient } from '@tanstack/react-query';
 
+export const maxAgeCache = 5 * 60 * 1000;
+
 const makeQueryClient = () => {
   return new QueryClient({
     defaultOptions: {
       queries: {
         refetchOnWindowFocus: false,
-        staleTime: 5 * 60 * 1000,
+        staleTime: maxAgeCache,
         retry: (failureCount) => {
           return failureCount <= 2;
         },

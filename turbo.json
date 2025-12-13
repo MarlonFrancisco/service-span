@@ -6,6 +6,10 @@
     "NEXT_PUBLIC_APP_URL",
     "VERCEL_AUTOMATION_API_BYPASS_SECRET",
     "FRONTEND_URL",
+    "REDIS_HOST",
+    "REDIS_PORT",
+    "REDIS_PASSWORD",
+    "REDIS_URL",
 
     "SUPABASE_URL",
     "SUPABASE_API_KEY",
@@ -32,8 +36,6 @@
 
     "SENDGRID_API_KEY",
 
-    "REDIS_REST_URL",
-    "REDIS_REST_TOKEN",
     "WHATSAPP_VERIFY_TOKEN"
   ],
   "globalDependencies": ["**/.env.*local"],
@@ -52,6 +54,10 @@
         "NEXT_PUBLIC_APP_URL",
         "VERCEL_AUTOMATION_API_BYPASS_SECRET",
         "FRONTEND_URL",
+        "REDIS_HOST",
+        "REDIS_PORT",
+        "REDIS_PASSWORD",
+        "REDIS_URL",
 
         "SUPABASE_URL",
         "SUPABASE_API_KEY",

@@ -1,4 +1,4 @@
-import { useStoreMutations } from '@/hooks/partner/store/use-store-mutations/use-store-mutations.hook';
+import { useStoreMemberMutations } from '@/hooks/partner/store/use-store-member-mutations/use-store-member-mutations.hook';
 import { useStoresStore } from '@/store';
 import { IProfessional } from '@/types/api';
 import { useCallback } from 'react';
@@ -6,7 +6,8 @@ import { useFormContext } from 'react-hook-form';
 import { TStoreFormSchema } from '../store-form.schema';
 
 export const useProfessionalTab = () => {
-  const { updateStoreMember, deleteStoreMember } = useStoreMutations();
+  const { updateStoreMemberMutation, deleteStoreMemberMutation } =
+    useStoreMemberMutations();
   const { setIsAddProfessional } = useStoresStore();
 
   const form = useFormContext<TStoreFormSchema>();
@@ -22,7 +23,7 @@ export const useProfessionalTab = () => {
 
   const handleDeleteProfessional = useCallback(
     (professionalId: string) => {
-      deleteStoreMember(
+      deleteStoreMemberMutation.mutate(
         {
           storeId: form.getValues('id')!,
           professionalId,
@@ -38,12 +39,12 @@ export const useProfessionalTab = () => {
         },
       );
     },
-    [professionals, form, deleteStoreMember, setIsAddProfessional],
+    [professionals, form, deleteStoreMemberMutation, setIsAddProfessional],
   );
 
   const handleToggleProfessionalStatus = useCallback(
     async (professional: IProfessional) => {
-      updateStoreMember(
+      updateStoreMemberMutation.mutate(
         {
           storeId: form.getValues('id')!,
           professional: {
@@ -63,7 +64,7 @@ export const useProfessionalTab = () => {
         },
       );
     },
-    [professionals, form, updateStoreMember],
+    [professionals, form, updateStoreMemberMutation],
   );
 
   return {

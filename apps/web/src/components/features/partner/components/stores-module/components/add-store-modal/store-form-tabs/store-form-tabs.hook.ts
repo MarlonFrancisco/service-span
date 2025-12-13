@@ -8,8 +8,7 @@ import { storeFormSchema, type TStoreFormSchema } from './store-form.schema';
 
 export const useStoreFormTabs = () => {
   const { store, setIsAddModalOpen } = useStoresStore();
-  const { updateStore, addStore, isUpdatingStore, isAddingStore } =
-    useStoreMutations();
+  const { updateStoreMutation, createStoreMutation } = useStoreMutations();
 
   const isEditingStore = !!store.id;
 
@@ -28,7 +27,9 @@ export const useStoreFormTabs = () => {
   const handleSubmit = useCallback(() => {
     form.handleSubmit(
       (data) => {
-        const fn = isEditingStore ? updateStore : addStore;
+        const fn = isEditingStore
+          ? updateStoreMutation.mutate
+          : createStoreMutation.mutate;
         const normalizeData = Object.fromEntries(
           Object.entries(data).filter(
             ([key, value]) =>
@@ -49,7 +50,13 @@ export const useStoreFormTabs = () => {
         }
       },
     )();
-  }, [form, isEditingStore, updateStore, addStore, setIsAddModalOpen]);
+  }, [
+    form,
+    isEditingStore,
+    updateStoreMutation,
+    createStoreMutation,
+    setIsAddModalOpen,
+  ]);
 
   const handleClose = useCallback(() => {
     setIsAddModalOpen({ isOpen: false });
@@ -58,7 +65,7 @@ export const useStoreFormTabs = () => {
   return {
     form,
     isEditingStore,
-    isLoading: isUpdatingStore || isAddingStore,
+    isLoading: updateStoreMutation.isPending || createStoreMutation.isPending,
     handleSubmit,
     handleClose,
   };

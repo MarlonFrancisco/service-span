@@ -31,7 +31,9 @@ export const useStoreMemberMutations = () => {
         CACHE_QUERY_KEYS.store(data.store!.id),
         (old: IStore) => ({
           ...old,
-          storeMembers: [...old.storeMembers, data],
+          storeMembers: old.storeMembers.map((m) =>
+            m.id === data.id ? { ...m, ...data } : m,
+          ),
         }),
       );
       toast.success('Membro da loja atualizado com sucesso');

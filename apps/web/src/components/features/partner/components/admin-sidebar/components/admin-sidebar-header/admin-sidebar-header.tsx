@@ -8,9 +8,7 @@ interface AdminSidebarHeaderProps {
   isCollapsed: boolean;
 }
 
-export function AdminSidebarHeader({
-  isCollapsed,
-}: AdminSidebarHeaderProps) {
+export function AdminSidebarHeader({ isCollapsed }: AdminSidebarHeaderProps) {
   const router = useRouter();
 
   return (
@@ -22,7 +20,7 @@ export function AdminSidebarHeader({
           size="sm"
           className="w-full justify-start text-gray-500 hover:text-gray-900 hover:bg-gray-50 h-9"
           title={isCollapsed ? 'Voltar' : undefined}
-          onClick={() => router.back()}
+          onClick={() => router.push('/')}
         >
           <ArrowLeft className="h-4 w-4" />
           {!isCollapsed && <span className="ml-2 text-sm">Voltar</span>}

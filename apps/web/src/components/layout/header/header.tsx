@@ -1,6 +1,5 @@
 'use client';
 
-import { SOCIAL_LINKS } from '@/utils/constants/contact.constants';
 import { cn } from '@repo/ui/index';
 import { motion } from 'motion/react';
 import { GlobeMenu } from './components/globe-menu';
@@ -9,7 +8,6 @@ import { MenuButton } from './components/menu-button';
 import { NavigationMenu } from './components/navigation-menu';
 import { PartnerButton } from './components/partner-button';
 import { SearchBar } from './components/search-bar/search-bar';
-import { SocialLinks } from './components/social-links';
 import { dropdownAnimation } from './header.animation';
 import { useHeader } from './header.hook';
 import type { THeaderConfig } from './header.types';
@@ -82,11 +80,11 @@ export const Header = ({
           <NavigationMenu />
 
           {/* Footer Section */}
-          <div className="relative bg-foreground before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-foreground">
+          {/* <div className="relative bg-foreground before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-foreground">
             <div className="mx-auto max-w-7xl mt-8 md:mt-18 pb-10 md:pb-16 px-6">
               <SocialLinks links={SOCIAL_LINKS} />
             </div>
-          </div>
+          </div> */}
         </motion.div>
       </header>
 

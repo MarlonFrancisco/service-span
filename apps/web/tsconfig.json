@@ -10,7 +10,9 @@
     "paths": {
       "@/*": ["./src/*"],
       "@repo/ui/*": ["../../packages/ui/src/*"]
-    }
+    },
+    "target": "esnext",
+    "lib": ["dom", "dom.iterable", "esnext"]
   },
   "include": [
     "**/*.ts",

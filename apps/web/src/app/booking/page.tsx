@@ -1,5 +1,6 @@
 import { SearchResults } from '@/components/features/search';
 import { SearchService } from '@/service/search';
+import { createRedisPersister } from '@/utils/helpers/query-server.helpers';
 import { CACHE_QUERY_KEYS, getQueryClient } from '@/utils/helpers/query.helper';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { redirect } from 'next/navigation';
@@ -13,11 +14,18 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   const params = await searchParams;
   const query = params.query;
 
+  const { persistClient, restoreClient } =
+    await createRedisPersister(queryClient);
+
   if (query) {
+    await restoreClient();
+
     await queryClient.prefetchQuery({
       queryKey: CACHE_QUERY_KEYS.search(query),
       queryFn: () => SearchService.searchStores(query),
     });
+
+    await persistClient();
   } else {
     redirect('/');
   }
