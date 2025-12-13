@@ -380,10 +380,10 @@ export class SubscriptionService {
       });
 
       if (!subscription) {
-        this.logger.warn(
+        this.logger.error(
           `[SubscriptionService.handleInvoicePaymentFailed] Subscription not found for ID: ${subscriptionId}`,
         );
-        return new NotFoundException('Subscription not found');
+        throw new NotFoundException('Subscription not found');
       }
 
       subscription.status = event.object.status as TSubscriptionStatus;
