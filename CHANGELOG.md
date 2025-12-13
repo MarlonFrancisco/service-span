@@ -1,3 +1,89 @@
+## 0.11.0 (2025-12-13)
+
+### Feat
+
+- **web**: settings caching on next server
+- **api/notifcations**: change email templates
+- **api**: migrate database and caching service
+- **api/cache**: add redis cache module with in-memory fallback
+- **api/stores**: integrate search indexing
+- **api/search**: add store search index builder
+- **api/subscription**: add currency field to current plan dto
+- **web/stores**: add icons to store form tabs
+- **web/sidebar**: add limit reached state with visual indicators
+- **web/types**: update API types and store constants
+- **packages**: add shared package for common utilities
+- **ui**: add country select, phone and postal code input components
+- **web/stores**: add region tab with postal code support to store form
+- **web/sidebar**: add plan limit indicators to admin sidebar footer
+- **web/locale**: implement locale selection system
+- **web/helpers**: add whatsapp helper and price improvements
+- **api/search**: add postal code to search index types
+- **api/subscription**: add usage tracking and limit validation
+- **api/plans**: enhance plan retrieval with detailed feature information
+- **web/http**: improve error handling in http client service
+- **web/hooks**: enhance error handling in store mutations and queries
+- **api/search**: add searchStore method and categories field to search metadata
+- **api/search**: add store subscriber for automatic search indexing
+- **web/agenda**: add view mode toggle between week grid and day views
+- **web/agenda**: add day view with mobile optimizations
+- **web/search**: add empty state for no results
+- **web/booking**: add BookingNotFound component
+- **web/hooks**: add category mutations hook and refactor mutation hooks
+- **api**: enhance database module configuration and user service
+- **api**: manager user subscription
+
+### Fix
+
+- **api**: remove caching on search and subscription throw erros
+- **api**: cache manager
+- **api**: resolve DTO validation and subscription extraction
+- **web**: organize search and homepage recommendations
+- **web/plans**: correct store and user limit labels
+- **web/profile**: correct booking status filter and improve image rendering
+- **api**: import module directory
+- **api/services**: improve error handling and optimize queries
+- **web**: stop infinite retry on 404 errors
+
+### Refactor
+
+- **web/components**: update imports to use partner hooks
+- **web/hooks**: remove old mutation hooks
+- **web/hooks**: reorganize mutations to partner namespace
+- **api/stores**: remove store subscriber
+- **api/database**: simplify ssl configuration
+- **api/stores**: expand store relations in get endpoint
+- **web/mutations**: add error logging to blocked time mutations
+- **web/partner**: optimize layout store prefetch and active store handling
+- **web/services**: improve API services and query hooks
+- **web/partner**: update partner components with locale and plan improvements
+- **web/booking**: apply hook-driven architecture to booking flow
+- **web/search**: apply hook-driven architecture to search components
+- **web/layout**: improve header and footer structure
+- **api/entities**: update store and user entity relationships
+- **api/store-member**: simplify many-to-many relationship handling
+- **web/booking**: migrate from useStoresQuery to useStoreQuery hook
+- **web/stores**: improve form validation and data normalization in store module
+- **api/stores**: improve store validation and subscriber logic with search integration
+- **web/http**: simplify error handling and query retry logic
+- **web/ssr**: optimize partner layout data loading
+- **api/database**: unify neon serverless config for all environments
+- **api/database**: unify neon serverless config for all environments
+- **web/http-client**: simplify error handling and query retry logic
+- **web/hooks**: split useStoreQuery from useStoresQuery
+- **web**: update app layouts and navigation components
+- **web/partner**: clean up agenda module hooks and constants
+- **web/partner**: improve services and stores modules with better form handling
+- **web/partner**: update plans module with improved subscription display and notification handling
+- **web/partner**: enhance admin sidebar with improved menu structure and navigation
+- **web/services**: update api services with improved pagination and query handling
+- **web/types**: extract notifications types and enhance api type definitions
+- **api/stores**: update services with improved error handling and query optimization
+- **api/stores**: split store dto into create and update dtos
+- **api/gallery**: remove deprecated gallery.dto.ts file
+- **api**: standardize dto pattern with class-validator decorators
+- **api**: improve dto validation and subscription handling
+
 ## 0.10.0 (2025-11-24)
 
 ### Feat
